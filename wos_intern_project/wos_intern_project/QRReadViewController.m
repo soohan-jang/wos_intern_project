@@ -17,6 +17,7 @@
 
 @implementation QRReadViewController
 
+//@synthesize backgroundPreview, backgroundSession, backgroundVideoPreviewLayer;
 @synthesize qrCodeReadPreview, qrCodeDataDisplay_test, isReaderActivate, captureSession, captureVideoPreviewLayer;
 
 - (void)viewDidLoad {
@@ -66,6 +67,9 @@
     }
     
     //Session alloc, add input & output
+//    backgroundSession = [[AVCaptureSession alloc] init];
+//    [backgroundSession addInput:captureDeviceInput];
+    
     captureSession = [[AVCaptureSession alloc] init];
     [captureSession addInput:captureDeviceInput];
     [captureSession addOutput:captureMetadataOutput];
@@ -75,12 +79,19 @@
     [captureMetadataOutput setMetadataObjectsDelegate:self queue:qrCodeDispatchQueue];
     [captureMetadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
     
+//    backgroundVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:backgroundSession];
+//    [backgroundVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+//    [backgroundVideoPreviewLayer setFrame:backgroundPreview.layer.bounds];
+//    
+//    [backgroundPreview.layer addSublayer:backgroundVideoPreviewLayer];
+    
     captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:captureSession];
     [captureVideoPreviewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
     [captureVideoPreviewLayer setFrame:qrCodeReadPreview.layer.bounds];
     
     [qrCodeReadPreview.layer addSublayer:captureVideoPreviewLayer];
     
+//    [backgroundSession startRunning];
     [captureSession startRunning];
     
     isReaderActivate = YES;
@@ -89,11 +100,15 @@
 }
 
 - (BOOL)stopQRCodeRead {
+//    [backgroundSession stopRunning];
     [captureSession stopRunning];
+//    [backgroundVideoPreviewLayer removeFromSuperlayer];
     [captureVideoPreviewLayer removeFromSuperlayer];
     
+//    backgroundSession = nil;
     captureSession = nil;
     
+//    backgroundVideoPreviewLayer = nil;
     captureVideoPreviewLayer = nil;
     isReaderActivate = NO;
     

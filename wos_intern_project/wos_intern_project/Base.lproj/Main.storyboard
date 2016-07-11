@@ -79,6 +79,42 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kvI-He-Cnb">
+                                <rect key="frame" x="-1" y="64" width="376" height="503"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mkk-Do-NDB">
+                                        <rect key="frame" x="78" y="142" width="220" height="220"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="220" id="7uQ-K2-BxS"/>
+                                            <constraint firstAttribute="width" constant="220" id="d0n-1E-IfE"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                                <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                                <integer key="value" value="3"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="Mkk-Do-NDB" firstAttribute="centerY" secondItem="kvI-He-Cnb" secondAttribute="centerY" id="jn4-ND-EIJ"/>
+                                    <constraint firstItem="Mkk-Do-NDB" firstAttribute="centerX" secondItem="kvI-He-Cnb" secondAttribute="centerX" id="pbq-Og-J2b"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VAi-hU-2jq">
+                                <rect key="frame" x="0.0" y="567" width="375" height="50"/>
+                                <color key="backgroundColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Q25-sw-TfO"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eEr-Ch-xP8">
                                 <rect key="frame" x="0.0" y="617" width="375" height="50"/>
                                 <subviews>
@@ -120,48 +156,25 @@
                                     <constraint firstItem="pET-4t-PIo" firstAttribute="centerY" secondItem="eEr-Ch-xP8" secondAttribute="centerY" id="are-AN-9uI"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mkk-Do-NDB">
-                                <rect key="frame" x="0.0" y="64" width="375" height="553"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VAi-hU-2jq">
-                                        <rect key="frame" x="0.0" y="503" width="375" height="50"/>
-                                        <color key="backgroundColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="50" id="hxG-4F-5RW"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                                        <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                                        <integer key="value" value="3"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="kvI-He-Cnb" firstAttribute="top" secondItem="yHR-b4-vJY" secondAttribute="bottom" id="21T-J6-Nig"/>
+                            <constraint firstItem="kvI-He-Cnb" firstAttribute="width" secondItem="WDb-nB-pbq" secondAttribute="width" id="AEw-Hq-J36"/>
                             <constraint firstItem="eEr-Ch-xP8" firstAttribute="centerX" secondItem="WDb-nB-pbq" secondAttribute="centerX" id="IfF-1B-R9h"/>
-                            <constraint firstItem="Mkk-Do-NDB" firstAttribute="centerX" secondItem="WDb-nB-pbq" secondAttribute="centerX" id="N9T-o3-IWQ"/>
+                            <constraint firstItem="uhF-D9-T5r" firstAttribute="top" secondItem="VAi-hU-2jq" secondAttribute="bottom" constant="50" id="Lbw-em-VrJ"/>
                             <constraint firstItem="uhF-D9-T5r" firstAttribute="top" secondItem="eEr-Ch-xP8" secondAttribute="bottom" id="PsX-bt-HUI"/>
-                            <constraint firstItem="VAi-hU-2jq" firstAttribute="width" secondItem="WDb-nB-pbq" secondAttribute="width" id="Tup-e0-3sQ"/>
-                            <constraint firstItem="VAi-hU-2jq" firstAttribute="centerX" secondItem="WDb-nB-pbq" secondAttribute="centerX" id="XVU-aF-VEc"/>
+                            <constraint firstItem="VAi-hU-2jq" firstAttribute="centerX" secondItem="WDb-nB-pbq" secondAttribute="centerX" id="QYK-RJ-Zb5"/>
+                            <constraint firstItem="uhF-D9-T5r" firstAttribute="top" secondItem="kvI-He-Cnb" secondAttribute="bottom" constant="100" id="RXQ-NU-7gl"/>
+                            <constraint firstItem="VAi-hU-2jq" firstAttribute="width" secondItem="WDb-nB-pbq" secondAttribute="width" id="f9c-mu-oRT"/>
                             <constraint firstItem="eEr-Ch-xP8" firstAttribute="width" secondItem="WDb-nB-pbq" secondAttribute="width" id="kKR-hS-N5x"/>
-                            <constraint firstItem="Mkk-Do-NDB" firstAttribute="width" secondItem="WDb-nB-pbq" secondAttribute="width" id="lAI-g7-SUv"/>
-                            <constraint firstItem="Mkk-Do-NDB" firstAttribute="top" secondItem="yHR-b4-vJY" secondAttribute="bottom" id="vVl-ln-A1w"/>
-                            <constraint firstItem="uhF-D9-T5r" firstAttribute="top" secondItem="VAi-hU-2jq" secondAttribute="bottom" constant="50" id="zap-Ds-SeI"/>
-                            <constraint firstItem="uhF-D9-T5r" firstAttribute="top" secondItem="Mkk-Do-NDB" secondAttribute="bottom" constant="50" id="zbE-up-wfl"/>
+                            <constraint firstItem="kvI-He-Cnb" firstAttribute="centerX" secondItem="WDb-nB-pbq" secondAttribute="centerX" id="ymQ-h7-uHe"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="backgroundPreview" destination="kvI-He-Cnb" id="dqf-FT-aO6"/>
                         <outlet property="qrCodeDataDisplay_test" destination="VAi-hU-2jq" id="hdg-Y9-EPH"/>
-                        <outlet property="qrCodeReadPreview" destination="Mkk-Do-NDB" id="i2Z-XE-Iyh"/>
+                        <outlet property="qrCodeReadPreview" destination="Mkk-Do-NDB" id="YkM-vf-68U"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2tl-91-G5w" userLabel="First Responder" sceneMemberID="firstResponder"/>

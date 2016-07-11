@@ -11,11 +11,14 @@
 
 @interface QRReadViewController : UIViewController <QRCodeCaptureMetadataOutputObjectsDelegate>
 
+@property (strong, nonatomic) IBOutlet UIView *backgroundPreview;
 @property (strong, nonatomic) IBOutlet UIView *qrCodeReadPreview;
 @property (strong, nonatomic) IBOutlet UILabel *qrCodeDataDisplay_test;
 
 @property (nonatomic) BOOL isReaderActivate;
+//@property (strong, nonatomic) AVCaptureSession *backgroundSession;
 @property (strong, nonatomic) AVCaptureSession *captureSession;
+//@property (strong, nonatomic) AVCaptureVideoPreviewLayer *backgroundVideoPreviewLayer;
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
 
 /** berif
