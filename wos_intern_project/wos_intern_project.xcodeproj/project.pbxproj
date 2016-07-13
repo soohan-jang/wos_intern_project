@@ -15,8 +15,13 @@
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
-		4A4ACF631D2B7FE000BC2FC4 /* QRReadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF621D2B7FE000BC2FC4 /* QRReadViewController.m */; };
-		4A4ACF661D2B800000BC2FC4 /* QRGenerateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF651D2B800000BC2FC4 /* QRGenerateViewController.m */; };
+		4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
+		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
+		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
+		4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
+		4A97B6101D33799A003899F7 /* img_main_bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */; };
+		4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
+		4AD6E64F1D34A1EA00C379EF /* BluetoothHardwareControlManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64E1D34A1EA00C379EF /* BluetoothHardwareControlManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,10 +58,19 @@
 		4A4ACF4C1D2B6D2C00BC2FC4 /* wos_intern_projectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wos_intern_projectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = wos_intern_projectUITests.m; sourceTree = "<group>"; };
 		4A4ACF521D2B6D2C00BC2FC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4A4ACF611D2B7FE000BC2FC4 /* QRReadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRReadViewController.h; sourceTree = "<group>"; };
-		4A4ACF621D2B7FE000BC2FC4 /* QRReadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRReadViewController.m; sourceTree = "<group>"; };
-		4A4ACF641D2B800000BC2FC4 /* QRGenerateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QRGenerateViewController.h; sourceTree = "<group>"; };
-		4A4ACF651D2B800000BC2FC4 /* QRGenerateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QRGenerateViewController.m; sourceTree = "<group>"; };
+		4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewController.h; sourceTree = "<group>"; };
+		4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewController.m; sourceTree = "<group>"; };
+		4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorViewController.h; sourceTree = "<group>"; };
+		4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorViewController.m; sourceTree = "<group>"; };
+		4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAlbumViewController.h; sourceTree = "<group>"; };
+		4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAlbumViewController.m; sourceTree = "<group>"; };
+		4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewerViewController.h; sourceTree = "<group>"; };
+		4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewerViewController.m; sourceTree = "<group>"; };
+		4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_main_bluetooth.png; sourceTree = "<group>"; };
+		4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionManager.h; sourceTree = "<group>"; };
+		4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManager.m; sourceTree = "<group>"; };
+		4AD6E64D1D34A1EA00C379EF /* BluetoothHardwareControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothHardwareControlManager.h; sourceTree = "<group>"; };
+		4AD6E64E1D34A1EA00C379EF /* BluetoothHardwareControlManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothHardwareControlManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,11 +121,11 @@
 		4A4ACF2A1D2B6D2C00BC2FC4 /* wos_intern_project */ = {
 			isa = PBXGroup;
 			children = (
-				4A4ACF5E1D2B7F9700BC2FC4 /* AddressShare */,
+				4A97B60A1D336514003899F7 /* ViewController */,
+				4A97B60C1D336540003899F7 /* Data */,
+				4A97B60B1D336520003899F7 /* Manager */,
 				4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */,
 				4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */,
-				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
-				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
 				4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */,
 				4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */,
 				4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */,
@@ -124,6 +138,7 @@
 		4A4ACF2B1D2B6D2C00BC2FC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */,
 				4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -147,31 +162,39 @@
 			path = wos_intern_projectUITests;
 			sourceTree = "<group>";
 		};
-		4A4ACF5E1D2B7F9700BC2FC4 /* AddressShare */ = {
+		4A97B60A1D336514003899F7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				4A4ACF601D2B7FB500BC2FC4 /* Bluetooth */,
-				4A4ACF5F1D2B7FB000BC2FC4 /* QRCode */,
+				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
+				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
+				4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */,
+				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
+				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
+				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
+				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
+				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
+				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
+				4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */,
 			);
-			name = AddressShare;
+			name = ViewController;
 			sourceTree = "<group>";
 		};
-		4A4ACF5F1D2B7FB000BC2FC4 /* QRCode */ = {
+		4A97B60B1D336520003899F7 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				4A4ACF611D2B7FE000BC2FC4 /* QRReadViewController.h */,
-				4A4ACF621D2B7FE000BC2FC4 /* QRReadViewController.m */,
-				4A4ACF641D2B800000BC2FC4 /* QRGenerateViewController.h */,
-				4A4ACF651D2B800000BC2FC4 /* QRGenerateViewController.m */,
+				4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */,
+				4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */,
+				4AD6E64D1D34A1EA00C379EF /* BluetoothHardwareControlManager.h */,
+				4AD6E64E1D34A1EA00C379EF /* BluetoothHardwareControlManager.m */,
 			);
-			name = QRCode;
+			name = Manager;
 			sourceTree = "<group>";
 		};
-		4A4ACF601D2B7FB500BC2FC4 /* Bluetooth */ = {
+		4A97B60C1D336540003899F7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = Bluetooth;
+			name = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +264,7 @@
 				TargetAttributes = {
 					4A4ACF271D2B6D2C00BC2FC4 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = YFUWNUL4S4;
 					};
 					4A4ACF401D2B6D2C00BC2FC4 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -280,6 +304,7 @@
 				4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */,
 				4A4ACF381D2B6D2C00BC2FC4 /* Assets.xcassets in Resources */,
 				4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */,
+				4A97B6101D33799A003899F7 /* img_main_bluetooth.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,11 +329,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
+				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
+				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,
+				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
+				4AD6E64F1D34A1EA00C379EF /* BluetoothHardwareControlManager.m in Sources */,
+				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,
 				4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */,
-				4A4ACF631D2B7FE000BC2FC4 /* QRReadViewController.m in Sources */,
-				4A4ACF661D2B800000BC2FC4 /* QRGenerateViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,7 +478,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = wos_intern_project/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.worksmobile.wos-intern-project";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -460,7 +491,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = wos_intern_project/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.worksmobile.wos-intern-project";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -532,6 +565,7 @@
 				4A4ACF571D2B6D2C00BC2FC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4A4ACF581D2B6D2C00BC2FC4 /* Build configuration list for PBXNativeTarget "wos_intern_projectTests" */ = {
 			isa = XCConfigurationList;
@@ -540,6 +574,7 @@
 				4A4ACF5A1D2B6D2C00BC2FC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4A4ACF5B1D2B6D2C00BC2FC4 /* Build configuration list for PBXNativeTarget "wos_intern_projectUITests" */ = {
 			isa = XCConfigurationList;
@@ -548,6 +583,7 @@
 				4A4ACF5D1D2B6D2C00BC2FC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
