@@ -146,11 +146,6 @@
     [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
-- (void)setConnectedPeerScreenWidthWith:(NSNumber *)width connectedPeerScreenHeight:(NSNumber *)height {
-    connectedPeerScreenWidth = width;
-    connectedPeerScreenHeight = height;
-}
-
 - (void)disconnectSession {
     [self.ownSession disconnect];
 }
@@ -160,6 +155,7 @@
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     //연결이 완료되면 연결된 peerId를 배열에 저장하고, 상대방에게 자신의 화면크기 정보를 보낸다.
     if (state == MCSessionStateConnected) {
+        NSLog(@"Connected");
         [self.notificationCenter postNotificationName:NOTIFICATION_PEER_CONNECTED object:nil];
     }
     else if (state == MCSessionStateNotConnected) {
@@ -174,15 +170,11 @@
     
     //받은 정보가 화면크기 정보일 때, 데이터를 읽어와 받은 정보를 저장한다.
     if ([dataType isEqualToNumber:VALUE_DATA_TYPE_SCREEN_SIZE]) {
+        NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
+        
         NSDictionary *unarchivedData = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         connectedPeerScreenWidth = [unarchivedData objectForKey:KEY_SCREEN_SIZE_WIDTH];
         connectedPeerScreenHeight = [unarchivedData objectForKey:KEY_SCREEN_SIZE_HEIGHT];
-        
-        NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
-        
-        
-        NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
-        [notiCenter postNotificationName:NOTIFICATION_RECV_SCREEN_SIZE object:nil userInfo:unarchivedData];
     }
     else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_INDEX]) {
         

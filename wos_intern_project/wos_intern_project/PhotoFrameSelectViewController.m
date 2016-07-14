@@ -14,6 +14,10 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    if (!self.isEnableFrameSelect) {
+        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:@"Waiting..." detail:@"If you like current photo frame,\nclick a like button." alpha:0.5f];
+    }
+    
     [self addObservers];
     [super viewDidAppear:animated];
 }
@@ -29,6 +33,10 @@
 }
 
 - (IBAction)backAction:(id)sender {
+    if (self.progressView != nil && !self.progressView.isHidden) {
+        [self.progressView dismissProgress];
+    }
+    
     [[ConnectionManager sharedInstance] disconnectSession];
     [self.navigationController popViewControllerAnimated:YES];
 }
@@ -68,6 +76,21 @@
     }
 }
 
+- (void)doneProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:@"Completed!" delay:1];
+    }
+}
+
+- (void)loadPhotoEditorViewController {
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"photoFrameEditorViewController"];
+    
+    [self.navigationController pushViewController:viewController animated:YES];
+    [self removeObservers];
+}
+
+
 - (void)receivedFrameIndexChanged:(NSNotification *)notification {
     
 }
@@ -78,6 +101,10 @@
 
 - (void)receivedFrameSelected:(NSNotification *)notification {
     
+    [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        [self performSelectorOnMainThread:@selector(loadPhotoEditorViewController) withObject:nil waitUntilDone:YES];
+//    });
 }
 
 @end

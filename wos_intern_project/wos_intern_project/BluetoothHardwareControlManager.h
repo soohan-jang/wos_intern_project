@@ -10,4 +10,10 @@
 
 @interface BluetoothHardwareControlManager : NSObject
 
+@property (nonatomic, strong) CBCentralManager *centralManager;
+
++ (instancetype)init;
+- (BOOL)isSupported;
+- (BOOL)isActivated;
+
 @end

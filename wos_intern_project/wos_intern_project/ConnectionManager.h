@@ -97,11 +97,6 @@
 - (void)sendData:(NSData *)sendData;
 
 /**
- ConnectionManager가 관리하는 상대방 단말의 화면 사이즈에 값을 설정한다.
- */
-- (void)setConnectedPeerScreenWidthWith:(NSNumber *)width connectedPeerScreenHeight:(NSNumber *)height;
-
-/**
  Session의 연결을 해제한다.
  */
 - (void)disconnectSession;
