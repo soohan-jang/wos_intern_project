@@ -16,10 +16,10 @@
 @synthesize KEY_DATA_TYPE;
 
 /** 연결되었을 때, 이를 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_CONNECTED;
+@synthesize NOTIFICATION_PEER_CONNECTED;
 
 /** 연결이 해제되었을 때, 이를 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_DISCONNECTED;
+@synthesize NOTIFICATION_PEER_DISCONNECTED;
 
 /** 젼댤받은 데이터가 어떤 정보인지 확인하기 위한 식별자 **/
 @synthesize VALUE_DATA_TYPE_SCREEN_SIZE;
@@ -37,7 +37,7 @@
 @synthesize VALUE_DATA_TYPE_PHOTO_FRAME_INDEX, VALUE_DATA_TYPE_PHOTO_FRAME_LIKED, VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
 
 /** 전달받은 데이터의 액자 인덱스, 좋아요를 표시한 액자 인덱스, 선택된 액자 인덱스 키 값 **/
-@synthesize KEY_FRAME_INDEX, KEY_FRAME_LIKED, KEY_FRAME_SELECTED;
+@synthesize KEY_PHOTO_FRAME_INDEX, KEY_PHOTO_FRAME_LIKED, KEY_PHOTO_FRAME_SELECTED;
 
 /** 화면에 표시될 사진, 그림정보, 삭제 정보가 전달되었을 때 알리기 위한 알림 식별자 **/
 @synthesize NOTIFICATION_REVC_PHOTO_INSERT_DATA, NOTIFICATION_REVC_PHOTO_DELETE_DATA, NOTIFICATION_REVC_DRAWING_INSERT_DATA, NOTIFICATION_REVC_DRAWING_UPDATE_DATA, NOTIFICATION_REVC_DRAWING_DELETE_DATA;
@@ -76,44 +76,47 @@
     
     KEY_DATA_TYPE = @"data_type";
     
-    VALUE_DATA_TYPE_SCREEN_SIZE = @100;
-    VALUE_DATA_TYPE_PHOTO_FRAME_INDEX = @200;
-    VALUE_DATA_TYPE_PHOTO_FRAME_LIKED = @201;
-    VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED = @202;
-    VALUE_DATA_TYPE_PHOTO_INSERT_DATA = @301;
-    VALUE_DATA_TYPE_PHOTO_DELETE_DATA = @302;
-    VALUE_DATA_TYPE_DRAWING_INSERT_DATA = @303;
-    VALUE_DATA_TYPE_DRAWING_UPDATE_DATA = @304;
-    VALUE_DATA_TYPE_DRAWING_DELETE_DATA = @305;
+    VALUE_DATA_TYPE_SCREEN_SIZE             = @100;
     
-    KEY_SCREEN_SIZE_WIDTH = @"screen_size_width";
-    KEY_SCREEN_SIZE_HEIGHT = @"screen_size_height";
-    KEY_FRAME_INDEX = @"frame_index";
-    KEY_FRAME_LIKED = @"frame_liked";
-    KEY_FRAME_SELECTED = @"frame_selected";
-    KEY_PHOTO_INSERT_DATA = @"photo_insert_data";
-    KEY_PHOTO_DELETE_DATA = @"photo_delete_data";
-    KEY_DRAWING_INSERT_DATA = @"photo_insert_data";
-    KEY_DRAWING_UPDATE_DATA = @"photo_update_data";
-    KEY_DRAWING_DELETE_DATA = @"photo_delete_data";
+    VALUE_DATA_TYPE_PHOTO_FRAME_INDEX       = @200;
+    VALUE_DATA_TYPE_PHOTO_FRAME_LIKED       = @201;
+    VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED    = @202;
     
-    NOTIFICATION_CONNECTED = @"connected";
-    NOTIFICATION_DISCONNECTED = @"disconnected";
-    NOTIFICATION_RECV_SCREEN_SIZE = @"recv_screen_size";
-    NOTIFICATION_RECV_PHOTO_FRAME_INDEX = @"recv_photo_frame_index";
-    NOTIFICATION_RECV_PHOTO_FRAME_LIKED = @"recv_photo_frame_liked";
-    NOTIFICATION_RECV_PHOTO_FRAME_SELECTED = @"recv_photo_frame_selected";
-    NOTIFICATION_REVC_PHOTO_INSERT_DATA = @"recv_photo_insert_data";
-    NOTIFICATION_REVC_PHOTO_DELETE_DATA = @"recv_photo_delete_data";
-    NOTIFICATION_REVC_DRAWING_INSERT_DATA = @"recv_drawing_insert_data";
-    NOTIFICATION_REVC_DRAWING_UPDATE_DATA = @"recv_drawing_update_data";
-    NOTIFICATION_REVC_DRAWING_DELETE_DATA = @"recv_drawing_delete_data";
+    VALUE_DATA_TYPE_PHOTO_INSERT_DATA       = @300;
+    VALUE_DATA_TYPE_PHOTO_DELETE_DATA       = @301;
+    VALUE_DATA_TYPE_DRAWING_INSERT_DATA     = @302;
+    VALUE_DATA_TYPE_DRAWING_UPDATE_DATA     = @303;
+    VALUE_DATA_TYPE_DRAWING_DELETE_DATA     = @304;
+    
+    KEY_SCREEN_SIZE_WIDTH       = @"screen_size_width";
+    KEY_SCREEN_SIZE_HEIGHT      = @"screen_size_height";
+    
+    KEY_PHOTO_FRAME_INDEX       = @"photo_frame_index";
+    KEY_PHOTO_FRAME_LIKED       = @"photo_frame_liked";
+    KEY_PHOTO_FRAME_SELECTED    = @"photo_frame_selected";
+    
+    KEY_PHOTO_INSERT_DATA       = @"photo_insert_data";
+    KEY_PHOTO_DELETE_DATA       = @"photo_delete_data";
+    KEY_DRAWING_INSERT_DATA     = @"photo_insert_data";
+    KEY_DRAWING_UPDATE_DATA     = @"photo_update_data";
+    KEY_DRAWING_DELETE_DATA     = @"photo_delete_data";
+    
+    NOTIFICATION_PEER_CONNECTED             = @"peer_connected";
+    NOTIFICATION_PEER_DISCONNECTED          = @"peer_disconnected";
+    
+    NOTIFICATION_RECV_SCREEN_SIZE           = @"recv_screen_size";
+    
+    NOTIFICATION_RECV_PHOTO_FRAME_INDEX     = @"recv_photo_frame_index";
+    NOTIFICATION_RECV_PHOTO_FRAME_LIKED     = @"recv_photo_frame_liked";
+    NOTIFICATION_RECV_PHOTO_FRAME_SELECTED  = @"recv_photo_frame_selected";
+    
+    NOTIFICATION_REVC_PHOTO_INSERT_DATA     = @"recv_photo_insert_data";
+    NOTIFICATION_REVC_PHOTO_DELETE_DATA     = @"recv_photo_delete_data";
+    NOTIFICATION_REVC_DRAWING_INSERT_DATA   = @"recv_drawing_insert_data";
+    NOTIFICATION_REVC_DRAWING_UPDATE_DATA   = @"recv_drawing_update_data";
+    NOTIFICATION_REVC_DRAWING_DELETE_DATA   = @"recv_drawing_delete_data";
 }
 
-/** berif
- 인스턴스의 프로퍼티를 초기화한다. 인자로 받은 deviceName은 자기자신의 peerID.displayName이 된다.
- 초기화되는 프로퍼티는 notificationCenter, ownPeerId, session, session.delegate, browserViewController, advertiser이다.
- */
 - (void)initInstanceProperties:(NSString *)deviceName screenWidthSize:(CGFloat)width screenHeightSize:(CGFloat)height {
     self.notificationCenter = [NSNotificationCenter defaultCenter];
     
@@ -137,7 +140,10 @@
 
 - (void)stopAdvertise {
     [advertiser stopAdvertisingPeer];
-    advertiser = nil;
+}
+
+- (void)sendData:(NSData *)sendData {
+    [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
 - (void)setConnectedPeerScreenWidthWith:(NSNumber *)width connectedPeerScreenHeight:(NSNumber *)height {
@@ -145,17 +151,19 @@
     connectedPeerScreenHeight = height;
 }
 
-/**
- MCSessionDelegate Methods.
- **/
+- (void)disconnectSession {
+    [self.ownSession disconnect];
+}
+
+/**** MCSessionDelegate Methods. ****/
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     //연결이 완료되면 연결된 peerId를 배열에 저장하고, 상대방에게 자신의 화면크기 정보를 보낸다.
     if (state == MCSessionStateConnected) {
-        [self.notificationCenter postNotificationName:NOTIFICATION_CONNECTED object:nil];
+        [self.notificationCenter postNotificationName:NOTIFICATION_PEER_CONNECTED object:nil];
     }
     else if (state == MCSessionStateNotConnected) {
-        [self.notificationCenter postNotificationName:NOTIFICATION_DISCONNECTED object:nil];
+        [self.notificationCenter postNotificationName:NOTIFICATION_PEER_DISCONNECTED object:nil];
     }
 }
 
@@ -172,7 +180,9 @@
         
         NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
         
-        [self.notificationCenter postNotificationName:NOTIFICATION_RECV_SCREEN_SIZE object:nil userInfo:unarchivedData];
+        
+        NSNotificationCenter *notiCenter = [NSNotificationCenter defaultCenter];
+        [notiCenter postNotificationName:NOTIFICATION_RECV_SCREEN_SIZE object:nil userInfo:unarchivedData];
     }
     else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_INDEX]) {
         

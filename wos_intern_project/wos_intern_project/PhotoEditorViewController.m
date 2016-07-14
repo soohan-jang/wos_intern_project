@@ -13,7 +13,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.connectionManager = [ConnectionManager sharedInstance];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -22,12 +21,12 @@
 }
 
 - (IBAction)backAction:(id)sender {
-    [self.connectionManager.ownSession disconnect];
+    [[ConnectionManager sharedInstance] disconnectSession];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)saveAction:(id)sender {
-    [self.connectionManager.ownSession disconnect];
+    [[ConnectionManager sharedInstance] disconnectSession];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 

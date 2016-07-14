@@ -16,8 +16,8 @@
 @property (nonatomic, copy, readonly) NSString *KEY_DATA_TYPE;
 
 /** Session Disconnected Protocol String ... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_CONNECTED;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_DISCONNECTED;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_PEER_CONNECTED;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_PEER_DISCONNECTED;
 
 /** Screen Size Data Protocol String ... **/
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_SCREEN_SIZE;
@@ -36,9 +36,9 @@
 @property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_LIKED;
 @property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
 
-@property (nonatomic, copy, readonly) NSString *KEY_FRAME_INDEX;
-@property (nonatomic, copy, readonly) NSString *KEY_FRAME_LIKED;
-@property (nonatomic, copy, readonly) NSString *KEY_FRAME_SELECTED;
+@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_INDEX;
+@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_LIKED;
+@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_SELECTED;
 
 /** PhotoData, DrawingData Protocol String... **/
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_PHOTO_INSERT_DATA;
@@ -75,11 +75,35 @@
 
 + (ConnectionManager *)sharedInstance;
 
+/**
+ 인스턴스의 프로퍼티를 초기화한다. 인자로 받은 deviceName은 자기자신의 peerID.displayName이 된다.
+ 초기화되는 프로퍼티는 notificationCenter, ownPeerId, session, session.delegate, browserViewController, advertiser이다.
+ */
 - (void)initInstanceProperties:(NSString *)deviceName screenWidthSize:(CGFloat)width screenHeightSize:(CGFloat)height;
 
+/**
+ 다른 단말기에 자신의 단말기가 검색되는 것을 허용한다.
+ */
 - (void)startAdvertise;
+
+/**
+ 다른 단말기에 자신의 단말기가 검색되는 것을 허용하지 않는다.
+ */
 - (void)stopAdvertise;
 
+/**
+ ConnectionManager가 관리하는 MCSession 객체를 이용하여 메시지를 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.
+ */
+- (void)sendData:(NSData *)sendData;
+
+/**
+ ConnectionManager가 관리하는 상대방 단말의 화면 사이즈에 값을 설정한다.
+ */
 - (void)setConnectedPeerScreenWidthWith:(NSNumber *)width connectedPeerScreenHeight:(NSNumber *)height;
+
+/**
+ Session의 연결을 해제한다.
+ */
+- (void)disconnectSession;
 
 @end

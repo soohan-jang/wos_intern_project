@@ -10,8 +10,4 @@
 
 @interface BluetoothHardwareControlManager : NSObject
 
-@property (nonatomic, strong) CBCentralManager *manager;
-
-+ (void)init;
-
 @end

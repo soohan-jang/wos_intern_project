@@ -11,9 +11,6 @@
 
 @interface PhotoEditorViewController : UIViewController
 
-@property (nonatomic, weak) ConnectionManager *connectionManager;
-@property (nonatomic, weak) NSNotificationCenter *notificationCenter;
-
 - (IBAction)backAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
 
