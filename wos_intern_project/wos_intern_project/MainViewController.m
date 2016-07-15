@@ -83,6 +83,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
 
+/**** MCBrowserViewControllerDelegate Methods. ****/
+
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
@@ -93,6 +95,8 @@
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
+/**** MCNearbyServiceAdvertiserDelegate Methods. ****/
+
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
     if (self.invitationHandlerArray != nil) {
         self.invitationHandlerArray = nil;
@@ -102,6 +106,8 @@
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Invitation Received" message:[NSString stringWithFormat:@"\"%@\" wants to connect.", peerID.displayName] delegate:self cancelButtonTitle:@"Decline" otherButtonTitles:@"Accept", nil];
     [alertView show];
 }
+
+/**** UIAlertViewDelegate Methods. ****/
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     //Accept
@@ -117,7 +123,11 @@
     }
 }
 
+/**** CBCentralManagerDelegate Methods. ****/
+
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central { /** Do nothing... **/ }
+
+/**** PerformSelector Methods. ****/
 
 - (void)doneProgress {
     if (!self.progressView.isHidden) {
@@ -126,29 +136,12 @@
 }
 
 - (void)loadPhotoFrameViewController {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    PhotoFrameSelectViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"photoFrameSelectViewController"];
-    
-    //원래는 1:n 통신이 가능하므로, MCBrowserViewController에서 커넥션을 맺은 뒤에 DONE 버튼을 눌러야 이동되도록 해야한다.
-    //그런데 일단은 .. 1:1 통신으로 구현하므로, 연결되면 바로 PhotoFrameSelecteViewController로 이동하도록 구현한다.
-    if ([[ConnectionManager sharedInstance].browserViewController isViewLoaded]) {
-        NSLog(@"This terminal is Browser.");
-        //Browser ViewController Dismiss
-        [[ConnectionManager sharedInstance].browserViewController dismissViewControllerAnimated:YES completion:nil];
-        
-        //Browser로 커넥션이 될 경우, 사진 액자를 고를 수 있게 만든다.
-        viewController.isEnableFrameSelect = YES;
-    }
-    else {
-        NSLog(@"This terminal is Advertiser.");
-        //Advertiser로 커넥션이 될 경우, 사진 액자를 고를 수 없게 만든다.
-        viewController.isEnableFrameSelect = NO;
-    }
-    
-    [self.navigationController pushViewController:viewController animated:YES];
     [[ConnectionManager sharedInstance] stopAdvertise];
+    [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
     [self removeObservers];
 }
+
+/**** Session Communication Methods. ****/
 
 - (void)receivedSessionConnected:(NSNotification *)notification {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
@@ -160,7 +153,7 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
     [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
-    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5 * 1000 * 1000, usleep은 microseconds 단위) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
+    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self performSelectorOnMainThread:@selector(loadPhotoFrameViewController) withObject:nil waitUntilDone:YES];
     });

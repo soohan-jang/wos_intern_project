@@ -28,17 +28,20 @@
 @property (nonatomic, copy, readonly) NSString *KEY_SCREEN_SIZE_HEIGHT;
 
 /** PhotoFrame Data Protocol String ... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_INDEX;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_LIKED;
+//@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_INDEX;
+//@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_LIKED;
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED;
 
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_INDEX;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_LIKED;
+//@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_INDEX;
+//@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_LIKED;
 @property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
+@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_DESELECTED;
 
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_INDEX;
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_LIKED;
+//@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_INDEX;
+//@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_LIKED;
 @property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_SELECTED;
+@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_DESELECTED;
 
 /** PhotoData, DrawingData Protocol String... **/
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_PHOTO_INSERT_DATA;

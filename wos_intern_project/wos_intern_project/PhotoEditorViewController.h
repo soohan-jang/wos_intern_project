@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
 
-@interface PhotoEditorViewController : UIViewController
+@interface PhotoEditorViewController : UIPageViewController <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
+
+- (void)setupUI:(NSArray *)frameIndexArray;
 
 @end

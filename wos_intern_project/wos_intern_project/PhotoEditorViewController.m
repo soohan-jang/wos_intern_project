@@ -30,4 +30,18 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+- (void)setupUI:(NSArray *)frameIndexArray {
+    
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
+    
+    return nil;
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAeforeViewController:(UIViewController *)viewController {
+    
+    return nil;
+}
+
 @end

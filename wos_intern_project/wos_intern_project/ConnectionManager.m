@@ -31,13 +31,16 @@
 @synthesize KEY_SCREEN_SIZE_WIDTH, KEY_SCREEN_SIZE_HEIGHT;
 
 /** 액자와 관련된 상태를 알리기 위한 알림 식별자 : 현재 보여져야 하는 액자의 인덱스, 현재 사진 액자에 대한 의사 표현, 선택된 사진 액자 정보 **/
-@synthesize NOTIFICATION_RECV_PHOTO_FRAME_INDEX, NOTIFICATION_RECV_PHOTO_FRAME_LIKED, NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
+@synthesize NOTIFICATION_RECV_PHOTO_FRAME_SELECTED, NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED;
+//@synthesize NOTIFICATION_RECV_PHOTO_FRAME_INDEX, NOTIFICATION_RECV_PHOTO_FRAME_LIKED, NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
 
 /** 젼댤받은 데이터가 어떤 정보인지 확인하기 위한 식별자 **/
-@synthesize VALUE_DATA_TYPE_PHOTO_FRAME_INDEX, VALUE_DATA_TYPE_PHOTO_FRAME_LIKED, VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
+@synthesize VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED, VALUE_DATA_TYPE_PHOTO_FRAME_DESELECTED;
+//@synthesize VALUE_DATA_TYPE_PHOTO_FRAME_INDEX, VALUE_DATA_TYPE_PHOTO_FRAME_LIKED, VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
 
 /** 전달받은 데이터의 액자 인덱스, 좋아요를 표시한 액자 인덱스, 선택된 액자 인덱스 키 값 **/
-@synthesize KEY_PHOTO_FRAME_INDEX, KEY_PHOTO_FRAME_LIKED, KEY_PHOTO_FRAME_SELECTED;
+@synthesize KEY_PHOTO_FRAME_SELECTED, KEY_PHOTO_FRAME_DESELECTED;
+//@synthesize KEY_PHOTO_FRAME_INDEX, KEY_PHOTO_FRAME_LIKED, KEY_PHOTO_FRAME_SELECTED;
 
 /** 화면에 표시될 사진, 그림정보, 삭제 정보가 전달되었을 때 알리기 위한 알림 식별자 **/
 @synthesize NOTIFICATION_REVC_PHOTO_INSERT_DATA, NOTIFICATION_REVC_PHOTO_DELETE_DATA, NOTIFICATION_REVC_DRAWING_INSERT_DATA, NOTIFICATION_REVC_DRAWING_UPDATE_DATA, NOTIFICATION_REVC_DRAWING_DELETE_DATA;
@@ -78,9 +81,8 @@
     
     VALUE_DATA_TYPE_SCREEN_SIZE             = @100;
     
-    VALUE_DATA_TYPE_PHOTO_FRAME_INDEX       = @200;
-    VALUE_DATA_TYPE_PHOTO_FRAME_LIKED       = @201;
-    VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED    = @202;
+    VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED    = @200;
+    VALUE_DATA_TYPE_PHOTO_FRAME_DESELECTED  = @201;
     
     VALUE_DATA_TYPE_PHOTO_INSERT_DATA       = @300;
     VALUE_DATA_TYPE_PHOTO_DELETE_DATA       = @301;
@@ -91,9 +93,10 @@
     KEY_SCREEN_SIZE_WIDTH       = @"screen_size_width";
     KEY_SCREEN_SIZE_HEIGHT      = @"screen_size_height";
     
-    KEY_PHOTO_FRAME_INDEX       = @"photo_frame_index";
-    KEY_PHOTO_FRAME_LIKED       = @"photo_frame_liked";
+//    KEY_PHOTO_FRAME_INDEX       = @"photo_frame_index";
+//    KEY_PHOTO_FRAME_LIKED       = @"photo_frame_liked";
     KEY_PHOTO_FRAME_SELECTED    = @"photo_frame_selected";
+    KEY_PHOTO_FRAME_DESELECTED    = @"photo_frame_deselected";
     
     KEY_PHOTO_INSERT_DATA       = @"photo_insert_data";
     KEY_PHOTO_DELETE_DATA       = @"photo_delete_data";
@@ -101,20 +104,21 @@
     KEY_DRAWING_UPDATE_DATA     = @"photo_update_data";
     KEY_DRAWING_DELETE_DATA     = @"photo_delete_data";
     
-    NOTIFICATION_PEER_CONNECTED             = @"peer_connected";
-    NOTIFICATION_PEER_DISCONNECTED          = @"peer_disconnected";
+    NOTIFICATION_PEER_CONNECTED                 = @"peer_connected";
+    NOTIFICATION_PEER_DISCONNECTED              = @"peer_disconnected";
     
-    NOTIFICATION_RECV_SCREEN_SIZE           = @"recv_screen_size";
+    NOTIFICATION_RECV_SCREEN_SIZE               = @"recv_screen_size";
     
-    NOTIFICATION_RECV_PHOTO_FRAME_INDEX     = @"recv_photo_frame_index";
-    NOTIFICATION_RECV_PHOTO_FRAME_LIKED     = @"recv_photo_frame_liked";
-    NOTIFICATION_RECV_PHOTO_FRAME_SELECTED  = @"recv_photo_frame_selected";
+//    NOTIFICATION_RECV_PHOTO_FRAME_INDEX     = @"recv_photo_frame_index";
+//    NOTIFICATION_RECV_PHOTO_FRAME_LIKED     = @"recv_photo_frame_liked";
+    NOTIFICATION_RECV_PHOTO_FRAME_SELECTED      = @"recv_photo_frame_selected";
+    NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED    = @"recv_photo_frame_deselected";
     
-    NOTIFICATION_REVC_PHOTO_INSERT_DATA     = @"recv_photo_insert_data";
-    NOTIFICATION_REVC_PHOTO_DELETE_DATA     = @"recv_photo_delete_data";
-    NOTIFICATION_REVC_DRAWING_INSERT_DATA   = @"recv_drawing_insert_data";
-    NOTIFICATION_REVC_DRAWING_UPDATE_DATA   = @"recv_drawing_update_data";
-    NOTIFICATION_REVC_DRAWING_DELETE_DATA   = @"recv_drawing_delete_data";
+    NOTIFICATION_REVC_PHOTO_INSERT_DATA         = @"recv_photo_insert_data";
+    NOTIFICATION_REVC_PHOTO_DELETE_DATA         = @"recv_photo_delete_data";
+    NOTIFICATION_REVC_DRAWING_INSERT_DATA       = @"recv_drawing_insert_data";
+    NOTIFICATION_REVC_DRAWING_UPDATE_DATA       = @"recv_drawing_update_data";
+    NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"recv_drawing_delete_data";
 }
 
 - (void)initInstanceProperties:(NSString *)deviceName screenWidthSize:(CGFloat)width screenHeightSize:(CGFloat)height {
@@ -176,13 +180,10 @@
         connectedPeerScreenWidth = [unarchivedData objectForKey:KEY_SCREEN_SIZE_WIDTH];
         connectedPeerScreenHeight = [unarchivedData objectForKey:KEY_SCREEN_SIZE_HEIGHT];
     }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_INDEX]) {
-        
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_LIKED]) {
-        
-    }
     else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED]) {
+        
+    }
+    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_DESELECTED]) {
         
     }
     else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_INSERT_DATA]) {

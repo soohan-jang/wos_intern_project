@@ -11,13 +11,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.collectionView.backgroundColor = [UIColor clearColor];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    if (!self.isEnableFrameSelect) {
-        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:@"Waiting..." detail:@"If you like current photo frame,\nclick a like button." alpha:0.5f];
-    }
-    
     [self addObservers];
     [super viewDidAppear:animated];
 }
@@ -33,78 +31,85 @@
 }
 
 - (IBAction)backAction:(id)sender {
-    if (self.progressView != nil && !self.progressView.isHidden) {
-        [self.progressView dismissProgress];
-    }
-    
     [[ConnectionManager sharedInstance] disconnectSession];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)doneAction:(id)sender {
-    //원래는 선택된 액자의 인덱스를 보내야하는데, 테스트 목적으로 0을 보낸다.
-    NSDictionary *data = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED,
-                           [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_INDEX: [NSNumber numberWithInteger:0]};
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:data]];
+    if (self.ownSelectedFrameIndex == nil && self.connectedPeerSelectedFrameIndex == nil) {
+        //Alert. 둘 중 한명은 액자를 선택해야됨
+    }
+    else {
+        [self performSegueWithIdentifier:@"moveToPhotoEditor" sender:self];
+    }
 }
 
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed {
-    
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
+        PhotoEditorViewController *viewController = [segue destinationViewController];
+        [viewController setupUI:@[self.ownSelectedFrameIndex, self.connectedPeerSelectedFrameIndex]];
+    }
 }
 
 - (void)addObservers {
-    //Browser 상태에서 연결이 됨. 사진 액자 선택 가능.
-    //상대방에게서 현재 보여지는 사진 액자가 마음에 든다는 의사를 전달받기 위한 노티피케이션 옵저버를 등록한다.
-    if (self.isEnableFrameSelect) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedFrameLiked:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_LIKED object:nil];
-    }
-    //Advertiser 상태에서 연결이 됨. 사진 액자 선택 불가능.
-    //상다뱅에게서 현재 보여지는 사진 액자가 변경되었음과 현재 보여지는 사진 액자가 선택되었음을 전달받기 위한 노티피케이션 옵저버를 등록한다.
-    else {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedFrameIndexChanged:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_INDEX object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedFrameSelected:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedFrameSelected:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedFrameDeselected:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED object:nil];
 }
 
 - (void)removeObservers {
-    if (self.isEnableFrameSelect) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_LIKED object:nil];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_INDEX object:nil];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    }
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED object:nil];
 }
 
-- (void)doneProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:@"Completed!" delay:1];
-    }
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
 }
 
-- (void)loadPhotoEditorViewController {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"photoFrameEditorViewController"];
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return 20;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"frameCell" forIndexPath:indexPath];
+    [cell.frameButton setImage:[UIImage imageNamed:@"frame_sample"] forState:UIControlStateNormal];
+    [cell.frameButton setImage:[UIImage imageNamed:@"frame_sample_slt"] forState:UIControlStateSelected | UIControlStateHighlighted];
     
-    [self.navigationController pushViewController:viewController animated:YES];
-    [self removeObservers];
+    return cell;
 }
 
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat width = (self.collectionView.bounds.size.width - (5 * 3)) / 4;
+    return CGSizeMake(width, width);
+}
 
-- (void)receivedFrameIndexChanged:(NSNotification *)notification {
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
+    NSLog(@"11");
+    return UIEdgeInsetsMake(0, 0, 0, 0);
+}
+
+/*** Session Communication Methods ****/
+
+- (void)sendFrameSelected {
     
 }
 
-- (void)receivedFrameLiked:(NSNotification *)notification {
+- (void)sendFrameDeselect {
     
 }
 
 - (void)receivedFrameSelected:(NSNotification *)notification {
     
-    [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
+    
+//    [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
+//    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoEditorViewController를 호출하도록 한다.
+//    [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
 //    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 //        [self performSelectorOnMainThread:@selector(loadPhotoEditorViewController) withObject:nil waitUntilDone:YES];
 //    });
+}
+
+- (void)receivedFrameDeselected:(NSNotification *)notification {
+
 }
 
 @end
