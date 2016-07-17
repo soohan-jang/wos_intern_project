@@ -9,20 +9,6 @@
 /* Begin PBXBuildFile section */
 		4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */; };
 		4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */; };
-		4A0C92ED1D37ADA30080E9A6 /* img_frame_heart.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92EB1D37ADA30080E9A6 /* img_frame_heart.png */; };
-		4A0C92EE1D37ADA30080E9A6 /* img_frame_heart_slt.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92EC1D37ADA30080E9A6 /* img_frame_heart_slt.png */; };
-		4A0C92F11D37AEE60080E9A6 /* PhotoFrameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92F01D37AEE60080E9A6 /* PhotoFrameViewController.m */; };
-		4A0C92F51D37AFC80080E9A6 /* img_main_album.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92F41D37AFC80080E9A6 /* img_main_album.png */; };
-		4A0C92F71D37AFF40080E9A6 /* img_common_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92F61D37AFF40080E9A6 /* img_common_back.png */; };
-		4A0C92F91D37B0DC0080E9A6 /* img_frame_done.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92F81D37B0DC0080E9A6 /* img_frame_done.png */; };
-		4A0C92FB1D37B1430080E9A6 /* img_editor_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92FA1D37B1430080E9A6 /* img_editor_save.png */; };
-		4A0C92FF1D37B2660080E9A6 /* img_viewer_modify.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92FC1D37B2660080E9A6 /* img_viewer_modify.png */; };
-		4A0C93001D37B2660080E9A6 /* img_viewer_delete.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92FD1D37B2660080E9A6 /* img_viewer_delete.png */; };
-		4A0C93011D37B2660080E9A6 /* img_viewer_share.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C92FE1D37B2660080E9A6 /* img_viewer_share.png */; };
-		4A0C93441D38A1BB0080E9A6 /* PhotoFrameViewController_1.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93431D38A1BB0080E9A6 /* PhotoFrameViewController_1.m */; };
-		4A0C93471D38A1E00080E9A6 /* PhotoFrameViewController_2.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93461D38A1E00080E9A6 /* PhotoFrameViewController_2.m */; };
-		4A0C934A1D38A1EB0080E9A6 /* PhotoFrameViewController_3.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93491D38A1EB0080E9A6 /* PhotoFrameViewController_3.m */; };
-		4A0C934D1D38A20E0080E9A6 /* PhotoFrameViewController_4.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C934C1D38A20E0080E9A6 /* PhotoFrameViewController_4.m */; };
 		4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
 		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
@@ -36,8 +22,15 @@
 		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
 		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
 		4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
-		4A97B6101D33799A003899F7 /* img_main_bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */; };
 		4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
+		4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */; };
+		4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490941D3A5F6200E5972F /* DrawingObject.m */; };
+		4B4490981D3A607500E5972F /* DrawingPenObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490971D3A607500E5972F /* DrawingPenObject.m */; };
+		4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909A1D3A607F00E5972F /* DrawingTextObject.m */; };
+		4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909D1D3A608A00E5972F /* DrawingStickerObject.m */; };
+		4B4490A11D3A609800E5972F /* DrawingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A01D3A609800E5972F /* DrawingManager.m */; };
+		4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */; };
+		4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,25 +55,6 @@
 		4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		4A0C92E11D3754C80080E9A6 /* WMProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMProgressHUD.h; sourceTree = "<group>"; };
 		4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMProgressHUD.m; sourceTree = "<group>"; };
-		4A0C92EB1D37ADA30080E9A6 /* img_frame_heart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_frame_heart.png; sourceTree = "<group>"; };
-		4A0C92EC1D37ADA30080E9A6 /* img_frame_heart_slt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_frame_heart_slt.png; sourceTree = "<group>"; };
-		4A0C92EF1D37AEE60080E9A6 /* PhotoFrameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameViewController.h; sourceTree = "<group>"; };
-		4A0C92F01D37AEE60080E9A6 /* PhotoFrameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameViewController.m; sourceTree = "<group>"; };
-		4A0C92F41D37AFC80080E9A6 /* img_main_album.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_main_album.png; sourceTree = "<group>"; };
-		4A0C92F61D37AFF40080E9A6 /* img_common_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_common_back.png; sourceTree = "<group>"; };
-		4A0C92F81D37B0DC0080E9A6 /* img_frame_done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_frame_done.png; sourceTree = "<group>"; };
-		4A0C92FA1D37B1430080E9A6 /* img_editor_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_editor_save.png; sourceTree = "<group>"; };
-		4A0C92FC1D37B2660080E9A6 /* img_viewer_modify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_viewer_modify.png; sourceTree = "<group>"; };
-		4A0C92FD1D37B2660080E9A6 /* img_viewer_delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_viewer_delete.png; sourceTree = "<group>"; };
-		4A0C92FE1D37B2660080E9A6 /* img_viewer_share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_viewer_share.png; sourceTree = "<group>"; };
-		4A0C93421D38A1BB0080E9A6 /* PhotoFrameViewController_1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameViewController_1.h; sourceTree = "<group>"; };
-		4A0C93431D38A1BB0080E9A6 /* PhotoFrameViewController_1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameViewController_1.m; sourceTree = "<group>"; };
-		4A0C93451D38A1E00080E9A6 /* PhotoFrameViewController_2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameViewController_2.h; sourceTree = "<group>"; };
-		4A0C93461D38A1E00080E9A6 /* PhotoFrameViewController_2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameViewController_2.m; sourceTree = "<group>"; };
-		4A0C93481D38A1EB0080E9A6 /* PhotoFrameViewController_3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameViewController_3.h; sourceTree = "<group>"; };
-		4A0C93491D38A1EB0080E9A6 /* PhotoFrameViewController_3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameViewController_3.m; sourceTree = "<group>"; };
-		4A0C934B1D38A20E0080E9A6 /* PhotoFrameViewController_4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameViewController_4.h; sourceTree = "<group>"; };
-		4A0C934C1D38A20E0080E9A6 /* PhotoFrameViewController_4.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameViewController_4.m; sourceTree = "<group>"; };
 		4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewCell.h; sourceTree = "<group>"; };
 		4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewCell.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -107,9 +81,22 @@
 		4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAlbumViewController.m; sourceTree = "<group>"; };
 		4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewerViewController.h; sourceTree = "<group>"; };
 		4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewerViewController.m; sourceTree = "<group>"; };
-		4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_main_bluetooth.png; sourceTree = "<group>"; };
 		4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionManager.h; sourceTree = "<group>"; };
 		4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManager.m; sourceTree = "<group>"; };
+		4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorFrameViewCell.h; sourceTree = "<group>"; };
+		4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorFrameViewCell.m; sourceTree = "<group>"; };
+		4B4490931D3A5F6200E5972F /* DrawingObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingObject.h; sourceTree = "<group>"; };
+		4B4490941D3A5F6200E5972F /* DrawingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingObject.m; sourceTree = "<group>"; };
+		4B4490961D3A607500E5972F /* DrawingPenObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingPenObject.h; sourceTree = "<group>"; };
+		4B4490971D3A607500E5972F /* DrawingPenObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingPenObject.m; sourceTree = "<group>"; };
+		4B4490991D3A607F00E5972F /* DrawingTextObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingTextObject.h; sourceTree = "<group>"; };
+		4B44909A1D3A607F00E5972F /* DrawingTextObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingTextObject.m; sourceTree = "<group>"; };
+		4B44909C1D3A608A00E5972F /* DrawingStickerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingStickerObject.h; sourceTree = "<group>"; };
+		4B44909D1D3A608A00E5972F /* DrawingStickerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingStickerObject.m; sourceTree = "<group>"; };
+		4B44909F1D3A609800E5972F /* DrawingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingManager.h; sourceTree = "<group>"; };
+		4B4490A01D3A609800E5972F /* DrawingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingManager.m; sourceTree = "<group>"; };
+		4B4490A21D3A60A600E5972F /* DrawingSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingSyncManager.h; sourceTree = "<group>"; };
+		4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingSyncManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,21 +143,6 @@
 			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
-		4A0C93411D38A18B0080E9A6 /* PhotoFrameViewController */ = {
-			isa = PBXGroup;
-			children = (
-				4A0C93421D38A1BB0080E9A6 /* PhotoFrameViewController_1.h */,
-				4A0C93431D38A1BB0080E9A6 /* PhotoFrameViewController_1.m */,
-				4A0C93451D38A1E00080E9A6 /* PhotoFrameViewController_2.h */,
-				4A0C93461D38A1E00080E9A6 /* PhotoFrameViewController_2.m */,
-				4A0C93481D38A1EB0080E9A6 /* PhotoFrameViewController_3.h */,
-				4A0C93491D38A1EB0080E9A6 /* PhotoFrameViewController_3.m */,
-				4A0C934B1D38A20E0080E9A6 /* PhotoFrameViewController_4.h */,
-				4A0C934C1D38A20E0080E9A6 /* PhotoFrameViewController_4.m */,
-			);
-			name = PhotoFrameViewController;
-			sourceTree = "<group>";
-		};
 		4A4ACF1F1D2B6D2C00BC2FC4 = {
 			isa = PBXGroup;
 			children = (
@@ -212,16 +184,6 @@
 		4A4ACF2B1D2B6D2C00BC2FC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4A0C92F61D37AFF40080E9A6 /* img_common_back.png */,
-				4A0C92F41D37AFC80080E9A6 /* img_main_album.png */,
-				4A97B60F1D33799A003899F7 /* img_main_bluetooth.png */,
-				4A0C92F81D37B0DC0080E9A6 /* img_frame_done.png */,
-				4A0C92EB1D37ADA30080E9A6 /* img_frame_heart.png */,
-				4A0C92EC1D37ADA30080E9A6 /* img_frame_heart_slt.png */,
-				4A0C92FA1D37B1430080E9A6 /* img_editor_save.png */,
-				4A0C92FC1D37B2660080E9A6 /* img_viewer_modify.png */,
-				4A0C92FD1D37B2660080E9A6 /* img_viewer_delete.png */,
-				4A0C92FE1D37B2660080E9A6 /* img_viewer_share.png */,
 				4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */,
 			);
 			name = "Supporting Files";
@@ -248,17 +210,13 @@
 		4A97B60A1D336514003899F7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
-				4A0C93411D38A18B0080E9A6 /* PhotoFrameViewController */,
+				4B4490921D3A5D4D00E5972F /* CollectionViewCell */,
 				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
 				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
 				4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */,
 				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
-				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
-				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
 				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
 				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
-				4A0C92EF1D37AEE60080E9A6 /* PhotoFrameViewController.h */,
-				4A0C92F01D37AEE60080E9A6 /* PhotoFrameViewController.m */,
 				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
 				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
 				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
@@ -272,6 +230,10 @@
 			children = (
 				4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */,
 				4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */,
+				4B44909F1D3A609800E5972F /* DrawingManager.h */,
+				4B4490A01D3A609800E5972F /* DrawingManager.m */,
+				4B4490A21D3A60A600E5972F /* DrawingSyncManager.h */,
+				4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -279,8 +241,27 @@
 		4A97B60C1D336540003899F7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				4B4490931D3A5F6200E5972F /* DrawingObject.h */,
+				4B4490941D3A5F6200E5972F /* DrawingObject.m */,
+				4B4490961D3A607500E5972F /* DrawingPenObject.h */,
+				4B4490971D3A607500E5972F /* DrawingPenObject.m */,
+				4B4490991D3A607F00E5972F /* DrawingTextObject.h */,
+				4B44909A1D3A607F00E5972F /* DrawingTextObject.m */,
+				4B44909C1D3A608A00E5972F /* DrawingStickerObject.h */,
+				4B44909D1D3A608A00E5972F /* DrawingStickerObject.m */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		4B4490921D3A5D4D00E5972F /* CollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
+				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
+				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
+				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
+			);
+			name = CollectionViewCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -387,19 +368,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A0C92F71D37AFF40080E9A6 /* img_common_back.png in Resources */,
 				4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */,
 				4A4ACF381D2B6D2C00BC2FC4 /* Assets.xcassets in Resources */,
-				4A0C92FB1D37B1430080E9A6 /* img_editor_save.png in Resources */,
-				4A0C92ED1D37ADA30080E9A6 /* img_frame_heart.png in Resources */,
-				4A0C92FF1D37B2660080E9A6 /* img_viewer_modify.png in Resources */,
 				4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */,
-				4A0C92F91D37B0DC0080E9A6 /* img_frame_done.png in Resources */,
-				4A0C93001D37B2660080E9A6 /* img_viewer_delete.png in Resources */,
-				4A0C92EE1D37ADA30080E9A6 /* img_frame_heart_slt.png in Resources */,
-				4A97B6101D33799A003899F7 /* img_main_bluetooth.png in Resources */,
-				4A0C93011D37B2660080E9A6 /* img_viewer_share.png in Resources */,
-				4A0C92F51D37AFC80080E9A6 /* img_main_album.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,22 +395,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B4490A11D3A609800E5972F /* DrawingManager.m in Sources */,
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
-				4A0C93471D38A1E00080E9A6 /* PhotoFrameViewController_2.m in Sources */,
+				4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */,
+				4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,
-				4A0C92F11D37AEE60080E9A6 /* PhotoFrameViewController.m in Sources */,
-				4A0C934D1D38A20E0080E9A6 /* PhotoFrameViewController_4.m in Sources */,
+				4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */,
+				4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */,
+				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,
 				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
-				4A0C934A1D38A1EB0080E9A6 /* PhotoFrameViewController_3.m in Sources */,
 				4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */,
 				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,
 				4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */,
-				4A0C93441D38A1BB0080E9A6 /* PhotoFrameViewController_1.m in Sources */,
+				4B4490981D3A607500E5972F /* DrawingPenObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +420,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */,
 				4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

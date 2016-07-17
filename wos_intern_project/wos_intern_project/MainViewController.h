@@ -23,6 +23,8 @@
 
 @property (nonatomic) CGPoint startPoint;
 
+- (void)findDeviceAction;
+
 /**
  NotificationCenter에 필요한 Observer를 등록한다.
  세션연결, 세션연결해제를 처리하기 위한 Observer를 등록한다.

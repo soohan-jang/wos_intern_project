@@ -20,6 +20,11 @@
     self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name screenWidthSize:self.view.frame.size.width screenHeightSize:self.view.frame.size.height];
     [ConnectionManager sharedInstance].browserViewController.delegate = self;
+    
+    UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findDeviceAction)];
+    tabGestureRecognizer.numberOfTapsRequired = 1;
+    [self.view setUserInteractionEnabled:YES];
+    [self.view addGestureRecognizer:tabGestureRecognizer];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -51,25 +56,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+- (void)findDeviceAction {
     if (self.bluetoothManager.state == CBCentralManagerStatePoweredOn) {
-        self.startPoint = [[[touches allObjects] objectAtIndex:0] locationInView:self.view];
+        [self presentViewController:[ConnectionManager sharedInstance].browserViewController animated:YES completion:nil];
+        [[ConnectionManager sharedInstance] stopAdvertise];
     }
     else {
         //Alert
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bluetooth Off" message:@"This application use a bluetooth.\nPlz, turn on bluetooth." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
         [alertView show];
-    }
-}
-
-- (void)touchesEnded:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    if (self.bluetoothManager.state == CBCentralManagerStatePoweredOn) {
-        CGPoint endPoint = [[[touches allObjects] objectAtIndex:0] locationInView:self.view];
-        
-        if (fabs(endPoint.x - self.startPoint.x) <= 15.0f && fabs(endPoint.y - self.startPoint.y) <= 15.0f) {
-            [self presentViewController:[ConnectionManager sharedInstance].browserViewController animated:YES completion:nil];
-            [[ConnectionManager sharedInstance] stopAdvertise];
-        }
     }
 }
 
