@@ -15,9 +15,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
+    [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor clearColor];
-    [self.collectionView.collectionViewLayout invalidateLayout];
     
     self.ownSelectedFrameIndex = nil;
     self.connectedPeerSelectedFrameIndex = nil;
@@ -199,7 +199,7 @@
     //셀 간의 간격은 3곳이 생기며, 라인 간 간격은 20으로 정의되어 있다.
     CGFloat cellsBetweenSpace = 20 * 3;
     //남은 공간의 절반을 상단의 inset으로 지정하면, 수직으로 중간에 정렬시킬 수 있다.
-    CGFloat topInset = (self.collectionView.bounds.size.height - cellsHeight - cellsBetweenSpace - 64) / 2;
+    CGFloat topInset = (self.collectionView.bounds.size.height - cellsHeight - cellsBetweenSpace) / 2;
     
     return UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
