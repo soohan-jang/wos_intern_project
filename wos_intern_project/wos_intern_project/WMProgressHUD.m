@@ -44,7 +44,6 @@
 }
 
 - (void)doneProgressWithTitle:(NSString *)title delay:(NSTimeInterval)delay {
-    NSLog(@"doneProgressWithTitle");
     self.mode = MBProgressHUDModeCustomView;
     self.label.text =  title;
     self.detailsLabel.text = nil;

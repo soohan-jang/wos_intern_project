@@ -8,6 +8,8 @@
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
+//extern NSString *const NOTIFICATION_NAME;
+
 @interface ConnectionManager : NSObject <MCSessionDelegate>
 
 @property (nonatomic, copy, readonly) NSString *SERVICE_TYPE;
@@ -28,20 +30,18 @@
 @property (nonatomic, copy, readonly) NSString *KEY_SCREEN_SIZE_HEIGHT;
 
 /** PhotoFrame Data Protocol String ... **/
-//@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_INDEX;
-//@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_LIKED;
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_DESELECTED;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
+@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
 
-//@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_INDEX;
-//@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_LIKED;
 @property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_DESELECTED;
+@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM;
+@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK;
+@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
 
-//@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_INDEX;
-//@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_LIKED;
 @property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_SELECTED;
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_DESELECTED;
+@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_CONFIRM_ACK;
 
 /** PhotoData, DrawingData Protocol String... **/
 @property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_PHOTO_INSERT_DATA;
@@ -61,9 +61,6 @@
 @property (nonatomic, copy, readonly) NSString *KEY_DRAWING_INSERT_DATA;
 @property (nonatomic, copy, readonly) NSString *KEY_DRAWING_UPDATE_DATA;
 @property (nonatomic, copy, readonly) NSString *KEY_DRAWING_DELETE_DATA;
-
-/** Common Properties **/
-@property (nonatomic, weak) NSNotificationCenter *notificationCenter;
 
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;

@@ -10,8 +10,7 @@
 
 @interface PhotoEditorFrameViewCell: UICollectionViewCell
 
-@property (nonatomic, strong) NSArray *imageViewArray;
-
-- (void)setUI:(NSUInteger) frameIndex;
+@property (strong, nonatomic) IBOutlet UIScrollView *photoScrollView;
+@property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
 
 @end

@@ -8,16 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-#define FRAME_STATE_NONE    0
-#define FRAME_STATE_BLUE    1
-#define FRAME_STATE_ORANGE  2
-#define FRAME_STATE_GREEN   3
-
 @interface PhotoFrameSelectViewCell : UICollectionViewCell
 
-@property (nonatomic) NSUInteger *state;
+@property (nonatomic) NSUInteger cellIndex;
+@property (nonatomic) BOOL isOwnSelected;
+@property (nonatomic) BOOL isConnectedPeerSelected;
 @property (nonatomic, strong) IBOutlet UIImageView *frameImageView;
 
-- (void)setImageWithIndex:(NSUInteger) index State:(NSUInteger) state;
+/**
+ 상태값에 따라 액자 이미지를 변경한다. 
+ */
+- (void)changeFrameImage;
 
 @end

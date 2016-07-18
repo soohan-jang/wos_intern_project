@@ -10,6 +10,7 @@
 		4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */; };
 		4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */; };
 		4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
+		4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */; };
 		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
 		4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
@@ -57,6 +58,8 @@
 		4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMProgressHUD.m; sourceTree = "<group>"; };
 		4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewCell.h; sourceTree = "<group>"; };
 		4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewCell.m; sourceTree = "<group>"; };
+		4A0C93561D3C5FBC0080E9A6 /* PhotoEditorCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorCollectionView.h; sourceTree = "<group>"; };
+		4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorCollectionView.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -217,6 +220,8 @@
 				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
 				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
 				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
+				4A0C93561D3C5FBC0080E9A6 /* PhotoEditorCollectionView.h */,
+				4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */,
 				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
 				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
 				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
@@ -408,6 +413,7 @@
 				4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */,
 				4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */,
 				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,
+				4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */,
 				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
 				4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */,
 				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,

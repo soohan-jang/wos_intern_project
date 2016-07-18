@@ -83,11 +83,13 @@
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
+//    [self loadPhotoFrameViewController];
 }
 
 //Session Connect Cancel.
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
+    [[ConnectionManager sharedInstance] disconnectSession];
 }
 
 /**** MCNearbyServiceAdvertiserDelegate Methods. ****/
@@ -147,11 +149,25 @@
     
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
-    [self performSelectorOnMainThread:@selector(doneProgress) withObject:nil waitUntilDone:YES];
-    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self performSelectorOnMainThread:@selector(loadPhotoFrameViewController) withObject:nil waitUntilDone:YES];
-    });
+    if ([self.navigationController presentedViewController] == [ConnectionManager sharedInstance].browserViewController) {
+        [[ConnectionManager sharedInstance].browserViewController dismissViewControllerAnimated:YES completion:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadPhotoFrameViewController];
+            });
+        }];
+    }
+    else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self doneProgress];
+        });
+        
+        //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadPhotoFrameViewController];
+            });
+        });
+    }
 }
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {
