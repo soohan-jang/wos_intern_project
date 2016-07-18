@@ -39,8 +39,19 @@
  */
 - (void)removeObservers;
 
+/**
+ ProgressHUD를 거절메시지 표시로 변경한다.
+ */
 - (void)declineProgress;
+
+/**
+ ProgressHUD를 승인메시지 표시로 변경한다.
+ */
 - (void)acceptProgress;
+
+/**
+ PhotoEditorViewController로 이동한다. prepareSegue에서 최종선택된 액자정보를 PhotoEditorViewController에 전달한다.
+ */
 - (void)loadPhotoEditorViewController;
 
 /**
@@ -48,6 +59,9 @@
  */
 - (void)sendSelectFrameChanged;
 
+/**
+ 변경된 셀들의 상태를 갱신하기 위해 호출되는 함수이다.
+ */
 - (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell;
 
 /**

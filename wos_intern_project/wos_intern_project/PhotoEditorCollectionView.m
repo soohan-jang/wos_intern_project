@@ -10,7 +10,7 @@
 
 @implementation PhotoEditorCollectionView
 
-- (CGSize)buildEachPhotoFrameSize:(NSUInteger)index {
+- (CGSize)buildEachPhotoFrameSize {
     CGFloat containerWidth = self.bounds.size.width;
     CGFloat containerHeight = self.bounds.size.height;
     CGFloat cellWidth;

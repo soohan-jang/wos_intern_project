@@ -13,9 +13,29 @@
 
 @property (nonatomic) NSUInteger frameIndex;
 
+/**
+ 액자종류에 따라 표시될 각각의 사진 액자 크기를 설정한다.
+ */
+- (CGSize)buildEachPhotoFrameSize;
+
+/**
+ 액자종류에 따라 표시될 사진 액자의 수를 반환한다.
+ */
 - (NSInteger)numberOfItems;
+
+/**
+ 인덱스에 위치한 사진 액자를 반환한다.
+ */
 - (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ 인덱스에 위치한 사진 액자의 크기를 반환한다. 사진 액자 크기는 bulidEachPhotoFrameSize에 의해 설정된다.
+ */
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
+
+/**
+ CollectionView를 수직 가운데 졍렬하기 위한 UIEdgeInsets를 반환한다.
+ */
 - (UIEdgeInsets)insetForCollectionView;
 
 @end
