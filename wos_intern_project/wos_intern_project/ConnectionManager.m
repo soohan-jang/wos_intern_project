@@ -8,47 +8,69 @@
 
 #import "ConnectionManager.h"
 
-//NSString *const NOTIFICATION_NAME = @"dsd";
+/** MCSession Service Type **/
+/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
+NSString *const SERVICE_TYPE                                = @"Co-PhotoEditor";
+
+/** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
+NSString *const KEY_DATA_TYPE                               = @"data_type";
+
+/** KEY_DATA_TYPE에 값으로 설정되는 값 **/
+NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                = 100;
+
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED       = 200;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM        = 201;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK    = 202;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED   = 203;
+
+NSUInteger const VALUE_DATA_TYPE_PHOTO_INSERT_DATA          = 300;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_DELETE_DATA          = 301;
+NSUInteger const VALUE_DATA_TYPE_DRAWING_INSERT_DATA        = 302;
+NSUInteger const VALUE_DATA_TYPE_DRAWING_UPDATE_DATA        = 303;
+NSUInteger const VALUE_DATA_TYPE_DRAWING_DELETE_DATA        = 304;
+
+/** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
+/** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
+NSString *const KEY_SCREEN_SIZE_WIDTH                       = @"screen_size_width";
+NSString *const KEY_SCREEN_SIZE_HEIGHT                      = @"screen_size_height";
+
+/** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
+/** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
+NSString *const KEY_PHOTO_FRAME_SELECTED                    = @"photo_frame_select";
+
+/** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
+/** NSNumber boolValue 값으로 매칭된다 **/
+NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                 = @"photo_frame_confirm_ack";
+
+/** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
+/** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
+NSString *const KEY_PHOTO_INSERT_DATA                       = @"photo_insert_data";
+NSString *const KEY_PHOTO_DELETE_DATA                       = @"photo_delete_data";
+NSString *const KEY_DRAWING_INSERT_DATA                     = @"drawing_insert_data";
+NSString *const KEY_DRAWING_UPDATE_DATA                     = @"drawing_update_data";
+NSString *const KEY_DRAWING_DELETE_DATA                     = @"drawing_delete_data";
+
+/** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
+NSString *const NOTIFICATION_PEER_CONNECTED                 = @"noti_peer_connected";
+NSString *const NOTIFICATION_PEER_DISCONNECTED              = @"noti_peer_disconnected";
+
+/** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
+NSString *const NOTIFICATION_RECV_SCREEN_SIZE               = @"noti_recv_screen_size";
+
+/** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED      = @"noti_recv_photo_frame_selected";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM       = @"noti_recv_photo_frame_confirm";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK   = @"noti_recv_photo_frame_confirm_ack";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED  = @"noti_recv_photo_frame_disconnected";
+
+/** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
+NSString *const NOTIFICATION_REVC_PHOTO_INSERT_DATA         = @"noti_recv_photo_insert_data";
+NSString *const NOTIFICATION_REVC_PHOTO_DELETE_DATA         = @"noti_recv_photo_delete_data";
+NSString *const NOTIFICATION_REVC_DRAWING_INSERT_DATA       = @"noti_recv_drawing_insert_data";
+NSString *const NOTIFICATION_REVC_DRAWING_UPDATE_DATA       = @"noti_recv_drawing_update_data";
+NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawing_delete_data";
 
 @implementation ConnectionManager
-
-@synthesize SERVICE_TYPE;
-
-/** 공통적으로 사용되는, 전달받은 데이터 식별 키 : 이 키의 값으로 전달받은 데이터의 종류를 파악한다. **/
-@synthesize KEY_DATA_TYPE;
-
-/** 연결되었을 때, 이를 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_PEER_CONNECTED;
-
-/** 연결이 해제되었을 때, 이를 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_PEER_DISCONNECTED;
-
-/** 젼댤받은 데이터가 어떤 정보인지 확인하기 위한 식별자 **/
-@synthesize VALUE_DATA_TYPE_SCREEN_SIZE;
-
-/** 화면 사이즈를 전달받았을 때, 이를 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_RECV_SCREEN_SIZE;
-
-/** 전달받은 데이터의 상대방 단말 화면 너비, 높이값을 담고 있는 키 값 **/
-@synthesize KEY_SCREEN_SIZE_WIDTH, KEY_SCREEN_SIZE_HEIGHT;
-
-/** 액자와 관련된 상태를 알리기 위한 알림 식별자 : 현재 선택된 사진 액자 정보, 사진 액자 선택완료 요청과 그에 대한 응답 **/
-@synthesize NOTIFICATION_RECV_PHOTO_FRAME_SELECTED, NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM, NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK, NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
-
-/** 젼댤받은 데이터가 어떤 정보인지 확인하기 위한 식별자 **/
-@synthesize VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED, VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM, VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK, VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
-
-/** 전달받은 데이터의 선택된 액자 인덱스 키 값 **/
-@synthesize KEY_PHOTO_FRAME_SELECTED, KEY_PHOTO_FRAME_CONFIRM_ACK;
-
-/** 화면에 표시될 사진, 그림정보, 삭제 정보가 전달되었을 때 알리기 위한 알림 식별자 **/
-@synthesize NOTIFICATION_REVC_PHOTO_INSERT_DATA, NOTIFICATION_REVC_PHOTO_DELETE_DATA, NOTIFICATION_REVC_DRAWING_INSERT_DATA, NOTIFICATION_REVC_DRAWING_UPDATE_DATA, NOTIFICATION_REVC_DRAWING_DELETE_DATA;
-
-/** 젼댤받은 데이터가 어떤 정보인지 확인하기 위한 식별자 **/
-@synthesize VALUE_DATA_TYPE_PHOTO_INSERT_DATA, VALUE_DATA_TYPE_PHOTO_DELETE_DATA, VALUE_DATA_TYPE_DRAWING_INSERT_DATA, VALUE_DATA_TYPE_DRAWING_UPDATE_DATA, VALUE_DATA_TYPE_DRAWING_DELETE_DATA;
-
-/** 전달받은 데이터의 사진 정보, 그림정보, 삭제정보를 담고 있는 키 값 **/
-@synthesize KEY_PHOTO_INSERT_DATA, KEY_PHOTO_DELETE_DATA, KEY_DRAWING_INSERT_DATA, KEY_DRAWING_UPDATE_DATA, KEY_DRAWING_DELETE_DATA;
 
 @synthesize ownPeerId, ownSession;
 @synthesize browserViewController, advertiser;
@@ -62,62 +84,10 @@
     @synchronized (self) {
         if (instance == nil) {
             instance = [[self alloc] init];
-            [instance initializeReadonlyString];
         }
     }
     
     return instance;
-}
-
-/** berif
- 통신에 사용되는 프로토콜 키와 벨류 값을 설정한다.
- 이 메소드는 sharedInstance에서 호출된다. 독자적으로 호출하지 말 것!
- */
-- (void)initializeReadonlyString {
-    SERVICE_TYPE = @"Co-PhotoEditor";
-    
-    KEY_DATA_TYPE = @"data_type";
-    
-    VALUE_DATA_TYPE_SCREEN_SIZE              = @100;
-    
-    VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED     = @200;
-    VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM      = @201;
-    VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK  = @202;
-    VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED = @203;
-    
-    VALUE_DATA_TYPE_PHOTO_INSERT_DATA        = @300;
-    VALUE_DATA_TYPE_PHOTO_DELETE_DATA        = @301;
-    VALUE_DATA_TYPE_DRAWING_INSERT_DATA      = @302;
-    VALUE_DATA_TYPE_DRAWING_UPDATE_DATA      = @303;
-    VALUE_DATA_TYPE_DRAWING_DELETE_DATA      = @304;
-    
-    KEY_SCREEN_SIZE_WIDTH       = @"screen_size_width";
-    KEY_SCREEN_SIZE_HEIGHT      = @"screen_size_height";
-    
-    KEY_PHOTO_FRAME_SELECTED    = @"photo_frame_selected";
-    KEY_PHOTO_FRAME_CONFIRM_ACK = @"photo_frame_confirm_ack";
-    
-    KEY_PHOTO_INSERT_DATA       = @"photo_insert_data";
-    KEY_PHOTO_DELETE_DATA       = @"photo_delete_data";
-    KEY_DRAWING_INSERT_DATA     = @"photo_insert_data";
-    KEY_DRAWING_UPDATE_DATA     = @"photo_update_data";
-    KEY_DRAWING_DELETE_DATA     = @"photo_delete_data";
-    
-    NOTIFICATION_PEER_CONNECTED                 = @"peer_connected";
-    NOTIFICATION_PEER_DISCONNECTED              = @"peer_disconnected";
-    
-    NOTIFICATION_RECV_SCREEN_SIZE               = @"recv_screen_size";
-    
-    NOTIFICATION_RECV_PHOTO_FRAME_SELECTED      = @"recv_photo_frame_selected";
-    NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM       = @"recv_photo_frame_confirm";
-    NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK   = @"recv_photo_frame_confirm_ack";
-    NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED  = @"recv_photo_frame_disconnected";
-    
-    NOTIFICATION_REVC_PHOTO_INSERT_DATA         = @"recv_photo_insert_data";
-    NOTIFICATION_REVC_PHOTO_DELETE_DATA         = @"recv_photo_delete_data";
-    NOTIFICATION_REVC_DRAWING_INSERT_DATA       = @"recv_drawing_insert_data";
-    NOTIFICATION_REVC_DRAWING_UPDATE_DATA       = @"recv_drawing_update_data";
-    NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"recv_drawing_delete_data";
 }
 
 - (void)initInstanceProperties:(NSString *)deviceName screenWidthSize:(CGFloat)width screenHeightSize:(CGFloat)height {
@@ -167,45 +137,45 @@
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
     NSDictionary *receivedData = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSNumber *dataType = [receivedData objectForKey:KEY_DATA_TYPE];
+    NSUInteger dataType = [(NSNumber *)[receivedData objectForKey:KEY_DATA_TYPE] intValue];
     
-    //받은 정보가 화면크기 정보일 때, 데이터를 읽어와 받은 정보를 저장한다.
-    if ([dataType isEqualToNumber:VALUE_DATA_TYPE_SCREEN_SIZE]) {
-        connectedPeerScreenWidth = [receivedData objectForKey:KEY_SCREEN_SIZE_WIDTH];
-        connectedPeerScreenHeight = [receivedData objectForKey:KEY_SCREEN_SIZE_HEIGHT];
-        
-        NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil userInfo:receivedData];
-        NSLog(@"Received Selected Frame Index");
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil userInfo:nil];
-        NSLog(@"Received Confirm Frame Select");
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil userInfo:receivedData];
-        NSLog(@"Received Confirm Ack Frame Select");
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
-        NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_INSERT_DATA]) {
-        
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_PHOTO_DELETE_DATA]) {
-        
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_DRAWING_INSERT_DATA]) {
-        
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_DRAWING_UPDATE_DATA]) {
-        
-    }
-    else if ([dataType isEqualToNumber:VALUE_DATA_TYPE_DRAWING_DELETE_DATA]) {
-        
+    switch (dataType) {
+        case VALUE_DATA_TYPE_SCREEN_SIZE:
+            connectedPeerScreenWidth = [receivedData objectForKey:KEY_SCREEN_SIZE_WIDTH];
+            connectedPeerScreenHeight = [receivedData objectForKey:KEY_SCREEN_SIZE_HEIGHT];
+            NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
+            break;
+        case VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil userInfo:receivedData];
+            NSLog(@"Received Selected Frame Index");
+            break;
+        case VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil userInfo:nil];
+            NSLog(@"Received Confirm Frame Select");
+            break;
+        case VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil userInfo:receivedData];
+            NSLog(@"Received Confirm Ack Frame Select");
+            break;
+        case VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
+            NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
+            break;
+        case VALUE_DATA_TYPE_PHOTO_INSERT_DATA:
+            
+            break;
+        case VALUE_DATA_TYPE_PHOTO_DELETE_DATA:
+            
+            break;
+        case VALUE_DATA_TYPE_DRAWING_INSERT_DATA:
+            
+            break;
+        case VALUE_DATA_TYPE_DRAWING_UPDATE_DATA:
+            
+            break;
+        case VALUE_DATA_TYPE_DRAWING_DELETE_DATA:
+            
+            break;
     }
 }
 

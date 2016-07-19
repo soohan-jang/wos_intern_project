@@ -19,23 +19,28 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="친구를 찾으시려면" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DEH-eO-hnO">
-                                <rect key="frame" x="235" y="400" width="130" height="20"/>
+                                <rect key="frame" x="0.0" y="400" width="600" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="YcW-Z9-1xA"/>
                                     <constraint firstAttribute="width" constant="130" id="c4Y-07-xS9"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                 <color key="textColor" white="0.25" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="c4Y-07-xS9"/>
+                                    </mask>
+                                </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="화면을 탭해주세요." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uh2-bE-put">
-                                <rect key="frame" x="240" y="440" width="120" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="화면을 탭해주세요." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uh2-bE-put">
+                                <rect key="frame" x="0.0" y="440" width="600" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="휴대폰을 흔들거나" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dHD-TJ-yiL">
-                                <rect key="frame" x="228" y="416" width="144" height="24"/>
+                                <rect key="frame" x="0.0" y="416" width="600" height="24"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -51,7 +56,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="pwz-xa-jVz" firstAttribute="centerY" secondItem="2pp-3r-gnd" secondAttribute="centerY" id="3M6-QT-acS"/>
+                            <constraint firstItem="Uh2-bE-put" firstAttribute="width" secondItem="2pp-3r-gnd" secondAttribute="width" id="IRW-BZ-44i"/>
                             <constraint firstItem="Uh2-bE-put" firstAttribute="centerX" secondItem="2pp-3r-gnd" secondAttribute="centerX" id="M6x-W5-Syf"/>
+                            <constraint firstItem="DEH-eO-hnO" firstAttribute="width" secondItem="2pp-3r-gnd" secondAttribute="width" id="Rn0-Vb-7nk"/>
+                            <constraint firstItem="dHD-TJ-yiL" firstAttribute="width" secondItem="2pp-3r-gnd" secondAttribute="width" id="Y0n-Tb-L7y"/>
                             <constraint firstItem="DEH-eO-hnO" firstAttribute="bottom" secondItem="pwz-xa-jVz" secondAttribute="bottom" constant="20" id="hqb-Kg-2wF"/>
                             <constraint firstItem="pwz-xa-jVz" firstAttribute="centerX" secondItem="2pp-3r-gnd" secondAttribute="centerX" id="jPa-N2-Kcn"/>
                             <constraint firstItem="dHD-TJ-yiL" firstAttribute="bottom" secondItem="DEH-eO-hnO" secondAttribute="bottom" constant="20" id="npE-V8-m8e"/>

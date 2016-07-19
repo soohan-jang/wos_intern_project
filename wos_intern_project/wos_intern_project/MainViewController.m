@@ -30,7 +30,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     if (self.bluetoothManager.state == CBCentralManagerStateUnsupported) {
         //Alert and application terminate.
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bluetooth Unsupported" message:@"Your device is not support a bluetooth 4.0." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_unsupported", nil) message:NSLocalizedString(@"alert_content_bluetooth_unsupported", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         [alertView show];
         self.isBluetoothUnsupported = YES;
     }
@@ -39,7 +39,7 @@
         
         if (self.bluetoothManager.state == CBCentralManagerStatePoweredOff) {
             //Alert
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bluetooth Off" message:@"This application use a bluetooth.\nPlz, turn on bluetooth." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_off", nil) message:NSLocalizedString(@"alert_content_bluetooth_off", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
             [alertView show];
         }
     }
@@ -63,19 +63,19 @@
     }
     else {
         //Alert
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bluetooth Off" message:@"This application use a bluetooth.\nPlz, turn on bluetooth." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_off", nil) message:NSLocalizedString(@"alert_content_bluetooth_off", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         [alertView show];
     }
 }
 
 - (void)addObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionConnected:) name:[ConnectionManager sharedInstance].NOTIFICATION_PEER_CONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:[ConnectionManager sharedInstance].NOTIFICATION_PEER_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionConnected:) name:NOTIFICATION_PEER_CONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
 
 - (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_PEER_CONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_PEER_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_CONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
 
 /**** MCBrowserViewControllerDelegate Methods. ****/
@@ -100,7 +100,7 @@
     }
     
     self.invitationHandlerArray = [NSArray arrayWithObjects:[invitationHandler copy], nil];
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Invitation Received" message:[NSString stringWithFormat:@"\"%@\" wants to connect.", peerID.displayName] delegate:self cancelButtonTitle:@"Decline" otherButtonTitles:@"Accept", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_invitation_received", nil) message:[NSString stringWithFormat:@"\"%@\" %@", peerID.displayName, NSLocalizedString(@"alert_content_invitation_received", nil)] delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_decline", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_accept", nil), nil];
     [alertView show];
 }
 
@@ -112,7 +112,7 @@
         void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray objectAtIndex:0];
         invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
         
-        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:@"Connecting..."];
+        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_connecting", nil)];
         //Decline
     } else {
         void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray objectAtIndex:0];
@@ -128,7 +128,13 @@
 
 - (void)doneProgress {
     if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:@"Connected!" delay:1];
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_connected", nil) delay:1];
+    }
+}
+
+- (void)rejectProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
     }
 }
 
@@ -143,9 +149,9 @@
 - (void)receivedSessionConnected:(NSNotification *)notification {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
     NSDictionary *screenSizeDictionary =
-    @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_SCREEN_SIZE,
-      [ConnectionManager sharedInstance].KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
-      [ConnectionManager sharedInstance].KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
+    @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_SCREEN_SIZE],
+      KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
+      KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
     
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
@@ -172,6 +178,12 @@
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {
     [[ConnectionManager sharedInstance] disconnectSession];
+    
+    if ([self.navigationController presentedViewController] != [ConnectionManager sharedInstance].browserViewController) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self rejectProgress];
+        });
+    }
 }
 
 @end

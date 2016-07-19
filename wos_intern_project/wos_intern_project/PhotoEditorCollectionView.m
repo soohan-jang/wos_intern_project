@@ -10,7 +10,7 @@
 
 @implementation PhotoEditorCollectionView
 
-- (CGSize)buildEachPhotoFrameSize {
+- (CGSize)buildEachPhotoFrameSize:(NSInteger)itemIndex {
     CGFloat containerWidth = self.bounds.size.width;
     CGFloat containerHeight = self.bounds.size.height;
     CGFloat cellWidth;
@@ -82,13 +82,13 @@
     }
 }
 
-- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:indexPath];
+- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:itemIndexPath];
     return cell;
 }
 
-- (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self buildEachPhotoFrameSize:indexPath.item];
+- (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)itemIndexPath {
+    return [self buildEachPhotoFrameSize:itemIndexPath.item];
 }
 
 - (UIEdgeInsets)insetForCollectionView {

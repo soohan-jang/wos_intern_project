@@ -1,0 +1,9 @@
+
+/* Class = "UILabel"; text = "친구를 찾으시려면"; ObjectID = "DEH-eO-hnO"; */
+"DEH-eO-hnO.text" = "If you want to find friends";
+
+/* Class = "UILabel"; text = "휴대폰을 흔들거나"; ObjectID = "dHD-TJ-yiL"; */
+"dHD-TJ-yiL.text" = "Shake your smart phone";
+
+/* Class = "UILabel"; text = "화면을 탭해주세요."; ObjectID = "Uh2-bE-put"; */
+"Uh2-bE-put.text" = "or Tab the screen.";

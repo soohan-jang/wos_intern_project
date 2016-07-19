@@ -7,10 +7,6 @@
 //
 #import "PhotoFrameSelectViewController.h"
 
-#define ALERT_DISCONNECT        0
-#define ALERT_DISCONNECTED      1
-#define ALERT_FRAME_CONFIRM     2
-
 @implementation PhotoFrameSelectViewController
 
 - (void)viewDidLoad {
@@ -39,7 +35,7 @@
 }
 
 - (IBAction)backAction:(id)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Session Disconnect" message:@"Are you really want to disconnect?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil) message:NSLocalizedString(@"alert_content_session_disconnect_ask", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
     alertView.tag = ALERT_DISCONNECT;
     [alertView show];
 }
@@ -47,10 +43,11 @@
 - (IBAction)doneAction:(id)sender {
     self.doneButton.enabled = NO;
     
-    NSDictionary *sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM};
+    NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM]};
+    
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     
-    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:@"Confirming..."];
+    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -61,17 +58,17 @@
 }
 
 - (void)addObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirm:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirmAck:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirm:) name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirmAck:) name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
 }
 
 - (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:[ConnectionManager sharedInstance].NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
 }
 
 /**** UIAlertViewDelegate Methods. ****/
@@ -79,7 +76,8 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_DISCONNECT) {
         if (buttonIndex == 1) {
-            NSDictionary *sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED};
+            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED]};
+            
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -94,16 +92,16 @@
     }
     else if (alertView.tag == ALERT_FRAME_CONFIRM) {
         if (buttonIndex == 1) {
-            NSDictionary *sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK,
-                                       [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:YES]};
+            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK],
+                                       KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:YES]};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             [self loadPhotoEditorViewController];
         }
         else {
-            NSDictionary *sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK,
-                                       [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:NO]};
+            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK],
+                                       KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:NO]};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         }
@@ -123,7 +121,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"frameSelectCell" forIndexPath:indexPath];
     cell.cellIndex = indexPath.item;
-    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%d", indexPath.item]]];
+    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%ld", (long)indexPath.item]]];
     
     return cell;
 }
@@ -165,12 +163,12 @@
     NSDictionary *sendData;
     
     if (self.ownSelectedFrameIndex == nil) {
-        sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE:[ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED,
-                                   [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_SELECTED:prevSelectedFrameIndex};
+        sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+                     KEY_PHOTO_FRAME_SELECTED: prevSelectedFrameIndex};
     }
     else {
-        sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE:[ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED,
-                                   [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_SELECTED:self.ownSelectedFrameIndex};
+        sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+                     KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
     }
     
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
@@ -224,13 +222,13 @@
 
 - (void)declineProgress {
     if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:@"Rejected!" delay:1];
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
     }
 }
 
 - (void)acceptProgress {
     if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:@"Confirmed!" delay:1];
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_confirmed", nil) delay:1];
     }
 }
 
@@ -241,14 +239,15 @@
 /*** Session Communication Methods ****/
 
 - (void)sendSelectFrameChanged {
-    NSDictionary *sendData = @{[ConnectionManager sharedInstance].KEY_DATA_TYPE: [ConnectionManager sharedInstance].VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED,
-                               [ConnectionManager sharedInstance].KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
+    NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+                               KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
+    
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)receivedSelectFrameChanged:(NSNotification *)notification {
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
-    self.connectedPeerSelectedFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:[ConnectionManager sharedInstance].KEY_PHOTO_FRAME_SELECTED];
+    self.connectedPeerSelectedFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED];
     
     PhotoFrameSelectViewCell *prevSelectedFrameCell;
     PhotoFrameSelectViewCell *currentSelectedFrameCell;
@@ -284,14 +283,14 @@
 
 - (void)receivedSelectFrameConfirm:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Confirm Request" message:@"Your friend want to finish about frame selection." delegate:self cancelButtonTitle:@"Decline" otherButtonTitles:@"Accept", nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_frame_select_confirm", nil) message:NSLocalizedString(@"alert_content_frame_select_confirm", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_decline", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_accept", nil), nil];
         alertView.tag = ALERT_FRAME_CONFIRM;
         [alertView show];
     });
 }
 
 - (void)receivedSelectFrameConfirmAck:(NSNotification *)notification {
-    NSNumber *confirmAck = (NSNumber *)[notification.userInfo objectForKey:[ConnectionManager sharedInstance].KEY_PHOTO_FRAME_CONFIRM_ACK];
+    NSNumber *confirmAck = (NSNumber *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_CONFIRM_ACK];
     
     if ([confirmAck boolValue]) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -313,7 +312,7 @@
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Session Disconnected" message:@"Your friend diconnect session." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_session_disconnected", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         alertView.tag = ALERT_DISCONNECTED;
         [alertView show];
     });

@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  wos_intern_project
+
+  Created by Naver on 2016. 7. 19..
+  Copyright © 2016년 worksmobile. All rights reserved.
+*/
+
+alert_button_text_ok                 = "Ok";
+alert_button_text_no                 = "Yes";
+alert_button_text_yes                = "No";
+alert_button_text_decline            = "Decline";
+alert_button_text_accept             = "Accept";
+
+alert_title_bluetooth_unsupported    = "Bluetooth Unsupported";
+alert_title_bluetooth_off            = "Bluetooth Off";
+alert_title_invitation_received      = "Invitation Received";
+alert_title_session_disconnect_ask   = "Session Disconnect";
+alert_title_session_disconnected     = "Session Disconnected";
+alert_title_frame_select_confirm     = "Confirm Request";
+
+alert_content_bluetooth_unsupported  = "Your device is not support a bluetooth 4.0.";
+alert_content_bluetooth_off          = "This application use a bluetooth.\nPlz, turn on bluetooth.";
+alert_content_invitation_received    = "wants to connect.";
+alert_content_session_disconnect_ask = "Do you really want to disconnect?";
+alert_content_session_disconnected   = "Your friend disconnect session";
+alert_content_frame_select_confirm   = "Do you accept finish a frame selection?";
+
+progress_title_connecting            = "Connecting...";
+progress_title_connected             = "Connected!";
+progress_title_confirming            = "Confirming...";
+progress_title_confirmed             = "Confirmed!";
+progress_title_rejected              = "Rejected!";

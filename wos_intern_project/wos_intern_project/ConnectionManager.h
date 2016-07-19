@@ -8,59 +8,69 @@
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-//extern NSString *const NOTIFICATION_NAME;
-
-@interface ConnectionManager : NSObject <MCSessionDelegate>
-
-@property (nonatomic, copy, readonly) NSString *SERVICE_TYPE;
+/** MCSession Service Type **/
+/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
+extern NSString *const SERVICE_TYPE;
 
 /** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
-@property (nonatomic, copy, readonly) NSString *KEY_DATA_TYPE;
+extern NSString *const KEY_DATA_TYPE;
 
-/** Session Disconnected Protocol String ... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_PEER_CONNECTED;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_PEER_DISCONNECTED;
+/** KEY_DATA_TYPE에 값으로 설정되는 값 **/
+extern NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE;
 
-/** Screen Size Data Protocol String ... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_SCREEN_SIZE;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
 
-@property (nonatomic, readonly) NSNumber *VALUE_DATA_TYPE_SCREEN_SIZE;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_INSERT_DATA;
+extern NSUInteger const VALUE_DATA_TYPE_PHOTO_DELETE_DATA;
+extern NSUInteger const VALUE_DATA_TYPE_DRAWING_INSERT_DATA;
+extern NSUInteger const VALUE_DATA_TYPE_DRAWING_UPDATE_DATA;
+extern NSUInteger const VALUE_DATA_TYPE_DRAWING_DELETE_DATA;
 
-@property (nonatomic, copy, readonly) NSString *KEY_SCREEN_SIZE_WIDTH;
-@property (nonatomic, copy, readonly) NSString *KEY_SCREEN_SIZE_HEIGHT;
+/** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
+/** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
+extern NSString *const KEY_SCREEN_SIZE_WIDTH;
+extern NSString *const KEY_SCREEN_SIZE_HEIGHT;
 
-/** PhotoFrame Data Protocol String ... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
+/** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
+/** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
+extern NSString *const KEY_PHOTO_FRAME_SELECTED;
 
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
+/** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
+/** NSNumber boolValue 값으로 매칭된다 **/
+extern NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK;
 
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_SELECTED;
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_FRAME_CONFIRM_ACK;
+/** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
+/** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
+extern NSString *const KEY_PHOTO_INSERT_DATA;
+extern NSString *const KEY_PHOTO_DELETE_DATA;
+extern NSString *const KEY_DRAWING_INSERT_DATA;
+extern NSString *const KEY_DRAWING_UPDATE_DATA;
+extern NSString *const KEY_DRAWING_DELETE_DATA;
 
-/** PhotoData, DrawingData Protocol String... **/
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_PHOTO_INSERT_DATA;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_PHOTO_DELETE_DATA;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_DRAWING_INSERT_DATA;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_DRAWING_UPDATE_DATA;
-@property (nonatomic, copy, readonly) NSString *NOTIFICATION_REVC_DRAWING_DELETE_DATA;
+/** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
+extern NSString *const NOTIFICATION_PEER_CONNECTED;
+extern NSString *const NOTIFICATION_PEER_DISCONNECTED;
 
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_INSERT_DATA;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_PHOTO_DELETE_DATA;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_DRAWING_INSERT_DATA;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_DRAWING_UPDATE_DATA;
-@property (nonatomic, strong, readonly) NSNumber *VALUE_DATA_TYPE_DRAWING_DELETE_DATA;
+/** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
+extern NSString *const NOTIFICATION_RECV_SCREEN_SIZE;
 
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_INSERT_DATA;
-@property (nonatomic, copy, readonly) NSString *KEY_PHOTO_DELETE_DATA;
-@property (nonatomic, copy, readonly) NSString *KEY_DRAWING_INSERT_DATA;
-@property (nonatomic, copy, readonly) NSString *KEY_DRAWING_UPDATE_DATA;
-@property (nonatomic, copy, readonly) NSString *KEY_DRAWING_DELETE_DATA;
+/** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
+extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
+extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
+extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
+extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
+
+/** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
+extern NSString *const NOTIFICATION_REVC_PHOTO_INSERT_DATA;
+extern NSString *const NOTIFICATION_REVC_PHOTO_DELETE_DATA;
+extern NSString *const NOTIFICATION_REVC_DRAWING_INSERT_DATA;
+extern NSString *const NOTIFICATION_REVC_DRAWING_UPDATE_DATA;
+extern NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA;
+
+@interface ConnectionManager : NSObject <MCSessionDelegate>
 
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;

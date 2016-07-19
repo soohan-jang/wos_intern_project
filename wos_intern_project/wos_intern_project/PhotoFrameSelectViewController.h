@@ -13,6 +13,11 @@
 #import "PhotoFrameSelectViewCell.h"
 #import "PhotoEditorViewController.h"
 
+typedef NS_ENUM(NSInteger, AlertType) {
+    ALERT_DISCONNECT = 0,
+    ALERT_DISCONNECTED = 1,
+    ALERT_FRAME_CONFIRM = 2
+};
 
 @interface PhotoFrameSelectViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate>
 
