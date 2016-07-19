@@ -9,17 +9,23 @@
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
 #import "PhotoEditorCollectionView.h"
+#import "PhotoEditorFrameViewCell.h"
 
 @interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
+@property (nonatomic) NSUInteger frameIndex;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
 
+- (IBAction)photoButtonAction:(id)sender;
+- (IBAction)penButtonAction:(id)sender;
+- (IBAction)textButtonAction:(id)sender;
+- (IBAction)stickerButtonAction:(id)sender;
+- (IBAction)eraserButtonAction:(id)sender;
+
 - (void)addObservers;
 - (void)removeObservers;
-
-- (void)setFrameIndex:(NSUInteger)frameIndex;
 
 @end

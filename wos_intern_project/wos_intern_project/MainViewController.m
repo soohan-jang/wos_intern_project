@@ -169,9 +169,7 @@
         
         //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self loadPhotoFrameViewController];
-            });
+            [self loadPhotoFrameViewController];
         });
     }
 }

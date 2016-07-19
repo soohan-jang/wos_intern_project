@@ -13,4 +13,13 @@
 @property (strong, nonatomic) IBOutlet UIScrollView *photoScrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
 
+/**
+ 사진 액자에 스트로크 처리된 테두리를 표시한다.
+ */
+- (void)setStrokeBorder;
+
+/**
+ 사진 액자에 스트로크 처리된 테두리를 제거한다.
+ */
+- (void)removeStrokeBorder;
 @end

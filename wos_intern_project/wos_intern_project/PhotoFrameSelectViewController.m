@@ -41,19 +41,25 @@
 }
 
 - (IBAction)doneAction:(id)sender {
-    self.doneButton.enabled = NO;
-    
-    NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM]};
-    
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-    
-    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
+    if (self.ownSelectedFrameIndex.item > 4) {
+        UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"구현되지 않음" message:@"현재 1~5번 액자만 사용 가능합니다." delegate:nil cancelButtonTitle:@"확인" otherButtonTitles:nil, nil];
+        [alertView show];
+    }
+    else {
+        self.doneButton.enabled = NO;
+        
+        NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM]};
+        
+        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        
+        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
+    }
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
-        [viewController setFrameIndex:self.ownSelectedFrameIndex.item];
+        viewController.frameIndex = self.ownSelectedFrameIndex.item;
     }
 }
 
@@ -185,19 +191,19 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     //한 라인에 셀 3개를 배치한다. 따라서 셀 간의 간격은 2곳이 생긴다.
-    CGFloat cellBetweenSpace = 20 * 2;
-    CGFloat cellWidth = (self.collectionView.bounds.size.width - cellBetweenSpace) / 3;
+    CGFloat cellBetweenSpace = 20.0f * 2.0f;
+    CGFloat cellWidth = (self.collectionView.bounds.size.width - cellBetweenSpace) / 3.0f;
     return CGSizeMake(cellWidth, cellWidth);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     //셀의 높이는 너비와 같다. 셀은 가로로 4개가 배치되므로, 셀 너비값의 4배가 각 셀의 높이를 합한 값이 된다.
-    CGFloat cellBetweenSpace = 20 * 2;
-    CGFloat cellsHeight = ((self.collectionView.bounds.size.width - cellBetweenSpace) / 3) * 4;
+    CGFloat cellBetweenSpace = 20.0f * 2.0f;
+    CGFloat cellsHeight = ((self.collectionView.bounds.size.width - cellBetweenSpace) / 3.0f) * 4.0f;
     //셀 간의 간격은 3곳이 생기며, 라인 간 간격은 20으로 정의되어 있다.
-    CGFloat cellsBetweenSpace = 20 * 3;
+    CGFloat cellsBetweenSpace = 20.0f * 3.0f;
     //남은 공간의 절반을 상단의 inset으로 지정하면, 수직으로 중간에 정렬시킬 수 있다.
-    CGFloat topInset = (self.collectionView.bounds.size.height - cellsHeight - cellsBetweenSpace) / 2;
+    CGFloat topInset = (self.collectionView.bounds.size.height - cellsHeight - cellsBetweenSpace) / 2.0f;
     
     return UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
@@ -296,10 +302,9 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [self acceptProgress];
         });
+        
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self loadPhotoEditorViewController];
-            });
+            [self loadPhotoEditorViewController];
         });
     }
     else {

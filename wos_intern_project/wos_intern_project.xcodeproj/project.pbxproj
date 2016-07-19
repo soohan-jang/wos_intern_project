@@ -12,11 +12,12 @@
 		4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
 		4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */; };
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
+		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
+		4A0C937D1D3E3DF50080E9A6 /* RFQuiltLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937C1D3E3DF50080E9A6 /* RFQuiltLayout.m */; };
 		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
 		4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
-		4A4ACF381D2B6D2C00BC2FC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
@@ -68,6 +69,8 @@
 		4A0C93731D3DDDA00080E9A6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		4A0C93741D3DDDA00080E9A6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4A0C93781D3DE5720080E9A6 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		4A0C937B1D3E3DF50080E9A6 /* RFQuiltLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFQuiltLayout.h; sourceTree = "<group>"; };
+		4A0C937C1D3E3DF50080E9A6 /* RFQuiltLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFQuiltLayout.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 		4A0C92DF1D374D4C0080E9A6 /* ExternalLib */ = {
 			isa = PBXGroup;
 			children = (
+				4A0C937A1D3E3DDF0080E9A6 /* RFQuiltLayout */,
 				4A0C92E01D374D660080E9A6 /* MBProgressHUD */,
 			);
 			name = ExternalLib;
@@ -152,6 +156,15 @@
 				4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		4A0C937A1D3E3DDF0080E9A6 /* RFQuiltLayout */ = {
+			isa = PBXGroup;
+			children = (
+				4A0C937B1D3E3DF50080E9A6 /* RFQuiltLayout.h */,
+				4A0C937C1D3E3DF50080E9A6 /* RFQuiltLayout.m */,
+			);
+			name = RFQuiltLayout;
 			sourceTree = "<group>";
 		};
 		4A4ACF1F1D2B6D2C00BC2FC4 = {
@@ -383,9 +396,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */,
 				4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */,
 				4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */,
-				4A4ACF381D2B6D2C00BC2FC4 /* Assets.xcassets in Resources */,
 				4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,6 +443,7 @@
 				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,
 				4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */,
 				4B4490981D3A607500E5972F /* DrawingPenObject.m in Sources */,
+				4A0C937D1D3E3DF50080E9A6 /* RFQuiltLayout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

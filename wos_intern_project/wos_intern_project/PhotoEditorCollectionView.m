@@ -8,31 +8,53 @@
 
 #import "PhotoEditorCollectionView.h"
 
+#define DEFAULT_MARGIN  5
+
 @implementation PhotoEditorCollectionView
 
 - (CGSize)buildEachPhotoFrameSize:(NSInteger)itemIndex {
-    CGFloat containerWidth = self.bounds.size.width;
-    CGFloat containerHeight = self.bounds.size.height;
+    CGFloat containerWidth = self.frame.size.width;
+    CGFloat containerHeight = self.frame.size.height;
     CGFloat cellWidth;
     CGFloat cellHeight;
     
+    /** Template **/
+    /** 너비 1, 높이 0.5
+     return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+    **/
+    /** 너비 0.5, 높이 1
+     return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
+    **/
+    /** 너비 0.5. 높이 0.5
+     return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+    **/
     if (self.frameIndex == 0) {
-        
+        return CGSizeMake(containerWidth - DEFAULT_MARGIN, containerHeight - DEFAULT_MARGIN);
     }
     else if (self.frameIndex == 1) {
-        
+        return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
     }
     else if (self.frameIndex == 2) {
-        
+        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
     }
     else if (self.frameIndex == 3) {
-        
+        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
     }
     else if (self.frameIndex == 4) {
-        
+        if (itemIndex == 0) {
+            return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+        }
+        else {
+            return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+        }
     }
     else if (self.frameIndex == 5) {
-        
+        if (itemIndex == 1) {
+            return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
+        }
+        else {
+            return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+        }
     }
     else if (self.frameIndex == 6) {
         
@@ -84,6 +106,7 @@
 
 - (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:itemIndexPath];
+    [cell setStrokeBorder];
     return cell;
 }
 
@@ -92,11 +115,7 @@
 }
 
 - (UIEdgeInsets)insetForCollectionView {
-    //액자는 정사각형 형태이므로, 액자의 너비와 높이는 같다.
-    //즉, 액자의 높이에서 너비를 뺀 후에 이를 2로 나누어 상단에 Inset으로 지정하면 가운데 정렬을 할 수 있다.
-    CGFloat topInset = (self.bounds.size.height - self.bounds.size.width) / 2;
-    
-    return UIEdgeInsetsMake(topInset, 0, 0, 0);
+    return UIEdgeInsetsMake(DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f);
 }
 
 @end
