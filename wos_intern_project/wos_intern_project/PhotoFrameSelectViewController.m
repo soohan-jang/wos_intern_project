@@ -21,7 +21,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     //동기화 큐를 사용하지 않음으로 변경하고, 동기화 작업을 수행한다.
-    [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+    [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
     
     //메시지 큐에 메시지가 있다면, 동기화 작업을 수행한다.
     if (![[MessageSyncManager sharedInstance] isMessageQueueEmpty]) {
@@ -34,7 +34,6 @@
     }
     
     [self addObservers];
-    
     [super viewDidAppear:animated];
 }
 
@@ -62,7 +61,7 @@
     else {
         self.doneButton.enabled = NO;
         
-        NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM]};
+        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM)};
         
         [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         
@@ -73,7 +72,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
-        viewController.frameIndex = self.ownSelectedFrameIndex.item;
+        viewController.photoFrameKind = self.ownSelectedFrameIndex.item;
     }
 }
 
@@ -96,43 +95,45 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_DISCONNECT) {
         if (buttonIndex == 1) {
-            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED]};
+            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED)};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-                [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+                [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
                 [[MessageSyncManager sharedInstance] clearMessageQueue];
                 
                 [[ConnectionManager sharedInstance] disconnectSession];
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popViewControllerAnimated:YES];
             });
         }
     }
     else if (alertView.tag == ALERT_DISCONNECTED) {
         //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-        [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+        [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
         [[MessageSyncManager sharedInstance] clearMessageQueue];
         
         [[ConnectionManager sharedInstance] disconnectSession];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
         [self.navigationController popViewControllerAnimated:YES];
     }
     else if (alertView.tag == ALERT_FRAME_CONFIRM) {
         if (buttonIndex == 1) {
-            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK],
+            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK),
                                        KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:YES]};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-            [[ConnectionManager sharedInstance] setEnabledMessageQueue:YES];
+            [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
             [[MessageSyncManager sharedInstance] clearMessageQueue];
             
             [self loadPhotoEditorViewController];
         }
         else {
-            NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK],
+            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK),
                                        KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:NO]};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
@@ -195,11 +196,11 @@
     NSDictionary *sendData;
     
     if (self.ownSelectedFrameIndex == nil) {
-        sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+        sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
                      KEY_PHOTO_FRAME_SELECTED: [NSNull null]};
     }
     else {
-        sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+        sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
                      KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
     }
     
@@ -271,7 +272,7 @@
 /*** Session Communication Methods ****/
 
 - (void)sendSelectFrameChanged {
-    NSDictionary *sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
                                KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
     
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
@@ -330,11 +331,15 @@
     NSNumber *confirmAck = (NSNumber *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_CONFIRM_ACK];
     
     if ([confirmAck boolValue]) {
+        //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
+        [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
+        [[MessageSyncManager sharedInstance] clearMessageQueue];
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [self acceptProgress];
         });
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self loadPhotoEditorViewController];
         });
     }

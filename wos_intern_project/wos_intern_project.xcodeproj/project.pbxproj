@@ -14,7 +14,7 @@
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A0C937D1D3E3DF50080E9A6 /* RFQuiltLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937C1D3E3DF50080E9A6 /* RFQuiltLayout.m */; };
-		4A0C93801D3F0A900080E9A6 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
+		4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
 		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
 		4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
@@ -438,8 +438,8 @@
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
 				4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */,
 				4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */,
-				4A0C93801D3F0A900080E9A6 /* MessageSyncManager.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,
+				4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */,
 				4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */,
 				4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */,
 				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,

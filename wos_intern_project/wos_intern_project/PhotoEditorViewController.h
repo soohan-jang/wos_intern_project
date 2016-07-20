@@ -7,15 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 #import "ConnectionManager.h"
+#import "MessageSyncManager.h"
+
+#import "MainViewController.h"
 #import "PhotoEditorCollectionView.h"
 #import "RFQuiltLayout.h"
 #import "PhotoEditorFrameViewCell.h"
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate>
+typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
+    ALERT_NOT_SAVE = 0,
+    ALERT_CONTINUE = 1
+};
+
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
-@property (nonatomic) NSUInteger frameIndex;
+@property (nonatomic) NSInteger photoFrameKind;
+@property (nonatomic, strong) UITapGestureRecognizer *scrollTapGestureRecognizer;
+@property (nonatomic) NSIndexPath *selectedPhotoFrameIndex;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
@@ -28,5 +39,11 @@
 
 - (void)addObservers;
 - (void)removeObservers;
+
+- (void)selectedCellAction:(NSNotification *)notification;
+
+- (void)receivedPhotoInsert:(NSNotification *)notification;
+- (void)receivedPhotoDelete:(NSNotification *)notification;
+- (void)receivedSessionDisconnected:(NSNotification *)notification;
 
 @end

@@ -180,34 +180,59 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MMh-dV-bQl">
-                                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                            <rect key="frame" x="2" y="2" width="46" height="46"/>
                                                             <subviews>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Uty-5c-vTu">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="LtK-NN-YZ5">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="46" height="46"/>
+                                                                    <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                                                                 </imageView>
                                                             </subviews>
                                                             <constraints>
-                                                                <constraint firstItem="Uty-5c-vTu" firstAttribute="centerX" secondItem="MMh-dV-bQl" secondAttribute="centerX" id="385-mB-kFA"/>
-                                                                <constraint firstAttribute="trailing" secondItem="Uty-5c-vTu" secondAttribute="trailing" id="BcY-dQ-TsB"/>
-                                                                <constraint firstAttribute="bottom" secondItem="Uty-5c-vTu" secondAttribute="bottom" id="De0-gJ-43k"/>
-                                                                <constraint firstItem="Uty-5c-vTu" firstAttribute="leading" secondItem="MMh-dV-bQl" secondAttribute="leading" id="gIl-jV-e6d"/>
-                                                                <constraint firstItem="Uty-5c-vTu" firstAttribute="centerY" secondItem="MMh-dV-bQl" secondAttribute="centerY" id="ho8-pe-Fvt"/>
-                                                                <constraint firstItem="Uty-5c-vTu" firstAttribute="top" secondItem="MMh-dV-bQl" secondAttribute="top" id="p0L-r9-UOp"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="centerX" secondItem="MMh-dV-bQl" secondAttribute="centerX" id="5te-PO-bvg"/>
+                                                                <constraint firstAttribute="bottom" secondItem="LtK-NN-YZ5" secondAttribute="bottom" id="6fK-0Z-Is5"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="centerY" secondItem="MMh-dV-bQl" secondAttribute="centerY" id="7tw-ZB-xWA"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="top" secondItem="MMh-dV-bQl" secondAttribute="top" id="8G1-M7-4c8"/>
+                                                                <constraint firstAttribute="trailing" secondItem="LtK-NN-YZ5" secondAttribute="trailing" id="B4e-ue-CBM"/>
+                                                                <constraint firstAttribute="trailing" secondItem="LtK-NN-YZ5" secondAttribute="trailing" id="MNW-Nb-8wZ"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="leading" secondItem="MMh-dV-bQl" secondAttribute="leading" id="lGh-ok-H0L"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="leading" secondItem="MMh-dV-bQl" secondAttribute="leading" id="qPx-Os-crR"/>
+                                                                <constraint firstItem="LtK-NN-YZ5" firstAttribute="top" secondItem="MMh-dV-bQl" secondAttribute="top" id="xqt-YI-01c"/>
+                                                                <constraint firstAttribute="bottom" secondItem="LtK-NN-YZ5" secondAttribute="bottom" id="zU1-dd-m2I"/>
                                                             </constraints>
                                                             <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
+                                                            <variation key="default">
+                                                                <mask key="constraints">
+                                                                    <exclude reference="6fK-0Z-Is5"/>
+                                                                    <exclude reference="B4e-ue-CBM"/>
+                                                                    <exclude reference="qPx-Os-crR"/>
+                                                                    <exclude reference="xqt-YI-01c"/>
+                                                                </mask>
+                                                            </variation>
                                                         </scrollView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
                                                 <constraints>
-                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="topMargin" id="AmH-jR-7s6"/>
-                                                    <constraint firstAttribute="trailingMargin" secondItem="MMh-dV-bQl" secondAttribute="trailing" id="C2O-QD-QFe"/>
-                                                    <constraint firstAttribute="bottomMargin" secondItem="MMh-dV-bQl" secondAttribute="bottom" id="cSA-mB-4B0"/>
-                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leadingMargin" id="te9-bL-c7m"/>
+                                                    <constraint firstAttribute="bottom" secondItem="MMh-dV-bQl" secondAttribute="bottom" constant="2" id="6Jx-6k-Svw"/>
+                                                    <constraint firstAttribute="trailing" secondItem="MMh-dV-bQl" secondAttribute="trailing" constant="2" id="KOv-Vp-dcJ"/>
+                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leadingMargin" id="OcJ-i9-8oJ"/>
+                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" constant="2" id="SRG-Xs-tkQ"/>
+                                                    <constraint firstAttribute="trailingMargin" secondItem="MMh-dV-bQl" secondAttribute="trailing" id="lPS-Rg-Uu0"/>
+                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" constant="2" id="nZJ-rx-iQx"/>
+                                                    <constraint firstAttribute="bottomMargin" secondItem="MMh-dV-bQl" secondAttribute="bottom" id="s4v-B3-4kl"/>
+                                                    <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="topMargin" id="wU5-pD-Ynq"/>
                                                 </constraints>
                                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
+                                                <variation key="default">
+                                                    <mask key="constraints">
+                                                        <exclude reference="OcJ-i9-8oJ"/>
+                                                        <exclude reference="lPS-Rg-Uu0"/>
+                                                        <exclude reference="s4v-B3-4kl"/>
+                                                        <exclude reference="wU5-pD-Ynq"/>
+                                                    </mask>
+                                                </variation>
                                                 <connections>
-                                                    <outlet property="photoImageView" destination="Uty-5c-vTu" id="94N-wE-nzX"/>
+                                                    <outlet property="photoImageView" destination="LtK-NN-YZ5" id="pGQ-pt-UrE"/>
                                                     <outlet property="photoScrollView" destination="MMh-dV-bQl" id="N66-Ba-Qos"/>
                                                 </connections>
                                             </collectionViewCell>
@@ -283,7 +308,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jzB-Gq-28Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1650" y="317.25"/>
+            <point key="canvasLocation" x="1650" y="317"/>
         </scene>
         <!--Photo Frame Select View Controller-->
         <scene sceneID="hYQ-ZS-nHx">
@@ -450,7 +475,52 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Zk-08-MVq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="910" y="1118"/>
+            <point key="canvasLocation" x="943" y="1118"/>
+        </scene>
+        <!--Collection View Controller-->
+        <scene sceneID="Sfy-W0-UAR">
+            <objects>
+                <collectionViewController id="vQN-mh-bsP" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="Q62-Ke-xj8">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="51s-Ng-7ur">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="G4Y-17-AS0">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I5f-cS-6A5">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        </scrollView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <constraints>
+                                    <constraint firstItem="I5f-cS-6A5" firstAttribute="centerX" secondItem="G4Y-17-AS0" secondAttribute="centerX" id="Dic-ow-AX6"/>
+                                    <constraint firstItem="I5f-cS-6A5" firstAttribute="centerY" secondItem="G4Y-17-AS0" secondAttribute="centerY" id="HYC-CQ-MM2"/>
+                                    <constraint firstItem="I5f-cS-6A5" firstAttribute="width" secondItem="G4Y-17-AS0" secondAttribute="width" id="ORF-Ax-inW"/>
+                                    <constraint firstItem="I5f-cS-6A5" firstAttribute="height" secondItem="G4Y-17-AS0" secondAttribute="height" id="gf0-Ri-dfZ"/>
+                                </constraints>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="vQN-mh-bsP" id="EO3-9V-Xc2"/>
+                            <outlet property="delegate" destination="vQN-mh-bsP" id="s9Q-pq-XIL"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Oym-In-fg7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1845" y="1372"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Z8K-Fq-5WU">

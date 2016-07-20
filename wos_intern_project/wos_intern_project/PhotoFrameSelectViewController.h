@@ -15,7 +15,7 @@
 #import "PhotoFrameSelectViewCell.h"
 #import "PhotoEditorViewController.h"
 
-typedef NS_ENUM(NSInteger, AlertType) {
+typedef NS_ENUM(NSInteger, PhotoFrameSelectAlertType) {
     ALERT_DISCONNECT = 0,
     ALERT_DISCONNECTED = 1,
     ALERT_FRAME_CONFIRM = 2
@@ -75,7 +75,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
  상대방이 액자를 선택했을 때 호출되는 함수이다. 이 함수는 NotificationCenter에 의해 호출된다.
  */
 - (void)receivedSelectFrameChanged:(NSNotification *)notification;
-
 - (void)receivedSelectFrameConfirm:(NSNotification *)notification;
 - (void)receivedSelectFrameConfirmAck:(NSNotification *)notification;
 - (void)receivedSessionDisconnected:(NSNotification *)notification;

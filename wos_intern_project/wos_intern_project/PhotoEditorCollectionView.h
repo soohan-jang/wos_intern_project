@@ -11,7 +11,8 @@
 
 @interface PhotoEditorCollectionView : UICollectionView
 
-@property (nonatomic) NSUInteger frameIndex;
+@property (nonatomic) NSInteger photoFrameKind;
+@property (atomic, strong) NSMutableDictionary *imageDictionary;
 
 /**
  액자종류에 따라 표시될 각각의 사진 액자 크기를 설정한다.
@@ -37,5 +38,9 @@
  CollectionView를 수직 가운데 졍렬하기 위한 UIEdgeInsets를 반환한다.
  */
 - (UIEdgeInsets)insetForCollectionView;
+
+- (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image;
+- (UIImage *)getImageWithItemIndex:(NSInteger)item;
+- (void)delImageWithItemIndex:(NSInteger)item;
 
 @end

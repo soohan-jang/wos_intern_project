@@ -10,8 +10,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "ConnectionManager.h"
+#import "MessageSyncManager.h"
 #import "PhotoFrameSelectViewController.h"
 #import "WMProgressHUD.h"
+
+extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
 
 @interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, CBCentralManagerDelegate>
 
@@ -21,9 +24,13 @@
 @property (nonatomic, strong) WMProgressHUD *progressView;
 @property (nonatomic, strong) NSArray *invitationHandlerArray;
 
-@property (nonatomic) CGPoint startPoint;
-
 - (void)findDeviceAction;
+
+/**
+ 다른 뷰컨트롤러에서 pop하거나 popRootViewController를 통해 MainViewController로 복귀시에 호출되는 함수이다.
+ 이 함수는 NSNotificationCenter로 호출되며, Observer를 등록하기 위해 사용된다.
+ */
+- (void)viewDidUnwind:(NSNotification *)notification;
 
 /**
  NotificationCenter에 필요한 Observer를 등록한다.

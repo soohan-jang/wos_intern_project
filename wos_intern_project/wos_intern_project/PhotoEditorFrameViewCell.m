@@ -8,7 +8,23 @@
 
 #import "PhotoEditorFrameViewCell.h"
 
+@interface PhotoEditorFrameViewCell () <UIScrollViewDelegate>
+
+@end
+
 @implementation PhotoEditorFrameViewCell
+
+//- (instancetype)initWithCoder:(NSCoder *)coder
+//{
+//    self = [super initWithCoder:coder];
+//    if (self) {
+//        UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectedCellAction:)];
+//        recognizer.numberOfTapsRequired = 1;
+//        [self.photoScrollView setUserInteractionEnabled:YES];
+//        [self.photoScrollView addGestureRecognizer:recognizer];
+//    }
+//    return self;
+//}
 
 - (void)setStrokeBorder {
     CGFloat defaultMargin = 5.0f;
@@ -33,8 +49,22 @@
     [self.layer addSublayer:shapeLayer];
 }
 
+- (void)setTapGestureRecognizer {
+    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+    [self.photoScrollView setUserInteractionEnabled:YES];
+    [self.photoScrollView addGestureRecognizer:recognizer];
+}
+
+- (void)setImage:(UIImage *)image {
+    [self.photoImageView setImage:image];
+}
+
 - (void)removeStrokeBorder {
     self.layer.sublayers = nil;
+}
+
+- (void)tapAction {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"tapped_cell" object:nil userInfo:@{@"index_path":self.indexPath}];
 }
 
 @end

@@ -23,8 +23,10 @@ alert_content_bluetooth_unsupported  = "Your device is not support a bluetooth 4
 alert_content_bluetooth_off          = "This application use a bluetooth.\nPlz, turn on bluetooth.";
 alert_content_invitation_received    = "wants to connect.";
 alert_content_session_disconnect_ask = "Do you really want to disconnect?";
-alert_content_session_disconnected   = "Your friend disconnect session";
+alert_content_session_disconnected   = "Your friend disconnect session.";
 alert_content_frame_select_confirm   = "Do you accept finish a frame selection?";
+alert_content_data_not_save          = "Do you really want to disconnect?\nUnsaved data will be deleted.";
+alert_content_continue               = "Your friend disconnect session.\nDo you want to continue photo edit?";
 
 progress_title_connecting            = "Connecting...";
 progress_title_connected             = "Connected!";

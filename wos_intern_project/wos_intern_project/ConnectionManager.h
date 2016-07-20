@@ -24,11 +24,12 @@ extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM;
 extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK;
 extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
 
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_INSERT_DATA;
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_DELETE_DATA;
-extern NSUInteger const VALUE_DATA_TYPE_DRAWING_INSERT_DATA;
-extern NSUInteger const VALUE_DATA_TYPE_DRAWING_UPDATE_DATA;
-extern NSUInteger const VALUE_DATA_TYPE_DRAWING_DELETE_DATA;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
@@ -45,11 +46,12 @@ extern NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK;
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
 /** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
-extern NSString *const KEY_PHOTO_INSERT_DATA;
-extern NSString *const KEY_PHOTO_DELETE_DATA;
-extern NSString *const KEY_DRAWING_INSERT_DATA;
-extern NSString *const KEY_DRAWING_UPDATE_DATA;
-extern NSString *const KEY_DRAWING_DELETE_DATA;
+extern NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX;
+extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA;
+extern NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX;
+extern NSString *const KEY_EDITOR_DRAWING_INSERT_DATA;
+extern NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA;
+extern NSString *const KEY_EDITOR_DRAWING_DELETE_DATA;
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
 extern NSString *const NOTIFICATION_PEER_CONNECTED;
@@ -65,11 +67,12 @@ extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
 extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
 
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-extern NSString *const NOTIFICATION_REVC_PHOTO_INSERT_DATA;
-extern NSString *const NOTIFICATION_REVC_PHOTO_DELETE_DATA;
-extern NSString *const NOTIFICATION_REVC_DRAWING_INSERT_DATA;
-extern NSString *const NOTIFICATION_REVC_DRAWING_UPDATE_DATA;
-extern NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA;
+extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT;
+extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE;
+extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
 
 @interface ConnectionManager : NSObject <MCSessionDelegate>
 
@@ -78,8 +81,6 @@ extern NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA;
 @property (nonatomic, strong, readonly) MCBrowserViewController *browserViewController;
 @property (nonatomic, strong, readonly) MCNearbyServiceAdvertiser *advertiser;
 @property (nonatomic, strong, readonly) NSNumber *ownScreenWidth, *ownScreenHeight;
-
-@property (nonatomic, getter=isEnableMessageQueueu) BOOL enabledMessageQueue;
 
 /** 연결된 상대방 정보 **/
 //원래 이것도 배열로 구성해서 각 피어에 해당하는 셋을 맞춰야되는데, 당장은 1:1 통신을 하므로...

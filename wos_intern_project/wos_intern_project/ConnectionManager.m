@@ -10,65 +10,68 @@
 
 /** MCSession Service Type **/
 /** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
-NSString *const SERVICE_TYPE                                = @"Co-PhotoEditor";
+NSString *const SERVICE_TYPE                                  = @"Co-PhotoEditor";
 
 /** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
-NSString *const KEY_DATA_TYPE                               = @"data_type";
+NSString *const KEY_DATA_TYPE                                 = @"data_type";
 
 /** KEY_DATA_TYPE에 값으로 설정되는 값 **/
-NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                = 100;
+NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                  = 100;
 
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED       = 200;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM        = 201;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK    = 202;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED   = 203;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED         = 200;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM          = 201;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK      = 202;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED     = 203;
 
-NSUInteger const VALUE_DATA_TYPE_PHOTO_INSERT_DATA          = 300;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_DELETE_DATA          = 301;
-NSUInteger const VALUE_DATA_TYPE_DRAWING_INSERT_DATA        = 302;
-NSUInteger const VALUE_DATA_TYPE_DRAWING_UPDATE_DATA        = 303;
-NSUInteger const VALUE_DATA_TYPE_DRAWING_DELETE_DATA        = 304;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT          = 300;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 301;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 302;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 303;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 304;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 305;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
-NSString *const KEY_SCREEN_SIZE_WIDTH                       = @"screen_size_width";
-NSString *const KEY_SCREEN_SIZE_HEIGHT                      = @"screen_size_height";
+NSString *const KEY_SCREEN_SIZE_WIDTH                         = @"screen_size_width";
+NSString *const KEY_SCREEN_SIZE_HEIGHT                        = @"screen_size_height";
 
 /** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
 /** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-NSString *const KEY_PHOTO_FRAME_SELECTED                    = @"photo_frame_select";
+NSString *const KEY_PHOTO_FRAME_SELECTED                      = @"photo_frame_select";
 
 /** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
 /** NSNumber boolValue 값으로 매칭된다 **/
-NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                 = @"photo_frame_confirm_ack";
+NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                   = @"photo_frame_confirm_ack";
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
 /** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
-NSString *const KEY_PHOTO_INSERT_DATA                       = @"photo_insert_data";
-NSString *const KEY_PHOTO_DELETE_DATA                       = @"photo_delete_data";
-NSString *const KEY_DRAWING_INSERT_DATA                     = @"drawing_insert_data";
-NSString *const KEY_DRAWING_UPDATE_DATA                     = @"drawing_update_data";
-NSString *const KEY_DRAWING_DELETE_DATA                     = @"drawing_delete_data";
+NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX                 = @"photo_insert_index";
+NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                  = @"photo_insert_data";
+NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
+NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
+NSString *const KEY_EDITOR_DRAWING_DELETE_DATA                = @"drawing_delete_data";
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_PEER_CONNECTED                 = @"noti_peer_connected";
-NSString *const NOTIFICATION_PEER_DISCONNECTED              = @"noti_peer_disconnected";
+NSString *const NOTIFICATION_PEER_CONNECTED                   = @"noti_peer_connected";
+NSString *const NOTIFICATION_PEER_DISCONNECTED                = @"noti_peer_disconnected";
 
 /** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_SCREEN_SIZE               = @"noti_recv_screen_size";
+NSString *const NOTIFICATION_RECV_SCREEN_SIZE                 = @"noti_recv_screen_size";
 
 /** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED      = @"noti_recv_photo_frame_selected";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM       = @"noti_recv_photo_frame_confirm";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK   = @"noti_recv_photo_frame_confirm_ack";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED  = @"noti_recv_photo_frame_disconnected";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED        = @"noti_recv_photo_frame_selected";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM         = @"noti_recv_photo_frame_confirm";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK     = @"noti_recv_photo_frame_confirm_ack";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED    = @"noti_recv_photo_frame_disconnected";
 
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-NSString *const NOTIFICATION_REVC_PHOTO_INSERT_DATA         = @"noti_recv_photo_insert_data";
-NSString *const NOTIFICATION_REVC_PHOTO_DELETE_DATA         = @"noti_recv_photo_delete_data";
-NSString *const NOTIFICATION_REVC_DRAWING_INSERT_DATA       = @"noti_recv_drawing_insert_data";
-NSString *const NOTIFICATION_REVC_DRAWING_UPDATE_DATA       = @"noti_recv_drawing_update_data";
-NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawing_delete_data";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT         = @"noti_recv_editor_photo_insert";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT     = @"noti_recv_editor_drawing_nsert";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE     = @"noti_recv_editor_drawing_update";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE     = @"noti_recv_editor_drawing_delete";
+NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_editor_disconnected";
 
 @implementation ConnectionManager
 
@@ -77,8 +80,6 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
 @synthesize ownScreenWidth, ownScreenHeight;
 
 @synthesize connectedPeerScreenWidth, connectedPeerScreenHeight;
-
-@synthesize enabledMessageQueue;
 
 + (ConnectionManager *)sharedInstance {
     static ConnectionManager *instance = nil;
@@ -105,8 +106,6 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
     
     //1:1 통신이므로 연결할 피어의 수는 하나로 제한한다.
     browserViewController.maximumNumberOfPeers = 1;
-    
-    enabledMessageQueue = YES;
 }
 
 - (void)startAdvertise {
@@ -150,8 +149,7 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
             NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED:
-            if (enabledMessageQueue) {
-                NSLog(@"enabled Message Queue");
+            if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
                 //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
                 //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
                 //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
@@ -161,6 +159,7 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
                 //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
                 if (![[receivedData objectForKey:KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
                     [[MessageSyncManager sharedInstance] putMessage:receivedData];
+
                 }
             }
             else {
@@ -181,19 +180,25 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
             NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
             break;
-        case VALUE_DATA_TYPE_PHOTO_INSERT_DATA:
-            
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
+            NSLog(@"Received Insert Photo");
             break;
-        case VALUE_DATA_TYPE_PHOTO_DELETE_DATA:
-            
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
+            NSLog(@"Received Delete Photo");
             break;
-        case VALUE_DATA_TYPE_DRAWING_INSERT_DATA:
-        case VALUE_DATA_TYPE_DRAWING_UPDATE_DATA:
-        case VALUE_DATA_TYPE_DRAWING_DELETE_DATA:
-            if (enabledMessageQueue) {
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE:
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
+            if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
                 //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
-                
+                [[MessageSyncManager sharedInstance] putMessage:receivedData];
             }
+            break;
+        case VALUE_DATA_TYPE_EDITOR_DICONNECTED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil userInfo:nil];
+            NSLog(@"Received Session Disconnected at PhotoEditorViewController");
             break;
     }
 }

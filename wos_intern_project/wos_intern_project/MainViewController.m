@@ -8,6 +8,8 @@
 
 #import "MainViewController.h"
 
+NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController";
+
 @interface MainViewController ()
 
 @end
@@ -25,6 +27,14 @@
     tabGestureRecognizer.numberOfTapsRequired = 1;
     [self.view setUserInteractionEnabled:YES];
     [self.view addGestureRecognizer:tabGestureRecognizer];
+    
+    [self addObservers];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidUnwind:) name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
+}
+
+- (void)viewDidUnwind:(NSNotification *)notification {
+    NSLog(@"Unwinded, addObservers.");
+    [self addObservers];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -47,8 +57,11 @@
     [ConnectionManager sharedInstance].advertiser.delegate = self;
     [[ConnectionManager sharedInstance] startAdvertise];
     
-    [self addObservers];
     [super viewDidAppear:animated];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -77,6 +90,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_CONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
+
 
 /**** MCBrowserViewControllerDelegate Methods. ****/
 
@@ -140,11 +154,8 @@
 
 - (void)loadPhotoFrameViewController {
     [[ConnectionManager sharedInstance] stopAdvertise];
-    [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
     [self removeObservers];
-    
-    //메시지 큐 사용을 활성화한다.
-    [[ConnectionManager sharedInstance] setEnabledMessageQueue:YES];
+    [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
 }
 
 /**** Session Communication Methods. ****/
@@ -152,10 +163,12 @@
 - (void)receivedSessionConnected:(NSNotification *)notification {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
     NSDictionary *screenSizeDictionary =
-    @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_SCREEN_SIZE],
+    @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_SCREEN_SIZE),
       KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
       KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
     
+    //메시지 큐 사용을 활성화한다.
+    [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
     if ([self.navigationController presentedViewController] == [ConnectionManager sharedInstance].browserViewController) {
@@ -170,8 +183,8 @@
             [self doneProgress];
         });
         
-        //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay + 0.5) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self loadPhotoFrameViewController];
         });
     }
