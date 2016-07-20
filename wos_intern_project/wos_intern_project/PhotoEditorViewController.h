@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
 #import "PhotoEditorCollectionView.h"
+#import "RFQuiltLayout.h"
 #import "PhotoEditorFrameViewCell.h"
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
 @property (nonatomic) NSUInteger frameIndex;

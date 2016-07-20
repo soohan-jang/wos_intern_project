@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
+#import "MessageSyncManager.h"
+
 #import "WMProgressHUD.h"
 
 #import "PhotoFrameSelectViewCell.h"

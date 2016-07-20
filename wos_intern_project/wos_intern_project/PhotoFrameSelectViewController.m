@@ -20,7 +20,21 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    //동기화 큐를 사용하지 않음으로 변경하고, 동기화 작업을 수행한다.
+    [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+    
+    //메시지 큐에 메시지가 있다면, 동기화 작업을 수행한다.
+    if (![[MessageSyncManager sharedInstance] isMessageQueueEmpty]) {
+        self.connectedPeerSelectedFrameIndex = [[[MessageSyncManager sharedInstance] getMessage] objectForKey:KEY_PHOTO_FRAME_SELECTED];
+        
+        PhotoFrameSelectViewCell *currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];
+        currentSelectedFrameCell.isConnectedPeerSelected = YES;
+        
+        [self updateFrameCells:nil currentCell:currentSelectedFrameCell];
+    }
+    
     [self addObservers];
+    
     [super viewDidAppear:animated];
 }
 
@@ -87,12 +101,20 @@
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
+                [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+                [[MessageSyncManager sharedInstance] clearMessageQueue];
+                
                 [[ConnectionManager sharedInstance] disconnectSession];
                 [self.navigationController popViewControllerAnimated:YES];
             });
         }
     }
     else if (alertView.tag == ALERT_DISCONNECTED) {
+        //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
+        [[ConnectionManager sharedInstance] setEnabledMessageQueue:NO];
+        [[MessageSyncManager sharedInstance] clearMessageQueue];
+        
         [[ConnectionManager sharedInstance] disconnectSession];
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -102,6 +124,10 @@
                                        KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:YES]};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            
+            //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
+            [[ConnectionManager sharedInstance] setEnabledMessageQueue:YES];
+            [[MessageSyncManager sharedInstance] clearMessageQueue];
             
             [self loadPhotoEditorViewController];
         }
@@ -170,7 +196,7 @@
     
     if (self.ownSelectedFrameIndex == nil) {
         sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
-                     KEY_PHOTO_FRAME_SELECTED: prevSelectedFrameIndex};
+                     KEY_PHOTO_FRAME_SELECTED: [NSNull null]};
     }
     else {
         sendData = @{KEY_DATA_TYPE: [NSNumber numberWithInteger:VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED],
@@ -253,21 +279,26 @@
 
 - (void)receivedSelectFrameChanged:(NSNotification *)notification {
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
-    self.connectedPeerSelectedFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED];
+    
+    //전달받은 액자의 인덱스값이 null일 경우, nil을 대입한다.
+    if ([[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
+        self.connectedPeerSelectedFrameIndex = nil;
+    }
+    else {
+        self.connectedPeerSelectedFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED];
+    }
     
     PhotoFrameSelectViewCell *prevSelectedFrameCell;
     PhotoFrameSelectViewCell *currentSelectedFrameCell;
     
     //이미 선택한 액자가 있는 경우,
     if (prevSelectedFrameIndex != nil) {
-        //선택된 액자와 현재 선택된 액자의 인덱스가 같으면, 선택해제에 해당한다.
-        if (prevSelectedFrameIndex.item == self.connectedPeerSelectedFrameIndex.item) {
-            currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];
+        //전달받은 액자의 인덱스값이 nil이면 선택해제된 것으로 간주한다.
+        if (self.connectedPeerSelectedFrameIndex == nil) {
+            currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:prevSelectedFrameIndex];
             currentSelectedFrameCell.isConnectedPeerSelected = NO;
-            //현재 선택된 액자가 없으므로, nil을 할당한다.
-            self.connectedPeerSelectedFrameIndex = nil;
         }
-        //인덱스가 다르면, 이전 셀의 선택을 해제하여 상태를 변경하고 현재 셀을 선택 상태로 변경한다.
+        //전달받은 액자의 값이 있다면, 액자가 선택된 것으로 간주한다.
         else {
             prevSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:prevSelectedFrameIndex];
             currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];

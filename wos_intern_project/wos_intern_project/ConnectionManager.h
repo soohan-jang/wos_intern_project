@@ -7,6 +7,7 @@
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "MessageSyncManager.h"
 
 /** MCSession Service Type **/
 /** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
@@ -77,6 +78,8 @@ extern NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA;
 @property (nonatomic, strong, readonly) MCBrowserViewController *browserViewController;
 @property (nonatomic, strong, readonly) MCNearbyServiceAdvertiser *advertiser;
 @property (nonatomic, strong, readonly) NSNumber *ownScreenWidth, *ownScreenHeight;
+
+@property (nonatomic, getter=isEnableMessageQueueu) BOOL enabledMessageQueue;
 
 /** 연결된 상대방 정보 **/
 //원래 이것도 배열로 구성해서 각 피어에 해당하는 셋을 맞춰야되는데, 당장은 1:1 통신을 하므로...

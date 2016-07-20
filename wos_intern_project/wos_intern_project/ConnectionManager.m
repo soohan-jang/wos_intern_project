@@ -78,6 +78,8 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
 
 @synthesize connectedPeerScreenWidth, connectedPeerScreenHeight;
 
+@synthesize enabledMessageQueue;
+
 + (ConnectionManager *)sharedInstance {
     static ConnectionManager *instance = nil;
     
@@ -102,7 +104,9 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
     advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:ownPeerId discoveryInfo:nil serviceType:SERVICE_TYPE];
     
     //1:1 통신이므로 연결할 피어의 수는 하나로 제한한다.
-    self.browserViewController.maximumNumberOfPeers = 1;
+    browserViewController.maximumNumberOfPeers = 1;
+    
+    enabledMessageQueue = YES;
 }
 
 - (void)startAdvertise {
@@ -146,7 +150,23 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
             NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil userInfo:receivedData];
+            if (enabledMessageQueue) {
+                NSLog(@"enabled Message Queue");
+                //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
+                //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
+                //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
+                //어차피 상대방이 액자선택에 진입하는 시점과 본인이 액자선택에 진입하는 시점이 달라서 발생하는 동기화 오류는, 그 시간 폭이 매우 작다고 보기 때문에... 성능상 큰 문제가 있을 것 같지는 않다.
+                [[MessageSyncManager sharedInstance] clearMessageQueue];
+                
+                //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
+                if (![[receivedData objectForKey:KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
+                    [[MessageSyncManager sharedInstance] putMessage:receivedData];
+                }
+            }
+            else {
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil userInfo:receivedData];
+            }
+            
             NSLog(@"Received Selected Frame Index");
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM:
@@ -168,13 +188,12 @@ NSString *const NOTIFICATION_REVC_DRAWING_DELETE_DATA       = @"noti_recv_drawin
             
             break;
         case VALUE_DATA_TYPE_DRAWING_INSERT_DATA:
-            
-            break;
         case VALUE_DATA_TYPE_DRAWING_UPDATE_DATA:
-            
-            break;
         case VALUE_DATA_TYPE_DRAWING_DELETE_DATA:
-            
+            if (enabledMessageQueue) {
+                //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
+                
+            }
             break;
     }
 }
