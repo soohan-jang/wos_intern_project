@@ -41,9 +41,9 @@
     [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
     [shapeLayer setStrokeColor:[[UIColor colorWithRed:243/255.0f green:156/255.0f blue:18/255.0f alpha:1] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
-    [shapeLayer setLineJoin:kCALineJoinRound];
+    [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];
-    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:shapeRect cornerRadius:10.0];
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:shapeRect];
     [shapeLayer setPath:path.CGPath];
     
     [self.layer addSublayer:shapeLayer];
@@ -59,9 +59,9 @@
     [self.photoImageView setImage:image];
 }
 
-- (void)removeStrokeBorder {
-    self.layer.sublayers = nil;
-}
+//- (void)removeStrokeBorder {
+//    self.layer.sublayers = nil;
+//}
 
 - (void)tapAction {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"tapped_cell" object:nil userInfo:@{@"index_path":self.indexPath}];

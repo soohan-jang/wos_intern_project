@@ -83,24 +83,19 @@
 }
 
 - (void)selectedCellAction:(NSNotification *)notification {
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    NSArray *images;
     
-    if (status == ALAuthorizationStatusNotDetermined) {
-        //아직 권한 설정 안됨. 해당 Alert 표시.
-    }
-    else if (status == ALAuthorizationStatusAuthorized) {
-        self.selectedPhotoFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:@"index_path"];
-        
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.delegate = self;
-        //picker.allowsEditing = YES;
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        
-        [self presentViewController:picker animated:YES completion:NULL];
+    self.selectedPhotoFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:@"index_path"];
+    if ([self.collectionView hasImageWithItemIndex:self.selectedPhotoFrameIndex.item]) {
+        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
     }
     else {
-        //권한 없음. 해당 Alert 표시.
+        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
     }
+    
+    SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.view Center:self.view.center CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
+    sphereMenu.delegate = self;
+    [sphereMenu presentMenu];
 }
 
 /**** UIAlertViewDelegate Methods. ****/
@@ -155,7 +150,7 @@
     PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
     [cell setIndexPath:indexPath];
     [cell setTapGestureRecognizer];
-    
+    [cell setStrokeBorder];
     [cell setImage:[self.collectionView getImageWithItemIndex:indexPath.item]];
     
     return cell;
@@ -170,13 +165,52 @@
     return [self.collectionView insetForCollectionView];
 }
 
+- (void)sphereDidSelected:(SphereMenu *)sphereMenu Index:(int)index {
+    if (index == 0) {
+        ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+        
+        if (status == ALAuthorizationStatusNotDetermined) {
+            //아직 권한 설정 안됨. 해당 Alert 표시.
+        }
+        else if (status == ALAuthorizationStatusAuthorized) {
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            //picker.allowsEditing = YES;
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:picker animated:YES completion:nil];
+            });
+        }
+        else {
+            //권한 없음. 해당 Alert 표시.
+        }
+    }
+    else if (index == 1) {
+        
+    }
+    else if (index == 2) {
+        
+    }
+    else if (index == 3) {
+        [self.collectionView delImageWithItemIndex:self.selectedPhotoFrameIndex.item];
+        [self.collectionView reloadData];
+    
+        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE),
+                                   KEY_EDITOR_PHOTO_DELETE_INDEX: @(self.selectedPhotoFrameIndex.item)};
+        
+        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    }
+    
+    [sphereMenu dismissMenu];
+}
+
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIImage *image = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
         
         [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:image];
-        
         [self.collectionView reloadData];
         
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT),

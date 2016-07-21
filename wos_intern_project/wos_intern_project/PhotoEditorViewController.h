@@ -8,12 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#import "RFQuiltLayout.h"
+#import "SphereMenu.h"
+
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 
 #import "MainViewController.h"
 #import "PhotoEditorCollectionView.h"
-#import "RFQuiltLayout.h"
 #import "PhotoEditorFrameViewCell.h"
 
 typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
@@ -21,7 +24,7 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_CONTINUE = 1
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
 @property (nonatomic) NSInteger photoFrameKind;

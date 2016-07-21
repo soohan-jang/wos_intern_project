@@ -140,7 +140,7 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
     NSDictionary *receivedData = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSUInteger dataType = [(NSNumber *)[receivedData objectForKey:KEY_DATA_TYPE] intValue];
+    NSInteger dataType = [(NSNumber *)[receivedData objectForKey:KEY_DATA_TYPE] integerValue];
     
     switch (dataType) {
         case VALUE_DATA_TYPE_SCREEN_SIZE:

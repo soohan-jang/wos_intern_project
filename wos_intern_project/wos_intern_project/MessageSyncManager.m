@@ -32,11 +32,19 @@
 
 - (void)putMessage:(NSDictionary *)message {
     if (_messageQueue == nil) {
-        _messageQueue = [[NSMutableArray alloc] initWithObjects:message, nil];
+        _messageQueue = [[NSMutableArray alloc] init];
     }
-    else {
-        [_messageQueue addObject:message];
+    
+    if ([[message objectForKey:KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
+        DrawingObject *deletedObject = (DrawingObject *)[message objectForKey:KEY_EDITOR_DRAWING_DELETE_DATA];
+        for (DrawingObject *object in _messageQueue) {
+            if ([deletedObject getID] == [object getID]) {
+                [_messageQueue removeObject:object];
+            }
+        }
     }
+    
+    [_messageQueue addObject:message];
 }
 
 - (NSDictionary *)getMessage {

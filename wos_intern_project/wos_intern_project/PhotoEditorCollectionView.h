@@ -42,5 +42,6 @@
 - (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image;
 - (UIImage *)getImageWithItemIndex:(NSInteger)item;
 - (void)delImageWithItemIndex:(NSInteger)item;
+- (BOOL)hasImageWithItemIndex:(NSInteger)item;
 
 @end

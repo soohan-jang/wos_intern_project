@@ -106,7 +106,6 @@
 
 - (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)itemIndexPath {
     PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:itemIndexPath];
-    [cell setStrokeBorder];
     return cell;
 }
 
@@ -133,6 +132,15 @@
 
 - (void)delImageWithItemIndex:(NSInteger)item {
     [self.imageDictionary removeObjectForKey:@(item)];
+}
+
+- (BOOL)hasImageWithItemIndex:(NSInteger)item {
+    if ([self.imageDictionary objectForKey:@(item)] == nil) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
 }
 
 @end
