@@ -11,6 +11,7 @@
 @interface PhotoEditorFrameViewCell: UICollectionViewCell
 
 @property (strong, nonatomic) NSIndexPath *indexPath;
+@property (strong, nonatomic) IBOutlet UIView *photoFrameView;
 @property (strong, nonatomic) IBOutlet UIScrollView *photoScrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
 
@@ -20,12 +21,6 @@
 - (void)setStrokeBorder;
 - (void)setTapGestureRecognizer;
 - (void)setImage:(UIImage *)image;
-
-/**
- 사진 액자에 스트로크 처리된 테두리를 제거한다.
- */
-- (void)removeStrokeBorder;
-
 - (void)tapAction;
 
 @end

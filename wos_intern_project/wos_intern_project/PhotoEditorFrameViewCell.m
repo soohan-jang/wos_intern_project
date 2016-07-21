@@ -46,7 +46,7 @@
     UIBezierPath *path = [UIBezierPath bezierPathWithRect:shapeRect];
     [shapeLayer setPath:path.CGPath];
     
-    [self.layer addSublayer:shapeLayer];
+    [self.photoFrameView.layer addSublayer:shapeLayer];
 }
 
 - (void)setTapGestureRecognizer {
@@ -58,10 +58,6 @@
 - (void)setImage:(UIImage *)image {
     [self.photoImageView setImage:image];
 }
-
-//- (void)removeStrokeBorder {
-//    self.layer.sublayers = nil;
-//}
 
 - (void)tapAction {
     [[NSNotificationCenter defaultCenter] postNotificationName:@"tapped_cell" object:nil userInfo:@{@"index_path":self.indexPath}];

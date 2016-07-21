@@ -209,15 +209,39 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIImage *image = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
+        CGFloat scale;
         
-        [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:image];
+        if (image.size.width > 4000) {
+            scale = 4.0f;
+        }
+        else if (image.size.width > 3000) {
+            scale = 3.0f;
+        }
+        else if (image.size.width > 2000) {
+            scale = 2.0f;
+        }
+        else {
+            scale = 1.0f;
+        }
+        
+        CGSize targetSize = CGSizeMake(image.size.width * scale, image.size.height * scale);
+        
+        UIGraphicsBeginImageContext(targetSize);
+        [image drawInRect:CGRectMake(0, 0, targetSize.width, targetSize.height)];
+        UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        image = nil;
+            
+        [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:resizedImage];
         [self.collectionView reloadData];
         
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT),
                                    KEY_EDITOR_PHOTO_INSERT_INDEX: @(self.selectedPhotoFrameIndex.item),
-                                   KEY_EDITOR_PHOTO_INSERT_DATA: image};
+                                   KEY_EDITOR_PHOTO_INSERT_DATA: resizedImage};
         
         [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+//        [ConnectionManager sharedInstance].ownSession sendResourceAtURL:<#(nonnull NSURL *)#> withName:<#(nonnull NSString *)#> toPeer:<#(nonnull MCPeerID *)#> withCompletionHandler:<#^(NSError * _Nullable error)completionHandler#>
     });
     
     [picker dismissViewControllerAnimated:YES completion:nil];
