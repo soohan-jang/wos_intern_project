@@ -110,6 +110,8 @@ extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
  */
 - (void)sendData:(NSData *)sendData;
 
+- (void)sendResourceData:(NSString *)url index:(NSInteger)index;
+
 /**
  Session의 연결을 해제한다.
  */

@@ -12,8 +12,11 @@
 
 @property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) IBOutlet UIView *photoFrameView;
+@property (strong, nonatomic) IBOutlet UIView *photoLoadingView;
 @property (strong, nonatomic) IBOutlet UIScrollView *photoScrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
+
+@property (nonatomic, assign, getter=isLoading) BOOL isLoading;
 
 /**
  사진 액자에 스트로크 처리된 테두리를 표시한다.

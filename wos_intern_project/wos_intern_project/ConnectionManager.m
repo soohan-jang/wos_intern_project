@@ -120,6 +120,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
+- (void)sendResourceData:(NSString *)url index:(NSInteger)index {
+    for (MCPeerID *peer in self.ownSession.connectedPeers) {
+        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:url] withName:[@(index) stringValue] toPeer:peer withCompletionHandler:nil];
+    }
+}
+
 - (void)disconnectSession {
     [self.ownSession disconnect];
 }
@@ -180,10 +186,6 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
             NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
             break;
-        case VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
-            NSLog(@"Received Insert Photo");
-            break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
@@ -203,8 +205,21 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     }
 }
 
-- (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {}
-- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {}
+- (void)session:(MCSession *)session didStartReceivingResourceWithName:(nonnull NSString *)resourceName fromPeer:(nonnull MCPeerID *)peerID withProgress:(nonnull NSProgress *)progress {
+    NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([resourceName integerValue])};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
+    
+    NSLog(@"Receive Start Insert Photo");
+}
+
+- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(nonnull NSString *)resourceName fromPeer:(nonnull MCPeerID *)peerID atURL:(nonnull NSURL *)localURL withError:(nullable NSError *)error {
+    NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([resourceName integerValue]),
+                                   KEY_EDITOR_PHOTO_INSERT_DATA: localURL};
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
+    
+    NSLog(@"Receive Finish Insert Photo");
+}
+
 - (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {}
 
 @end

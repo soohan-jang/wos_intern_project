@@ -6,7 +6,9 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <ImageIO/ImageIO.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #import "RFQuiltLayout.h"

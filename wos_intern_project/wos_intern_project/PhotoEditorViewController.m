@@ -116,6 +116,10 @@
                 [[ConnectionManager sharedInstance] disconnectSession];
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popToRootViewControllerAnimated:YES];
+                
+                //사용된 임시 파일을 삭제한다
+                NSFileManager *fileManager = [NSFileManager defaultManager];
+                [fileManager removeItemAtPath:NSTemporaryDirectory() error:nil];
             });
         }
     }
@@ -132,6 +136,10 @@
         if (buttonIndex == 0) {
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
             [self.navigationController popToRootViewControllerAnimated:YES];
+            
+            //사용된 임시 파일을 삭제한다
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            [fileManager removeItemAtPath:NSTemporaryDirectory() error:nil];
         }
     }
 }
@@ -152,6 +160,15 @@
     [cell setTapGestureRecognizer];
     [cell setStrokeBorder];
     [cell setImage:[self.collectionView getImageWithItemIndex:indexPath.item]];
+    
+    if ([cell isLoading]) {
+        [cell bringSubviewToFront:cell.photoLoadingView];
+        cell.photoLoadingView.hidden = NO;
+    }
+    else {
+        [cell bringSubviewToFront:cell.photoLoadingView];
+        cell.photoLoadingView.hidden = YES;
+    }
     
     return cell;
 }
@@ -207,41 +224,59 @@
 
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    NSURL *imageUrl = (NSURL *)info[UIImagePickerControllerReferenceURL];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIImage *image = (UIImage *)[info objectForKey:UIImagePickerControllerOriginalImage];
-        CGFloat scale;
-        
-        if (image.size.width > 4000) {
-            scale = 4.0f;
-        }
-        else if (image.size.width > 3000) {
-            scale = 3.0f;
-        }
-        else if (image.size.width > 2000) {
-            scale = 2.0f;
-        }
-        else {
-            scale = 1.0f;
-        }
-        
-        CGSize targetSize = CGSizeMake(image.size.width * scale, image.size.height * scale);
-        
-        UIGraphicsBeginImageContext(targetSize);
-        [image drawInRect:CGRectMake(0, 0, targetSize.width, targetSize.height)];
-        UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        image = nil;
+        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+        [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
+            PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
+            cell.isLoading = YES;
             
-        [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:resizedImage];
-        [self.collectionView reloadData];
-        
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT),
-                                   KEY_EDITOR_PHOTO_INSERT_INDEX: @(self.selectedPhotoFrameIndex.item),
-                                   KEY_EDITOR_PHOTO_INSERT_DATA: resizedImage};
-        
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-//        [ConnectionManager sharedInstance].ownSession sendResourceAtURL:<#(nonnull NSURL *)#> withName:<#(nonnull NSString *)#> toPeer:<#(nonnull MCPeerID *)#> withCompletionHandler:<#^(NSError * _Nullable error)completionHandler#>
+            UIImage *thumbnailImage = [UIImage imageWithCGImage:[asset aspectRatioThumbnail]];
+            [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:thumbnailImage];
+            [self.collectionView reloadData];
+        } failureBlock:nil];
+    });
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+        [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
+            ALAssetRepresentation *representation = [asset defaultRepresentation];
+            Byte *buffer = (Byte *)malloc((unsigned long)representation.size);
+            NSInteger buffered = [representation getBytes:buffer fromOffset:0.0 length:(unsigned long)representation.size error:nil];
+            
+            NSData *tempData = [NSData dataWithBytesNoCopy:buffer length:buffered];
+            NSString *fileName = representation.filename;
+            NSString *directory = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), fileName];
+            
+            [tempData writeToFile:directory atomically:YES];
+            
+            CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)[NSURL fileURLWithPath:directory], NULL);
+            CFDictionaryRef options = (__bridge CFDictionaryRef) @{(id) kCGImageSourceCreateThumbnailWithTransform : @YES,
+                                                                   (id) kCGImageSourceCreateThumbnailFromImageAlways : @YES,
+                                                                   (id) kCGImageSourceThumbnailMaxPixelSize : @(320)};
+            CGImageRef imgRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
+            UIImage *resizedImage = [UIImage imageWithCGImage:imgRef];
+            
+            CGImageRelease(imgRef);
+            CFRelease(imageSource);
+            
+            //원본 임시 파일 삭제
+            NSFileManager *fileManage = [NSFileManager defaultManager];
+            [fileManage removeItemAtURL:[NSURL fileURLWithPath:directory] error:nil];
+            
+            //파일 전송을 위해 리사이즈된 이미지를 임시로 저장한다.
+            tempData = UIImagePNGRepresentation(resizedImage);
+            [tempData writeToFile:directory atomically:YES];
+            
+            PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
+            cell.isLoading = NO;
+            
+            [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:resizedImage];
+            [self.collectionView reloadData];
+            
+            [[ConnectionManager sharedInstance] sendResourceData:directory index:self.selectedPhotoFrameIndex.item];
+        } failureBlock:nil];
     });
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -258,9 +293,17 @@
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSInteger item = [(NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_INDEX] integerValue];
-        UIImage *image = (UIImage *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_DATA];
+        NSURL *dataUrl = (NSURL *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_DATA];
         
-        [self.collectionView putImageWithItemIndex:item Image:image];
+        if (dataUrl == nil) {
+            
+        }
+        else {
+            NSData *data = [NSData dataWithContentsOfURL:dataUrl];
+            UIImage *image = [UIImage imageWithData:data];
+            [self.collectionView putImageWithItemIndex:item Image:image];
+        }
+        
         [self.collectionView reloadData];
     });
 }

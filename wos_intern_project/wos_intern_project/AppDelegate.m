@@ -41,6 +41,10 @@
 - (void)applicationWillTerminate:(UIApplication *)application {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     [[ConnectionManager sharedInstance] disconnectSession];
+    
+    //사용된 임시 파일을 정리한다.
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:NSTemporaryDirectory() error:nil];
 }
 
 @end
