@@ -15,8 +15,8 @@ static const float kSphereDamping = 0.3;
 
 @interface SphereMenu () <UICollisionBehaviorDelegate>
 
-@property (nonatomic, assign) NSUInteger count ;
-@property (nonatomic, strong) UIImageView *start;
+@property (nonatomic, assign) NSUInteger count;
+@property (nonatomic, strong) UIButton *start;
 @property (nonatomic, strong) NSArray *images;
 @property (nonatomic, strong) NSMutableArray *items;
 @property (nonatomic, strong) NSMutableArray *positions;
@@ -51,7 +51,8 @@ static const float kSphereDamping = 0.3;
         
         _startAngle = startAngle;
         
-        _start = [[UIImageView alloc] initWithImage:image];
+        _start = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+        [_start setImage:image forState:UIControlStateNormal];
         _start.center = center;
         _images = images;
         _count = self.images.count;
@@ -93,14 +94,17 @@ static const float kSphereDamping = 0.3;
     
     // setup the items
     for (int i = 0; i < self.count; i++) {
-        UIImageView *item = [[UIImageView alloc] initWithImage:self.images[i]];
+        CGPoint position = [self centerForSphereAtIndex:i];
+        
+        UIButton *item = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 55, 55)];
+        [item setImage:self.images[i] forState:UIControlStateNormal];
+        
         item.tag = kItemInitTag + i;
         item.userInteractionEnabled = YES;
         [self addSubview:item];
         
-        item.center = self.center;
+        item.center = self.start.center;
         
-        CGPoint position = [self centerForSphereAtIndex:i];
         [self.positions addObject:[NSValue valueWithCGPoint:position]];
         
         [item addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panned:)]];
@@ -245,7 +249,7 @@ static const float kSphereDamping = 0.3;
 
 - (void)snapToStartWithIndex:(NSUInteger)index
 {
-    UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:self.center];
+    UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:self.start.center];
     snap.damping = self.sphereDamping;
     UISnapBehavior *snapToRemove = self.snaps[index];
     self.snaps[index] = snap;

@@ -21,7 +21,8 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView.photoFrameNumber = self.photoFrameNumber;
+//    self.collectionView.photoFrameNumber = self.photoFrameNumber;
+    self.collectionView.photoFrameNumber = 4;
     
     [self addObservers];
 }
