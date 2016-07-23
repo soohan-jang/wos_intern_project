@@ -123,13 +123,13 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     //Accept
     if (buttonIndex == 1) {
-        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray objectAtIndex:0];
+        void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlerArray[0];
         invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
         
         self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_connecting", nil)];
         //Decline
     } else {
-        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray objectAtIndex:0];
+        void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlerArray[0];
         invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
     }
 }

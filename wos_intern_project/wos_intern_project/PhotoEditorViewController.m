@@ -21,8 +21,7 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-//    self.collectionView.photoFrameNumber = self.photoFrameNumber;
-    self.collectionView.photoFrameNumber = 4;
+    self.collectionView.photoFrameNumber = self.photoFrameNumber;
     
     [self addObservers];
 }
@@ -88,7 +87,7 @@
 - (void)selectedCellAction:(NSNotification *)notification {
     NSArray *images;
     
-    self.selectedPhotoFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_SELECTED_CELL_INDEXPATH];
+    self.selectedPhotoFrameIndex = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
     if ([self.collectionView hasImageWithItemIndex:self.selectedPhotoFrameIndex.item]) {
         images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
     }
@@ -97,7 +96,7 @@
     }
     
     CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue] + (self.view.frame.size.width - self.collectionView.frame.size.width) / 2.0f,
-                                           [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue] + (self.view.frame.size.height - self.collectionView.frame.size.height) / 2.0f - 10);
+                                           [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue] + (self.view.frame.size.height - self.collectionView.frame.size.height) / 2.0f + 7.5);
     
     CGFloat angleOffset;
     
@@ -281,8 +280,8 @@
 /**** Session Communication Methods ****/
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSNumber *item = (NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_INDEX];
-        NSURL *dataUrl = (NSURL *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_DATA];
+        NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
+        NSURL *dataUrl = (NSURL *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA];
         
         //Data Receive Started.
         if (dataUrl == nil) {
@@ -317,7 +316,7 @@
 
 - (void)receivedPhotoDelete:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger item = [(NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue];
+        NSInteger item = [(NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue];
         [self.collectionView delImageWithItemIndex:item];
         [self.collectionView reloadData];
     });

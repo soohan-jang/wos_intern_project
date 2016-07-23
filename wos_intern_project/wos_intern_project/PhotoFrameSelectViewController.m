@@ -122,7 +122,7 @@
     else if (alertView.tag == ALERT_FRAME_CONFIRM) {
         if (buttonIndex == 1) {
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK),
-                                       KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:YES]};
+                                       KEY_PHOTO_FRAME_CONFIRM_ACK: @YES};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
@@ -134,7 +134,7 @@
         }
         else {
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK),
-                                       KEY_PHOTO_FRAME_CONFIRM_ACK: [NSNumber numberWithBool:NO]};
+                                       KEY_PHOTO_FRAME_CONFIRM_ACK: @NO};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         }
@@ -282,11 +282,11 @@
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
     
     //전달받은 액자의 인덱스값이 null일 경우, nil을 대입한다.
-    if ([[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
+    if ([notification.userInfo[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
         self.connectedPeerSelectedFrameIndex = nil;
     }
     else {
-        self.connectedPeerSelectedFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_SELECTED];
+        self.connectedPeerSelectedFrameIndex = (NSIndexPath *)notification.userInfo[KEY_PHOTO_FRAME_SELECTED];
     }
     
     PhotoFrameSelectViewCell *prevSelectedFrameCell;
@@ -328,7 +328,7 @@
 }
 
 - (void)receivedSelectFrameConfirmAck:(NSNotification *)notification {
-    NSNumber *confirmAck = (NSNumber *)[notification.userInfo objectForKey:KEY_PHOTO_FRAME_CONFIRM_ACK];
+    NSNumber *confirmAck = (NSNumber *)notification.userInfo[KEY_PHOTO_FRAME_CONFIRM_ACK];
     
     if ([confirmAck boolValue]) {
         //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.

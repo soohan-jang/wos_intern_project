@@ -46,7 +46,6 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 - (IBAction)saveAction:(id)sender;
 
 //각각의 메뉴에 대응한다.
-- (IBAction)photoButtonAction:(id)sender;
 - (IBAction)penButtonAction:(id)sender;
 - (IBAction)textButtonAction:(id)sender;
 - (IBAction)stickerButtonAction:(id)sender;

@@ -150,7 +150,7 @@ NSInteger const STATE_DOWNLOADING   = 2;
 }
 
 - (UIImage *)getImageWithItemIndex:(NSInteger)item {
-    return (UIImage *)[self.imageDictionary objectForKey:@(item)];
+    return (UIImage *)self.imageDictionary[@(item)];
 }
 
 - (void)delImageWithItemIndex:(NSInteger)item {
@@ -158,7 +158,7 @@ NSInteger const STATE_DOWNLOADING   = 2;
 }
 
 - (BOOL)hasImageWithItemIndex:(NSInteger)item {
-    if ([self.imageDictionary objectForKey:@(item)] == nil) {
+    if (self.imageDictionary[@(item)] == nil) {
         return NO;
     }
     else {

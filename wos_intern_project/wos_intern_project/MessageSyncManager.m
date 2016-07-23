@@ -35,8 +35,8 @@
         _messageQueue = [[NSMutableArray alloc] init];
     }
     
-    if ([[message objectForKey:KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
-        DrawingObject *deletedObject = (DrawingObject *)[message objectForKey:KEY_EDITOR_DRAWING_DELETE_DATA];
+    if ([message[KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
+        DrawingObject *deletedObject = (DrawingObject *)message[KEY_EDITOR_DRAWING_DELETE_DATA];
         for (DrawingObject *object in _messageQueue) {
             if ([deletedObject getID] == [object getID]) {
                 [_messageQueue removeObject:object];
@@ -49,7 +49,7 @@
 
 - (NSDictionary *)getMessage {
     if (_messageQueue.count > 0) {
-        NSDictionary *message = [_messageQueue objectAtIndex:0];
+        NSDictionary *message = _messageQueue[0];
         [_messageQueue removeObjectAtIndex:0];
         return message;
     }

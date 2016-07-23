@@ -101,8 +101,8 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     ownSession = [[MCSession alloc] initWithPeer:ownPeerId];
     ownSession.delegate = self;
     
-    ownScreenWidth = [NSNumber numberWithFloat:width];
-    ownScreenHeight = [NSNumber numberWithFloat:height];
+    ownScreenWidth = @(width);
+    ownScreenHeight = @(height);
     
     browserViewController = [[MCBrowserViewController alloc] initWithServiceType:SERVICE_TYPE session:ownSession];
     advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:ownPeerId discoveryInfo:nil serviceType:SERVICE_TYPE];
@@ -152,12 +152,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
     NSDictionary *receivedData = (NSDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSInteger dataType = [(NSNumber *)[receivedData objectForKey:KEY_DATA_TYPE] integerValue];
+    NSInteger dataType = [(NSNumber *)receivedData[KEY_DATA_TYPE] integerValue];
     
     switch (dataType) {
         case VALUE_DATA_TYPE_SCREEN_SIZE:
-            connectedPeerScreenWidth = [receivedData objectForKey:KEY_SCREEN_SIZE_WIDTH];
-            connectedPeerScreenHeight = [receivedData objectForKey:KEY_SCREEN_SIZE_HEIGHT];
+            connectedPeerScreenWidth = receivedData[KEY_SCREEN_SIZE_WIDTH];
+            connectedPeerScreenHeight = receivedData[KEY_SCREEN_SIZE_HEIGHT];
             NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED:
@@ -169,7 +169,7 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
                 [[MessageSyncManager sharedInstance] clearMessageQueue];
                 
                 //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
-                if (![[receivedData objectForKey:KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
+                if (![receivedData[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
                     [[MessageSyncManager sharedInstance] putMessage:receivedData];
 
                 }
@@ -230,7 +230,7 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     NSLog(@"Receive Finish Insert Photo");
     
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
-                               KEY_EDITOR_PHOTO_INSERT_ACK: [NSNumber numberWithBool:YES],
+                               KEY_EDITOR_PHOTO_INSERT_ACK: @YES,
                                KEY_EDITOR_PHOTO_INSERT_INDEX: @([resourceName integerValue])};
     
     [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
