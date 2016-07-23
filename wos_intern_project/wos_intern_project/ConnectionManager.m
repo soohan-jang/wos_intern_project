@@ -24,11 +24,12 @@ NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK      = 202;
 NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED     = 203;
 
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT          = 300;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 301;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 302;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 303;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 304;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 305;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK      = 301;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 302;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 303;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 304;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 305;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 306;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
@@ -47,6 +48,7 @@ NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                   = @"photo_frame_co
 /** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
 NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX                 = @"photo_insert_index";
 NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                  = @"photo_insert_data";
+NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                   = @"photo_insert_ack";
 NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
 NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
@@ -67,6 +69,7 @@ NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED    = @"noti_recv_phot
 
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT         = @"noti_recv_editor_photo_insert";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK     = @"noti_recv_editor_photo_insert_ack";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
 //NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT     = @"noti_recv_editor_drawing_nsert";
 //NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE     = @"noti_recv_editor_drawing_update";
@@ -120,9 +123,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
-- (void)sendResourceData:(NSString *)url index:(NSInteger)index {
+- (void)sendResourceDataWithFilename:(NSString *)filename index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
-        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:url] withName:[@(index) stringValue] toPeer:peer withCompletionHandler:nil];
+//        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_thumbnail", NSTemporaryDirectory(), filename]] withName:[@(index) stringValue] toPeer:peer withCompletionHandler:^(NSError *error) {
+//        }];
+        
+        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_standard", NSTemporaryDirectory(), filename]] withName:[@(index) stringValue] toPeer:peer withCompletionHandler:nil];
     }
 }
 
@@ -186,6 +192,10 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
             NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
             break;
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil userInfo:receivedData];
+            NSLog(@"Received Insert Photo Ack");
+            break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
@@ -218,6 +228,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
     
     NSLog(@"Receive Finish Insert Photo");
+    
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
+                               KEY_EDITOR_PHOTO_INSERT_ACK: [NSNumber numberWithBool:YES],
+                               KEY_EDITOR_PHOTO_INSERT_INDEX: @([resourceName integerValue])};
+    
+    [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {}

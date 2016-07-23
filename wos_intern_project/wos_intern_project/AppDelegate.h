@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ConnectionManager.h"
+#import "ImageUtility.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

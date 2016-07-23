@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -221,10 +221,10 @@
                                                                 </mask>
                                                             </variation>
                                                         </scrollView>
-                                                        <view hidden="YES" alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YLj-8d-CO1">
+                                                        <imageView alpha="0.59999999999999998" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Downloading" translatesAutoresizingMaskIntoConstraints="NO" id="uGA-9b-WI7">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                        </view>
+                                                        </imageView>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 </view>
@@ -232,17 +232,17 @@
                                                     <constraint firstAttribute="bottom" secondItem="MMh-dV-bQl" secondAttribute="bottom" constant="2" id="6Jx-6k-Svw"/>
                                                     <constraint firstAttribute="trailing" secondItem="MMh-dV-bQl" secondAttribute="trailing" constant="2" id="6kO-VU-Ill"/>
                                                     <constraint firstItem="3vN-VQ-JBz" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leadingMargin" id="Bqz-aO-6PG"/>
+                                                    <constraint firstItem="uGA-9b-WI7" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" id="CJI-UL-xN1"/>
                                                     <constraint firstAttribute="trailing" secondItem="MMh-dV-bQl" secondAttribute="trailing" constant="2" id="KOv-Vp-dcJ"/>
-                                                    <constraint firstItem="YLj-8d-CO1" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" id="KY4-xR-TiM"/>
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leadingMargin" id="OcJ-i9-8oJ"/>
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" constant="2" id="SRG-Xs-tkQ"/>
                                                     <constraint firstAttribute="trailingMargin" secondItem="3vN-VQ-JBz" secondAttribute="trailing" id="T1a-bi-E1Z"/>
-                                                    <constraint firstAttribute="bottom" secondItem="YLj-8d-CO1" secondAttribute="bottom" id="Vsp-GC-IdO"/>
                                                     <constraint firstItem="3vN-VQ-JBz" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" id="VuH-iP-moe"/>
                                                     <constraint firstAttribute="bottomMargin" secondItem="3vN-VQ-JBz" secondAttribute="bottom" id="W95-TM-EIt"/>
                                                     <constraint firstItem="3vN-VQ-JBz" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="topMargin" id="aB6-xV-Rjt"/>
                                                     <constraint firstAttribute="bottom" secondItem="3vN-VQ-JBz" secondAttribute="bottom" id="eWv-JH-D29"/>
                                                     <constraint firstItem="3vN-VQ-JBz" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" id="fZQ-O4-gHZ"/>
+                                                    <constraint firstAttribute="trailing" secondItem="uGA-9b-WI7" secondAttribute="trailing" id="g4j-Ln-gKP"/>
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" constant="2" id="gbS-9i-yzp"/>
                                                     <constraint firstAttribute="trailing" secondItem="3vN-VQ-JBz" secondAttribute="trailing" id="hBk-6M-oSr"/>
                                                     <constraint firstAttribute="bottom" secondItem="MMh-dV-bQl" secondAttribute="bottom" constant="2" id="ipy-bB-2aH"/>
@@ -250,9 +250,9 @@
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" constant="2" id="nZJ-rx-iQx"/>
                                                     <constraint firstAttribute="bottomMargin" secondItem="MMh-dV-bQl" secondAttribute="bottom" id="s4v-B3-4kl"/>
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="leading" secondItem="DjO-mb-ZRh" secondAttribute="leading" constant="2" id="sxh-KB-fLq"/>
-                                                    <constraint firstAttribute="trailing" secondItem="YLj-8d-CO1" secondAttribute="trailing" id="ujM-us-KgF"/>
+                                                    <constraint firstItem="uGA-9b-WI7" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" id="uLD-SO-rQP"/>
+                                                    <constraint firstAttribute="bottom" secondItem="uGA-9b-WI7" secondAttribute="bottom" id="vDN-87-bba"/>
                                                     <constraint firstItem="MMh-dV-bQl" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="topMargin" id="wU5-pD-Ynq"/>
-                                                    <constraint firstItem="YLj-8d-CO1" firstAttribute="top" secondItem="DjO-mb-ZRh" secondAttribute="top" id="z60-zR-ghn"/>
                                                 </constraints>
                                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                                                 <variation key="default">
@@ -274,7 +274,7 @@
                                                 <connections>
                                                     <outlet property="photoFrameView" destination="3vN-VQ-JBz" id="qVg-nI-ZqJ"/>
                                                     <outlet property="photoImageView" destination="LtK-NN-YZ5" id="pGQ-pt-UrE"/>
-                                                    <outlet property="photoLoadingView" destination="YLj-8d-CO1" id="TwL-2l-RoB"/>
+                                                    <outlet property="photoLoadingView" destination="uGA-9b-WI7" id="bsH-7y-Hyz"/>
                                                     <outlet property="photoScrollView" destination="MMh-dV-bQl" id="N66-Ba-Qos"/>
                                                 </connections>
                                             </collectionViewCell>
@@ -589,6 +589,7 @@
         <image name="BluetoothIcon" width="181" height="243"/>
         <image name="Delete" width="50" height="50"/>
         <image name="Done" width="50" height="50"/>
+        <image name="Downloading" width="50" height="50"/>
         <image name="Modify" width="50" height="50"/>
         <image name="Save" width="50" height="50"/>
         <image name="Share" width="50" height="50"/>

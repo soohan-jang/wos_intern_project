@@ -9,9 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "PhotoEditorFrameViewCell.h"
 
+extern NSInteger const STATE_NONE;
+extern NSInteger const STATE_UPLOADING;
+extern NSInteger const STATE_DOWNLOADING;
+
 @interface PhotoEditorCollectionView : UICollectionView
 
-@property (nonatomic) NSInteger photoFrameKind;
+@property (nonatomic) NSInteger photoFrameNumber;
+
+@property (atomic, strong) NSMutableDictionary *loadingStateDictionary;
 @property (atomic, strong) NSMutableDictionary *imageDictionary;
 
 /**
@@ -39,6 +45,15 @@
  */
 - (UIEdgeInsets)insetForCollectionView;
 
+/**
+ 각 Cell들의 상태를 저장 및 관리하기 위한 함수이다.
+ */
+- (void)setLoadingStateWithItemIndex:(NSInteger)item State:(NSInteger)state;
+- (NSInteger)getLoadingStateWithItemIndex:(NSInteger)item;
+
+/**
+ 각 Cell들의 이미지를 저장 및 관리하기 위한 함수이다.
+ */
 - (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image;
 - (UIImage *)getImageWithItemIndex:(NSInteger)item;
 - (void)delImageWithItemIndex:(NSInteger)item;

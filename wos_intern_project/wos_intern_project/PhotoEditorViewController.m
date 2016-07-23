@@ -21,7 +21,7 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView.photoFrameKind = self.photoFrameKind;
+    self.collectionView.photoFrameNumber = self.photoFrameNumber;
     
     [self addObservers];
 }
@@ -62,30 +62,32 @@
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsert:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsertAck:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoDelete:) name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirm:) name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedCellAction:) name:@"tapped_cell" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedCellAction:) name:NOTIFICATION_SELECTED_CELL object:nil];
 }
 
 - (void)removeObservers {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
 //    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"tapped_cell" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SELECTED_CELL object:nil];
 }
 
 - (void)selectedCellAction:(NSNotification *)notification {
     NSArray *images;
     
-    self.selectedPhotoFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:@"index_path"];
+    self.selectedPhotoFrameIndex = (NSIndexPath *)[notification.userInfo objectForKey:KEY_SELECTED_CELL_INDEXPATH];
     if ([self.collectionView hasImageWithItemIndex:self.selectedPhotoFrameIndex.item]) {
         images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
     }
@@ -118,8 +120,7 @@
                 [self.navigationController popToRootViewControllerAnimated:YES];
                 
                 //사용된 임시 파일을 삭제한다
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                [fileManager removeItemAtPath:NSTemporaryDirectory() error:nil];
+                [[ImageUtility sharedInstance] removeAllTempImages];
             });
         }
     }
@@ -138,8 +139,7 @@
             [self.navigationController popToRootViewControllerAnimated:YES];
             
             //사용된 임시 파일을 삭제한다
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:NSTemporaryDirectory() error:nil];
+            [[ImageUtility sharedInstance] removeAllTempImages];
         }
     }
 }
@@ -160,15 +160,7 @@
     [cell setTapGestureRecognizer];
     [cell setStrokeBorder];
     [cell setImage:[self.collectionView getImageWithItemIndex:indexPath.item]];
-    
-    if ([cell isLoading]) {
-        [cell bringSubviewToFront:cell.photoLoadingView];
-        cell.photoLoadingView.hidden = NO;
-    }
-    else {
-        [cell bringSubviewToFront:cell.photoLoadingView];
-        cell.photoLoadingView.hidden = YES;
-    }
+    [cell setLoadingImage:[self.collectionView getLoadingStateWithItemIndex:indexPath.item]];
     
     return cell;
 }
@@ -224,58 +216,36 @@
 
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
     NSURL *imageUrl = (NSURL *)info[UIImagePickerControllerReferenceURL];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
         [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
-            PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
-            cell.isLoading = YES;
+            ALAssetRepresentation *representation = [asset defaultRepresentation];
             
-            UIImage *thumbnailImage = [UIImage imageWithCGImage:[asset aspectRatioThumbnail]];
-            [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:thumbnailImage];
-            [self.collectionView reloadData];
+            [self.collectionView setLoadingStateWithItemIndex:self.selectedPhotoFrameIndex.item State:STATE_UPLOADING];
+            
+            if ([[ImageUtility sharedInstance] makeTempImageWithAssetRepresentation:representation]) {
+                if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_THUMBNAIL]) {
+                    UIImage *thumbnailImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_THUMBNAIL]];
+                    [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:thumbnailImage];
+                    [self.collectionView reloadData];
+                }
+            }
         } failureBlock:nil];
     });
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
         [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
             ALAssetRepresentation *representation = [asset defaultRepresentation];
-            Byte *buffer = (Byte *)malloc((unsigned long)representation.size);
-            NSInteger buffered = [representation getBytes:buffer fromOffset:0.0 length:(unsigned long)representation.size error:nil];
             
-            NSData *tempData = [NSData dataWithBytesNoCopy:buffer length:buffered];
-            NSString *fileName = representation.filename;
-            NSString *directory = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), fileName];
+            if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
+                UIImage *standardImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
+                [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:standardImage];
+                [self.collectionView reloadData];
+            }
             
-            [tempData writeToFile:directory atomically:YES];
-            
-            CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)[NSURL fileURLWithPath:directory], NULL);
-            CFDictionaryRef options = (__bridge CFDictionaryRef) @{(id) kCGImageSourceCreateThumbnailWithTransform : @YES,
-                                                                   (id) kCGImageSourceCreateThumbnailFromImageAlways : @YES,
-                                                                   (id) kCGImageSourceThumbnailMaxPixelSize : @(320)};
-            CGImageRef imgRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
-            UIImage *resizedImage = [UIImage imageWithCGImage:imgRef];
-            
-            CGImageRelease(imgRef);
-            CFRelease(imageSource);
-            
-            //원본 임시 파일 삭제
-            NSFileManager *fileManage = [NSFileManager defaultManager];
-            [fileManage removeItemAtURL:[NSURL fileURLWithPath:directory] error:nil];
-            
-            //파일 전송을 위해 리사이즈된 이미지를 임시로 저장한다.
-            tempData = UIImagePNGRepresentation(resizedImage);
-            [tempData writeToFile:directory atomically:YES];
-            
-            PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
-            cell.isLoading = NO;
-            
-            [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:resizedImage];
-            [self.collectionView reloadData];
-            
-            [[ConnectionManager sharedInstance] sendResourceData:directory index:self.selectedPhotoFrameIndex.item];
+            [[ConnectionManager sharedInstance] sendResourceDataWithFilename:representation.filename index:self.selectedPhotoFrameIndex.item];
         } failureBlock:nil];
     });
     
@@ -292,18 +262,36 @@
 /**** Session Communication Methods ****/
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSInteger item = [(NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_INDEX] integerValue];
+        NSNumber *item = (NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_INDEX];
         NSURL *dataUrl = (NSURL *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_INSERT_DATA];
         
+        //Data Receive Started.
         if (dataUrl == nil) {
-            
+            [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_DOWNLOADING];
         }
+        //Data Receive Finished.
         else {
+            [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_NONE];
+            
             NSData *data = [NSData dataWithContentsOfURL:dataUrl];
             UIImage *image = [UIImage imageWithData:data];
-            [self.collectionView putImageWithItemIndex:item Image:image];
+            [self.collectionView putImageWithItemIndex:[item integerValue] Image:image];
         }
         
+        [self.collectionView reloadData];
+    });
+}
+
+- (void)receivedPhotoInsertAck:(NSNotification *)notification {
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        NSNumber *receivedAck = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_ACK];
+//        
+//        if ([receivedAck boolValue]) {
+//        }
+//        else {
+//        }
+        NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
+        [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_NONE];
         [self.collectionView reloadData];
     });
 }
@@ -311,7 +299,6 @@
 - (void)receivedPhotoDelete:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSInteger item = [(NSNumber *)[notification.userInfo objectForKey:KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue];
-        
         [self.collectionView delImageWithItemIndex:item];
         [self.collectionView reloadData];
     });

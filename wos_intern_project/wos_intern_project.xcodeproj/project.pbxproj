@@ -36,6 +36,7 @@
 		4B4490A11D3A609800E5972F /* DrawingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A01D3A609800E5972F /* DrawingManager.m */; };
 		4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */; };
 		4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
+		4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490AA1D426E2800E5972F /* ImageUtility.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +118,8 @@
 		4B4490A01D3A609800E5972F /* DrawingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingManager.m; sourceTree = "<group>"; };
 		4B4490A21D3A60A600E5972F /* DrawingSyncManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingSyncManager.h; sourceTree = "<group>"; };
 		4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingSyncManager.m; sourceTree = "<group>"; };
+		4B4490A91D426E2800E5972F /* ImageUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtility.h; sourceTree = "<group>"; };
+		4B4490AA1D426E2800E5972F /* ImageUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUtility.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -275,6 +278,8 @@
 				4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */,
 				4A0C937E1D3F0A900080E9A6 /* MessageSyncManager.h */,
 				4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */,
+				4B4490A91D426E2800E5972F /* ImageUtility.h */,
+				4B4490AA1D426E2800E5972F /* ImageUtility.m */,
 				4B44909F1D3A609800E5972F /* DrawingManager.h */,
 				4B4490A01D3A609800E5972F /* DrawingManager.m */,
 				4B4490A21D3A60A600E5972F /* DrawingSyncManager.h */,
@@ -449,6 +454,7 @@
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
+				4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */,
 				4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */,
 				4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,

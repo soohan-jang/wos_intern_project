@@ -10,6 +10,11 @@
 
 #define DEFAULT_MARGIN  5
 
+NSInteger const STATE_NONE          = 0;
+NSInteger const STATE_UPLOADING     = 1;
+NSInteger const STATE_DOWNLOADING   = 2;
+
+
 @implementation PhotoEditorCollectionView
 
 - (CGSize)buildEachPhotoFrameSize:(NSInteger)itemIndex {
@@ -28,19 +33,19 @@
     /** 너비 0.5. 높이 0.5
      return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
     **/
-    if (self.photoFrameKind == 0) {
+    if (self.photoFrameNumber == 0) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, containerHeight - DEFAULT_MARGIN);
     }
-    else if (self.photoFrameKind == 1) {
+    else if (self.photoFrameNumber == 1) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
     }
-    else if (self.photoFrameKind == 2) {
+    else if (self.photoFrameNumber == 2) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
     }
-    else if (self.photoFrameKind == 3) {
+    else if (self.photoFrameNumber == 3) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
     }
-    else if (self.photoFrameKind == 4) {
+    else if (self.photoFrameNumber == 4) {
         if (itemIndex == 0) {
             return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
@@ -48,7 +53,7 @@
             return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
     }
-    else if (self.photoFrameKind == 5) {
+    else if (self.photoFrameNumber == 5) {
         if (itemIndex == 1) {
             return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
         }
@@ -56,22 +61,22 @@
             return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
     }
-    else if (self.photoFrameKind == 6) {
+    else if (self.photoFrameNumber == 6) {
         
     }
-    else if (self.photoFrameKind == 7) {
+    else if (self.photoFrameNumber == 7) {
         
     }
-    else if (self.photoFrameKind == 8) {
+    else if (self.photoFrameNumber == 8) {
         
     }
-    else if (self.photoFrameKind == 9) {
+    else if (self.photoFrameNumber == 9) {
         
     }
-    else if (self.photoFrameKind == 10) {
+    else if (self.photoFrameNumber == 10) {
         
     }
-    else if (self.photoFrameKind == 11) {
+    else if (self.photoFrameNumber == 11) {
         
     }
     else {
@@ -82,7 +87,7 @@
 }
 
 - (NSInteger)numberOfItems {
-    switch (self.photoFrameKind) {
+    switch (self.photoFrameNumber) {
         case 0:
             return 1;
         case 1:
@@ -115,6 +120,24 @@
 
 - (UIEdgeInsets)insetForCollectionView {
     return UIEdgeInsetsMake(DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f, DEFAULT_MARGIN / 2.0f);
+}
+
+- (void)setLoadingStateWithItemIndex:(NSInteger)item State:(NSInteger)state {
+    if (self.loadingStateDictionary == nil) {
+        self.loadingStateDictionary = [@{@(item): @(state)} mutableCopy];
+    }
+    else {
+        [self.loadingStateDictionary setObject:@(state) forKey:@(item)];
+    }
+}
+
+- (NSInteger)getLoadingStateWithItemIndex:(NSInteger)item {
+    if (self.loadingStateDictionary[@(item)] == nil) {
+        return STATE_NONE;
+    }
+    else {
+        return [self.loadingStateDictionary[@(item)] integerValue];
+    }
 }
 
 - (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image {

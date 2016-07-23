@@ -8,20 +8,14 @@
 
 #import "PhotoEditorFrameViewCell.h"
 
+NSString *const NOTIFICATION_SELECTED_CELL  = @"notification_selected_cell";
+NSString *const KEY_SELECTED_CELL_INDEXPATH = @"selected_cell_indexpath";
+
 @interface PhotoEditorFrameViewCell () <UIScrollViewDelegate>
 
 @end
 
 @implementation PhotoEditorFrameViewCell
-
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if (self) {
-        self.isLoading = NO;
-    }
-    return self;
-}
 
 - (void)setStrokeBorder {
     CGFloat defaultMargin = 5.0f;
@@ -56,10 +50,28 @@
     [self.photoImageView setImage:image];
 }
 
-- (void)tapAction {
-    if (!self.isLoading) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"tapped_cell" object:nil userInfo:@{@"index_path":self.indexPath}];
+- (void)setLoadingImage:(NSInteger)loadingState {
+    //STATE_NONE
+    if (loadingState == 0) {
+        self.photoLoadingView.hidden = YES;
     }
+    else {
+        self.photoLoadingView.hidden = NO;
+        
+        //STATE_UPLOADING
+        if (loadingState == 1) {
+            [self.photoLoadingView setImage:[UIImage imageNamed:@"Uploading"]];
+
+        }
+        //STATE DONWLOADING
+        else if (loadingState == 2) {
+            [self.photoLoadingView setImage:[UIImage imageNamed:@"Downloading"]];
+        }
+    }
+}
+
+- (void)tapAction {
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SELECTED_CELL object:nil userInfo:@{KEY_SELECTED_CELL_INDEXPATH:self.indexPath}];
 }
 
 @end
