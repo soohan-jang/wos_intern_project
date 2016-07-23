@@ -95,7 +95,25 @@
         images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
     }
     
-    SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.view Center:self.view.center CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
+    CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue] + (self.view.frame.size.width - self.collectionView.frame.size.width) / 2.0f,
+                                           [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue] + (self.view.frame.size.height - self.collectionView.frame.size.height) / 2.0f - 10);
+    
+    CGFloat angleOffset;
+    
+    //사진 액자가 화면의 왼쪽에 위치할 때,
+    if (sphereMenuCenter.x < self.view.center.x) {
+        angleOffset = M_PI * 1.1f;
+    }
+    //사진 액자가 화면의 오른쪽에 위치할 때,
+    else if (sphereMenuCenter.x > self.view.center.x) {
+        angleOffset = M_PI * 2.1f;
+    }
+    //사진 액자가 화면의 중간에 위치할 때,
+    else {
+        angleOffset = M_PI;
+    }
+    
+    SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.view Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
     sphereMenu.delegate = self;
     [sphereMenu presentMenu];
 }

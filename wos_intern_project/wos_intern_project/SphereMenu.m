@@ -39,7 +39,7 @@ static const float kSphereDamping = 0.3;
 
 @implementation SphereMenu
 
-- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images {
+- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle {
     if (self = [super init]) {
         
         self.bounds = CGRectMake(0, 0, rootView.bounds.size.width, rootView.bounds.size.height);
@@ -48,6 +48,8 @@ static const float kSphereDamping = 0.3;
         _angle = kAngleOffset;
         _sphereLength = kSphereLength;
         _sphereDamping = kSphereDamping;
+        
+        _startAngle = startAngle;
         
         _start = [[UIImageView alloc] initWithImage:image];
         _start.center = center;
@@ -157,8 +159,10 @@ static const float kSphereDamping = 0.3;
 
 - (CGPoint)centerForSphereAtIndex:(int)index
 {
-    CGFloat firstAngle = M_PI + (M_PI_2 - self.angle) + index * self.angle;
-    CGPoint startPoint = self.center;
+    //self.angle이 offset이다. (M_PI_2 - self.angle)는 offset을 의미하고, index * self.angle로 각 인덱스별로 offset를 늘려 설정한다.
+    //따라서 서브메뉴의 시작각도를 변경하려면 수식 맨 앞에 있는 PI값을 건드리면 된다.
+    CGFloat firstAngle = _startAngle + (M_PI_2 - self.angle) + index * self.angle;
+    CGPoint startPoint = self.start.center;
     CGFloat x = startPoint.x + cos(firstAngle) * self.sphereLength;
     CGFloat y = startPoint.y + sin(firstAngle) * self.sphereLength;
     CGPoint position = CGPointMake(x, y);

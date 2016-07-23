@@ -12,7 +12,7 @@
 
 @interface SphereMenu : UIView
 
-- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images;
+- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle;
 - (void)presentMenu;
 - (void)dismissMenu;
 
@@ -22,6 +22,7 @@
 @property (nonatomic, assign) CGFloat sphereDamping;
 @property (nonatomic, assign) CGFloat sphereLength;
 
+@property (nonatomic, assign) CGFloat startAngle;
 
 @end
 

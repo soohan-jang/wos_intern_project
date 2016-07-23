@@ -10,10 +10,8 @@
 
 NSString *const NOTIFICATION_SELECTED_CELL  = @"notification_selected_cell";
 NSString *const KEY_SELECTED_CELL_INDEXPATH = @"selected_cell_indexpath";
-
-@interface PhotoEditorFrameViewCell () <UIScrollViewDelegate>
-
-@end
+NSString *const KEY_SELECTED_CELL_CENTER_X  = @"selected_cell_center_x";
+NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 
 @implementation PhotoEditorFrameViewCell
 
@@ -71,7 +69,11 @@ NSString *const KEY_SELECTED_CELL_INDEXPATH = @"selected_cell_indexpath";
 }
 
 - (void)tapAction {
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SELECTED_CELL object:nil userInfo:@{KEY_SELECTED_CELL_INDEXPATH:self.indexPath}];
+    NSDictionary *sendData = @{KEY_SELECTED_CELL_INDEXPATH:self.indexPath,
+                               KEY_SELECTED_CELL_CENTER_X:@(self.center.x),
+                               KEY_SELECTED_CELL_CENTER_Y:@(self.center.y)};
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SELECTED_CELL object:nil userInfo:sendData];
 }
 
 @end

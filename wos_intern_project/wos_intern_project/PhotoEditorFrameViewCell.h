@@ -10,6 +10,8 @@
 
 extern NSString *const NOTIFICATION_SELECTED_CELL;
 extern NSString *const KEY_SELECTED_CELL_INDEXPATH;
+extern NSString *const KEY_SELECTED_CELL_CENTER_X;
+extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
 
 @interface PhotoEditorFrameViewCell: UICollectionViewCell
 
