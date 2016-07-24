@@ -21,7 +21,10 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.collectionView.photoFrameNumber = self.photoFrameNumber;
+//    self.collectionView.photoFrameNumber = self.photoFrameNumber;
+    self.photoFrameNumber = 11;
+    self.collectionView.photoFrameNumber = 11;
+    
     
     [self addObservers];
 }
@@ -192,6 +195,12 @@
     return [self.collectionView insetForCollectionView];
 }
 
+/**** RFQuiltLayoutDelegate Method ****/
+//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout blockSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+//    return [self.collectionView sizeForItemAtIndexPath:indexPath];
+//}
+
+/**** SphereMenu Delegate Method ****/
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu Index:(int)index {
     if (index == 0) {
         ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];

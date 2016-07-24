@@ -54,19 +54,12 @@
 }
 
 - (IBAction)doneAction:(id)sender {
-    if (self.ownSelectedFrameIndex.item > 4) {
-        UIAlertView *alertView =[[UIAlertView alloc] initWithTitle:@"구현되지 않음" message:@"현재 1~5번 액자만 사용 가능합니다." delegate:nil cancelButtonTitle:@"확인" otherButtonTitles:nil, nil];
-        [alertView show];
-    }
-    else {
-        self.doneButton.enabled = NO;
-        
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM)};
-        
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-        
-        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
-    }
+    self.doneButton.enabled = NO;
+    
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM)};
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    
+    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

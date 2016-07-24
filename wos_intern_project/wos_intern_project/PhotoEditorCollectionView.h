@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+
+#import "RFQuiltLayout.h"
+
 #import "PhotoEditorFrameViewCell.h"
 
 extern NSInteger const STATE_NONE;

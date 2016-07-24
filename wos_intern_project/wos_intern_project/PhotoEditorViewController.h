@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_CONTINUE = 1
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, RFQuiltLayoutDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
 /**
