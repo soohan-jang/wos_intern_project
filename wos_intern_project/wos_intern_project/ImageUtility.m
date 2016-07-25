@@ -9,7 +9,7 @@
 #import "ImageUtility.h"
 
 NSInteger const IMAGE_RESIZE_THUMBNAIL = 90;
-NSInteger const IMAGE_RESIZE_STANDARD  = 320 * 2;
+NSInteger const IMAGE_RESIZE_STANDARD  = 480;
 
 NSString *const FILE_POSTFIX_THUMBNAIL = @"_thumbnail";
 NSString *const FILE_POSTFIX_STANDARD  = @"_standard";

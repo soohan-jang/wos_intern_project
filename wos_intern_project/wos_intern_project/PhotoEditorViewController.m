@@ -62,7 +62,7 @@
         viewController.imageUrl = self.selectedImageURL;
         
         UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
-        viewController.ratio = cell.frame.size.width / cell.frame.size.height;
+        viewController.cellSize = cell.bounds.size;
     }
 }
 
@@ -211,6 +211,7 @@
         else if (status == ALAuthorizationStatusAuthorized) {
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
+            picker.allowsEditing = YES;
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             
             dispatch_async(dispatch_get_main_queue(), ^{

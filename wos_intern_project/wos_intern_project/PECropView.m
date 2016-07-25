@@ -10,9 +10,9 @@
 #import "PECropRectView.h"
 #import "UIImage+PECrop.h"
 
-//static const CGFloat MarginTop = 37.0f;
+static const CGFloat MarginTop = 37.0f;
 //static const CGFloat MarginBottom = MarginTop;
-//static const CGFloat MarginLeft = 20.0f;
+static const CGFloat MarginLeft = 20.0f;
 //static const CGFloat MarginRight = MarginLeft;
 
 @interface PECropView () <UIScrollViewDelegate, UIGestureRecognizerDelegate, PECropRectViewDelegate>
@@ -32,9 +32,6 @@
 
 @property (nonatomic, getter = isResizing) BOOL resizing;
 @property (nonatomic) UIInterfaceOrientation interfaceOrientation;
-
-@property (nonatomic) CGFloat MarginTop;
-@property (nonatomic) CGFloat MarginLeft;
 
 @end
 
@@ -62,9 +59,6 @@
 
 - (void)commonInit
 {
-    self.MarginTop = 150;
-    self.MarginLeft = 100;
-    
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.backgroundColor = [UIColor clearColor];
     
@@ -137,16 +131,16 @@
     
     UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-        self.editingRect = CGRectInset(self.bounds, self.MarginLeft, self.MarginTop);
+        self.editingRect = CGRectInset(self.bounds, MarginLeft, MarginTop);
     } else {
-        self.editingRect = CGRectInset(self.bounds, self.MarginLeft, self.MarginLeft);
+        self.editingRect = CGRectInset(self.bounds, MarginLeft, MarginLeft);
     }
     
     if (!self.imageView) {
         if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-            self.insetRect = CGRectInset(self.bounds, self.MarginLeft, self.MarginTop);
+            self.insetRect = CGRectInset(self.bounds, MarginLeft, MarginTop);
         } else {
-            self.insetRect = CGRectInset(self.bounds, self.MarginLeft, self.MarginLeft);
+            self.insetRect = CGRectInset(self.bounds, MarginLeft, MarginLeft);
         }
         
         [self setupImageView];

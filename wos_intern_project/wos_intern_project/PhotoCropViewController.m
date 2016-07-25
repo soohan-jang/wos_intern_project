@@ -26,12 +26,13 @@ NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER = @"popPhotoEditor
         //return
     }
     else {
-        CGFloat cropRectWidth = self.view.frame.size.width * 0.6;
-        CGFloat cropRectHeight = self.view.frame.size.height * self.ratio;
-        CGFloat marginTop = self.view.frame.size.height - cropRectHeight / 2.0f;
-        CGFloat marginLeft = self.view.frame.size.width - cropRectWidth / 2.0f;
         
-//        [self.cropView setCropRectWithSize:CGSizeMake(cropRectWidth, cropRectHeight) MarginTop:marginTop MarginLeft:marginLeft];
+        
+        self.cropView = [[PECropView alloc] initWithFrame:self.view.bounds];
+        self.cropView.keepingCropAspectRatio = YES;
+        self.cropView.marginTop = (self.view.frame.size.height - self.cellSize.height) / 4.0f;
+        self.cropView.marginLeft = (self.view.frame.size.width - self.cellSize.width) / 4.0;
+        [self.view addSubview:self.cropView];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self loadProgress];

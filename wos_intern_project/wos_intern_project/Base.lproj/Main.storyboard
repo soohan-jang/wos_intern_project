@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dKW-hc-NhL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dKW-hc-NhL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -318,19 +318,11 @@
                                     <constraint firstAttribute="height" constant="80" id="S5l-Wu-83R"/>
                                 </constraints>
                             </scrollView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qeh-wW-Ehr" customClass="PECropView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="qeh-wW-Ehr" firstAttribute="width" secondItem="4SC-VB-6va" secondAttribute="width" id="2Bd-yb-gvc"/>
                             <constraint firstItem="wqW-63-XOx" firstAttribute="width" secondItem="4SC-VB-6va" secondAttribute="width" id="7K5-Mf-God"/>
-                            <constraint firstItem="qeh-wW-Ehr" firstAttribute="top" secondItem="yTB-Fy-n3e" secondAttribute="bottom" id="9tq-Vq-OyT"/>
                             <constraint firstItem="EZj-xj-WEl" firstAttribute="top" secondItem="wqW-63-XOx" secondAttribute="bottom" id="BeY-bQ-HBx"/>
-                            <constraint firstItem="qeh-wW-Ehr" firstAttribute="centerX" secondItem="4SC-VB-6va" secondAttribute="centerX" id="Hjm-0I-vtf"/>
-                            <constraint firstItem="EZj-xj-WEl" firstAttribute="top" secondItem="qeh-wW-Ehr" secondAttribute="bottom" id="Nc1-by-Pq7"/>
                             <constraint firstItem="wqW-63-XOx" firstAttribute="centerX" secondItem="4SC-VB-6va" secondAttribute="centerX" id="sr0-2g-7S8"/>
                         </constraints>
                     </view>
@@ -352,9 +344,6 @@
                             <outlet property="rightBarButtonItem" destination="2EJ-A3-99n" id="8dD-eC-yvn"/>
                         </connections>
                     </navigationItem>
-                    <connections>
-                        <outlet property="cropView" destination="qeh-wW-Ehr" id="OcH-bo-IYe"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zyG-J5-bee" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

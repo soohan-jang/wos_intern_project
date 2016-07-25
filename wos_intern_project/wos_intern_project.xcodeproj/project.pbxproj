@@ -16,11 +16,6 @@
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
 		4A0F100D1D45DDE800BF4EFC /* PhotoCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */; };
-		4A0F101D1D45ECFC00BF4EFC /* PECropRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F10141D45ECFC00BF4EFC /* PECropRectView.m */; };
-		4A0F101E1D45ECFC00BF4EFC /* PECropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F10161D45ECFC00BF4EFC /* PECropView.m */; };
-		4A0F101F1D45ECFC00BF4EFC /* PECropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F10181D45ECFC00BF4EFC /* PECropViewController.m */; };
-		4A0F10201D45ECFC00BF4EFC /* PEResizeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F101A1D45ECFC00BF4EFC /* PEResizeControl.m */; };
-		4A0F10211D45ECFC00BF4EFC /* UIImage+PECrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F101C1D45ECFC00BF4EFC /* UIImage+PECrop.m */; };
 		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
 		4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
@@ -42,6 +37,11 @@
 		4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */; };
 		4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
 		4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490AA1D426E2800E5972F /* ImageUtility.m */; };
+		4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B21D46664600E5972F /* PECropRectView.m */; };
+		4B4490BC1D46664600E5972F /* PECropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B41D46664600E5972F /* PECropView.m */; };
+		4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B61D46664600E5972F /* PECropViewController.m */; };
+		4B4490BE1D46664600E5972F /* PEResizeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B81D46664600E5972F /* PEResizeControl.m */; };
+		4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490BA1D46664600E5972F /* UIImage+PECrop.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,16 +83,6 @@
 		4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageSyncManager.m; sourceTree = "<group>"; };
 		4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoCropViewController.h; sourceTree = "<group>"; };
 		4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoCropViewController.m; sourceTree = "<group>"; };
-		4A0F10131D45ECFC00BF4EFC /* PECropRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropRectView.h; sourceTree = "<group>"; };
-		4A0F10141D45ECFC00BF4EFC /* PECropRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropRectView.m; sourceTree = "<group>"; };
-		4A0F10151D45ECFC00BF4EFC /* PECropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropView.h; sourceTree = "<group>"; };
-		4A0F10161D45ECFC00BF4EFC /* PECropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropView.m; sourceTree = "<group>"; };
-		4A0F10171D45ECFC00BF4EFC /* PECropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropViewController.h; sourceTree = "<group>"; };
-		4A0F10181D45ECFC00BF4EFC /* PECropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropViewController.m; sourceTree = "<group>"; };
-		4A0F10191D45ECFC00BF4EFC /* PEResizeControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEResizeControl.h; sourceTree = "<group>"; };
-		4A0F101A1D45ECFC00BF4EFC /* PEResizeControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEResizeControl.m; sourceTree = "<group>"; };
-		4A0F101B1D45ECFC00BF4EFC /* UIImage+PECrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PECrop.h"; sourceTree = "<group>"; };
-		4A0F101C1D45ECFC00BF4EFC /* UIImage+PECrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PECrop.m"; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -135,6 +125,16 @@
 		4B4490A31D3A60A600E5972F /* DrawingSyncManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingSyncManager.m; sourceTree = "<group>"; };
 		4B4490A91D426E2800E5972F /* ImageUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageUtility.h; sourceTree = "<group>"; };
 		4B4490AA1D426E2800E5972F /* ImageUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageUtility.m; sourceTree = "<group>"; };
+		4B4490B11D46664600E5972F /* PECropRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropRectView.h; sourceTree = "<group>"; };
+		4B4490B21D46664600E5972F /* PECropRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropRectView.m; sourceTree = "<group>"; };
+		4B4490B31D46664600E5972F /* PECropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropView.h; sourceTree = "<group>"; };
+		4B4490B41D46664600E5972F /* PECropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropView.m; sourceTree = "<group>"; };
+		4B4490B51D46664600E5972F /* PECropViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PECropViewController.h; sourceTree = "<group>"; };
+		4B4490B61D46664600E5972F /* PECropViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PECropViewController.m; sourceTree = "<group>"; };
+		4B4490B71D46664600E5972F /* PEResizeControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEResizeControl.h; sourceTree = "<group>"; };
+		4B4490B81D46664600E5972F /* PEResizeControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEResizeControl.m; sourceTree = "<group>"; };
+		4B4490B91D46664600E5972F /* UIImage+PECrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PECrop.h"; sourceTree = "<group>"; };
+		4B4490BA1D46664600E5972F /* UIImage+PECrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PECrop.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,7 +174,7 @@
 		4A0C92DF1D374D4C0080E9A6 /* ExternalLib */ = {
 			isa = PBXGroup;
 			children = (
-				4A0F10121D45ECE300BF4EFC /* PEPhotoCropEditor */,
+				4B4490B01D46661F00E5972F /* PEPhotoCropEditor */,
 				4A0C92E01D374D660080E9A6 /* MBProgressHUD */,
 				0A9409221D40B7AA007B5C3D /* SphereMenu */,
 			);
@@ -190,23 +190,6 @@
 				4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */,
 			);
 			name = MBProgressHUD;
-			sourceTree = "<group>";
-		};
-		4A0F10121D45ECE300BF4EFC /* PEPhotoCropEditor */ = {
-			isa = PBXGroup;
-			children = (
-				4A0F10131D45ECFC00BF4EFC /* PECropRectView.h */,
-				4A0F10141D45ECFC00BF4EFC /* PECropRectView.m */,
-				4A0F10151D45ECFC00BF4EFC /* PECropView.h */,
-				4A0F10161D45ECFC00BF4EFC /* PECropView.m */,
-				4A0F10171D45ECFC00BF4EFC /* PECropViewController.h */,
-				4A0F10181D45ECFC00BF4EFC /* PECropViewController.m */,
-				4A0F10191D45ECFC00BF4EFC /* PEResizeControl.h */,
-				4A0F101A1D45ECFC00BF4EFC /* PEResizeControl.m */,
-				4A0F101B1D45ECFC00BF4EFC /* UIImage+PECrop.h */,
-				4A0F101C1D45ECFC00BF4EFC /* UIImage+PECrop.m */,
-			);
-			name = PEPhotoCropEditor;
 			sourceTree = "<group>";
 		};
 		4A4ACF1F1D2B6D2C00BC2FC4 = {
@@ -337,6 +320,23 @@
 				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
 			);
 			name = CollectionViewCell;
+			sourceTree = "<group>";
+		};
+		4B4490B01D46661F00E5972F /* PEPhotoCropEditor */ = {
+			isa = PBXGroup;
+			children = (
+				4B4490B11D46664600E5972F /* PECropRectView.h */,
+				4B4490B21D46664600E5972F /* PECropRectView.m */,
+				4B4490B31D46664600E5972F /* PECropView.h */,
+				4B4490B41D46664600E5972F /* PECropView.m */,
+				4B4490B51D46664600E5972F /* PECropViewController.h */,
+				4B4490B61D46664600E5972F /* PECropViewController.m */,
+				4B4490B71D46664600E5972F /* PEResizeControl.h */,
+				4B4490B81D46664600E5972F /* PEResizeControl.m */,
+				4B4490B91D46664600E5972F /* UIImage+PECrop.h */,
+				4B4490BA1D46664600E5972F /* UIImage+PECrop.m */,
+			);
+			name = PEPhotoCropEditor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -472,14 +472,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A0F10211D45ECFC00BF4EFC /* UIImage+PECrop.m in Sources */,
+				4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */,
 				4B4490A11D3A609800E5972F /* DrawingManager.m in Sources */,
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
-				4A0F101E1D45ECFC00BF4EFC /* PECropView.m in Sources */,
+				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
-				4A0F101D1D45ECFC00BF4EFC /* PECropRectView.m in Sources */,
+				4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
 				4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */,
@@ -494,11 +494,11 @@
 				4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */,
 				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
 				4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */,
-				4A0F101F1D45ECFC00BF4EFC /* PECropViewController.m in Sources */,
+				4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */,
 				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,
 				4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */,
 				4B4490981D3A607500E5972F /* DrawingPenObject.m in Sources */,
-				4A0F10201D45ECFC00BF4EFC /* PEResizeControl.m in Sources */,
+				4B4490BE1D46664600E5972F /* PEResizeControl.m in Sources */,
 				0A9409251D40B7C5007B5C3D /* SphereMenu.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

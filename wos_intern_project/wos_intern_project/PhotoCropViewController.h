@@ -14,12 +14,14 @@
 
 extern NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER;
 
+@protocol PhotoCropViewControllerDelegate;
+
 @interface PhotoCropViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
 
-
+@property (nonatomic, weak) id<PhotoCropViewControllerDelegate> delegate;
 @property (strong, nonatomic) IBOutlet PECropView *cropView;
 @property (strong, nonatomic) NSURL *imageUrl;
-@property (assign, nonatomic) CGFloat ratio;
+@property (assign, nonatomic) CGSize cellSize;
 
 - (void)viewDidUnwind:(NSNotification *)notification;
 
@@ -28,5 +30,12 @@ extern NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER;
 
 - (void)loadProgress;
 - (void)doneProgress;
+
+@end
+
+@protocol PhotoCropViewControllerDelegate
+@required
+- (void)cropViewController:(PhotoCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage originalImagePath:(NSString *)originalImagePath;
+- (void)cropViewControllerDidCancel:(PhotoCropViewController *)controller;
 
 @end

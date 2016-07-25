@@ -19,6 +19,7 @@ extern NSInteger const STATE_DOWNLOADING;
 @property (nonatomic) NSInteger photoFrameNumber;
 
 @property (atomic, strong) NSMutableDictionary *loadingStateDictionary;
+@property (atomic, strong) NSMutableDictionary *originalImageDictionary;
 @property (atomic, strong) NSMutableDictionary *imageDictionary;
 
 /**
@@ -64,5 +65,13 @@ extern NSInteger const STATE_DOWNLOADING;
 - (UIImage *)getImageWithItemIndex:(NSInteger)item;
 - (void)delImageWithItemIndex:(NSInteger)item;
 - (BOOL)hasImageWithItemIndex:(NSInteger)item;
+
+/**
+ 각 Cell들의 원본 이미지 url을 저장 및 관리하기 위한 함수이다.
+ */
+- (void)putOriginalImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url;
+- (NSURL *)getOrigianlImageURLWithItemIndex:(NSInteger)item;
+- (void)delOriginalImageURLWithItemIndex:(NSInteger)item;
+- (BOOL)hasOriginalImageURLWithItemIndex:(NSInteger)item;
 
 @end
