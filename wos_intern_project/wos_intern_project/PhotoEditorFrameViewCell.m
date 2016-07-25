@@ -16,20 +16,28 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 @implementation PhotoEditorFrameViewCell
 
 - (void)setStrokeBorder {
+    for (CALayer *layer in self.photoFrameView.layer.sublayers) {
+        [layer removeFromSuperlayer];
+    }
+    
     CGFloat defaultMargin = 5.0f;
     CGFloat strokeLineWitdth = 3.0f;
     
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-    CGSize frameSize = self.frame.size;
-    CGRect shapeRect = CGRectMake(0.0f, 0.0f, frameSize.width - (defaultMargin + strokeLineWitdth), frameSize.height - (defaultMargin + strokeLineWitdth));
+    
+    CGRect shapeRect = CGRectMake(self.bounds.origin.x,
+                                  self.bounds.origin.y,
+                                  self.bounds.size.width - (defaultMargin + strokeLineWitdth),
+                                  self.bounds.size.height - (defaultMargin + strokeLineWitdth));
     
     [shapeLayer setBounds:shapeRect];
-    [shapeLayer setPosition:CGPointMake(frameSize.width/2.0f,frameSize.height/2.0f)];
+    [shapeLayer setPosition:CGPointMake(self.bounds.size.width / 2.0f, self.bounds.size.height / 2.0f)];
     [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
     [shapeLayer setStrokeColor:[[UIColor colorWithRed:243/255.0f green:156/255.0f blue:18/255.0f alpha:1] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];
+    
     UIBezierPath *path = [UIBezierPath bezierPathWithRect:shapeRect];
     [shapeLayer setPath:path.CGPath];
     
@@ -38,8 +46,8 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 
 - (void)setTapGestureRecognizer {
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-    [self.photoScrollView setUserInteractionEnabled:YES];
-    [self.photoScrollView addGestureRecognizer:recognizer];
+    [self.photoImageView setUserInteractionEnabled:YES];
+    [self.photoImageView addGestureRecognizer:recognizer];
 }
 
 - (void)setImage:(UIImage *)image {
@@ -72,6 +80,8 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 }
 
 - (void)tapAction {
+    NSLog(@"w : %f, h : %f", self.frame.size.width, self.frame.size.height);
+    
     NSDictionary *sendData = @{KEY_SELECTED_CELL_INDEXPATH:self.indexPath,
                                KEY_SELECTED_CELL_CENTER_X:@(self.center.x),
                                KEY_SELECTED_CELL_CENTER_Y:@(self.center.y)};

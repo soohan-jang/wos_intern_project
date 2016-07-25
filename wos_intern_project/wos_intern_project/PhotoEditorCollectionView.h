@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "RFQuiltLayout.h"
-
 #import "PhotoEditorFrameViewCell.h"
 
 extern NSInteger const STATE_NONE;
@@ -29,6 +27,11 @@ extern NSInteger const STATE_DOWNLOADING;
 - (CGSize)buildEachPhotoFrameSize:(NSInteger)itemIndex;
 
 /**
+ 섹션의 수를 반환한다. 섹션의 수는 1이다.
+ */
+- (NSInteger)numberOfSections;
+
+/**
  액자종류에 따라 표시될 사진 액자의 수를 반환한다.
  */
 - (NSInteger)numberOfItems;
@@ -36,7 +39,7 @@ extern NSInteger const STATE_DOWNLOADING;
 /**
  인덱스에 위치한 사진 액자를 반환한다.
  */
-- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)itemIndexPath;
+- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  인덱스에 위치한 사진 액자의 크기를 반환한다. 사진 액자 크기는 bulidEachPhotoFrameSize에 의해 설정된다.

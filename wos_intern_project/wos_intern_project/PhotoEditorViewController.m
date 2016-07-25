@@ -8,12 +8,6 @@
 
 #import "PhotoEditorViewController.h"
 
-@interface PhotoEditorViewController ()
-
-@property (strong, nonatomic) UIImage *image;
-
-@end
-
 @implementation PhotoEditorViewController
 
 - (void)viewDidLoad {
@@ -21,10 +15,8 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-//    self.collectionView.photoFrameNumber = self.photoFrameNumber;
-    self.photoFrameNumber = 11;
-    self.collectionView.photoFrameNumber = 11;
-    
+    self.photoFrameNumber = 7;
+    self.collectionView.photoFrameNumber = self.photoFrameNumber;
     
     [self addObservers];
 }
@@ -63,6 +55,17 @@
 - (IBAction)StickerButtonAction:(id)sender {
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"moveToPhotoCrop"]) {
+        PhotoCropViewController *viewController = [segue destinationViewController];
+        
+        viewController.imageUrl = self.selectedImageURL;
+        
+        UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
+        viewController.ratio = cell.frame.size.width / cell.frame.size.height;
+    }
+}
+
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsert:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsertAck:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil];
@@ -87,6 +90,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SELECTED_CELL object:nil];
 }
 
+- (void)loadPhotoCropViewController {
+    [self performSegueWithIdentifier:@"moveToPhotoCrop" sender:self];
+}
+
 - (void)selectedCellAction:(NSNotification *)notification {
     NSArray *images;
     
@@ -109,7 +116,12 @@
     }
     //사진 액자가 화면의 오른쪽에 위치할 때,
     else if (sphereMenuCenter.x > self.view.center.x) {
-        angleOffset = M_PI * 2.1f;
+        if (images.count == 2) {
+            angleOffset = M_PI;
+        }
+        else {
+            angleOffset = M_PI * -1.3f;
+        }
     }
     //사진 액자가 화면의 중간에 위치할 때,
     else {
@@ -168,7 +180,7 @@
 /**** CollectionViewController DataSource Methods ****/
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return 1;
+    return [self.collectionView numberOfSections];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
@@ -176,14 +188,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoEditorFrameViewCell *cell = (PhotoEditorFrameViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    [cell setIndexPath:indexPath];
-    [cell setTapGestureRecognizer];
-    [cell setStrokeBorder];
-    [cell setImage:[self.collectionView getImageWithItemIndex:indexPath.item]];
-    [cell setLoadingImage:[self.collectionView getLoadingStateWithItemIndex:indexPath.item]];
-    
-    return cell;
+    return [self.collectionView cellForItemAtIndexPath:indexPath];
 }
 
 /**** CollectionViewController Delegate Flowlayout Methods ****/
@@ -194,11 +199,6 @@
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return [self.collectionView insetForCollectionView];
 }
-
-/**** RFQuiltLayoutDelegate Method ****/
-//- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout blockSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-//    return [self.collectionView sizeForItemAtIndexPath:indexPath];
-//}
 
 /**** SphereMenu Delegate Method ****/
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu Index:(int)index {
@@ -211,7 +211,6 @@
         else if (status == ALAuthorizationStatusAuthorized) {
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
-            //picker.allowsEditing = YES;
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -243,40 +242,18 @@
 
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
-    NSURL *imageUrl = (NSURL *)info[UIImagePickerControllerReferenceURL];
+    self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *representation = [asset defaultRepresentation];
-            
-            [self.collectionView setLoadingStateWithItemIndex:self.selectedPhotoFrameIndex.item State:STATE_UPLOADING];
-            
-            if ([[ImageUtility sharedInstance] makeTempImageWithAssetRepresentation:representation]) {
-                if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_THUMBNAIL]) {
-                    UIImage *thumbnailImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_THUMBNAIL]];
-                    [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:thumbnailImage];
-                    [self.collectionView reloadData];
-                }
-            }
-        } failureBlock:nil];
-    });
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
-            ALAssetRepresentation *representation = [asset defaultRepresentation];
-            
-            if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
-                UIImage *standardImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
-                [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:standardImage];
-                [self.collectionView reloadData];
-            }
-            
-            [[ConnectionManager sharedInstance] sendResourceDataWithFilename:representation.filename index:self.selectedPhotoFrameIndex.item];
-        } failureBlock:nil];
-    });
-    
-    [picker dismissViewControllerAnimated:YES completion:nil];
+    [picker dismissViewControllerAnimated:YES completion:^{
+        if (self.selectedImageURL == nil) {
+            //Error Alert.
+        }
+        else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadPhotoCropViewController];
+            });
+        }
+    }];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {

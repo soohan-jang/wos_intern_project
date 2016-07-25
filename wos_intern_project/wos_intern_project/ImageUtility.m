@@ -9,7 +9,7 @@
 #import "ImageUtility.h"
 
 NSInteger const IMAGE_RESIZE_THUMBNAIL = 90;
-NSInteger const IMAGE_RESIZE_STANDARD  = 640;
+NSInteger const IMAGE_RESIZE_STANDARD  = 320 * 2;
 
 NSString *const FILE_POSTFIX_THUMBNAIL = @"_thumbnail";
 NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
@@ -50,10 +50,13 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     if (fileURL == nil)
         return NO;
     
-    CGImageSourceRef imageSource = CGImageSourceCreateWithURL((CFURLRef)fileURL, NULL);
+    CGImageSourceRef imageSource = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
     CFDictionaryRef options = (__bridge CFDictionaryRef) @{(id) kCGImageSourceCreateThumbnailWithTransform : @YES,
                                                            (id) kCGImageSourceCreateThumbnailFromImageAlways : @YES,
                                                            (id) kCGImageSourceThumbnailMaxPixelSize : @(option)};
+    
+    
+    NSLog(@"%@", imageSource);
     CGImageRef imgRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
     UIImage *resizedImage = [UIImage imageWithCGImage:imgRef];
     

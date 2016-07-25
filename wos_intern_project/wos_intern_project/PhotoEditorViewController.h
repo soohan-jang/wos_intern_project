@@ -9,16 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "RFQuiltLayout.h"
 #import "SphereMenu.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
-#import "ImageUtility.h"
 
 #import "MainViewController.h"
 #import "PhotoEditorCollectionView.h"
 #import "PhotoEditorFrameViewCell.h"
+#import "PhotoCropViewController.h"
 
 typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_NOT_SAVE = 0,
@@ -26,14 +25,16 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 };
 
 @interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@property (weak, nonatomic) IBOutlet PhotoEditorCollectionView *tt;
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
-@property (nonatomic) NSInteger photoFrameNumber;
+@property (nonatomic, assign) NSInteger photoFrameNumber;
 //@property (nonatomic, strong) UITapGestureRecognizer *scrollTapGestureRecognizer;
-@property (nonatomic) NSIndexPath *selectedPhotoFrameIndex;
+@property (nonatomic, assign) NSIndexPath *selectedPhotoFrameIndex;
+@property (nonatomic, strong) NSURL *selectedImageURL;
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
@@ -61,10 +62,9 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  */
 - (void)removeObservers;
 
-/**
- 각 CollectionView의 Cell에서 탭 이벤트가 발생하면, Notification으로 알린다.
- 이에 대한 이벤트를 처리하기 위한 함수이다.
- */
+
+- (void)loadPhotoCropViewController;
+
 - (void)selectedCellAction:(NSNotification *)notification;
 
 /**

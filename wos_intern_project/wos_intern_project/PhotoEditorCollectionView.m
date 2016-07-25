@@ -8,6 +8,7 @@
 
 #import "PhotoEditorCollectionView.h"
 
+#define SECTION_NUMBER  1
 #define DEFAULT_MARGIN  5
 
 NSInteger const STATE_NONE          = 0;
@@ -96,6 +97,10 @@ NSInteger const STATE_DOWNLOADING   = 2;
     return CGSizeMake(cellWidth, cellHeight);
 }
 
+- (NSInteger)numberOfSections {
+    return SECTION_NUMBER;
+}
+
 - (NSInteger)numberOfItems {
     switch (self.photoFrameNumber) {
         case 0:
@@ -119,8 +124,14 @@ NSInteger const STATE_DOWNLOADING   = 2;
     }
 }
 
-- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)itemIndexPath {
-    PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:itemIndexPath];
+- (UICollectionViewCell *)cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    PhotoEditorFrameViewCell *cell = [self dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:indexPath];
+    [cell setIndexPath:indexPath];
+    [cell setTapGestureRecognizer];
+    [cell setStrokeBorder];
+    [cell setImage:[self getImageWithItemIndex:indexPath.item]];
+    [cell setLoadingImage:[self getLoadingStateWithItemIndex:indexPath.item]];
+    
     return cell;
 }
 

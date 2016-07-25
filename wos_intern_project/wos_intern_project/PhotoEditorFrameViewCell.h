@@ -18,7 +18,6 @@ extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
 @property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) IBOutlet UIView *photoFrameView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoLoadingView;
-@property (strong, nonatomic) IBOutlet UIScrollView *photoScrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
 
 /**
