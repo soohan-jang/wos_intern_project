@@ -7,6 +7,7 @@
 //
 
 #import "MainViewController.h"
+#import "ImageUtility.h"
 
 NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController";
 
@@ -18,6 +19,8 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[ImageUtility sharedInstance] removeAllTempImages];
     
     self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name screenWidthSize:self.view.frame.size.width screenHeightSize:self.view.frame.size.height];

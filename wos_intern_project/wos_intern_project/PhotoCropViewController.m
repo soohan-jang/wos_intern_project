@@ -8,8 +8,6 @@
 
 #import "PhotoCropViewController.h"
 
-NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER = @"popPhotoEditorViewController";
-
 @interface PhotoCropViewController ()
 
 @property (nonatomic, strong) ALAssetsLibrary *assetslibrary;
@@ -26,13 +24,8 @@ NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER = @"popPhotoEditor
         //return
     }
     else {
-        
-        
-        self.cropView = [[PECropView alloc] initWithFrame:self.view.bounds];
-        self.cropView.keepingCropAspectRatio = YES;
-        self.cropView.marginTop = (self.view.frame.size.height - self.cellSize.height) / 4.0f;
-        self.cropView.marginLeft = (self.view.frame.size.width - self.cellSize.width) / 4.0;
-        [self.view addSubview:self.cropView];
+        self.cropView = [[PECropView alloc] initWithFrame:self.cropAreaView.bounds];
+        [self.cropAreaView addSubview:self.cropView];
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self loadProgress];
@@ -43,66 +36,38 @@ NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER = @"popPhotoEditor
             
             [self.assetslibrary assetForURL:self.imageUrl resultBlock:^(ALAsset *asset) {
                 ALAssetRepresentation *representation = [asset defaultRepresentation];
-                
-                if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
+                self.filename = representation.filename;
+                if ([[ImageUtility sharedInstance] makeTempImageWithFilename:self.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
+                    self.resizedImageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
+                    UIImage *standardImage = [UIImage imageWithContentsOfFile:self.resizedImageUrl.absoluteString];
                     
-                    
-                    UIImage *standardImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
-                    [self.cropView setImage:standardImage];
+                    self.cropView.image = standardImage;
                 }
                 
                 [self doneProgress];
             } failureBlock:nil];
         });
-        
     }
-    
-
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
-//            ALAssetRepresentation *representation = [asset defaultRepresentation];
-//            
-//            if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
-//                UIImage *standardImage = [UIImage imageWithContentsOfFile
-//                                          :[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
-//                [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:standardImage];
-//                [self.collectionView reloadData];
-//            }
-//            
-//            [[ConnectionManager sharedInstance] sendResourceDataWithFilename:representation.filename index:self.selectedPhotoFrameIndex.item];
-//        } failureBlock:nil];
-//    });
-//    
-//    
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [assetslibrary assetForURL:imageUrl resultBlock:^(ALAsset *asset) {
-//                ALAssetRepresentation *representation = [asset defaultRepresentation];
-//    
-//                [self.collectionView setLoadingStateWithItemIndex:self.selectedPhotoFrameIndex.item State:STATE_UPLOADING];
-//    
-//                if ([[ImageUtility sharedInstance] makeTempImageWithAssetRepresentation:representation]) {
-//                    if ([[ImageUtility sharedInstance] makeTempImageWithFilename:representation.filename resizeOption:IMAGE_RESIZE_THUMBNAIL]) {
-//                        UIImage *thumbnailImage = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_THUMBNAIL]];
-//                        [self.collectionView putImageWithItemIndex:self.selectedPhotoFrameIndex.item Image:thumbnailImage];
-//                        [self.collectionView reloadData];
-//                    }
-//                }
-//            } failureBlock:nil];
-//        });
-    
-    
-}
-
-- (void)viewDidUnwind:(NSNotification *)notification {
-    
 }
 
 - (IBAction)backAction:(id)sender {
+    if (self.delegate != nil) {
+        [self.delegate cropViewControllerDidCancel:self];
+    }
+    
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)doneAction:(id)sender {
-
+    if (self.delegate != nil) {
+        UIImage *croppedImage = [self.cropView croppedImage];
+        
+        if ([[ImageUtility sharedInstance] makeTempImageWithUIImage:croppedImage filename:self.filename prefixOption:IMAGE_RESIZE_CROPPED]) {
+            NSURL *croppedImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), self.filename, FILE_POSTFIX_CROPPED]];
+            [self.delegate cropViewController:self didFinishCroppingImageWithFilename:self.filename croppedImagePath:croppedImageURL originalImagePath:self.resizedImageUrl];
+            [self.navigationController popViewControllerAnimated:YES];
+        }
+    }
 }
 
 - (void)loadProgress {

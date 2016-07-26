@@ -80,8 +80,6 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 }
 
 - (void)tapAction {
-    NSLog(@"w : %f, h : %f", self.frame.size.width, self.frame.size.height);
-    
     NSDictionary *sendData = @{KEY_SELECTED_CELL_INDEXPATH:self.indexPath,
                                KEY_SELECTED_CELL_CENTER_X:@(self.center.x),
                                KEY_SELECTED_CELL_CENTER_Y:@(self.center.y)};

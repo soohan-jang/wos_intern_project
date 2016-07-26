@@ -24,7 +24,7 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_CONTINUE = 1
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAlertViewDelegate>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet PhotoEditorCollectionView *tt;
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
@@ -35,6 +35,8 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 //@property (nonatomic, strong) UITapGestureRecognizer *scrollTapGestureRecognizer;
 @property (nonatomic, assign) NSIndexPath *selectedPhotoFrameIndex;
 @property (nonatomic, strong) NSURL *selectedImageURL;
+
+@property (nonatomic, assign) BOOL isMenuAppear;
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.

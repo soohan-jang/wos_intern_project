@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dKW-hc-NhL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -37,13 +37,13 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="화면을 탭해주세요." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uh2-bE-put">
                                 <rect key="frame" x="0.0" y="440" width="600" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="휴대폰을 흔들거나" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dHD-TJ-yiL">
                                 <rect key="frame" x="0.0" y="416" width="600" height="24"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BluetoothIcon" translatesAutoresizingMaskIntoConstraints="NO" id="pwz-xa-jVz">
@@ -312,18 +312,27 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wqW-63-XOx">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSf-bt-Hxb">
                                 <rect key="frame" x="0.0" y="520" width="600" height="80"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="80" id="S5l-Wu-83R"/>
+                                    <constraint firstAttribute="height" constant="80" id="COk-wS-dL6"/>
                                 </constraints>
                             </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cCJ-ew-uck">
+                                <rect key="frame" x="0.0" y="64" width="600" height="456"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="wqW-63-XOx" firstAttribute="width" secondItem="4SC-VB-6va" secondAttribute="width" id="7K5-Mf-God"/>
-                            <constraint firstItem="EZj-xj-WEl" firstAttribute="top" secondItem="wqW-63-XOx" secondAttribute="bottom" id="BeY-bQ-HBx"/>
-                            <constraint firstItem="wqW-63-XOx" firstAttribute="centerX" secondItem="4SC-VB-6va" secondAttribute="centerX" id="sr0-2g-7S8"/>
+                            <constraint firstItem="dSf-bt-Hxb" firstAttribute="top" secondItem="cCJ-ew-uck" secondAttribute="bottom" id="1Si-2K-qYx"/>
+                            <constraint firstItem="EZj-xj-WEl" firstAttribute="top" secondItem="dSf-bt-Hxb" secondAttribute="bottom" id="6Jx-5B-bSO"/>
+                            <constraint firstItem="cCJ-ew-uck" firstAttribute="leading" secondItem="4SC-VB-6va" secondAttribute="leading" id="ABI-xJ-gtS"/>
+                            <constraint firstItem="dSf-bt-Hxb" firstAttribute="width" secondItem="4SC-VB-6va" secondAttribute="width" id="KfE-xv-Bdq"/>
+                            <constraint firstAttribute="trailing" secondItem="cCJ-ew-uck" secondAttribute="trailing" id="LZR-R3-0dm"/>
+                            <constraint firstItem="dSf-bt-Hxb" firstAttribute="centerX" secondItem="4SC-VB-6va" secondAttribute="centerX" id="lM3-Nl-IR6"/>
+                            <constraint firstItem="cCJ-ew-uck" firstAttribute="top" secondItem="yTB-Fy-n3e" secondAttribute="bottom" id="pyS-E2-NhJ"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="sTP-ss-kYA">
@@ -344,6 +353,10 @@
                             <outlet property="rightBarButtonItem" destination="2EJ-A3-99n" id="8dD-eC-yvn"/>
                         </connections>
                     </navigationItem>
+                    <connections>
+                        <outlet property="cropAreaView" destination="cCJ-ew-uck" id="DFV-hq-88H"/>
+                        <outlet property="filterListScrollView" destination="dSf-bt-Hxb" id="t0b-zy-oHG"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zyG-J5-bee" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -427,7 +440,7 @@
                     <connections>
                         <outlet property="collectionView" destination="zLy-VH-rZn" id="Cea-BC-jbo"/>
                         <outlet property="doneButton" destination="zYR-Ek-9jY" id="eLv-V1-3jk"/>
-                        <segue destination="dKW-hc-NhL" kind="show" identifier="moveToPhotoEditor" id="oCA-UP-1Fr"/>
+                        <segue destination="dKW-hc-NhL" kind="show" identifier="moveToPhotoEditor" id="Zdz-Lg-VRD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UAg-L9-3zb" userLabel="First Responder" sceneMemberID="firstResponder"/>

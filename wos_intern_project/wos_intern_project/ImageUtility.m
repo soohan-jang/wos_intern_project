@@ -8,10 +8,10 @@
 
 #import "ImageUtility.h"
 
-NSInteger const IMAGE_RESIZE_THUMBNAIL = 90;
+NSInteger const IMAGE_RESIZE_CROPPED = 90;
 NSInteger const IMAGE_RESIZE_STANDARD  = 480;
 
-NSString *const FILE_POSTFIX_THUMBNAIL = @"_thumbnail";
+NSString *const FILE_POSTFIX_CROPPED   = @"_cropped";
 NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
 
 @implementation ImageUtility
@@ -28,6 +28,20 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     return instance;
 }
 
+- (BOOL)makeTempImageWithUIImage:(UIImage *)image filename:(NSString *)filename prefixOption:(NSInteger)option {
+    NSData *tempData = UIImagePNGRepresentation(image);
+    NSString *directory;
+    
+    if (option == IMAGE_RESIZE_CROPPED) {
+        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
+    }
+    else if (option == IMAGE_RESIZE_STANDARD) {
+        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD];
+    }
+    
+    return [tempData writeToFile:directory atomically:YES];
+}
+
 - (BOOL)makeTempImageWithAssetRepresentation:(ALAssetRepresentation *) representation {
     Byte *buffer = (Byte *)malloc((unsigned long)representation.size);
     NSInteger buffered = [representation getBytes:buffer fromOffset:0.0 length:(unsigned long)representation.size error:nil];
@@ -36,12 +50,11 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     NSString *filename = representation.filename;
     NSString *directory = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename];
     
-    
     return [tempData writeToFile:directory atomically:YES];
 }
 
 - (BOOL)makeTempImageWithFilename:(NSString *)filename resizeOption:(NSInteger)option {
-    if (option != IMAGE_RESIZE_THUMBNAIL && option != IMAGE_RESIZE_STANDARD)
+    if (option != IMAGE_RESIZE_CROPPED && option != IMAGE_RESIZE_STANDARD)
         return NO;
     
     NSString *originDir = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename];
@@ -55,8 +68,6 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
                                                            (id) kCGImageSourceCreateThumbnailFromImageAlways : @YES,
                                                            (id) kCGImageSourceThumbnailMaxPixelSize : @(option)};
     
-    
-    NSLog(@"%@", imageSource);
     CGImageRef imgRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
     UIImage *resizedImage = [UIImage imageWithCGImage:imgRef];
     
@@ -67,11 +78,11 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     NSData *resizedData = UIImagePNGRepresentation(resizedImage);
     NSString *directory = nil;
     
-    if (option == IMAGE_RESIZE_THUMBNAIL) {
-        directory = [NSString stringWithFormat:@"%@%@_thumbnail", NSTemporaryDirectory(), filename];
+    if (option == IMAGE_RESIZE_CROPPED) {
+        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
     }
     else if (option == IMAGE_RESIZE_STANDARD) {
-        directory = [NSString stringWithFormat:@"%@%@_standard", NSTemporaryDirectory(), filename];
+        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD];
     }
     
     return [resizedData writeToFile:directory atomically:YES];
@@ -81,11 +92,11 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     NSURL *originalURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename]];
-    NSURL *thumbnailURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_thumbnail", NSTemporaryDirectory(), filename]];
-    NSURL *standardURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_standard", NSTemporaryDirectory(), filename]];
+    NSURL *croppedURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
+    NSURL *standardURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD]];
     
     [fileManager removeItemAtURL:originalURL error:nil];
-    [fileManager removeItemAtURL:thumbnailURL error:nil];
+    [fileManager removeItemAtURL:croppedURL error:nil];
     [fileManager removeItemAtURL:standardURL error:nil];
 }
 

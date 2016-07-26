@@ -12,15 +12,21 @@
 
 #import <UIKit/UIkit.h>
 
-extern NSInteger const IMAGE_RESIZE_THUMBNAIL;
+extern NSInteger const IMAGE_RESIZE_CROPPED;
 extern NSInteger const IMAGE_RESIZE_STANDARD;
 
-extern NSString *const FILE_POSTFIX_THUMBNAIL;
+extern NSString *const FILE_POSTFIX_CROPPED;
 extern NSString *const FILE_POSTFIX_STANDARD;
 
 @interface ImageUtility : NSObject
 
 + (ImageUtility *)sharedInstance;
+
+/**
+ 파일 생성 및 저장에 성공하면, 파일명을 반환한다. 경로는 NSTemporaryDirectory이다.
+ 생성 및 저장에 실패하면, nil을 반환한다.
+ */
+- (BOOL)makeTempImageWithUIImage:(UIImage *)image filename:(NSString *)filename prefixOption:(NSInteger)option;
 
 /**
  파일 생성 및 저장에 성공하면, 파일명을 반환한다. 경로는 NSTemporaryDirectory이다.

@@ -10,20 +10,23 @@
 
 #import "WMProgressHUD.h"
 #import "PECropView.h"
-#import "ImageUtility.h"
 
-extern NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER;
+#import "ImageUtility.h"
 
 @protocol PhotoCropViewControllerDelegate;
 
 @interface PhotoCropViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
 
-@property (nonatomic, weak) id<PhotoCropViewControllerDelegate> delegate;
-@property (strong, nonatomic) IBOutlet PECropView *cropView;
-@property (strong, nonatomic) NSURL *imageUrl;
-@property (assign, nonatomic) CGSize cellSize;
+@property (strong, nonatomic) IBOutlet UIView *cropAreaView;
+@property (strong, nonatomic) IBOutlet UIScrollView *filterListScrollView;
 
-- (void)viewDidUnwind:(NSNotification *)notification;
+@property (strong, nonatomic) PECropView *cropView;
+
+@property (nonatomic, weak) id<PhotoCropViewControllerDelegate> delegate;
+@property (strong, nonatomic) NSURL *imageUrl;
+@property (copy, nonatomic) NSString *filename;
+@property (strong, nonatomic) NSURL *croppedImageUrl, *resizedImageUrl;
+@property (assign, nonatomic) CGSize cellSize;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)doneAction:(id)sender;
@@ -35,7 +38,7 @@ extern NSString *const NOTIFICATION_POP_PHOTO_EDITOR_VIEW_CONTROLLER;
 
 @protocol PhotoCropViewControllerDelegate
 @required
-- (void)cropViewController:(PhotoCropViewController *)controller didFinishCroppingImage:(UIImage *)croppedImage originalImagePath:(NSString *)originalImagePath;
+- (void)cropViewController:(PhotoCropViewController *)controller didFinishCroppingImageWithFilename:(NSString *)filename croppedImagePath:(NSURL *)croppedImagePath originalImagePath:(NSURL *)originalImagePath;
 - (void)cropViewControllerDidCancel:(PhotoCropViewController *)controller;
 
 @end

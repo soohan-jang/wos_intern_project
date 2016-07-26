@@ -14,6 +14,7 @@
 NSInteger const STATE_NONE          = 0;
 NSInteger const STATE_UPLOADING     = 1;
 NSInteger const STATE_DOWNLOADING   = 2;
+NSInteger const STATE_EDITING       = 3;
 
 
 @implementation PhotoEditorCollectionView
@@ -129,7 +130,7 @@ NSInteger const STATE_DOWNLOADING   = 2;
     [cell setIndexPath:indexPath];
     [cell setTapGestureRecognizer];
     [cell setStrokeBorder];
-    [cell setImage:[self getImageWithItemIndex:indexPath.item]];
+    [cell setImage:[UIImage imageWithContentsOfFile:[(NSURL *)[self getImageURLWithItemIndex:indexPath.item] absoluteString]]];
     [cell setLoadingImage:[self getLoadingStateWithItemIndex:indexPath.item]];
     
     return cell;
@@ -161,25 +162,51 @@ NSInteger const STATE_DOWNLOADING   = 2;
     }
 }
 
-- (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image {
+- (void)putImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url {
     if (self.imageDictionary == nil) {
-        self.imageDictionary = [@{@(item): image} mutableCopy];
+        self.imageDictionary = [@{@(item): url} mutableCopy];
     }
     else {
-        [self.imageDictionary setObject:image forKey:@(item)];
+        [self.imageDictionary setObject:url forKey:@(item)];
     }
 }
 
-- (UIImage *)getImageWithItemIndex:(NSInteger)item {
+- (UIImage *)getImageURLWithItemIndex:(NSInteger)item {
     return (UIImage *)self.imageDictionary[@(item)];
 }
 
-- (void)delImageWithItemIndex:(NSInteger)item {
+- (void)delImageURLWithItemIndex:(NSInteger)item {
     [self.imageDictionary removeObjectForKey:@(item)];
 }
 
-- (BOOL)hasImageWithItemIndex:(NSInteger)item {
+- (BOOL)hasImageURLWithItemIndex:(NSInteger)item {
     if (self.imageDictionary[@(item)] == nil) {
+        return NO;
+    }
+    else {
+        return YES;
+    }
+}
+
+- (void)putOriginalImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url {
+    if (self.originalImageDictionary == nil) {
+        self.originalImageDictionary = [@{@(item): url} mutableCopy];
+    }
+    else {
+        [self.originalImageDictionary setObject:url forKey:@(item)];
+    }
+}
+
+- (NSURL *)getOrigianlImageURLWithItemIndex:(NSInteger)item {
+    return (NSURL *)self.originalImageDictionary[@(item)];
+}
+
+- (void)delOriginalImageURLWithItemIndex:(NSInteger)item {
+    [self.originalImageDictionary removeObjectForKey:@(item)];
+}
+
+- (BOOL)hasOriginalImageURLWithItemIndex:(NSInteger)item {
+    if (self.originalImageDictionary[@(item)] == nil) {
         return NO;
     }
     else {

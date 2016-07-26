@@ -13,6 +13,7 @@
 extern NSInteger const STATE_NONE;
 extern NSInteger const STATE_UPLOADING;
 extern NSInteger const STATE_DOWNLOADING;
+extern NSInteger const STATE_EDITING;
 
 @interface PhotoEditorCollectionView : UICollectionView
 
@@ -61,10 +62,10 @@ extern NSInteger const STATE_DOWNLOADING;
 /**
  각 Cell들의 이미지를 저장 및 관리하기 위한 함수이다.
  */
-- (void)putImageWithItemIndex:(NSInteger)item Image:(UIImage *)image;
-- (UIImage *)getImageWithItemIndex:(NSInteger)item;
-- (void)delImageWithItemIndex:(NSInteger)item;
-- (BOOL)hasImageWithItemIndex:(NSInteger)item;
+- (void)putImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url;
+- (UIImage *)getImageURLWithItemIndex:(NSInteger)item;
+- (void)delImageURLWithItemIndex:(NSInteger)item;
+- (BOOL)hasImageURLWithItemIndex:(NSInteger)item;
 
 /**
  각 Cell들의 원본 이미지 url을 저장 및 관리하기 위한 함수이다.

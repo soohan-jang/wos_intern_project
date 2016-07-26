@@ -48,6 +48,7 @@ extern NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK;
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
 /** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX;
+extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE;
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA;
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_ACK;
 extern NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX;

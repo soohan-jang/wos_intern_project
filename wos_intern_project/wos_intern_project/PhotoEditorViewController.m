@@ -15,8 +15,8 @@
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    self.photoFrameNumber = 7;
     self.collectionView.photoFrameNumber = self.photoFrameNumber;
+    self.isMenuAppear = NO;
     
     [self addObservers];
 }
@@ -58,10 +58,10 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"moveToPhotoCrop"]) {
         PhotoCropViewController *viewController = [segue destinationViewController];
-        
-        viewController.imageUrl = self.selectedImageURL;
-        
         UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:self.selectedPhotoFrameIndex];
+        
+        viewController.delegate = self;
+        viewController.imageUrl = self.selectedImageURL;
         viewController.cellSize = cell.bounds.size;
     }
 }
@@ -95,42 +95,46 @@
 }
 
 - (void)selectedCellAction:(NSNotification *)notification {
-    NSArray *images;
-    
-    self.selectedPhotoFrameIndex = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
-    if ([self.collectionView hasImageWithItemIndex:self.selectedPhotoFrameIndex.item]) {
-        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
-    }
-    else {
-        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
-    }
-    
-    CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue] + (self.view.frame.size.width - self.collectionView.frame.size.width) / 2.0f,
-                                           [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue] + (self.view.frame.size.height - self.collectionView.frame.size.height) / 2.0f + 7.5);
-    
-    CGFloat angleOffset;
-    
-    //사진 액자가 화면의 왼쪽에 위치할 때,
-    if (sphereMenuCenter.x < self.view.center.x) {
-        angleOffset = M_PI * 1.1f;
-    }
-    //사진 액자가 화면의 오른쪽에 위치할 때,
-    else if (sphereMenuCenter.x > self.view.center.x) {
-        if (images.count == 2) {
-            angleOffset = M_PI;
+    if (!self.isMenuAppear) {
+        self.isMenuAppear = YES;
+        
+        NSArray *images;
+        
+        self.selectedPhotoFrameIndex = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
+        if ([self.collectionView hasImageURLWithItemIndex:self.selectedPhotoFrameIndex.item]) {
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
         }
         else {
-            angleOffset = M_PI * -1.3f;
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
         }
+        
+        CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue] + (self.view.frame.size.width - self.collectionView.frame.size.width) / 2.0f,
+                                               [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue] + (self.view.frame.size.height - self.collectionView.frame.size.height) / 2.0f + 7.5);
+        
+        CGFloat angleOffset;
+        
+        //사진 액자가 화면의 왼쪽에 위치할 때,
+        if (sphereMenuCenter.x < self.view.center.x) {
+            angleOffset = M_PI * 1.1f;
+        }
+        //사진 액자가 화면의 오른쪽에 위치할 때,
+        else if (sphereMenuCenter.x > self.view.center.x) {
+            if (images.count == 2) {
+                angleOffset = M_PI;
+            }
+            else {
+                angleOffset = M_PI * -1.3f;
+            }
+        }
+        //사진 액자가 화면의 중간에 위치할 때,
+        else {
+            angleOffset = M_PI;
+        }
+        
+        SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.view Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
+        sphereMenu.delegate = self;
+        [sphereMenu presentMenu];
     }
-    //사진 액자가 화면의 중간에 위치할 때,
-    else {
-        angleOffset = M_PI;
-    }
-    
-    SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.view Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
-    sphereMenu.delegate = self;
-    [sphereMenu presentMenu];
 }
 
 /**** UIAlertViewDelegate Methods. ****/
@@ -211,7 +215,7 @@
         else if (status == ALAuthorizationStatusAuthorized) {
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
-            picker.allowsEditing = YES;
+//            picker.allowsEditing = YES;
             picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -229,7 +233,7 @@
         
     }
     else if (index == 3) {
-        [self.collectionView delImageWithItemIndex:self.selectedPhotoFrameIndex.item];
+        [self.collectionView delImageURLWithItemIndex:self.selectedPhotoFrameIndex.item];
         [self.collectionView reloadData];
     
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE),
@@ -239,12 +243,13 @@
     }
     
     [sphereMenu dismissMenu];
+    self.isMenuAppear = NO;
 }
 
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
-    
+
     [picker dismissViewControllerAnimated:YES completion:^{
         if (self.selectedImageURL == nil) {
             //Error Alert.
@@ -261,29 +266,50 @@
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
+/**** PhotoCropViewController Delegate Methods ****/
+- (void)cropViewController:(PhotoCropViewController *)controller didFinishCroppingImageWithFilename:(NSString *)filename croppedImagePath:(NSURL *)croppedImagePath originalImagePath:(NSURL *)originalImagePath {
+    if (croppedImagePath != nil && originalImagePath != nil) {
+        [self.collectionView putImageURLWithItemIndex:self.selectedPhotoFrameIndex.item url:croppedImagePath];
+        [self.collectionView putOriginalImageURLWithItemIndex:self.selectedPhotoFrameIndex.item url:originalImagePath];
+        [self.collectionView setLoadingStateWithItemIndex:self.selectedPhotoFrameIndex.item State:STATE_UPLOADING];
+        [self.collectionView reloadData];
+        
+        //send data...
+        [[ConnectionManager sharedInstance] sendResourceDataWithFilename:filename index:self.selectedPhotoFrameIndex.item];
+    }
+}
+
+- (void)cropViewControllerDidCancel:(PhotoCropViewController *)controller {
+    //Do nothing.
+}
+
 /**** Perform Selector Methods ****/
 
 
 /**** Session Communication Methods ****/
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"%@", notification.userInfo);
         NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
+        NSString *dataType =(NSString *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA_TYPE];
         NSURL *dataUrl = (NSURL *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA];
         
         //Data Receive Started.
         if (dataUrl == nil) {
             [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_DOWNLOADING];
+            [self.collectionView reloadData];
         }
         //Data Receive Finished.
         else {
-            [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_NONE];
-            
-            NSData *data = [NSData dataWithContentsOfURL:dataUrl];
-            UIImage *image = [UIImage imageWithData:data];
-            [self.collectionView putImageWithItemIndex:[item integerValue] Image:image];
+            if ([dataType isEqualToString:@"_cropped"]) {
+                [self.collectionView putImageURLWithItemIndex:[item integerValue] url:dataUrl];
+            }
+            else if ([dataType isEqualToString:@"_standard"]) {
+                [self.collectionView putOriginalImageURLWithItemIndex:[item integerValue] url:dataUrl];
+                [self.collectionView setLoadingStateWithItemIndex:[item integerValue] State:STATE_NONE];
+                [self.collectionView reloadData];
+            }
         }
-        
-        [self.collectionView reloadData];
     });
 }
 
@@ -304,7 +330,7 @@
 - (void)receivedPhotoDelete:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSInteger item = [(NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue];
-        [self.collectionView delImageWithItemIndex:item];
+        [self.collectionView delImageURLWithItemIndex:item];
         [self.collectionView reloadData];
     });
 }
