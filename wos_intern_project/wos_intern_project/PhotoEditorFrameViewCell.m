@@ -51,11 +51,6 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 }
 
 - (void)setImage:(UIImage *)image {
-//    CGRect bounds = self.photoImageView.bounds;
-//    bounds.size.width = image.size.width;
-//    bounds.size.height = image.size.height;
-//    
-//    self.photoImageView.bounds = bounds;
     [self.photoImageView setImage:image];
 }
 
@@ -72,17 +67,21 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
             [self.photoLoadingView setImage:[UIImage imageNamed:@"Uploading"]];
 
         }
-        //STATE DONWLOADING
+        //STATE_DONWLOADING
         else if (loadingState == 2) {
             [self.photoLoadingView setImage:[UIImage imageNamed:@"Downloading"]];
+        }
+        //STATE_EDITING
+        else if (loadingState == 3) {
+            [self.photoLoadingView setImage:[UIImage imageNamed:@"Editing"]];
         }
     }
 }
 
 - (void)tapAction {
     NSDictionary *sendData = @{KEY_SELECTED_CELL_INDEXPATH:self.indexPath,
-                               KEY_SELECTED_CELL_CENTER_X:@(self.center.x),
-                               KEY_SELECTED_CELL_CENTER_Y:@(self.center.y)};
+                               KEY_SELECTED_CELL_CENTER_X:@(self.superview.frame.origin.x + self.frame.origin.x + self.frame.size.width / 2.0f),
+                               KEY_SELECTED_CELL_CENTER_Y:@(self.superview.frame.origin.y + self.frame.origin.y + self.frame.size.height / 2.0f)};
     
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SELECTED_CELL object:nil userInfo:sendData];
 }

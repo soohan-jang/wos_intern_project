@@ -8,11 +8,8 @@
 
 #import "ImageUtility.h"
 
-NSInteger const IMAGE_RESIZE_CROPPED = 90;
-NSInteger const IMAGE_RESIZE_STANDARD  = 480;
-
-NSString *const FILE_POSTFIX_CROPPED   = @"_cropped";
-NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
+NSString *const FILE_POSTFIX_CROPPED     = @"_cropped";
+NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
 
 @implementation ImageUtility
 
@@ -28,81 +25,75 @@ NSString *const FILE_POSTFIX_STANDARD  = @"_standard";
     return instance;
 }
 
-- (BOOL)makeTempImageWithUIImage:(UIImage *)image filename:(NSString *)filename prefixOption:(NSInteger)option {
-    NSData *tempData = UIImagePNGRepresentation(image);
-    NSString *directory;
+- (void)getFullScreenUIImageWithURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
+    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
     
-    if (option == IMAGE_RESIZE_CROPPED) {
-        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
-    }
-    else if (option == IMAGE_RESIZE_STANDARD) {
-        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD];
-    }
-    
-    return [tempData writeToFile:directory atomically:YES];
+    [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
+        ALAssetRepresentation *representation = [asset defaultRepresentation];
+        resultBlock([UIImage imageWithCGImage:representation.fullScreenImage]);
+    } failureBlock:^(NSError *error) {
+        NSLog(@"%@", [error localizedDescription]);
+    }];
 }
 
-- (BOOL)makeTempImageWithAssetRepresentation:(ALAssetRepresentation *) representation {
-    Byte *buffer = (Byte *)malloc((unsigned long)representation.size);
-    NSInteger buffered = [representation getBytes:buffer fromOffset:0.0 length:(unsigned long)representation.size error:nil];
+//for dummy data.
+- (NSString *)saveImageAtTemporaryDirectoryForDummy:(UIImage *)image {
+    NSData *imageData = UIImagePNGRepresentation(image);
     
-    NSData *tempData = [NSData dataWithBytesNoCopy:buffer length:buffered];
-    NSString *filename = representation.filename;
+    NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
     NSString *directory = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename];
     
-    return [tempData writeToFile:directory atomically:YES];
+    BOOL isSaved = [imageData writeToFile:directory atomically:YES];
+    
+    if (isSaved) {
+        return filename;
+    }
+    else {
+        return nil;
+    }
 }
 
-- (BOOL)makeTempImageWithFilename:(NSString *)filename resizeOption:(NSInteger)option {
-    if (option != IMAGE_RESIZE_CROPPED && option != IMAGE_RESIZE_STANDARD)
-        return NO;
+- (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage {
+    NSData *fullscreenImageData = UIImagePNGRepresentation(fullscreenImage);
+    NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
-    NSString *originDir = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename];
-    NSURL *fileURL = [NSURL fileURLWithPath:originDir];
+    NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
+    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN];
+    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
     
-    if (fileURL == nil)
-        return NO;
+    BOOL isSaved = [fullscreenImageData writeToFile:fullscreenImageDirectory atomically:YES] && [croppedImageData writeToFile:croppedImageDirectory atomically:YES];
     
-    CGImageSourceRef imageSource = CGImageSourceCreateWithURL((__bridge CFURLRef)fileURL, NULL);
-    CFDictionaryRef options = (__bridge CFDictionaryRef) @{(id) kCGImageSourceCreateThumbnailWithTransform : @YES,
-                                                           (id) kCGImageSourceCreateThumbnailFromImageAlways : @YES,
-                                                           (id) kCGImageSourceThumbnailMaxPixelSize : @(option)};
-    
-    CGImageRef imgRef = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options);
-    UIImage *resizedImage = [UIImage imageWithCGImage:imgRef];
-    
-    CGImageRelease(imgRef);
-    CFRelease(imageSource);
-
-    //파일 전송을 위해 리사이즈된 이미지를 임시로 저장한다.
-    NSData *resizedData = UIImagePNGRepresentation(resizedImage);
-    NSString *directory = nil;
-    
-    if (option == IMAGE_RESIZE_CROPPED) {
-        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
+    if (isSaved) {
+        return filename;
     }
-    else if (option == IMAGE_RESIZE_STANDARD) {
-        directory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD];
+    else {
+        //하나라도 성공한 경우가 있을 수 있으므로, 이 경우를 대비하여 임시 파일 삭제 로직을 수행한다.
+        [self removeTempImageWithFilename:filename];
+        return nil;
     }
-    
-    return [resizedData writeToFile:directory atomically:YES];
 }
 
 - (void)removeTempImageWithFilename:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSURL *originalURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename]];
-    NSURL *croppedURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
-    NSURL *standardURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_STANDARD]];
+    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN]];
+    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
     
-    [fileManager removeItemAtURL:originalURL error:nil];
-    [fileManager removeItemAtURL:croppedURL error:nil];
-    [fileManager removeItemAtURL:standardURL error:nil];
+    [fileManager removeItemAtURL:fullscreenImageURL error:nil];
+    [fileManager removeItemAtURL:croppedImageURL error:nil];
 }
 
 - (void)removeAllTempImages {
     NSFileManager *fileManage = [NSFileManager defaultManager];
     [fileManage removeItemAtPath:NSTemporaryDirectory() error:nil];
+}
+
+- (NSURL *)getFullscreenImageURLWithFilename:(NSString *)filename {
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN]];
+}
+
+- (NSURL *)getCroppedImageURLWithFilename:(NSString *)filename {
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
 }
 
 @end

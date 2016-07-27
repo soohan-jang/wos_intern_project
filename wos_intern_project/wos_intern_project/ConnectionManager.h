@@ -8,6 +8,7 @@
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import "MessageSyncManager.h"
+#import "ImageUtility.h"
 
 /** MCSession Service Type **/
 /** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
@@ -26,6 +27,8 @@ extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
 
 extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT;
 extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT;
+extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED;
 extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE;
 extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT;
 extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE;
@@ -51,6 +54,7 @@ extern NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX;
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE;
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA;
 extern NSString *const KEY_EDITOR_PHOTO_INSERT_ACK;
+extern NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX;
 extern NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX;
 extern NSString *const KEY_EDITOR_DRAWING_INSERT_DATA;
 extern NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA;
@@ -72,6 +76,8 @@ extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
 extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT;
 extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK;
+extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT;
+extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED;
 extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE;
 //extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT;
 //extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE;
@@ -114,7 +120,7 @@ extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
  */
 - (void)sendData:(NSData *)sendData;
 
-- (void)sendResourceDataWithFilename:(NSString *)filename index:(NSInteger)index;
+- (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index;
 
 /**
  Session의 연결을 해제한다.

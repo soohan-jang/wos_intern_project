@@ -20,51 +20,50 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.cropView = [[PECropView alloc] initWithFrame:self.cropAreaView.bounds];
+    [self.cropAreaView addSubview:self.cropView];
+    
     if (self.imageUrl == nil) {
-        //return
+        if (self.fullscreenImage != nil) {
+            [self.cropView setImage:self.fullscreenImage];
+            self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
+        }
+        else {
+            //Error.
+            [self.navigationController popViewControllerAnimated:YES];
+        }
     }
     else {
-        self.cropView = [[PECropView alloc] initWithFrame:self.cropAreaView.bounds];
-        [self.cropAreaView addSubview:self.cropView];
+        [self loadProgress];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self loadProgress];
-            
-            if (self.assetslibrary == nil) {
-                self.assetslibrary = [[ALAssetsLibrary alloc] init];
+        [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *fullscreenImage) {
+            if (fullscreenImage == nil) {
+                NSLog(@"이미지를 가져오지 못함.");
+            }
+            else {
+                self.fullscreenImage = fullscreenImage;
+                [self.cropView setImage:fullscreenImage];
+                self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
             }
             
-            [self.assetslibrary assetForURL:self.imageUrl resultBlock:^(ALAsset *asset) {
-                ALAssetRepresentation *representation = [asset defaultRepresentation];
-                self.filename = representation.filename;
-                if ([[ImageUtility sharedInstance] makeTempImageWithFilename:self.filename resizeOption:IMAGE_RESIZE_STANDARD]) {
-                    self.resizedImageUrl = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), representation.filename, FILE_POSTFIX_STANDARD]];
-                    UIImage *standardImage = [UIImage imageWithContentsOfFile:self.resizedImageUrl.absoluteString];
-                    
-                    self.cropView.image = standardImage;
-                }
-                
-                [self doneProgress];
-            } failureBlock:nil];
-        });
+            [self doneProgress];
+        }];
     }
 }
 
 - (IBAction)backAction:(id)sender {
     if (self.delegate != nil) {
-        [self.delegate cropViewControllerDidCancel:self];
+        [self.delegate photoCropViewControllerDidCancel:self];
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (IBAction)doneAction:(id)sender {
     if (self.delegate != nil) {
-        UIImage *croppedImage = [self.cropView croppedImage];
+        self.croppedImage = [self.cropView croppedImage];
         
-        if ([[ImageUtility sharedInstance] makeTempImageWithUIImage:croppedImage filename:self.filename prefixOption:IMAGE_RESIZE_CROPPED]) {
-            NSURL *croppedImageURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), self.filename, FILE_POSTFIX_CROPPED]];
-            [self.delegate cropViewController:self didFinishCroppingImageWithFilename:self.filename croppedImagePath:croppedImageURL originalImagePath:self.resizedImageUrl];
+        if (self.fullscreenImage != nil && self.croppedImage != nil) {
+            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

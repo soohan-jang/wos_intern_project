@@ -25,11 +25,13 @@ NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED     = 203;
 
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT          = 300;
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK      = 301;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 302;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 303;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 304;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 305;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 306;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT            = 302;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED   = 303;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 304;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 305;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 306;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 307;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 308;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
@@ -50,6 +52,7 @@ NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX                 = @"photo_insert_i
 NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE             = @"photo_insert_data_type";
 NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                  = @"photo_insert_data";
 NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                   = @"photo_insert_ack";
+NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX                   = @"photo_edit_index";
 NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
 NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
@@ -71,6 +74,8 @@ NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED    = @"noti_recv_phot
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT         = @"noti_recv_editor_photo_insert";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK     = @"noti_recv_editor_photo_insert_ack";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT           = @"noti_recv_editor_photo_edit";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED  = @"noti_recv_editor_photo_edit_canceled";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
 //NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT     = @"noti_recv_editor_drawing_nsert";
 //NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE     = @"noti_recv_editor_drawing_update";
@@ -124,17 +129,26 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
-- (void)sendResourceDataWithFilename:(NSString *)filename index:(NSInteger)index {
+- (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
-//        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_thumbnail", NSTemporaryDirectory(), filename]] withName:[@(index) stringValue] toPeer:peer withCompletionHandler:^(NSError *error) {
-//        }];
+        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@+_cropped", [@(index) stringValue]];
         
-        NSString *croppedResourceName = [NSString stringWithFormat:@"%@+_cropped", [@(index) stringValue]];
-        [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_cropped", NSTemporaryDirectory(), filename]] withName:croppedResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
-            if (error) {}
-            
-            NSString *standardResourceName = [NSString stringWithFormat:@"%@+_standard", [@(index) stringValue]];
-            [self.ownSession sendResourceAtURL:[NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@_standard", NSTemporaryDirectory(), filename]] withName:standardResourceName toPeer:peer withCompletionHandler:nil];
+        [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
+            if (error) {
+                NSLog(@"%@", error.localizedDescription);
+            }
+            else {
+                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@+_fullscreen", [@(index) stringValue]];
+                
+                [self.ownSession sendResourceAtURL:fullscreenImageURL withName:fullscreenImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
+                    if (error) {
+                        NSLog(@"%@", error.localizedDescription);
+                    }
+                    
+                    //파일 전송이 종료되었으므로, 파일 전송을 위해 임시저장했던 이미지 파일을 삭제한다.
+                    [[ImageUtility sharedInstance] removeTempImageWithFilename:filename];
+                }];
+            }
         }];
     }
 }
@@ -203,6 +217,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil userInfo:receivedData];
             NSLog(@"Received Insert Photo Ack");
             break;
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil userInfo:receivedData];
+            break;
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil userInfo:receivedData];
+            break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
@@ -222,8 +242,9 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     }
 }
 
-- (void)session:(MCSession *)session didStartReceivingResourceWithName:(nonnull NSString *)resourceName fromPeer:(nonnull MCPeerID *)peerID withProgress:(nonnull NSProgress *)progress {
+- (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
     NSArray *array = [resourceName componentsSeparatedByString:@"+"];
+    
     if (array != nil && array.count == 2) {
         if ([array[1] isEqualToString:@"_cropped"]) {
             NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
@@ -235,22 +256,23 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     }
 }
 
-- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(nonnull NSString *)resourceName fromPeer:(nonnull MCPeerID *)peerID atURL:(nonnull NSURL *)localURL withError:(nullable NSError *)error {
+- (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
     NSArray *array = [resourceName componentsSeparatedByString:@"+"];
+    
     if (array != nil && array.count == 2) {
         NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
                                        KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1],
                                        KEY_EDITOR_PHOTO_INSERT_DATA: localURL};
         [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
         
-        NSLog(@"Receive Finish Insert Photo");
-        
-        if ([array[1] isEqualToString:@"_standard"]) {
+        if ([array[1] isEqualToString:@"_fullscreen"]) {
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
                                        KEY_EDITOR_PHOTO_INSERT_ACK: @YES,
-                                       KEY_EDITOR_PHOTO_INSERT_INDEX: @([resourceName integerValue])};
+                                       KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue])};
             
             [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            
+            NSLog(@"Receive Finish Insert Photo");
         }
     }
 }

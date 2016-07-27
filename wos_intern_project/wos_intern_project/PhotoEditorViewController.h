@@ -9,14 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "SphereMenu.h"
-
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 
 #import "MainViewController.h"
 #import "PhotoEditorCollectionView.h"
-#import "PhotoEditorFrameViewCell.h"
 #import "PhotoCropViewController.h"
 
 typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
@@ -24,19 +21,10 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_CONTINUE = 1
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
-@property (weak, nonatomic) IBOutlet PhotoEditorCollectionView *tt;
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet PhotoEditorCollectionView *collectionView;
-/**
- 몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
- */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
-//@property (nonatomic, strong) UITapGestureRecognizer *scrollTapGestureRecognizer;
-@property (nonatomic, assign) NSIndexPath *selectedPhotoFrameIndex;
-@property (nonatomic, strong) NSURL *selectedImageURL;
-
-@property (nonatomic, assign) BOOL isMenuAppear;
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
@@ -64,11 +52,6 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  */
 - (void)removeObservers;
 
-
-- (void)loadPhotoCropViewController;
-
-- (void)selectedCellAction:(NSNotification *)notification;
-
 /**
  상대방이 사진을 전송할 때 호출되는 함수이다. 상대방이 사진을 보낼 때, 시작되는 시점과 종료되는 시점을 구분하여 로직이 처리된다.
  */
@@ -78,6 +61,9 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  상대방이 사진 수신을 종료했음을 알릴 때 호출되는 함수이다.
  */
 - (void)receivedPhotoInsertAck:(NSNotification *)notification;
+
+- (void)receivedPhotoEdit:(NSNotification *)notification;
+- (void)receivedPhotoEditCanceled:(NSNotification *)notification;
 
 /**
  상대방이 사진을 삭제했을 때 호출되는 함수이다.

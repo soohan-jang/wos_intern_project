@@ -158,10 +158,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kfz-pT-T9E">
-                                <rect key="frame" x="20" y="64" width="560" height="472"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="472"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7vD-hf-90M" customClass="PhotoEditorCollectionView">
-                                        <rect key="frame" x="0.0" y="-44" width="560" height="560"/>
+                                        <rect key="frame" x="20" y="-44" width="560" height="560"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="7vD-hf-90M" secondAttribute="height" multiplier="1:1" id="3Lg-FR-O5Y"/>
                                         </constraints>
@@ -235,11 +235,18 @@
                                     </collectionView>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="7vD-hf-90M" firstAttribute="leading" secondItem="kfz-pT-T9E" secondAttribute="leading" constant="20" id="AGf-vo-YBp"/>
+                                    <constraint firstAttribute="trailing" secondItem="7vD-hf-90M" secondAttribute="trailing" constant="20" id="AKk-Cn-kM2"/>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="centerY" secondItem="kfz-pT-T9E" secondAttribute="centerY" id="OFk-KS-nHh"/>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="centerX" secondItem="kfz-pT-T9E" secondAttribute="centerX" id="TOg-Vw-C5W"/>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="width" secondItem="kfz-pT-T9E" secondAttribute="width" id="jw6-WZ-jC5"/>
                                 </constraints>
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="jw6-WZ-jC5"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4kj-DG-Aua">
                                 <rect key="frame" x="0.0" y="536" width="600" height="64"/>
@@ -261,10 +268,12 @@
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2O5-KR-ahB"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="7YK-yN-e74"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" constant="64" id="BjL-8L-GdM">
                                 <variation key="heightClass=regular" constant="44"/>
                             </constraint>
+                            <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="D2c-sh-hZJ"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leadingMargin" id="K7Z-zC-bbH"/>
                             <constraint firstItem="4kj-DG-Aua" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="KRQ-N3-lA8"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="j6L-0H-DI4"/>
@@ -272,6 +281,12 @@
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="pOP-mv-h3f"/>
                             <constraint firstItem="4kj-DG-Aua" firstAttribute="width" secondItem="bsr-62-H2Z" secondAttribute="width" id="zRX-lH-n0D"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="K7Z-zC-bbH"/>
+                                <exclude reference="j6L-0H-DI4"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="s0S-z8-qVz">
                         <barButtonItem key="leftBarButtonItem" image="Back" id="zC7-oX-CRu">

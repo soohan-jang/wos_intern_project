@@ -7,21 +7,37 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
 
+#import "ConnectionManager.h"
+
+#import "SphereMenu.h"
 #import "PhotoEditorFrameViewCell.h"
 
-extern NSInteger const STATE_NONE;
-extern NSInteger const STATE_UPLOADING;
-extern NSInteger const STATE_DOWNLOADING;
-extern NSInteger const STATE_EDITING;
+extern const NSInteger CELL_STATE_NONE;
+extern const NSInteger CELL_STATE_UPLOADING;
+extern const NSInteger CELL_STATE_DOWNLOADING;
+extern const NSInteger CELL_STATE_EDITING;
 
-@interface PhotoEditorCollectionView : UICollectionView
+@interface PhotoEditorCollectionView : UICollectionView <SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
-@property (nonatomic) NSInteger photoFrameNumber;
+@property (nonatomic, weak) UIViewController *parentViewController;
 
-@property (atomic, strong) NSMutableDictionary *loadingStateDictionary;
-@property (atomic, strong) NSMutableDictionary *originalImageDictionary;
-@property (atomic, strong) NSMutableDictionary *imageDictionary;
+/**
+ 몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
+ */
+@property (nonatomic, assign) NSInteger photoFrameNumber;
+//@property (nonatomic, strong) UITapGestureRecognizer *scrollTapGestureRecognizer;
+@property (nonatomic, assign) NSIndexPath *selectedPhotoFrameIndex;
+@property (nonatomic, strong) NSURL *selectedImageURL;
+
+@property (nonatomic, assign) BOOL isMenuAppear;
+
+//@property (atomic, strong) NSMutableDictionary *cellDataDictionary;
+@property (atomic, strong) NSMutableDictionary *cellFullscreenImages;
+@property (atomic, strong) NSMutableDictionary *cellCroppedImages;
+@property (atomic, strong) NSMutableDictionary *cellStates;
 
 /**
  액자종류에 따라 표시될 각각의 사진 액자 크기를 설정한다.
@@ -53,26 +69,32 @@ extern NSInteger const STATE_EDITING;
  */
 - (UIEdgeInsets)insetForCollectionView;
 
-/**
- 각 Cell들의 상태를 저장 및 관리하기 위한 함수이다.
- */
-- (void)setLoadingStateWithItemIndex:(NSInteger)item State:(NSInteger)state;
-- (NSInteger)getLoadingStateWithItemIndex:(NSInteger)item;
+- (CGSize)getSizeOfSelectedCell;
 
 /**
- 각 Cell들의 이미지를 저장 및 관리하기 위한 함수이다.
+ 각 셀들이 클릭되었음을 알리는 Notification을 수신하는 함수이다.
  */
-- (void)putImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url;
-- (UIImage *)getImageURLWithItemIndex:(NSInteger)item;
-- (void)delImageURLWithItemIndex:(NSInteger)item;
-- (BOOL)hasImageURLWithItemIndex:(NSInteger)item;
+- (void)selectedCellAction:(NSNotification *)notification;
 
-/**
- 각 Cell들의 원본 이미지 url을 저장 및 관리하기 위한 함수이다.
- */
-- (void)putOriginalImageURLWithItemIndex:(NSInteger)item url:(NSURL *)url;
-- (NSURL *)getOrigianlImageURLWithItemIndex:(NSInteger)item;
-- (void)delOriginalImageURLWithItemIndex:(NSInteger)item;
-- (BOOL)hasOriginalImageURLWithItemIndex:(NSInteger)item;
+- (void)loadPhotoCropViewController;
+
+- (void)setCellStateOfSelectedIndex:(NSInteger)state;
+- (void)setCellFullscreenImageOfSelectedIndex:(UIImage *)fullscreenImage;
+- (void)setCellCroppedImageOfSelectedIndex:(UIImage *)croppedImage;
+
+- (void)setCellStateAtIndex:(NSInteger)index state:(NSInteger)state;
+- (void)setCellFullscreenImageAtIndex:(NSInteger)index fullscreenImage:(UIImage *)fullscreenImage;
+- (void)setCellCroppedImageAtIndex:(NSInteger)index croppedImage:(UIImage *)croppedImage;
+
+- (NSInteger)getCellStateOfSelectedIndex;
+- (UIImage *)getCellFullscreenImageOfSelectedIndex;
+- (UIImage *)getCellCroppedImageOfSelectedIndex;
+
+- (NSInteger)getCellStateAtIndex:(NSInteger)index;
+- (UIImage *)getCellFullscreenImageAtIndex:(NSInteger)index;
+- (UIImage *)getCellCroppedImageAtIndex:(NSInteger)index;
+
+- (void)clearCellDataOfSelectedIndex;
+- (void)clearCellDataAtIndex:(NSInteger)index;
 
 @end

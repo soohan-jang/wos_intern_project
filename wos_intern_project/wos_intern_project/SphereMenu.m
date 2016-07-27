@@ -41,10 +41,6 @@ static const float kSphereDamping = 0.3;
 
 - (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle {
     if (self = [super init]) {
-        
-        self.bounds = CGRectMake(0, 0, rootView.bounds.size.width, rootView.bounds.size.height);
-        self.center = rootView.center;
-        
         _angle = kAngleOffset;
         _sphereLength = kSphereLength;
         _sphereDamping = kSphereDamping;
@@ -56,9 +52,10 @@ static const float kSphereDamping = 0.3;
         _start.center = center;
         _images = images;
         _count = self.images.count;
+        
+        self.frame = rootView.bounds;
+        [rootView addSubview:self];
     }
-    
-    [rootView addSubview:self];
     
     return self;
 }

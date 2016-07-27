@@ -24,8 +24,9 @@
 
 @property (nonatomic, weak) id<PhotoCropViewControllerDelegate> delegate;
 @property (strong, nonatomic) NSURL *imageUrl;
-@property (copy, nonatomic) NSString *filename;
-@property (strong, nonatomic) NSURL *croppedImageUrl, *resizedImageUrl;
+@property (strong, nonatomic) UIImage *fullscreenImage;
+@property (strong, nonatomic) UIImage *croppedImage;
+
 @property (assign, nonatomic) CGSize cellSize;
 
 - (IBAction)backAction:(id)sender;
@@ -38,7 +39,7 @@
 
 @protocol PhotoCropViewControllerDelegate
 @required
-- (void)cropViewController:(PhotoCropViewController *)controller didFinishCroppingImageWithFilename:(NSString *)filename croppedImagePath:(NSURL *)croppedImagePath originalImagePath:(NSURL *)originalImagePath;
-- (void)cropViewControllerDidCancel:(PhotoCropViewController *)controller;
+- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage;
+- (void)photoCropViewControllerDidCancel:(PhotoCropViewController *)controller;
 
 @end
