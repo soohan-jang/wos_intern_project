@@ -219,9 +219,11 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil userInfo:receivedData];
+            NSLog(@"Received Edit Photo");
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil userInfo:receivedData];
+            NSLog(@"Received Edit Photo Canceled");
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
@@ -260,7 +262,6 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     NSArray *array = [resourceName componentsSeparatedByString:@"+"];
     
     if (array != nil && array.count == 2) {
-        NSLog(@"array : %@", array);
         NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
                                        KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1],
                                        KEY_EDITOR_PHOTO_INSERT_DATA: localURL};

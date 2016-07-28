@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0A9409251D40B7C5007B5C3D /* SphereMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9409241D40B7C5007B5C3D /* SphereMenu.m */; };
+		4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */; };
 		4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */; };
 		4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */; };
 		4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
-		4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */; };
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
@@ -64,14 +64,14 @@
 /* Begin PBXFileReference section */
 		0A9409231D40B7C5007B5C3D /* SphereMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereMenu.h; sourceTree = "<group>"; };
 		0A9409241D40B7C5007B5C3D /* SphereMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereMenu.m; sourceTree = "<group>"; };
+		4A0917E51D49CD310028899A /* PhotoFrameCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameCellManager.h; sourceTree = "<group>"; };
+		4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameCellManager.m; sourceTree = "<group>"; };
 		4A0C92DC1D374D460080E9A6 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		4A0C92E11D3754C80080E9A6 /* WMProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMProgressHUD.h; sourceTree = "<group>"; };
 		4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMProgressHUD.m; sourceTree = "<group>"; };
 		4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewCell.h; sourceTree = "<group>"; };
 		4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewCell.m; sourceTree = "<group>"; };
-		4A0C93561D3C5FBC0080E9A6 /* PhotoEditorCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorCollectionView.h; sourceTree = "<group>"; };
-		4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorCollectionView.m; sourceTree = "<group>"; };
 		4A0C93621D3DC3D40080E9A6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4A0C93661D3DC6200080E9A6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		4A0C936E1D3DC71C0080E9A6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -267,8 +267,6 @@
 				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
 				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
 				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
-				4A0C93561D3C5FBC0080E9A6 /* PhotoEditorCollectionView.h */,
-				4A0C93571D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m */,
 				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
 				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
 				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
@@ -288,6 +286,8 @@
 				4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */,
 				4B4490A91D426E2800E5972F /* ImageUtility.h */,
 				4B4490AA1D426E2800E5972F /* ImageUtility.m */,
+				4A0917E51D49CD310028899A /* PhotoFrameCellManager.h */,
+				4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */,
 				4B44909F1D3A609800E5972F /* DrawingManager.h */,
 				4B4490A01D3A609800E5972F /* DrawingManager.m */,
 				4B4490A21D3A60A600E5972F /* DrawingSyncManager.h */,
@@ -475,6 +475,7 @@
 				4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */,
 				4B4490A11D3A609800E5972F /* DrawingManager.m in Sources */,
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
+				4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */,
 				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
@@ -491,7 +492,6 @@
 				4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */,
 				4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */,
 				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,
-				4A0C93581D3C5FBC0080E9A6 /* PhotoEditorCollectionView.m in Sources */,
 				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
 				4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */,
 				4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */,

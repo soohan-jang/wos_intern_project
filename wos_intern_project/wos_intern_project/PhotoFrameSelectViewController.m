@@ -65,7 +65,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
-        viewController.photoFrameNumber = self.ownSelectedFrameIndex.item;
+        [viewController setPhotoFrameNumber:self.ownSelectedFrameIndex.item];
     }
 }
 
