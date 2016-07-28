@@ -22,12 +22,14 @@
 
 @property (strong, nonatomic) PECropView *cropView;
 
-@property (nonatomic, weak) id<PhotoCropViewControllerDelegate> delegate;
+@property (weak, nonatomic) id<PhotoCropViewControllerDelegate> delegate;
 @property (strong, nonatomic) NSURL *imageUrl;
 @property (strong, nonatomic) UIImage *fullscreenImage;
 @property (strong, nonatomic) UIImage *croppedImage;
 
 @property (assign, nonatomic) CGSize cellSize;
+
+@property (assign, nonatomic) NSInteger targetCellIndex;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)doneAction:(id)sender;
@@ -39,7 +41,7 @@
 
 @protocol PhotoCropViewControllerDelegate
 @required
-- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage;
+- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage targetCellIndex:(NSInteger)targetCellIndex;
 - (void)photoCropViewControllerDidCancel:(PhotoCropViewController *)controller;
 
 @end

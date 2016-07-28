@@ -148,10 +148,23 @@ static const float kSphereDamping = 0.3;
 - (void)removeFromSuperview {
     for (int i = 0; i < self.count; i++) {
         [self.items[i] removeFromSuperview];
+        for (UIGestureRecognizer *recongnizer in ((UIButton *)self.items[i]).gestureRecognizers) {
+            [self.items[i] removeGestureRecognizer:recongnizer];
+        }
     }
+    [self.items removeAllObjects];
+    [self.positions removeAllObjects];
+    self.images = nil;
     
     [_start removeFromSuperview];
+    for (UIGestureRecognizer *recongnizer in _start.gestureRecognizers) {
+        [_start removeGestureRecognizer:recongnizer];
+    }
+    
     [super removeFromSuperview];
+    for (UIGestureRecognizer *recongnizer in self.gestureRecognizers) {
+        [self removeGestureRecognizer:recongnizer];
+    }
 }
 
 - (CGPoint)centerForSphereAtIndex:(int)index {
@@ -174,8 +187,8 @@ static const float kSphereDamping = 0.3;
         [self removeSnapBehaviors];
     }
     
-    if ([self.delegate respondsToSelector:@selector(sphereDidSelected:Index:)]) {
-        [self.delegate sphereDidSelected:self Index:tag];
+    if ([self.delegate respondsToSelector:@selector(sphereDidSelected:index:targetCellIndex:)]) {
+        [self.delegate sphereDidSelected:self index:tag targetCellIndex:self.targerCellIndex];
     }
 }
 

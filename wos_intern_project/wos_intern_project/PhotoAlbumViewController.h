@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoAlbumViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface PhotoAlbumViewController : UIViewController
 
 - (IBAction)backAction:(id)sender;
 

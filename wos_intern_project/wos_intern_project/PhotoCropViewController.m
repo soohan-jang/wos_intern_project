@@ -60,7 +60,7 @@
         self.croppedImage = [self.cropView croppedImage];
         
         if (self.fullscreenImage != nil && self.croppedImage != nil) {
-            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage];
+            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage targetCellIndex:self.targetCellIndex];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

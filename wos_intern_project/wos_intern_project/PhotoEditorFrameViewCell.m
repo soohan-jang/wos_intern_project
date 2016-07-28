@@ -45,14 +45,11 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 }
 
 - (void)setTapGestureRecognizer {
-    [self.photoFrameView setUserInteractionEnabled:NO];
-    for (UIGestureRecognizer *recognizer in self.photoFrameView.gestureRecognizers) {
-        [self.photoFrameView removeGestureRecognizer:recognizer];
+    if (self.gestureRecognizers == nil || self.gestureRecognizers.count == 0) {
+        UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
+        [self.photoImageView addGestureRecognizer:recognizer];
+        [self.photoImageView setUserInteractionEnabled:YES];
     }
-    
-    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction)];
-    [self.photoImageView addGestureRecognizer:recognizer];
-    [self.photoImageView setUserInteractionEnabled:YES];
 }
 
 - (void)setImage:(UIImage *)image {
