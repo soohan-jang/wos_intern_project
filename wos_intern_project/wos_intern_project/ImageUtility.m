@@ -26,7 +26,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
 }
 
 - (void)getFullScreenUIImageWithURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
-    ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
+    ALAssetsLibrary *assetslibrary = [[ALAssetsLibrary alloc] init];
     
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
         if (asset == nil) {
@@ -34,8 +34,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
                                    usingBlock:^(ALAssetsGroup *group, BOOL *stop)
              {
                  [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                     if([result.defaultRepresentation.url isEqual:url])
-                     {
+                     if ([result.defaultRepresentation.url isEqual:url]) {
                          NSLog(@"Find Photo.");
                          resultBlock([UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage]);
                          *stop = YES;
@@ -47,8 +46,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
                  NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
                  resultBlock(nil);
              }];
-        }
-        else {
+        } else {
             ALAssetRepresentation *representation = [asset defaultRepresentation];
             CGImageRef imageRef = representation.fullScreenImage;
             
@@ -57,12 +55,10 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
                 
                 if (imageRef == nil) {
                     resultBlock(nil);
-                }
-                else {
+                } else {
                     resultBlock([UIImage imageWithCGImage:imageRef]);
                 }
-            }
-            else {
+            } else {
                 resultBlock([UIImage imageWithCGImage:imageRef]);
             }
         }
@@ -83,8 +79,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     
     if (isSaved) {
         return filename;
-    }
-    else {
+    } else {
         return nil;
     }
 }
@@ -101,8 +96,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     
     if (isSaved) {
         return filename;
-    }
-    else {
+    } else {
         //하나라도 성공한 경우가 있을 수 있으므로, 이 경우를 대비하여 임시 파일 삭제 로직을 수행한다.
         [self removeTempImageWithFilename:filename];
         return nil;

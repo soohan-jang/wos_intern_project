@@ -46,8 +46,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_unsupported", nil) message:NSLocalizedString(@"alert_content_bluetooth_unsupported", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         [alertView show];
         self.isBluetoothUnsupported = YES;
-    }
-    else {
+    } else {
         self.isBluetoothUnsupported = NO;
         
         if (self.bluetoothManager.state == CBCentralManagerStatePoweredOff) {
@@ -76,8 +75,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     if (self.bluetoothManager.state == CBCentralManagerStatePoweredOn) {
         [self presentViewController:[ConnectionManager sharedInstance].browserViewController animated:YES completion:nil];
         [[ConnectionManager sharedInstance] stopAdvertise];
-    }
-    else {
+    } else {
         //Alert
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_off", nil) message:NSLocalizedString(@"alert_content_bluetooth_off", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         [alertView show];
@@ -93,7 +91,6 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_CONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
-
 
 /**** MCBrowserViewControllerDelegate Methods. ****/
 
@@ -182,8 +179,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
                 [self loadPhotoFrameViewController];
             });
         }];
-    }
-    else {
+    } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self doneProgress];
         });

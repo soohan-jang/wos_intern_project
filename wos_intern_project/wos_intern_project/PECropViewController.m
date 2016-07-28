@@ -19,10 +19,10 @@
 @end
 
 @implementation PECropViewController
+
 @synthesize rotationEnabled = _rotationEnabled;
 
-+ (NSBundle *)bundle
-{
++ (NSBundle *)bundle {
     static NSBundle *bundle = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -63,10 +63,10 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     self.rotationEnabled = YES;
 }
 
+
 #pragma mark -
 
-- (void)loadView
-{
+- (void)loadView {
     UIView *contentView = [[UIView alloc] init];
     contentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     contentView.backgroundColor = [UIColor blackColor];
@@ -76,8 +76,7 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     [contentView addSubview:self.cropView];
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     self.navigationController.navigationBar.translucent = NO;
@@ -107,8 +106,7 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     self.cropView.rotationGestureRecognizer.enabled = _rotationEnabled;
 }
 
-- (void)viewDidAppear:(BOOL)animated
-{
+- (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     if (self.cropAspectRatio != 0) {
@@ -124,33 +122,29 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     self.keepingCropAspectRatio = self.keepingCropAspectRatio;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     return YES;
 }
 
+
 #pragma mark -
 
-- (void)setImage:(UIImage *)image
-{
+- (void)setImage:(UIImage *)image {
     _image = image;
     self.cropView.image = image;
 }
 
-- (void)setKeepingCropAspectRatio:(BOOL)keepingCropAspectRatio
-{
+- (void)setKeepingCropAspectRatio:(BOOL)keepingCropAspectRatio {
     _keepingCropAspectRatio = keepingCropAspectRatio;
     self.cropView.keepingCropAspectRatio = self.keepingCropAspectRatio;
 }
 
-- (void)setCropAspectRatio:(CGFloat)cropAspectRatio
-{
+- (void)setCropAspectRatio:(CGFloat)cropAspectRatio {
     _cropAspectRatio = cropAspectRatio;
     self.cropView.cropAspectRatio = self.cropAspectRatio;
 }
 
-- (void)setCropRect:(CGRect)cropRect
-{
+- (void)setCropRect:(CGRect)cropRect {
     _cropRect = cropRect;
     _imageCropRect = CGRectZero;
     
@@ -164,65 +158,56 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     self.cropView.cropRect = cropViewCropRect;
 }
 
-- (void)setImageCropRect:(CGRect)imageCropRect
-{
+- (void)setImageCropRect:(CGRect)imageCropRect {
     _imageCropRect = imageCropRect;
     _cropRect = CGRectZero;
     
     self.cropView.imageCropRect = imageCropRect;
 }
 
-- (BOOL)isRotationEnabled
-{
+- (BOOL)isRotationEnabled {
     return _rotationEnabled;
 }
 
-- (void)setRotationEnabled:(BOOL)rotationEnabled
-{
+- (void)setRotationEnabled:(BOOL)rotationEnabled {
     _rotationEnabled = rotationEnabled;
     self.cropView.rotationGestureRecognizer.enabled = _rotationEnabled;
 }
 
-- (CGAffineTransform)rotationTransform
-{
+- (CGAffineTransform)rotationTransform {
     return self.cropView.rotation;
 }
 
-- (CGRect)zoomedCropRect
-{
+- (CGRect)zoomedCropRect {
     return self.cropView.zoomedCropRect;
 }
 
-- (void)resetCropRect
-{
+- (void)resetCropRect {
     [self.cropView resetCropRect];
 }
 
-- (void)resetCropRectAnimated:(BOOL)animated
-{
+- (void)resetCropRectAnimated:(BOOL)animated {
     [self.cropView resetCropRectAnimated:animated];
 }
 
+
 #pragma mark -
 
-- (void)cancel:(id)sender
-{
+- (void)cancel:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cropViewControllerDidCancel:)]) {
         [self.delegate cropViewControllerDidCancel:self];
     }
 }
 
-- (void)done:(id)sender
-{
+- (void)done:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cropViewController:didFinishCroppingImage:transform:cropRect:)]) {
-        [self.delegate cropViewController:self didFinishCroppingImage:self.cropView.croppedImage transform: self.cropView.rotation cropRect: self.cropView.zoomedCropRect];
+        [self.delegate cropViewController:self didFinishCroppingImage:self.cropView.croppedImage transform:self.cropView.rotation cropRect:self.cropView.zoomedCropRect];
     } else if ([self.delegate respondsToSelector:@selector(cropViewController:didFinishCroppingImage:)]) {
         [self.delegate cropViewController:self didFinishCroppingImage:self.cropView.croppedImage];
     }
 }
 
-- (void)constrain:(id)sender
-{
+- (void)constrain:(id)sender {
     self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                    delegate:self
                                           cancelButtonTitle:PELocalizedString(@"Cancel", nil)
@@ -240,10 +225,10 @@ static inline NSString *PELocalizedString(NSString *key, NSString *comment)
     [self.actionSheet showFromToolbar:self.navigationController.toolbar];
 }
 
+
 #pragma mark -
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 0) {
         CGRect cropRect = self.cropView.cropRect;
         CGSize size = self.cropView.image.size;

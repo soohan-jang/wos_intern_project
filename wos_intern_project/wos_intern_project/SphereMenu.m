@@ -36,7 +36,6 @@ static const float kSphereDamping = 0.3;
 
 @end
 
-
 @implementation SphereMenu
 
 - (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle {
@@ -83,8 +82,7 @@ static const float kSphereDamping = 0.3;
     });
 }
 
-- (void)commonSetup
-{
+- (void)commonSetup {
     self.items = [NSMutableArray array];
     self.positions = [NSMutableArray array];
     self.snaps = [NSMutableArray array];
@@ -143,13 +141,11 @@ static const float kSphereDamping = 0.3;
     self.itemBehavior.friction = 0.5;
 }
 
-- (void)didMoveToSuperview
-{
+- (void)didMoveToSuperview {
     [self commonSetup];
 }
 
-- (void)removeFromSuperview
-{
+- (void)removeFromSuperview {
     for (int i = 0; i < self.count; i++) {
         [self.items[i] removeFromSuperview];
     }
@@ -158,8 +154,7 @@ static const float kSphereDamping = 0.3;
     [super removeFromSuperview];
 }
 
-- (CGPoint)centerForSphereAtIndex:(int)index
-{
+- (CGPoint)centerForSphereAtIndex:(int)index {
     //self.angle이 offset이다. (M_PI_2 - self.angle)는 offset을 의미하고, index * self.angle로 각 인덱스별로 offset를 늘려 설정한다.
     //따라서 서브메뉴의 시작각도를 변경하려면 수식 맨 앞에 있는 PI값을 건드리면 된다.
     CGFloat firstAngle = _startAngle + (M_PI_2 - self.angle) + index * self.angle;
@@ -170,8 +165,7 @@ static const float kSphereDamping = 0.3;
     return position;
 }
 
-- (void)tapped:(UITapGestureRecognizer *)gesture
-{
+- (void)tapped:(UITapGestureRecognizer *)gesture {
     int tag = (int)gesture.view.tag - kItemInitTag;
     
     if (tag < 0) {
@@ -185,8 +179,7 @@ static const float kSphereDamping = 0.3;
     }
 }
 
-- (void)expandSubmenu
-{
+- (void)expandSubmenu {
     for (int i = 0; i < self.count; i++) {
         [self snapToPostionsWithIndex:i];
     }
@@ -194,8 +187,7 @@ static const float kSphereDamping = 0.3;
     self.expanded = YES;
 }
 
-- (void)shrinkSubmenu
-{
+- (void)shrinkSubmenu {
     [self.animator removeBehavior:self.collision];
     
     for (int i = 0; i < self.count; i++) {
@@ -205,8 +197,7 @@ static const float kSphereDamping = 0.3;
     self.expanded = NO;
 }
 
-- (void)panned:(UIPanGestureRecognizer *)gesture
-{
+- (void)panned:(UIPanGestureRecognizer *)gesture {
     UIView *touchedView = gesture.view;
     if (gesture.state == UIGestureRecognizerStateBegan) {
         [self.animator removeBehavior:self.itemBehavior];
@@ -225,8 +216,7 @@ static const float kSphereDamping = 0.3;
     }
 }
 
-- (void)collisionBehavior:(UICollisionBehavior *)behavior endedContactForItem:(id<UIDynamicItem>)item1 withItem:(id<UIDynamicItem>)item2
-{
+- (void)collisionBehavior:(UICollisionBehavior *)behavior endedContactForItem:(id<UIDynamicItem>)item1 withItem:(id<UIDynamicItem>)item2 {
     [self.animator addBehavior:self.itemBehavior];
     
     if (item1 != self.bumper) {
@@ -244,8 +234,7 @@ static const float kSphereDamping = 0.3;
     }
 }
 
-- (void)snapToStartWithIndex:(NSUInteger)index
-{
+- (void)snapToStartWithIndex:(NSUInteger)index {
     UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:self.start.center];
     snap.damping = self.sphereDamping;
     UISnapBehavior *snapToRemove = self.snaps[index];
@@ -254,8 +243,7 @@ static const float kSphereDamping = 0.3;
     [self.animator addBehavior:snap];
 }
 
-- (void)snapToPostionsWithIndex:(NSUInteger)index
-{
+- (void)snapToPostionsWithIndex:(NSUInteger)index {
     id positionValue = self.positions[index];
     CGPoint position = [positionValue CGPointValue];
     UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:position];
@@ -266,8 +254,7 @@ static const float kSphereDamping = 0.3;
     [self.animator addBehavior:snap];
 }
 
-- (void)removeSnapBehaviors
-{
+- (void)removeSnapBehaviors {
     [self.snaps enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [self.animator removeBehavior:obj];
     }];

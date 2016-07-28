@@ -27,20 +27,17 @@
         if (self.fullscreenImage != nil) {
             [self.cropView setImage:self.fullscreenImage];
             self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
-        }
-        else {
+        } else {
             //Error.
             [self.navigationController popViewControllerAnimated:YES];
         }
-    }
-    else {
+    } else {
         [self loadProgress];
         
         [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *image) {
             if (image == nil) {
                 NSLog(@"이미지를 가져오지 못함.");
-            }
-            else {
+            } else {
                 self.fullscreenImage = image;
                 [self.cropView setImage:image];
                 self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);

@@ -74,8 +74,7 @@ typedef void (^MBProgressHUDCompletionBlock)();
 
 NS_ASSUME_NONNULL_BEGIN
 
-
-/** 
+/**
  * Displays a simple HUD window containing a progress indicator and two optional labels for short messages.
  *
  * This is a simple drop-in class for displaying a progress HUD view similar to Apple's private UIProgressHUD class.
@@ -309,7 +308,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
 /**
  * A progress view for showing definite progress by filling up a circle (pie chart).
  */
@@ -340,7 +338,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-
 /**
  * A flat bar progress view. 
  */
@@ -370,7 +367,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIColor *progressColor;
 
 @end
-
 
 @interface MBBackgroundView : UIView
 
@@ -408,19 +404,19 @@ NS_ASSUME_NONNULL_BEGIN
      completionBlock:(nullable MBProgressHUDCompletionBlock)completion __attribute__((deprecated("Use GCD directly.")));
 @property (assign) BOOL taskInProgress __attribute__((deprecated("No longer needed.")));
 
-@property (nonatomic, copy) NSString *labelText __attribute__((deprecated("Use label.text instead.")));
-@property (nonatomic, strong) UIFont *labelFont __attribute__((deprecated("Use label.font instead.")));
-@property (nonatomic, strong) UIColor *labelColor __attribute__((deprecated("Use label.textColor instead.")));
-@property (nonatomic, copy) NSString *detailsLabelText __attribute__((deprecated("Use detailsLabel.text instead.")));
-@property (nonatomic, strong) UIFont *detailsLabelFont __attribute__((deprecated("Use detailsLabel.font instead.")));
-@property (nonatomic, strong) UIColor *detailsLabelColor __attribute__((deprecated("Use detailsLabel.textColor instead.")));
+@property (nonatomic, copy) NSString * labelText __attribute__((deprecated("Use label.text instead.")));
+@property (nonatomic, strong) UIFont * labelFont __attribute__((deprecated("Use label.font instead.")));
+@property (nonatomic, strong) UIColor * labelColor __attribute__((deprecated("Use label.textColor instead.")));
+@property (nonatomic, copy) NSString * detailsLabelText __attribute__((deprecated("Use detailsLabel.text instead.")));
+@property (nonatomic, strong) UIFont * detailsLabelFont __attribute__((deprecated("Use detailsLabel.font instead.")));
+@property (nonatomic, strong) UIColor * detailsLabelColor __attribute__((deprecated("Use detailsLabel.textColor instead.")));
 @property (assign, nonatomic) CGFloat opacity __attribute__((deprecated("Customize bezelView properties instead.")));
-@property (strong, nonatomic) UIColor *color __attribute__((deprecated("Customize the bezelView color instead.")));
+@property (strong, nonatomic) UIColor * color __attribute__((deprecated("Customize the bezelView color instead.")));
 @property (assign, nonatomic) CGFloat xOffset __attribute__((deprecated("Set offset.x instead.")));
 @property (assign, nonatomic) CGFloat yOffset __attribute__((deprecated("Set offset.y instead.")));
 @property (assign, nonatomic) CGFloat cornerRadius __attribute__((deprecated("Set bezelView.layer.cornerRadius instead.")));
 @property (assign, nonatomic) BOOL dimBackground __attribute__((deprecated("Customize HUD background properties instead.")));
-@property (strong, nonatomic) UIColor *activityIndicatorColor __attribute__((deprecated("Use UIAppearance to customize UIActivityIndicatorView. E.g.: [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor redColor];")));
+@property (strong, nonatomic) UIColor * activityIndicatorColor __attribute__((deprecated("Use UIAppearance to customize UIActivityIndicatorView. E.g.: [UIActivityIndicatorView appearanceWhenContainedIn:[MBProgressHUD class], nil].color = [UIColor redColor];")));
 @property (atomic, assign, readonly) CGSize size __attribute__((deprecated("Get the bezelView.frame.size instead.")));
 
 @end

@@ -13,7 +13,7 @@ extern NSString *const KEY_SELECTED_CELL_INDEXPATH;
 extern NSString *const KEY_SELECTED_CELL_CENTER_X;
 extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
 
-@interface PhotoEditorFrameViewCell: UICollectionViewCell
+@interface PhotoEditorFrameViewCell : UICollectionViewCell
 
 @property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) IBOutlet UIView *photoFrameView;

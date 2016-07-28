@@ -33,7 +33,7 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
     [shapeLayer setBounds:shapeRect];
     [shapeLayer setPosition:CGPointMake(self.bounds.size.width / 2.0f, self.bounds.size.height / 2.0f)];
     [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
-    [shapeLayer setStrokeColor:[[UIColor colorWithRed:243/255.0f green:156/255.0f blue:18/255.0f alpha:1] CGColor]];
+    [shapeLayer setStrokeColor:[[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];
@@ -63,21 +63,17 @@ NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
     //STATE_NONE
     if (loadingState == 0) {
         self.photoLoadingView.hidden = YES;
-    }
-    else {
+    } else {
         self.photoLoadingView.hidden = NO;
         
         //STATE_UPLOADING
         if (loadingState == 1) {
             [self.photoLoadingView setImage:[UIImage imageNamed:@"Uploading"]];
-
-        }
         //STATE_DONWLOADING
-        else if (loadingState == 2) {
+        } else if (loadingState == 2) {
             [self.photoLoadingView setImage:[UIImage imageNamed:@"Downloading"]];
-        }
         //STATE_EDITING
-        else if (loadingState == 3) {
+        } else if (loadingState == 3) {
             [self.photoLoadingView setImage:[UIImage imageNamed:@"Editing"]];
         }
     }

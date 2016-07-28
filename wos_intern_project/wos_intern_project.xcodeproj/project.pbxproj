@@ -346,6 +346,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4A4ACF551D2B6D2C00BC2FC4 /* Build configuration list for PBXNativeTarget "wos_intern_project" */;
 			buildPhases = (
+				OBJCLEANCUSTOMRUNSCRIPTT /* Objective-Clean Run Script */,
 				4A4ACF241D2B6D2C00BC2FC4 /* Sources */,
 				4A4ACF251D2B6D2C00BC2FC4 /* Frameworks */,
 				4A4ACF261D2B6D2C00BC2FC4 /* Resources */,
@@ -466,6 +467,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		OBJCLEANCUSTOMRUNSCRIPTT /* Objective-Clean Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Objective-Clean Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "if [[ -z ${SKIP_OBJCLEAN} || ${SKIP_OBJCLEAN} != 1 ]]; then\nif [[ -d \"${LOCAL_APPS_DIR}/Objective-Clean.app\" ]]; then \n\"${LOCAL_APPS_DIR}\"/Objective-Clean.app/Contents/Resources/ObjClean.app/Contents/MacOS/ObjClean \"${SRCROOT}\" \nelse\necho \"warning: You have to install and set up Objective-Clean to use its features!\" \nfi\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4A4ACF241D2B6D2C00BC2FC4 /* Sources */ = {

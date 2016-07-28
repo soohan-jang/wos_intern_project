@@ -69,5 +69,6 @@ extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
  세션이 연결해제되었을 때 호출되는 함수이다. 이 함수는 NotificationCenter에 의해 호출된다.
  */
 - (void)receivedSessionDisconnected:(NSNotification *)notification;
+
 @end
 

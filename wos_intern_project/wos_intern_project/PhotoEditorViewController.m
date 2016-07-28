@@ -62,8 +62,7 @@
         //즉, 이미 존재하는 데이터에 대해서 편집을 하고자 할 경우에 해당한다.
         if (self.selectedImageURL == nil) {
             viewController.fullscreenImage = [self.cellManager getCellFullscreenImageAtIndex:self.selectedIndexPath.item];
-        }
-        else {
+        } else {
             viewController.imageUrl = self.selectedImageURL;
         }
     }
@@ -134,8 +133,7 @@
         self.selectedIndexPath = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
         if ([self.cellManager getCellCroppedImageAtIndex:self.selectedIndexPath.item] == nil) {
             images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
-        }
-        else {
+        } else {
             images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
         }
         
@@ -145,18 +143,15 @@
         //사진 액자가 화면의 왼쪽에 위치할 때,
         if (sphereMenuCenter.x < self.view.center.x) {
             angleOffset = M_PI * 1.1f;
-        }
         //사진 액자가 화면의 오른쪽에 위치할 때,
-        else if (sphereMenuCenter.x > self.view.center.x) {
+        } else if (sphereMenuCenter.x > self.view.center.x) {
             if (images.count == 2) {
                 angleOffset = M_PI;
-            }
-            else {
+            } else {
                 angleOffset = M_PI * -1.3f;
             }
-        }
         //사진 액자가 화면의 중간에 위치할 때,
-        else {
+        } else {
             angleOffset = M_PI;
         }
         
@@ -186,12 +181,10 @@
                                        KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-        }
-        else {
+        } else {
             //권한 없음. 해당 Alert 표시.
         }
-    }
-    else if (index == 1) {
+    } else if (index == 1) {
         //camera
         
         /*
@@ -200,8 +193,7 @@
          
          [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
          */
-    }
-    else if (index == 2) {
+    } else if (index == 2) {
         //edit
         self.selectedImageURL = nil;
         [self loadPhotoCropViewController];
@@ -210,8 +202,7 @@
                                    KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
         
         [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-    }
-    else if (index == 3) {
+    } else if (index == 3) {
         [self.cellManager clearCellDataAtIndex:self.selectedIndexPath.item];
         [self.collectionView reloadData];
         
@@ -226,7 +217,7 @@
 }
 
 /**** UIImagePickerController Delegate Methods ****/
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(nonnull NSDictionary<NSString *, id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
         self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
         
@@ -236,8 +227,7 @@
                                        KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-        }
-        else {
+        } else {
             [self loadPhotoCropViewController];
         }
     }];
@@ -268,8 +258,7 @@
         [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item croppedImage:croppedImage];
         [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item state:CELL_STATE_UPLOADING];
         [self.collectionView reloadData];
-    }
-    else {
+    } else {
         NSLog(@"File saved failed.");
     }
 }
@@ -281,9 +270,7 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
-
 /**** UIAlertViewDelegate Methods. ****/
-
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_NOT_SAVE) {
         if (buttonIndex == 1) {
@@ -305,8 +292,7 @@
                 [[ImageUtility sharedInstance] removeAllTempImages];
             });
         }
-    }
-    else if (alertView.tag == ALERT_CONTINUE) {
+    } else if (alertView.tag == ALERT_CONTINUE) {
         [self removeObservers];
         
         //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
@@ -330,22 +316,20 @@
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
-        NSString *dataType =(NSString *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA_TYPE];
+        NSString *dataType = (NSString *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA_TYPE];
         NSURL *dataUrl = (NSURL *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA];
         
         //Data Receive Started.
         if (dataUrl == nil) {
             [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_DOWNLOADING];
             [self.collectionView reloadData];
-        }
         //Data Receive Finished.
-        else {
+        } else {
             if ([dataType isEqualToString:@"_cropped"]) {
                 UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
                 [self.cellManager setCellCroppedImageAtIndex:item.integerValue croppedImage:croppedImage];
                 [self.collectionView reloadData];
-            }
-            else if ([dataType isEqualToString:@"_fullscreen"]) {
+            } else if ([dataType isEqualToString:@"_fullscreen"]) {
                 UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
                 [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
                 [self.cellManager setCellFullscreenImageAtIndex:item.integerValue fullscreenImage:fullscreenImage];

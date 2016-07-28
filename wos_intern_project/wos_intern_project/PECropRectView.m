@@ -27,8 +27,7 @@
 
 @implementation PECropRectView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -78,10 +77,10 @@
     return self;
 }
 
+
 #pragma mark -
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     NSArray *subviews = self.subviews;
     for (UIView *subview in subviews) {
         if ([subview isKindOfClass:[PEResizeControl class]]) {
@@ -94,8 +93,7 @@
     return nil;
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     
     CGFloat width = CGRectGetWidth(self.bounds);
@@ -124,8 +122,7 @@
     }
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     self.topLeftCornerView.frame = (CGRect){CGRectGetWidth(self.topLeftCornerView.bounds) / -2, CGRectGetHeight(self.topLeftCornerView.bounds) / -2, self.topLeftCornerView.bounds.size};
@@ -138,22 +135,20 @@
     self.rightEdgeView.frame = (CGRect){CGRectGetWidth(self.bounds) - CGRectGetWidth(self.rightEdgeView.bounds) / 2, CGRectGetMaxY(self.topRightCornerView.frame), CGRectGetWidth(self.rightEdgeView.bounds), CGRectGetMinY(self.bottomRightCornerView.frame) - CGRectGetMaxY(self.topRightCornerView.frame)};
 }
 
+
 #pragma mark -
 
-- (void)setShowsGridMajor:(BOOL)showsGridMajor
-{
+- (void)setShowsGridMajor:(BOOL)showsGridMajor {
     _showsGridMajor = showsGridMajor;
     [self setNeedsDisplay];
 }
 
-- (void)setShowsGridMinor:(BOOL)showsGridMinor
-{
+- (void)setShowsGridMinor:(BOOL)showsGridMinor {
     _showsGridMinor = showsGridMinor;
     [self setNeedsDisplay];
 }
 
-- (void)setKeepingAspectRatio:(BOOL)keepingAspectRatio
-{
+- (void)setKeepingAspectRatio:(BOOL)keepingAspectRatio {
     _keepingAspectRatio = keepingAspectRatio;
     
     if (self.keepingAspectRatio) {
@@ -163,10 +158,10 @@
     }
 }
 
+
 #pragma mark -
 
-- (void)resizeControlViewDidBeginResizing:(PEResizeControl *)resizeControlView
-{
+- (void)resizeControlViewDidBeginResizing:(PEResizeControl *)resizeControlView {
     self.initialRect = self.frame;
     
     if ([self.delegate respondsToSelector:@selector(cropRectViewDidBeginEditing:)]) {
@@ -174,8 +169,7 @@
     }
 }
 
-- (void)resizeControlViewDidResize:(PEResizeControl *)resizeControlView
-{
+- (void)resizeControlViewDidResize:(PEResizeControl *)resizeControlView {
     self.frame = [self cropRectMakeWithResizeControlView:resizeControlView];
         
     if ([self.delegate respondsToSelector:@selector(cropRectViewEditingChanged:)]) {
@@ -183,15 +177,13 @@
     }
 }
 
-- (void)resizeControlViewDidEndResizing:(PEResizeControl *)resizeControlView
-{
+- (void)resizeControlViewDidEndResizing:(PEResizeControl *)resizeControlView {
     if ([self.delegate respondsToSelector:@selector(cropRectViewDidEndEditing:)]) {
         [self.delegate cropRectViewDidEndEditing:self];
     }
 }
 
-- (CGRect)cropRectMakeWithResizeControlView:(PEResizeControl *)resizeControlView
-{
+- (CGRect)cropRectMakeWithResizeControlView:(PEResizeControl *)resizeControlView {
     CGRect rect = self.frame;
     
     if (resizeControlView == self.topEdgeView) {
@@ -320,8 +312,7 @@
     return rect;
 }
 
-- (CGRect)constrainedRectWithRectBasisOfWidth:(CGRect)rect aspectRatio:(CGFloat)aspectRatio
-{
+- (CGRect)constrainedRectWithRectBasisOfWidth:(CGRect)rect aspectRatio:(CGFloat)aspectRatio {
     CGFloat width = CGRectGetWidth(rect);
     CGFloat height = CGRectGetHeight(rect);
     if (width < height) {
@@ -334,8 +325,7 @@
     return rect;
 }
 
-- (CGRect)constrainedRectWithRectBasisOfHeight:(CGRect)rect aspectRatio:(CGFloat)aspectRatio
-{
+- (CGRect)constrainedRectWithRectBasisOfHeight:(CGRect)rect aspectRatio:(CGFloat)aspectRatio {
     CGFloat width = CGRectGetWidth(rect);
     CGFloat height = CGRectGetHeight(rect);
     if (width < height) {

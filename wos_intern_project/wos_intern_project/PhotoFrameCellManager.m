@@ -46,61 +46,45 @@ const NSInteger CELL_STATE_EDITING      = 3;
      **/
     if (self.photoFrameNumber == 0) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, containerHeight - DEFAULT_MARGIN);
-    }
-    else if (self.photoFrameNumber == 1) {
+    } else if (self.photoFrameNumber == 1) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
-    }
-    else if (self.photoFrameNumber == 2) {
+    } else if (self.photoFrameNumber == 2) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-    }
-    else if (self.photoFrameNumber == 3) {
+    } else if (self.photoFrameNumber == 3) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 3.0f, containerHeight - DEFAULT_MARGIN);
-    }
-    else if (self.photoFrameNumber == 4) {
+    } else if (self.photoFrameNumber == 4) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 3.0f);
-    }
-    else if (self.photoFrameNumber == 5) {
+    } else if (self.photoFrameNumber == 5) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 4.0f, containerHeight - DEFAULT_MARGIN);
-    }
-    else if (self.photoFrameNumber == 6) {
+    } else if (self.photoFrameNumber == 6) {
         return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 4.0f);
-    }
-    else if (self.photoFrameNumber == 7) {
+    } else if (self.photoFrameNumber == 7) {
         return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-    }
-    else if (self.photoFrameNumber == 8) {
+    } else if (self.photoFrameNumber == 8) {
         if (cellIndex == 0) {
             return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-        }
-        else {
+        } else {
             return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
-    }
-    else if (self.photoFrameNumber == 9) {
+    } else if (self.photoFrameNumber == 9) {
         if (cellIndex == 2) {
             return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-        }
-        else {
+        } else {
             return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
-    }
-    else if (self.photoFrameNumber == 10) {
+    } else if (self.photoFrameNumber == 10) {
         if (cellIndex == 0) {
             return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-        }
-        else {
+        } else {
             return CGSizeMake((containerWidth - DEFAULT_MARGIN * 1.01f) / 3.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
-    }
-    else if (self.photoFrameNumber == 11) {
+    } else if (self.photoFrameNumber == 11) {
         if (cellIndex == 3) {
             return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
-        }
-        else {
+        } else {
             return CGSizeMake((containerWidth - DEFAULT_MARGIN * 1.01f) / 3.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
         }
-    }
-    else {
+    } else {
         cellWidth = cellHeight = 0;
     }
     
@@ -137,8 +121,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
 - (void)setCellStateAtIndex:(NSInteger)index state:(NSInteger)state {
     if (self.cellStates == nil) {
         self.cellStates = [@{@(index): @(state)} mutableCopy];
-    }
-    else {
+    } else {
         [self.cellStates setObject:@(state) forKey:@(index)];
     }
 }
@@ -146,8 +129,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
 - (void)setCellFullscreenImageAtIndex:(NSInteger)index fullscreenImage:(UIImage *)fullscreenImage {
     if (self.cellFullscreenImages == nil) {
         self.cellFullscreenImages = [@{@(index): fullscreenImage} mutableCopy];
-    }
-    else {
+    } else {
         [self.cellFullscreenImages setObject:fullscreenImage forKey:@(index)];
     }
 }
@@ -155,8 +137,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
 - (void)setCellCroppedImageAtIndex:(NSInteger)index croppedImage:(UIImage *)croppedImage {
     if (self.cellCroppedImages == nil) {
         self.cellCroppedImages = [@{@(index): croppedImage} mutableCopy];
-    }
-    else {
+    } else {
         [self.cellCroppedImages setObject:croppedImage forKey:@(index)];
     }
 }

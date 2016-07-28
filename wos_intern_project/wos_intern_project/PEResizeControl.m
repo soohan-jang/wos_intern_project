@@ -17,8 +17,7 @@
 
 @implementation PEResizeControl
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:CGRectMake(frame.origin.x, frame.origin.y, 44.0f, 44.0f)];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -31,8 +30,7 @@
     return self;
 }
 
-- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer
-{
+- (void)handlePan:(UIPanGestureRecognizer *)gestureRecognizer {
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         CGPoint translationInView = [gestureRecognizer translationInView:self.superview];
         self.startPoint = CGPointMake(roundf(translationInView.x), translationInView.y);

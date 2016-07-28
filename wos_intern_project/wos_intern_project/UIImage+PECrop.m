@@ -10,9 +10,7 @@
 
 @implementation UIImage (PECrop)
 
-- (UIImage *)rotatedImageWithtransform:(CGAffineTransform)rotation
-                         croppedToRect:(CGRect)rect
-{
+- (UIImage *)rotatedImageWithtransform:(CGAffineTransform)rotation croppedToRect:(CGRect)rect {
     UIImage *rotatedImage = [self pe_rotatedImageWithtransform:rotation];
     
     CGFloat scale = rotatedImage.scale;
@@ -25,8 +23,7 @@
     return image;
 }
 
-- (UIImage *)pe_rotatedImageWithtransform:(CGAffineTransform)transform
-{
+- (UIImage *)pe_rotatedImageWithtransform:(CGAffineTransform)transform {
     CGSize size = self.size;
     
     UIGraphicsBeginImageContextWithOptions(size,

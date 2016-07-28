@@ -15,19 +15,16 @@
         //본인이 선택한 상태에서 상대방도 선택했다면, Green Color로 변경
         if (self.isConnectedPeerSelected) {
             [self.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%d_green", self.cellIndex]]];
-        }
         //본인이 선택한 상태에서 상대방은 선택하지 않았다면, Blue Color로 변경
-        else {
+        } else {
             [self.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%d_blue", self.cellIndex]]];
         }
-    }
-    else {
+    } else {
         //본인이 선택하지 않은 상태에서 상대방이 선택했다면, Orange Color로 변경
         if (self.isConnectedPeerSelected) {
             [self.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%d_orange", self.cellIndex]]];
-        }
         //본인이 선택하지 않은 상태에서 상대방도 선택하지 않았다면, White Color로 변경
-        else {
+        } else {
             [self.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%d", self.cellIndex]]];
         }
     }

@@ -42,7 +42,6 @@
 //    
 //    return hud;
 //}
-
 - (void)doneProgressWithTitle:(NSString *)title delay:(NSTimeInterval)delay {
     [self doneProgressWithTitle:title delay:delay cancel:NO];
 }
@@ -55,8 +54,7 @@
     if (canceled) {
         UIImage *image = [[UIImage imageNamed:@"Cancelmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.customView = [[UIImageView alloc] initWithImage:image];
-    }
-    else {
+    } else {
         UIImage *image = [[UIImage imageNamed:@"Checkmark"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         self.customView = [[UIImageView alloc] initWithImage:image];
     }

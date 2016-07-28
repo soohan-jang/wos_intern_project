@@ -52,8 +52,7 @@
         NSDictionary *message = _messageQueue[0];
         [_messageQueue removeObjectAtIndex:0];
         return message;
-    }
-    else {
+    } else {
         return nil;
     }
 }
@@ -67,8 +66,7 @@
 - (BOOL)isMessageQueueEmpty {
     if (_messageQueue == nil || _messageQueue.count == 0) {
         return YES;
-    }
-    else {
+    } else {
         return NO;
     }
 }
