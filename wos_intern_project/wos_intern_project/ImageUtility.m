@@ -30,39 +30,23 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
         if (asset == nil) {
-            [assetslibrary enumerateGroupsWithTypes:ALAssetsGroupPhotoStream usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                    ALAssetRepresentation *representation = [result defaultRepresentation];
-                    if ([representation isEqual:url]) {
-                        ALAssetRepresentation *representation = [asset defaultRepresentation];
-                        CGImageRef imageRef = representation.fullScreenImage;
-                        
-                        if (imageRef == nil) {
-                            imageRef = representation.fullResolutionImage;
-                            
-                            if (imageRef == nil) {
-                                resultBlock(nil);
-                                *stop = YES;
-                            }
-                            else {
-                                resultBlock([UIImage imageWithCGImage:imageRef]);
-                                *stop = YES;
-                            }
-                        }
-                        else {
-                            resultBlock([UIImage imageWithCGImage:imageRef]);
-                            *stop = YES;
-                        }
-                    }
-                    else {
-                        resultBlock(nil);
-                        *stop = YES;
-                    }
-                }];
-            } failureBlock:^(NSError *error) {
-                NSLog(@"%@", [error localizedDescription]);
-                resultBlock(nil);
-            }];
+            [assetslibrary enumerateGroupsWithTypes:ALAssetsGroupPhotoStream
+                                   usingBlock:^(ALAssetsGroup *group, BOOL *stop)
+             {
+                 [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                     if([result.defaultRepresentation.url isEqual:url])
+                     {
+                         NSLog(@"Find Photo.");
+                         resultBlock([UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage]);
+                         *stop = YES;
+                     }
+                 }];
+             }
+            failureBlock:^(NSError *error)
+             {
+                 NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
+                 resultBlock(nil);
+             }];
         }
         else {
             ALAssetRepresentation *representation = [asset defaultRepresentation];

@@ -178,8 +178,8 @@
         if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized) {
             //아직 권한이 설정되지 않은 경우엔, System에서 Alert 띄워준다.
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             picker.delegate = self;
-            picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
             [self presentViewController:picker animated:YES completion:nil];
             
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
