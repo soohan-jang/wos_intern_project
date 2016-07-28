@@ -78,6 +78,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="albumButton" destination="FY3-cc-wpi" id="J7o-Iw-RFC"/>
                         <segue destination="oMG-MB-uvc" kind="show" identifier="moveToPhotoFrameSelect" id="mdC-To-FUk"/>
                     </connections>
                 </viewController>

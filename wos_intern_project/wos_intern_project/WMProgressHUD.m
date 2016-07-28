@@ -15,7 +15,7 @@
     hud.label.text = title;
     hud.square = YES;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.1f];
+    hud.backgroundView.color = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
     
     return hud;
 }
@@ -26,7 +26,7 @@
     hud.detailsLabel.text = detail;
     hud.square = YES;
     hud.backgroundView.style = MBProgressHUDBackgroundStyleSolidColor;
-    hud.backgroundView.color = [UIColor colorWithWhite:0.f alpha:0.5f];
+    hud.backgroundView.color = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
     
     return hud;
 }

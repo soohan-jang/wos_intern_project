@@ -229,7 +229,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
             //아직 권한이 설정되지 않은 경우엔, System에서 Alert 띄워준다.
             UIImagePickerController *picker = [[UIImagePickerController alloc] init];
             picker.delegate = self;
-            picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+            picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
             [self.parentViewController presentViewController:picker animated:YES completion:nil];
             
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
@@ -279,6 +279,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
         self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
+        
         if (self.selectedImageURL == nil) {
             //Error Alert.
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),

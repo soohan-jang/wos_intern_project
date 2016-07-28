@@ -260,6 +260,7 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     NSArray *array = [resourceName componentsSeparatedByString:@"+"];
     
     if (array != nil && array.count == 2) {
+        NSLog(@"array : %@", array);
         NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
                                        KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1],
                                        KEY_EDITOR_PHOTO_INSERT_DATA: localURL};

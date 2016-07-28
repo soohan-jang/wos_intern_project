@@ -36,13 +36,13 @@
     else {
         [self loadProgress];
         
-        [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *fullscreenImage) {
-            if (fullscreenImage == nil) {
+        [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *image) {
+            if (image == nil) {
                 NSLog(@"이미지를 가져오지 못함.");
             }
             else {
-                self.fullscreenImage = fullscreenImage;
-                [self.cropView setImage:fullscreenImage];
+                self.fullscreenImage = image;
+                [self.cropView setImage:image];
                 self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
             }
             

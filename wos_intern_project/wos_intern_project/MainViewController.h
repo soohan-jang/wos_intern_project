@@ -18,6 +18,7 @@ extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
 
 @interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, CBCentralManagerDelegate>
 
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *albumButton;
 @property (nonatomic, strong) CBCentralManager *bluetoothManager;
 @property (nonatomic) BOOL isBluetoothUnsupported;
 

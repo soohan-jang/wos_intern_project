@@ -28,7 +28,6 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     
     UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findDeviceAction)];
     tabGestureRecognizer.numberOfTapsRequired = 1;
-    [self.view setUserInteractionEnabled:YES];
     [self.view addGestureRecognizer:tabGestureRecognizer];
     
     [self addObservers];
@@ -41,6 +40,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [self.view setUserInteractionEnabled:YES];
     if (self.bluetoothManager.state == CBCentralManagerStateUnsupported) {
         //Alert and application terminate.
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_unsupported", nil) message:NSLocalizedString(@"alert_content_bluetooth_unsupported", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
@@ -130,6 +130,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
         invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
         
         self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_connecting", nil)];
+        [self.view setUserInteractionEnabled:NO];
         //Decline
     } else {
         void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlerArray[0];
@@ -175,6 +176,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
     if ([self.navigationController presentedViewController] == [ConnectionManager sharedInstance].browserViewController) {
+        [self.view setUserInteractionEnabled:NO];
         [[ConnectionManager sharedInstance].browserViewController dismissViewControllerAnimated:YES completion:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self loadPhotoFrameViewController];

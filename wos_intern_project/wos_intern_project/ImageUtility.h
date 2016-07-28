@@ -12,7 +12,7 @@
 
 #import <UIKit/UIkit.h>
 
-typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *fullscreenImage);
+typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
 
 extern NSString *const FILE_POSTFIX_CROPPED;
 extern NSString *const FILE_POSTFIX_FULLSCREEN;

@@ -29,10 +29,62 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     ALAssetsLibrary* assetslibrary = [[ALAssetsLibrary alloc] init];
     
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
-        ALAssetRepresentation *representation = [asset defaultRepresentation];
-        resultBlock([UIImage imageWithCGImage:representation.fullScreenImage]);
+        if (asset == nil) {
+            [assetslibrary enumerateGroupsWithTypes:ALAssetsGroupPhotoStream usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                    ALAssetRepresentation *representation = [result defaultRepresentation];
+                    if ([representation isEqual:url]) {
+                        ALAssetRepresentation *representation = [asset defaultRepresentation];
+                        CGImageRef imageRef = representation.fullScreenImage;
+                        
+                        if (imageRef == nil) {
+                            imageRef = representation.fullResolutionImage;
+                            
+                            if (imageRef == nil) {
+                                resultBlock(nil);
+                                *stop = YES;
+                            }
+                            else {
+                                resultBlock([UIImage imageWithCGImage:imageRef]);
+                                *stop = YES;
+                            }
+                        }
+                        else {
+                            resultBlock([UIImage imageWithCGImage:imageRef]);
+                            *stop = YES;
+                        }
+                    }
+                    else {
+                        resultBlock(nil);
+                        *stop = YES;
+                    }
+                }];
+            } failureBlock:^(NSError *error) {
+                NSLog(@"%@", [error localizedDescription]);
+                resultBlock(nil);
+            }];
+        }
+        else {
+            ALAssetRepresentation *representation = [asset defaultRepresentation];
+            CGImageRef imageRef = representation.fullScreenImage;
+            
+            if (imageRef == nil) {
+                imageRef = representation.fullResolutionImage;
+                
+                if (imageRef == nil) {
+                    resultBlock(nil);
+                }
+                else {
+                    resultBlock([UIImage imageWithCGImage:imageRef]);
+                }
+            }
+            else {
+                resultBlock([UIImage imageWithCGImage:imageRef]);
+            }
+        }
     } failureBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
+        resultBlock(nil);
     }];
 }
 
