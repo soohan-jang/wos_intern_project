@@ -71,7 +71,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [super viewDidLoad];
     
     self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-    [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name screenWidthSize:self.view.frame.size.width screenHeightSize:self.view.frame.size.height];
+    [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name withScreenWidthSize:self.view.frame.size.width withScreenHeightSize:self.view.frame.size.height];
     [ConnectionManager sharedInstance].browserViewController.delegate = self;
     
     UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findDeviceAction)];

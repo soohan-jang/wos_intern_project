@@ -39,9 +39,9 @@ extern const NSInteger CELL_STATE_EDITING;
  */
 - (CGSize)getCellSizeWithIndex:(NSInteger)cellIndex withCollectionViewSize:(CGSize)collectionViewSize;
 
-- (void)setCellStateAtIndex:(NSInteger)index state:(NSInteger)state;
-- (void)setCellFullscreenImageAtIndex:(NSInteger)index fullscreenImage:(UIImage *)fullscreenImage;
-- (void)setCellCroppedImageAtIndex:(NSInteger)index croppedImage:(UIImage *)croppedImage;
+- (void)setCellStateAtIndex:(NSInteger)index withState:(NSInteger)state;
+- (void)setCellFullscreenImageAtIndex:(NSInteger)index withFullscreenImage:(UIImage *)fullscreenImage;
+- (void)setCellCroppedImageAtIndex:(NSInteger)index withCroppedImage:(UIImage *)croppedImage;
 
 - (NSInteger)getCellStateAtIndex:(NSInteger)index;
 - (UIImage *)getCellFullscreenImageAtIndex:(NSInteger)index;

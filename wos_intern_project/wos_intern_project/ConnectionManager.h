@@ -103,7 +103,7 @@ extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
  인스턴스의 프로퍼티를 초기화한다. 인자로 받은 deviceName은 자기자신의 peerID.displayName이 된다.
  초기화되는 프로퍼티는 notificationCenter, ownPeerId, session, session.delegate, browserViewController, advertiser이다.
  */
-- (void)initInstanceProperties:(NSString *)deviceName screenWidthSize:(CGFloat)width screenHeightSize:(CGFloat)height;
+- (void)initInstanceProperties:(NSString *)deviceName withScreenWidthSize:(CGFloat)width withScreenHeightSize:(CGFloat)height;
 
 /**
  다른 단말기에 자신의 단말기가 검색되는 것을 허용한다.
@@ -120,7 +120,7 @@ extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
  */
 - (void)sendData:(NSData *)sendData;
 
-- (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index;
+- (void)sendPhotoDataWithFilename:(NSString *)filename withFullscreenImageURL:(NSURL *)fullscreenImageURL withCroppedImageURL:(NSURL *)croppedImageURL withIndex:(NSInteger)index;
 
 /**
  Session의 연결을 해제한다.

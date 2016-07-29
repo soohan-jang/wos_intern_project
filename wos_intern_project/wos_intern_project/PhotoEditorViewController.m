@@ -312,19 +312,19 @@
 /**** PhotoCropViewController Delegate Methods ****/
 - (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
-    NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage croppedImage:croppedImage];
+    NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
     if (filename != nil) {
         NSURL *fullscreenImageURL = [[ImageUtility sharedInstance] getFullscreenImageURLWithFilename:filename];
         NSURL *croppedImageURL = [[ImageUtility sharedInstance] getCroppedImageURLWithFilename:filename];
         
         //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
-        [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item fullscreenImage:fullscreenImage];
-        [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item croppedImage:croppedImage];
-        [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item state:CELL_STATE_UPLOADING];
+        [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item withFullscreenImage:fullscreenImage];
+        [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item withCroppedImage:croppedImage];
+        [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item withState:CELL_STATE_UPLOADING];
         [self reloadData:self.selectedIndexPath];
         
         //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename fullscreenImageURL:fullscreenImageURL croppedImageURL:croppedImageURL index:self.selectedIndexPath.item];
+        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename withFullscreenImageURL:fullscreenImageURL withCroppedImageURL:croppedImageURL withIndex:self.selectedIndexPath.item];
     } else {
         //alert.
     }
@@ -392,16 +392,16 @@
     
     //Data Receive Started.
     if (dataUrl == nil) {
-        [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_DOWNLOADING];
+        [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_DOWNLOADING];
     //Data Receive Finished.
     } else {
         if ([dataType isEqualToString:@"_cropped"]) {
             UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
-            [self.cellManager setCellCroppedImageAtIndex:item.integerValue croppedImage:croppedImage];
+            [self.cellManager setCellCroppedImageAtIndex:item.integerValue withCroppedImage:croppedImage];
         } else if ([dataType isEqualToString:@"_fullscreen"]) {
             UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
-            [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
-            [self.cellManager setCellFullscreenImageAtIndex:item.integerValue fullscreenImage:fullscreenImage];
+            [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
+            [self.cellManager setCellFullscreenImageAtIndex:item.integerValue withFullscreenImage:fullscreenImage];
         }
     }
     
@@ -416,19 +416,19 @@
 //    else {
 //    }
     
-    [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
+    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
     [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoEdit:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
-    [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_EDITING];
+    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_EDITING];
     [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoEditCanceled:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
-    [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
+    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
     [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 

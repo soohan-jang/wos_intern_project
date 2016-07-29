@@ -132,7 +132,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
     }
 }
 
-- (void)setCellStateAtIndex:(NSInteger)index state:(NSInteger)state {
+- (void)setCellStateAtIndex:(NSInteger)index withState:(NSInteger)state {
     if (self.cellStates == nil) {
         self.cellStates = [@{@(index): @(state)} mutableCopy];
     } else {
@@ -140,7 +140,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
     }
 }
 
-- (void)setCellFullscreenImageAtIndex:(NSInteger)index fullscreenImage:(UIImage *)fullscreenImage {
+- (void)setCellFullscreenImageAtIndex:(NSInteger)index withFullscreenImage:(UIImage *)fullscreenImage {
     if (self.cellFullscreenImages == nil) {
         self.cellFullscreenImages = [@{@(index): fullscreenImage} mutableCopy];
     } else {
@@ -148,7 +148,7 @@ const NSInteger CELL_STATE_EDITING      = 3;
     }
 }
 
-- (void)setCellCroppedImageAtIndex:(NSInteger)index croppedImage:(UIImage *)croppedImage {
+- (void)setCellCroppedImageAtIndex:(NSInteger)index withCroppedImage:(UIImage *)croppedImage {
     if (self.cellCroppedImages == nil) {
         self.cellCroppedImages = [@{@(index): croppedImage} mutableCopy];
     } else {

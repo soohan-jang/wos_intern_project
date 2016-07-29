@@ -67,23 +67,7 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     }];
 }
 
-//for dummy data.
-- (NSString *)saveImageAtTemporaryDirectoryForDummy:(UIImage *)image {
-    NSData *imageData = UIImagePNGRepresentation(image);
-    
-    NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
-    NSString *directory = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), filename];
-    
-    BOOL isSaved = [imageData writeToFile:directory atomically:YES];
-    
-    if (isSaved) {
-        return filename;
-    } else {
-        return nil;
-    }
-}
-
-- (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage {
+- (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     NSData *fullscreenImageData = UIImagePNGRepresentation(fullscreenImage);
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
