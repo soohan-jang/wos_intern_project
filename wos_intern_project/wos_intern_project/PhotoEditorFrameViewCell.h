@@ -15,10 +15,11 @@ extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
 
 @interface PhotoEditorFrameViewCell : UICollectionViewCell
 
-@property (strong, nonatomic) NSIndexPath *indexPath;
 @property (strong, nonatomic) IBOutlet UIView *photoFrameView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoLoadingView;
 @property (strong, nonatomic) IBOutlet UIImageView *photoImageView;
+
+@property (strong, nonatomic) NSIndexPath *indexPath;
 
 /**
  사진 액자에 스트로크 처리된 테두리를 표시한다.
@@ -40,10 +41,5 @@ extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
  또한 UPLOADING/DOWNLOADING 시 해당 사진 액자에서 이벤트가 발생하는 것을 방지한다.
  */
 - (void)setLoadingImage:(NSInteger)loadingState;
-
-/**
- 셀에서 탭 이벤트가 발생했을 때, 이를 처리하기 위한 함수이다.
- */
-- (void)tapAction;
 
 @end

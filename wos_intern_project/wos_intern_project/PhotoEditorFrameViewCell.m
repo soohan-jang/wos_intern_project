@@ -13,6 +13,15 @@ NSString *const KEY_SELECTED_CELL_INDEXPATH = @"selected_cell_indexpath";
 NSString *const KEY_SELECTED_CELL_CENTER_X  = @"selected_cell_center_x";
 NSString *const KEY_SELECTED_CELL_CENTER_Y  = @"selected_cell_center_y";
 
+@interface PhotoEditorFrameViewCell ()
+
+/**
+ 셀에서 탭 이벤트가 발생했을 때, 이를 처리하기 위한 함수이다.
+ */
+- (void)tapAction;
+
+@end
+
 @implementation PhotoEditorFrameViewCell
 
 - (void)setStrokeBorder {

@@ -21,14 +21,12 @@
 @property (nonatomic, assign) CGFloat angle;
 @property (nonatomic, assign) CGFloat sphereDamping;
 @property (nonatomic, assign) CGFloat sphereLength;
-
 @property (nonatomic, assign) CGFloat startAngle;
-@property (nonatomic, assign) NSInteger targerCellIndex;
 
 @end
 
 @protocol SphereMenuDelegate <NSObject>
 
-- (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index targetCellIndex:(NSInteger)targetCellIndex;
+- (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index;
 
 @end

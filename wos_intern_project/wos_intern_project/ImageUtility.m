@@ -35,7 +35,6 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
              {
                  [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                      if ([result.defaultRepresentation.url isEqual:url]) {
-                         NSLog(@"Find Photo.");
                          resultBlock([UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage]);
                          *stop = YES;
                      }

@@ -10,6 +10,16 @@
 
 @interface PhotoCropViewController ()
 
+@property (strong, nonatomic) PECropView *cropView;
+@property (strong, nonatomic) UIImage *croppedImage;
+
+- (void)loadProgress;
+- (void)doneProgress;
+
+@end
+
+@interface PhotoCropViewController ()
+
 @property (nonatomic, strong) ALAssetsLibrary *assetslibrary;
 @property (nonatomic, strong) WMProgressHUD *progressView;
 
@@ -60,7 +70,7 @@
         self.croppedImage = [self.cropView croppedImage];
         
         if (self.fullscreenImage != nil && self.croppedImage != nil) {
-            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage targetCellIndex:self.targetCellIndex];
+            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

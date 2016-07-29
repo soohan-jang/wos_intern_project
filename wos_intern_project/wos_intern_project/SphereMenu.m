@@ -187,8 +187,8 @@ static const float kSphereDamping = 0.3;
         [self removeSnapBehaviors];
     }
     
-    if ([self.delegate respondsToSelector:@selector(sphereDidSelected:index:targetCellIndex:)]) {
-        [self.delegate sphereDidSelected:self index:tag targetCellIndex:self.targerCellIndex];
+    if ([self.delegate respondsToSelector:@selector(sphereDidSelected:index:)]) {
+        [self.delegate sphereDidSelected:self index:tag];
     }
 }
 

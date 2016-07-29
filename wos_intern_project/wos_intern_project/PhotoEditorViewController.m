@@ -8,6 +8,46 @@
 
 #import "PhotoEditorViewController.h"
 
+@interface PhotoEditorViewController ()
+
+@property (nonatomic, strong) PhotoFrameCellManager *cellManager;
+@property (atomic, assign) NSIndexPath *selectedIndexPath;
+@property (atomic, strong) NSURL *selectedImageURL;
+@property (nonatomic, assign) BOOL isMenuAppear;
+
+/**
+ NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록한다.
+ */
+- (void)addObservers;
+
+/**
+ NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록 해제한다.
+ */
+- (void)removeObservers;
+
+- (void)reloadData:(NSIndexPath *)indexPath;
+
+/**
+ 상대방이 사진을 전송할 때 호출되는 함수이다. 상대방이 사진을 보낼 때, 시작되는 시점과 종료되는 시점을 구분하여 로직이 처리된다.
+ */
+- (void)receivedPhotoInsert:(NSNotification *)notification;
+
+/**
+ 상대방이 사진 수신을 종료했음을 알릴 때 호출되는 함수이다.
+ */
+- (void)receivedPhotoInsertAck:(NSNotification *)notification;
+
+- (void)receivedPhotoEdit:(NSNotification *)notification;
+- (void)receivedPhotoEditCanceled:(NSNotification *)notification;
+
+/**
+ 상대방이 사진을 삭제했을 때 호출되는 함수이다.
+ */
+- (void)receivedPhotoDelete:(NSNotification *)notification;
+- (void)receivedSessionDisconnected:(NSNotification *)notification;
+
+@end
+
 @implementation PhotoEditorViewController
 
 - (void)viewDidLoad {
@@ -57,7 +97,7 @@
     if ([segue.identifier isEqualToString:@"moveToPhotoCrop"]) {
         PhotoCropViewController *viewController = [segue destinationViewController];
         viewController.delegate = self;
-        viewController.targetCellIndex = self.selectedIndexPath.item;
+        viewController.cellSize = [self.collectionView cellForItemAtIndexPath:self.selectedIndexPath].frame.size;
         //picker에서 imageURL을 가져오지 못한 경우엔, 이 구문이 실행되지 않는다.
         //이 구문이 실행되는 경우는, picker를 거치지 않고 직접적으로 CropViewController를 호출한 경우이다.
         //즉, 이미 존재하는 데이터에 대해서 편집을 하고자 할 경우에 해당한다.
@@ -99,9 +139,9 @@
     self.cellManager = [[PhotoFrameCellManager alloc] initWithFrameNumber:frameNumber];
 }
 
-- (void)reloadData {
+- (void)reloadData:(NSIndexPath *)indexPath {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectionView reloadData];
+        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
     });
 }
 
@@ -136,8 +176,7 @@
         
         NSArray *images;
         
-        NSIndexPath *targetCellIndexPath = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
-        self.selectedIndexPath = targetCellIndexPath;
+        self.selectedIndexPath = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
         if ([self.cellManager getCellCroppedImageAtIndex:self.selectedIndexPath.item] == nil) {
             images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
         } else {
@@ -147,28 +186,37 @@
         CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue], [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue]);
         CGFloat angleOffset;
         
-        //사진 액자가 화면의 왼쪽에 위치할 때,
-        if (sphereMenuCenter.x < self.view.center.x) {
-            angleOffset = M_PI * 1.1f;
-        //사진 액자가 화면의 오른쪽에 위치할 때,
-        } else if (sphereMenuCenter.x > self.view.center.x) {
+        //사진 액자가 화면의 중간 범위에 위치할 때,
+        if (self.view.center.x - 10 <= sphereMenuCenter.x && sphereMenuCenter.x <= self.view.center.x + 10) {
             if (images.count == 2) {
-                angleOffset = M_PI;
+                angleOffset = M_PI * 1.1f;
             } else {
-                angleOffset = M_PI * -1.3f;
+                angleOffset = M_PI * -1.13f;
             }
-        //사진 액자가 화면의 중간에 위치할 때,
         } else {
-            angleOffset = M_PI;
+            //사진 액자가 화면의 왼쪽에 위치할 때,
+            if (sphereMenuCenter.x < self.view.center.x) {
+                if (images.count == 2) {
+                    angleOffset = M_PI * 1.2f;
+                } else {
+                    angleOffset = M_PI * 1.15f;
+                }
+                //사진 액자가 화면의 오른쪽에 위치할 때,
+            } else if (sphereMenuCenter.x > self.view.center.x) {
+                if (images.count == 2) {
+                    angleOffset = M_PI * 1.05f;
+                } else {
+                    angleOffset = M_PI * -1.4f;
+                }
+            }
         }
         
         SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.collectionContainerView Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
         sphereMenu.delegate = self;
-        sphereMenu.targerCellIndex = self.selectedIndexPath.item;
         [sphereMenu presentMenu];
         
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(targetCellIndexPath.item)};
+                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
         
         [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
@@ -179,7 +227,7 @@
 }
 
 /**** SphereMenu Delegate Method ****/
-- (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index targetCellIndex:(NSInteger)targetCellIndex {
+- (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
     BOOL isSendEditCancelMsg = NO;
     
     if (index < 0) {
@@ -215,7 +263,7 @@
             [self loadPhotoCropViewController];
         } else if (index == 3) {
             [self.cellManager clearCellDataAtIndex:self.selectedIndexPath.item];
-            [self.collectionView reloadData];
+            [self reloadData:self.selectedIndexPath];
             
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE),
                                        KEY_EDITOR_PHOTO_DELETE_INDEX: @(self.selectedIndexPath.item)};
@@ -226,7 +274,7 @@
     
     if (isSendEditCancelMsg) {
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(targetCellIndex)};
+                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
         
         [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
@@ -262,24 +310,23 @@
 }
 
 /**** PhotoCropViewController Delegate Methods ****/
-- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage targetCellIndex:(NSInteger)targetCellIndex {
+- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage croppedImage:croppedImage];
     if (filename != nil) {
-        NSLog(@"File saved success.");
         NSURL *fullscreenImageURL = [[ImageUtility sharedInstance] getFullscreenImageURLWithFilename:filename];
         NSURL *croppedImageURL = [[ImageUtility sharedInstance] getCroppedImageURLWithFilename:filename];
         
         //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
-        [self.cellManager setCellFullscreenImageAtIndex:targetCellIndex fullscreenImage:fullscreenImage];
-        [self.cellManager setCellCroppedImageAtIndex:targetCellIndex croppedImage:croppedImage];
-        [self.cellManager setCellStateAtIndex:targetCellIndex state:CELL_STATE_UPLOADING];
-        [self reloadData];
+        [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item fullscreenImage:fullscreenImage];
+        [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item croppedImage:croppedImage];
+        [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item state:CELL_STATE_UPLOADING];
+        [self reloadData:self.selectedIndexPath];
         
         //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename fullscreenImageURL:fullscreenImageURL croppedImageURL:croppedImageURL index:targetCellIndex];
+        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename fullscreenImageURL:fullscreenImageURL croppedImageURL:croppedImageURL index:self.selectedIndexPath.item];
     } else {
-        NSLog(@"File saved failed.");
+        //alert.
     }
 }
 
@@ -346,20 +393,19 @@
     //Data Receive Started.
     if (dataUrl == nil) {
         [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_DOWNLOADING];
-        [self reloadData];
-        //Data Receive Finished.
+    //Data Receive Finished.
     } else {
         if ([dataType isEqualToString:@"_cropped"]) {
             UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
             [self.cellManager setCellCroppedImageAtIndex:item.integerValue croppedImage:croppedImage];
-            [self reloadData];
         } else if ([dataType isEqualToString:@"_fullscreen"]) {
             UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
             [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
             [self.cellManager setCellFullscreenImageAtIndex:item.integerValue fullscreenImage:fullscreenImage];
-            [self reloadData];
         }
     }
+    
+    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoInsertAck:(NSNotification *)notification {
@@ -371,31 +417,33 @@
 //    }
     
     [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
-    [self reloadData];
+    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoEdit:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
     [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_EDITING];
-    [self reloadData];
+    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoEditCanceled:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
     [self.cellManager setCellStateAtIndex:item.integerValue state:CELL_STATE_NONE];
-    [self reloadData];
+    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedPhotoDelete:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_DELETE_INDEX];
     [self.cellManager clearCellDataAtIndex:item.integerValue];
-    [self reloadData];
+    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
 }
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_photo_edit_continue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-    alertView.tag = ALERT_CONTINUE;
-    [alertView show];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_photo_edit_continue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
+        alertView.tag = ALERT_CONTINUE;
+        [alertView show];
+    });
 }
 
 @end
