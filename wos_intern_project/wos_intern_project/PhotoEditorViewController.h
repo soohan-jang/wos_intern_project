@@ -20,8 +20,9 @@
 #import "PhotoCropViewController.h"
 
 typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
-    ALERT_NOT_SAVE = 0,
-    ALERT_CONTINUE = 1
+    ALERT_NOT_SAVE   = 0,
+    ALERT_CONTINUE   = 1,
+    ALERT_ALBUM_AUTH = 2
 };
 
 @interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>

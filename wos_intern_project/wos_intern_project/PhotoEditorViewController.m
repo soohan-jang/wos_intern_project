@@ -180,11 +180,10 @@
 
 /**** SphereMenu Delegate Method ****/
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index targetCellIndex:(NSInteger)targetCellIndex {
+    BOOL isSendEditCancelMsg = NO;
+    
     if (index < 0) {
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(targetCellIndex)};
-        
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        isSendEditCancelMsg = YES;
     } else {
         if (index == 0) {
             ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
@@ -194,17 +193,22 @@
                 UIImagePickerController *picker = [[UIImagePickerController alloc] init];
                 picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
                 picker.delegate = self;
-                [self presentViewController:picker animated:YES completion:nil];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [self presentViewController:picker animated:YES completion:nil];
+                });
             } else {
                 //권한 없음. 해당 Alert 표시.
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil) message:NSLocalizedString(@"alert_content_album_not_authorized", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
+                alertView.tag = ALERT_ALBUM_AUTH;
+                [alertView show];
+                
+                isSendEditCancelMsg = YES;
             }
         } else if (index == 1) {
             //camera
             //아래의 코드는 버그 방지를 위해, 임시로 추가시킨 코드이다. 기능이 구현되면 삭제될 예정이다.
-            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                                       KEY_EDITOR_PHOTO_EDIT_INDEX: @(targetCellIndex)};
-            
-            [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            isSendEditCancelMsg = YES;
         } else if (index == 2) {
             //edit
             self.selectedImageURL = nil;
@@ -218,6 +222,13 @@
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         }
+    }
+    
+    if (isSendEditCancelMsg) {
+        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
+                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(targetCellIndex)};
+        
+        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
     
     [sphereMenu dismissMenu];
@@ -255,6 +266,7 @@
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage croppedImage:croppedImage];
     if (filename != nil) {
+        NSLog(@"File saved success.");
         NSURL *fullscreenImageURL = [[ImageUtility sharedInstance] getFullscreenImageURLWithFilename:filename];
         NSURL *croppedImageURL = [[ImageUtility sharedInstance] getCroppedImageURLWithFilename:filename];
         
@@ -285,19 +297,21 @@
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DICONNECTED)};
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
-            [self removeObservers];
-            
-            //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-            [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
-            [[MessageSyncManager sharedInstance] clearMessageQueue];
-            
-            [[ConnectionManager sharedInstance] disconnectSession];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            
-            //사용된 임시 파일을 삭제한다
-            [[ImageUtility sharedInstance] removeAllTempImages];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self removeObservers];
+                
+                //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
+                [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
+                [[MessageSyncManager sharedInstance] clearMessageQueue];
+                
+                [[ConnectionManager sharedInstance] disconnectSession];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
+                [self.navigationController popToRootViewControllerAnimated:YES];
+                
+                //사용된 임시 파일을 삭제한다
+                [[ImageUtility sharedInstance] removeAllTempImages];
+            });
         }
     } else if (alertView.tag == ALERT_CONTINUE) {
         [self removeObservers];
@@ -309,12 +323,16 @@
         [[ConnectionManager sharedInstance] disconnectSession];
         
         //계속하지 않겠다고 응답했으므로, 메인화면으로 돌아간다.
-        if (buttonIndex == 0) {
+        if (buttonIndex == 1) {
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
             [self.navigationController popToRootViewControllerAnimated:YES];
             
             //사용된 임시 파일을 삭제한다
             [[ImageUtility sharedInstance] removeAllTempImages];
+        }
+    } else if (alertView.tag == ALERT_ALBUM_AUTH) {
+        if (buttonIndex == 1) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         }
     }
 }

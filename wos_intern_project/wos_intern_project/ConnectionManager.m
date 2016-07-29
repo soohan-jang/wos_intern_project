@@ -132,7 +132,6 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
 - (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
         NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@+_cropped", [@(index) stringValue]];
-        
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
@@ -150,6 +149,27 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             }
         }];
     }
+    
+//    for (MCPeerID *peer in self.ownSession.connectedPeers) {
+//        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@+_cropped", [@(index) stringValue]];
+//        NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@+_fullscreen", [@(index) stringValue]];
+//        
+//        NSOutputStream *output = [self.ownSession startStreamWithName:croppedImageResourceName toPeer:peer error:nil];
+//        [output scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+//        
+//        //우선 Cropped Image를 먼저 보낸다.
+//        [output open];
+//        NSData *sendData = [NSData dataWithContentsOfFile:croppedImageURL.absoluteString];
+//        [output write:sendData.bytes maxLength:sendData.length];
+//        
+//        output = [self.ownSession startStreamWithName:fullscreenImageResourceName toPeer:peer error:nil];
+//        [output scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+//        
+//        //우선 Cropped Image를 먼저 보낸다.
+//        [output open];
+//        sendData = [NSData dataWithContentsOfFile:fullscreenImageURL.absoluteString];
+//        [output write:sendData.bytes maxLength:sendData.length];
+//    }
 }
 
 - (void)disconnectSession {
@@ -276,6 +296,45 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
     }
 }
 
-- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {}
+- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {
+//    NSLog(@"Receive Stream Insert Photo");
+//    
+//    [stream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+//    [stream setDelegate:self];
+//    [stream open];
+//    
+//    if (stream.hasBytesAvailable) {
+//        NSLog(@"Receive Stream Start Insert Photo");
+//        
+//        uint8_t buffer[1024];
+//        NSInteger size = [stream read:buffer maxLength:1024];
+//        NSData *data = [NSData dataWithBytes:buffer length:size];
+//        
+//        NSArray *array = [streamName componentsSeparatedByString:@"+"];
+//        
+//        if (array != nil && array.count == 2) {
+//            NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
+//                                           KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1],
+//                                           KEY_EDITOR_PHOTO_INSERT_DATA: data};
+//            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
+//            
+//            if ([array[1] isEqualToString:@"_fullscreen"]) {
+//                NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
+//                                           KEY_EDITOR_PHOTO_INSERT_ACK: @YES,
+//                                           KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue])};
+//                
+//                [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+//                
+//                NSLog(@"Receive Stream Finish Insert Photo");
+//            }
+//        }
+//    }
+}
+//
+//- (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode {
+//    if (eventCode == NSStreamEventHasBytesAvailable) {
+//        NSLog(@"22");
+//    }
+//}
 
 @end
