@@ -25,8 +25,6 @@
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
 		4A5D86751D4C8445001EB2A9 /* DrawingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86741D4C8445001EB2A9 /* DrawingObject.m */; };
 		4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */; };
-		4A5D86861D4CA784001EB2A9 /* RKTabItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86831D4CA784001EB2A9 /* RKTabItem.m */; };
-		4A5D86871D4CA784001EB2A9 /* RKTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86851D4CA784001EB2A9 /* RKTabView.m */; };
 		4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
 		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
 		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
@@ -45,6 +43,7 @@
 		4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B61D46664600E5972F /* PECropViewController.m */; };
 		4B4490BE1D46664600E5972F /* PEResizeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B81D46664600E5972F /* PEResizeControl.m */; };
 		4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490BA1D46664600E5972F /* UIImage+PECrop.m */; };
+		4BA0B6391D4CF2EA00403318 /* XXXRoundMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,10 +104,6 @@
 		4A5D86741D4C8445001EB2A9 /* DrawingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingObject.m; sourceTree = "<group>"; };
 		4A5D867E1D4CA133001EB2A9 /* SmoothLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothLineView.h; sourceTree = "<group>"; };
 		4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmoothLineView.m; sourceTree = "<group>"; };
-		4A5D86821D4CA784001EB2A9 /* RKTabItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKTabItem.h; sourceTree = "<group>"; };
-		4A5D86831D4CA784001EB2A9 /* RKTabItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKTabItem.m; sourceTree = "<group>"; };
-		4A5D86841D4CA784001EB2A9 /* RKTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKTabView.h; sourceTree = "<group>"; };
-		4A5D86851D4CA784001EB2A9 /* RKTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKTabView.m; sourceTree = "<group>"; };
 		4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewController.h; sourceTree = "<group>"; };
 		4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewController.m; sourceTree = "<group>"; };
 		4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorViewController.h; sourceTree = "<group>"; };
@@ -144,6 +139,8 @@
 		4B4490B81D46664600E5972F /* PEResizeControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEResizeControl.m; sourceTree = "<group>"; };
 		4B4490B91D46664600E5972F /* UIImage+PECrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PECrop.h"; sourceTree = "<group>"; };
 		4B4490BA1D46664600E5972F /* UIImage+PECrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PECrop.m"; sourceTree = "<group>"; };
+		4BA0B6371D4CF2EA00403318 /* XXXRoundMenuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXXRoundMenuButton.h; sourceTree = "<group>"; };
+		4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXXRoundMenuButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,8 +183,8 @@
 				4A0C92E01D374D660080E9A6 /* MBProgressHUD */,
 				0A9409221D40B7AA007B5C3D /* SphereMenu */,
 				4B4490B01D46661F00E5972F /* PEPhotoCropEditor */,
+				4BA0B6361D4CF2A900403318 /* XXXRoundMenuButton */,
 				4A5D867D1D4CA11F001EB2A9 /* SmoothLineView */,
-				4A5D86811D4CA75B001EB2A9 /* RKTabView */,
 			);
 			name = ExternalLib;
 			sourceTree = "<group>";
@@ -277,17 +274,6 @@
 			name = SmoothLineView;
 			sourceTree = "<group>";
 		};
-		4A5D86811D4CA75B001EB2A9 /* RKTabView */ = {
-			isa = PBXGroup;
-			children = (
-				4A5D86821D4CA784001EB2A9 /* RKTabItem.h */,
-				4A5D86831D4CA784001EB2A9 /* RKTabItem.m */,
-				4A5D86841D4CA784001EB2A9 /* RKTabView.h */,
-				4A5D86851D4CA784001EB2A9 /* RKTabView.m */,
-			);
-			name = RKTabView;
-			sourceTree = "<group>";
-		};
 		4A97B60A1D336514003899F7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -368,6 +354,15 @@
 				4B4490BA1D46664600E5972F /* UIImage+PECrop.m */,
 			);
 			name = PEPhotoCropEditor;
+			sourceTree = "<group>";
+		};
+		4BA0B6361D4CF2A900403318 /* XXXRoundMenuButton */ = {
+			isa = PBXGroup;
+			children = (
+				4BA0B6371D4CF2EA00403318 /* XXXRoundMenuButton.h */,
+				4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */,
+			);
+			name = XXXRoundMenuButton;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -526,7 +521,6 @@
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
 				4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */,
 				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
-				4A5D86861D4CA784001EB2A9 /* RKTabItem.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
@@ -536,7 +530,7 @@
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
 				4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */,
-				4A5D86871D4CA784001EB2A9 /* RKTabView.m in Sources */,
+				4BA0B6391D4CF2EA00403318 /* XXXRoundMenuButton.m in Sources */,
 				4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */,
 				4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,

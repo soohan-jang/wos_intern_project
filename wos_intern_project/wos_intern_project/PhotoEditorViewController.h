@@ -13,7 +13,7 @@
 #import "MessageSyncManager.h"
 
 #import "SphereMenu.h"
-#import "RKTabView.h"
+#import "XXXRoundMenuButton.h"
 
 #import "MainViewController.h"
 #import "PhotoFrameCellManager.h"
@@ -26,11 +26,12 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_ALBUM_AUTH = 2
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, RKTabViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIView *collectionContainerView;
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) IBOutlet RKTabView *editMenuTabView;
+@property (strong, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
+
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.

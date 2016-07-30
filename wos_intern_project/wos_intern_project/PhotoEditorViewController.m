@@ -55,12 +55,15 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    RKTabItem *penMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *textMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *stickerMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *eraserMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
+    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI/2];
+    [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
+    [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
+    [self.editMenuButton setButtonClickBlock:^(NSInteger idx) {
+        
+    }];
     
-    self.editMenuTabView.tabItems = @[penMenuItem, textMenuItem, stickerMenuItem, eraserMenuItem];
+    self.editMenuButton.mainColor = [UIColor colorWithRed:45 / 255.f green:140 / 255.f blue:213 / 255.f alpha:1];
     
     self.isMenuAppear = NO;
     [self addObservers];
@@ -218,15 +221,6 @@
     
     [sphereMenu dismissMenu];
     self.isMenuAppear = NO;
-}
-
-/**** RKTabView Delegate Methods ****/
-- (void)tabView:(RKTabView *)tabView tabBecameEnabledAtIndex:(NSUInteger)index tab:(RKTabItem *)tabItem {
-    
-}
-
-- (void)tabView:(RKTabView *)tabView tabBecameDisabledAtIndex:(NSUInteger)index tab:(RKTabItem *)tabItem {
-    
 }
 
 /**** UIImagePickerController Delegate Methods ****/
