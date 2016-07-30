@@ -55,11 +55,14 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    RKTabItem *penMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *textMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *stickerMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
-    RKTabItem *eraserMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    RKTabItem *penMenuItem = [RKTabItem createButtonItemWithImage:[UIImage imageNamed:@"Pen"] target:self selector:@selector(buttonTabPressed:)];
+    RKTabItem *textMenuItem = [RKTabItem createButtonItemWithImage:[UIImage imageNamed:@"Text"] target:self selector:@selector(buttonTabPressed:)];
+    RKTabItem *stickerMenuItem = [RKTabItem createButtonItemWithImage:[UIImage imageNamed:@"Sticker"] target:self selector:@selector(buttonTabPressed:)];
+    RKTabItem *eraserMenuItem = [RKTabItem createButtonItemWithImage:[UIImage imageNamed:@"Eraser"] target:self selector:@selector(buttonTabPressed:)];
     
+    self.editMenuTabView.horizontalInsets = HorizontalEdgeInsetsMake(25, 25);
+    self.editMenuTabView.darkensBackgroundForEnabledTabs = YES;
+    self.editMenuTabView.drawSeparators = YES;
     self.editMenuTabView.tabItems = @[penMenuItem, textMenuItem, stickerMenuItem, eraserMenuItem];
     
     self.isMenuAppear = NO;
