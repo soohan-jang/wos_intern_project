@@ -250,38 +250,28 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4kj-DG-Aua">
-                                <rect key="frame" x="0.0" y="536" width="600" height="64"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t88-HB-o5t" customClass="RKTabView">
+                                <rect key="frame" x="0.0" y="556" width="600" height="50"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="IEg-gd-fla">
-                                        <variation key="heightClass=regular" constant="44"/>
-                                    </constraint>
+                                    <constraint firstAttribute="height" constant="50" id="Qgt-n9-jP3"/>
                                 </constraints>
-                                <items>
-                                    <barButtonItem title="Pen" id="7yI-uU-Tva"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="IIc-Pe-QiX"/>
-                                    <barButtonItem title="Text" id="uTz-f6-4sI"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="ahe-1L-V9f"/>
-                                    <barButtonItem title="Sticker" id="02e-d3-DkT"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="b5Z-RU-s5J"/>
-                                    <barButtonItem title="Eraser" id="MPS-E8-KBY"/>
-                                </items>
-                            </toolbar>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2O5-KR-ahB"/>
+                            <constraint firstItem="t88-HB-o5t" firstAttribute="width" secondItem="bsr-62-H2Z" secondAttribute="width" id="3fB-cS-pyO"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="7YK-yN-e74"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" constant="64" id="BjL-8L-GdM">
                                 <variation key="heightClass=regular" constant="44"/>
                             </constraint>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="t88-HB-o5t" secondAttribute="bottom" constant="-6" id="CyL-7E-3Gv"/>
                             <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="D2c-sh-hZJ"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leadingMargin" id="K7Z-zC-bbH"/>
-                            <constraint firstItem="4kj-DG-Aua" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="KRQ-N3-lA8"/>
+                            <constraint firstItem="t88-HB-o5t" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="btb-hD-pR5"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="j6L-0H-DI4"/>
-                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="4kj-DG-Aua" secondAttribute="bottom" id="jdd-a0-Qym"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="pOP-mv-h3f"/>
-                            <constraint firstItem="4kj-DG-Aua" firstAttribute="width" secondItem="bsr-62-H2Z" secondAttribute="width" id="zRX-lH-n0D"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -311,6 +301,7 @@
                     <connections>
                         <outlet property="collectionContainerView" destination="kfz-pT-T9E" id="uYn-cB-lt8"/>
                         <outlet property="collectionView" destination="7vD-hf-90M" id="vgX-qa-46y"/>
+                        <outlet property="editMenuTabView" destination="t88-HB-o5t" id="lc4-Nz-W2O"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
                     </connections>
                 </viewController>

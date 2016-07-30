@@ -10,4 +10,6 @@
 
 @interface DrawingPenObject : DrawingObject
 
+- (instancetype)initWithPath:(UIBezierPath *)path withWidth:(CGFloat)width withColor:(CGColorRef)color;
+
 @end

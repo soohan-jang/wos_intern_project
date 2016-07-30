@@ -23,13 +23,16 @@
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
+		4A5D86751D4C8445001EB2A9 /* DrawingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86741D4C8445001EB2A9 /* DrawingObject.m */; };
+		4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */; };
+		4A5D86861D4CA784001EB2A9 /* RKTabItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86831D4CA784001EB2A9 /* RKTabItem.m */; };
+		4A5D86871D4CA784001EB2A9 /* RKTabView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86851D4CA784001EB2A9 /* RKTabView.m */; };
 		4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
 		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
 		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
 		4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
 		4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
 		4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */; };
-		4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490941D3A5F6200E5972F /* DrawingObject.m */; };
 		4B4490981D3A607500E5972F /* DrawingPenObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490971D3A607500E5972F /* DrawingPenObject.m */; };
 		4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909A1D3A607F00E5972F /* DrawingTextObject.m */; };
 		4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909D1D3A608A00E5972F /* DrawingStickerObject.m */; };
@@ -99,6 +102,13 @@
 		4A4ACF4C1D2B6D2C00BC2FC4 /* wos_intern_projectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = wos_intern_projectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = wos_intern_projectUITests.m; sourceTree = "<group>"; };
 		4A4ACF521D2B6D2C00BC2FC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4A5D86741D4C8445001EB2A9 /* DrawingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingObject.m; sourceTree = "<group>"; };
+		4A5D867E1D4CA133001EB2A9 /* SmoothLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothLineView.h; sourceTree = "<group>"; };
+		4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmoothLineView.m; sourceTree = "<group>"; };
+		4A5D86821D4CA784001EB2A9 /* RKTabItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKTabItem.h; sourceTree = "<group>"; };
+		4A5D86831D4CA784001EB2A9 /* RKTabItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKTabItem.m; sourceTree = "<group>"; };
+		4A5D86841D4CA784001EB2A9 /* RKTabView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKTabView.h; sourceTree = "<group>"; };
+		4A5D86851D4CA784001EB2A9 /* RKTabView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKTabView.m; sourceTree = "<group>"; };
 		4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectViewController.h; sourceTree = "<group>"; };
 		4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectViewController.m; sourceTree = "<group>"; };
 		4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorViewController.h; sourceTree = "<group>"; };
@@ -112,7 +122,6 @@
 		4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorFrameViewCell.h; sourceTree = "<group>"; };
 		4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorFrameViewCell.m; sourceTree = "<group>"; };
 		4B4490931D3A5F6200E5972F /* DrawingObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingObject.h; sourceTree = "<group>"; };
-		4B4490941D3A5F6200E5972F /* DrawingObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingObject.m; sourceTree = "<group>"; };
 		4B4490961D3A607500E5972F /* DrawingPenObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingPenObject.h; sourceTree = "<group>"; };
 		4B4490971D3A607500E5972F /* DrawingPenObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingPenObject.m; sourceTree = "<group>"; };
 		4B4490991D3A607F00E5972F /* DrawingTextObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingTextObject.h; sourceTree = "<group>"; };
@@ -174,9 +183,11 @@
 		4A0C92DF1D374D4C0080E9A6 /* ExternalLib */ = {
 			isa = PBXGroup;
 			children = (
-				4B4490B01D46661F00E5972F /* PEPhotoCropEditor */,
 				4A0C92E01D374D660080E9A6 /* MBProgressHUD */,
 				0A9409221D40B7AA007B5C3D /* SphereMenu */,
+				4B4490B01D46661F00E5972F /* PEPhotoCropEditor */,
+				4A5D867D1D4CA11F001EB2A9 /* SmoothLineView */,
+				4A5D86811D4CA75B001EB2A9 /* RKTabView */,
 			);
 			name = ExternalLib;
 			sourceTree = "<group>";
@@ -257,6 +268,26 @@
 			path = wos_intern_projectUITests;
 			sourceTree = "<group>";
 		};
+		4A5D867D1D4CA11F001EB2A9 /* SmoothLineView */ = {
+			isa = PBXGroup;
+			children = (
+				4A5D867E1D4CA133001EB2A9 /* SmoothLineView.h */,
+				4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */,
+			);
+			name = SmoothLineView;
+			sourceTree = "<group>";
+		};
+		4A5D86811D4CA75B001EB2A9 /* RKTabView */ = {
+			isa = PBXGroup;
+			children = (
+				4A5D86821D4CA784001EB2A9 /* RKTabItem.h */,
+				4A5D86831D4CA784001EB2A9 /* RKTabItem.m */,
+				4A5D86841D4CA784001EB2A9 /* RKTabView.h */,
+				4A5D86851D4CA784001EB2A9 /* RKTabView.m */,
+			);
+			name = RKTabView;
+			sourceTree = "<group>";
+		};
 		4A97B60A1D336514003899F7 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,7 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				4B4490931D3A5F6200E5972F /* DrawingObject.h */,
-				4B4490941D3A5F6200E5972F /* DrawingObject.m */,
+				4A5D86741D4C8445001EB2A9 /* DrawingObject.m */,
 				4B4490961D3A607500E5972F /* DrawingPenObject.h */,
 				4B4490971D3A607500E5972F /* DrawingPenObject.m */,
 				4B4490991D3A607F00E5972F /* DrawingTextObject.h */,
@@ -495,19 +526,22 @@
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
 				4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */,
 				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
+				4A5D86861D4CA784001EB2A9 /* RKTabItem.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
+				4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */,
 				4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */,
+				4A5D86751D4C8445001EB2A9 /* DrawingObject.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
 				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
 				4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */,
+				4A5D86871D4CA784001EB2A9 /* RKTabView.m in Sources */,
 				4B44909B1D3A607F00E5972F /* DrawingTextObject.m in Sources */,
 				4B4490A41D3A60A600E5972F /* DrawingSyncManager.m in Sources */,
 				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,
 				4A0F100D1D45DDE800BF4EFC /* PhotoCropViewController.m in Sources */,
 				4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */,
-				4B4490951D3A5F6200E5972F /* DrawingObject.m in Sources */,
 				4B44909E1D3A608A00E5972F /* DrawingStickerObject.m in Sources */,
 				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,
 				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,

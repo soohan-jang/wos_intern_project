@@ -13,6 +13,7 @@
 #import "MessageSyncManager.h"
 
 #import "SphereMenu.h"
+#import "RKTabView.h"
 
 #import "MainViewController.h"
 #import "PhotoFrameCellManager.h"
@@ -25,10 +26,11 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
     ALERT_ALBUM_AUTH = 2
 };
 
-@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
+@interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, RKTabViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIView *collectionContainerView;
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) IBOutlet RKTabView *editMenuTabView;
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
@@ -39,12 +41,6 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  네비게이션바에 위치한 "저장" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
  */
 - (IBAction)saveAction:(id)sender;
-
-//각각의 메뉴에 대응한다.
-- (IBAction)penButtonAction:(id)sender;
-- (IBAction)textButtonAction:(id)sender;
-- (IBAction)stickerButtonAction:(id)sender;
-- (IBAction)eraserButtonAction:(id)sender;
 
 - (void)setPhotoFrameNumber:(NSInteger)frameNumber;
 

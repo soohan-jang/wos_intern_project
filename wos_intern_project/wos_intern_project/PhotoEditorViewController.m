@@ -55,6 +55,13 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    RKTabItem *penMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    RKTabItem *textMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    RKTabItem *stickerMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    RKTabItem *eraserMenuItem = [RKTabItem createUsualItemWithImageEnabled:[UIImage imageNamed:@"Pen"] imageDisabled:[UIImage imageNamed:@"Pen"]];
+    
+    self.editMenuTabView.tabItems = @[penMenuItem, textMenuItem, stickerMenuItem, eraserMenuItem];
+    
     self.isMenuAppear = NO;
     [self addObservers];
 }
@@ -75,22 +82,8 @@
 //    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-- (IBAction)photoButtonAction:(id)sender {
-}
-
-- (IBAction)penButtonAction:(id)sender {
-}
-
-- (IBAction)textButtonAction:(id)sender {
-}
-
-- (IBAction)stickerButtonAction:(id)sender {
-}
-
-- (IBAction)eraserButtonAction:(id)sender {
-}
-
-- (IBAction)StickerButtonAction:(id)sender {
+- (void)loadPhotoCropViewController {
+    [self performSegueWithIdentifier:@"moveToPhotoCrop" sender:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -170,62 +163,6 @@
     return [self.cellManager getCellSizeWithIndex:indexPath.item withCollectionViewSize:collectionView.frame.size];
 }
 
-- (void)selectedCellAction:(NSNotification *)notification {
-    if (!self.isMenuAppear) {
-        self.isMenuAppear = YES;
-        
-        NSArray *images;
-        
-        self.selectedIndexPath = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
-        if ([self.cellManager getCellCroppedImageAtIndex:self.selectedIndexPath.item] == nil) {
-            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
-        } else {
-            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
-        }
-        
-        CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue], [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue]);
-        CGFloat angleOffset;
-        
-        //사진 액자가 화면의 중간 범위에 위치할 때,
-        if (self.view.center.x - 10 <= sphereMenuCenter.x && sphereMenuCenter.x <= self.view.center.x + 10) {
-            if (images.count == 2) {
-                angleOffset = M_PI * 1.1f;
-            } else {
-                angleOffset = M_PI * -1.13f;
-            }
-        } else {
-            //사진 액자가 화면의 왼쪽에 위치할 때,
-            if (sphereMenuCenter.x < self.view.center.x) {
-                if (images.count == 2) {
-                    angleOffset = M_PI * 1.2f;
-                } else {
-                    angleOffset = M_PI * 1.15f;
-                }
-                //사진 액자가 화면의 오른쪽에 위치할 때,
-            } else if (sphereMenuCenter.x > self.view.center.x) {
-                if (images.count == 2) {
-                    angleOffset = M_PI * 1.05f;
-                } else {
-                    angleOffset = M_PI * -1.4f;
-                }
-            }
-        }
-        
-        SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.collectionContainerView Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
-        sphereMenu.delegate = self;
-        [sphereMenu presentMenu];
-        
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
-        
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-    }
-}
-
-- (void)loadPhotoCropViewController {
-    [self performSegueWithIdentifier:@"moveToPhotoCrop" sender:self];
-}
-
 /**** SphereMenu Delegate Method ****/
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
     BOOL isSendEditCancelMsg = NO;
@@ -281,6 +218,15 @@
     
     [sphereMenu dismissMenu];
     self.isMenuAppear = NO;
+}
+
+/**** RKTabView Delegate Methods ****/
+- (void)tabView:(RKTabView *)tabView tabBecameEnabledAtIndex:(NSUInteger)index tab:(RKTabItem *)tabItem {
+    
+}
+
+- (void)tabView:(RKTabView *)tabView tabBecameDisabledAtIndex:(NSUInteger)index tab:(RKTabItem *)tabItem {
+    
 }
 
 /**** UIImagePickerController Delegate Methods ****/
@@ -381,6 +327,60 @@
         if (buttonIndex == 1) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         }
+    }
+}
+
+/*** CollectionViewCell Selected Method ****/
+
+- (void)selectedCellAction:(NSNotification *)notification {
+    if (!self.isMenuAppear) {
+        self.isMenuAppear = YES;
+        
+        NSArray *images;
+        
+        self.selectedIndexPath = (NSIndexPath *)notification.userInfo[KEY_SELECTED_CELL_INDEXPATH];
+        if ([self.cellManager getCellCroppedImageAtIndex:self.selectedIndexPath.item] == nil) {
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
+        } else {
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
+        }
+        
+        CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue], [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue]);
+        CGFloat angleOffset;
+        
+        //사진 액자가 화면의 중간 범위에 위치할 때,
+        if (self.view.center.x - 10 <= sphereMenuCenter.x && sphereMenuCenter.x <= self.view.center.x + 10) {
+            if (images.count == 2) {
+                angleOffset = M_PI * 1.1f;
+            } else {
+                angleOffset = M_PI * -1.13f;
+            }
+        } else {
+            //사진 액자가 화면의 왼쪽에 위치할 때,
+            if (sphereMenuCenter.x < self.view.center.x) {
+                if (images.count == 2) {
+                    angleOffset = M_PI * 1.2f;
+                } else {
+                    angleOffset = M_PI * 1.15f;
+                }
+                //사진 액자가 화면의 오른쪽에 위치할 때,
+            } else if (sphereMenuCenter.x > self.view.center.x) {
+                if (images.count == 2) {
+                    angleOffset = M_PI * 1.05f;
+                } else {
+                    angleOffset = M_PI * -1.4f;
+                }
+            }
+        }
+        
+        SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.collectionContainerView Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
+        sphereMenu.delegate = self;
+        [sphereMenu presentMenu];
+        
+        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
+                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+        
+        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
 }
 
