@@ -15,9 +15,12 @@
 @property (nonatomic, copy, setter=setID:, getter=getID) NSString * id_hashed_timestamp;
 @property (nonatomic, strong, setter=setZOrder:, getter=getZOrder) NSNumber *z_order_timestamp;
 @property (nonatomic, assign) CGRect frame;
+@property (nonatomic, assign) CGFloat angle;
 
 - (instancetype)initWithTimestamp:(NSNumber *)timestamp;
+- (NSString *)createObjectId:(NSString *)input;
 
+- (id)getData;
 - (UIView *)getView;
 - (void)containsPoint:(CGPoint)point;
 - (void)moveObject:(CGPoint)movePoint;

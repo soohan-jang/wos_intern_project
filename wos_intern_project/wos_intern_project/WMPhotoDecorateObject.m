@@ -11,8 +11,6 @@
 
 @interface WMPhotoDecorateObject ()
 
-- (NSString *)createObjectId:(NSString *)input;
-
 @end
 
 @implementation WMPhotoDecorateObject
@@ -39,6 +37,7 @@
     return self;
 }
 
+- (id)getData { return nil; }
 - (UIView *)getView { return nil; }
 - (void)containsPoint:(CGPoint)point {}
 - (void)moveObject:(CGPoint)movePoint {}

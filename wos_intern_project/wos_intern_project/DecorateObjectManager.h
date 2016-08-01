@@ -1,5 +1,5 @@
 //
-//  DrawingManager.h
+//  DecorateObjectManager.h
 //  wos_intern_project
 //
 //  Created by 장수한 on 2016. 7. 16..
@@ -11,14 +11,14 @@
 #import "WMPhotoDecorateImageObject.h"
 #import "WMPhotoDecorateTextObject.h"
 
-@interface DrawingManager : NSObject
+@interface DecorateObjectManager : NSObject
 
 - (void)addDecorateObject:(WMPhotoDecorateObject *)object;
 - (void)removeDecorateObjectAtIndex:(NSInteger)index;
 - (UIView *)getDecorateObjectAtIndex:(NSInteger)index;
 
-- (void)drawOnCanvasView:(UIView *)canvasView;
 - (void)sortDecorateObject;
 - (BOOL)isEmpty;
+- (NSInteger)getCount;
 
 @end

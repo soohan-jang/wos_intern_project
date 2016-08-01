@@ -10,8 +10,6 @@
 
 @interface WMPhotoDecorateImageObject ()
 
-@property (nonatomic, strong) UIImage *image;
-
 @end
 
 @implementation WMPhotoDecorateImageObject
@@ -20,6 +18,18 @@
     self = [super init];
     
     if (self) {
+        self.image = image;
+        self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image WithID:(NSString *)identifier {
+    self = [super init];
+    
+    if (self) {
+        self.id_hashed_timestamp = [self createObjectId:identifier];
         self.image = image;
     }
     
@@ -31,14 +41,20 @@
     
     if (self) {
         self.image = image;
+        self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     }
     
     return self;
 }
 
+- (id)getData {
+    return self.image;
+}
+
 - (UIView *)getView {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
-    imageView.frame = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
+    imageView.frame = self.frame;
+    
     return imageView;
 }
 

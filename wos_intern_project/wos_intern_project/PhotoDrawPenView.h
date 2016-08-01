@@ -10,11 +10,11 @@
 
 #import "SmoothLineView.h"
 
-@protocol PhotoDrawViewDelegate;
+@protocol PhotoDrawPenViewDelegate;
 
-@interface PhotoDrawView : UIView
+@interface PhotoDrawPenView : UIView
 
-@property (nonatomic, weak) id<PhotoDrawViewDelegate> delegate;
+@property (nonatomic, weak) id<PhotoDrawPenViewDelegate> delegate;
 @property (strong, nonatomic) IBOutlet SmoothLineView *canvasView;
 
 - (IBAction)backAction:(id)sender;
@@ -22,9 +22,9 @@
 
 @end
 
-@protocol PhotoDrawViewDelegate <NSObject>
+@protocol PhotoDrawPenViewDelegate <NSObject>
 @required
-- (void)drawViewDidFinished:(PhotoDrawView *)drawView WithImage:(UIImage *)image;
-- (void)drawViewDidCancelled:(PhotoDrawView *)drawView;
+- (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image;
+- (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView;
 
 @end

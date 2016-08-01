@@ -29,10 +29,12 @@ NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK      = 301;
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT            = 302;
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED   = 303;
 NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 304;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 305;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 306;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 307;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 308;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT          = 305;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED = 306;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 307;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 308;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 309;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 310;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
@@ -55,10 +57,15 @@ NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                  = @"photo_insert_d
 NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                   = @"photo_insert_ack";
 NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX                   = @"photo_edit_index";
 NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
+NSString *const KEY_EDITOR_DRAWING_EDIT_ID                    = @"drawing_edit_id";
 NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
 NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP           = @"drawing_insert_timestamp";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_ID                  = @"drawing_update_id";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X            = @"drawing_update_origin_x";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y            = @"drawing_update_origin_y";;
+NSString *const KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH          = @"drawing_update_size_width";;
+NSString *const KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT         = @"drawing_update_size_height";
 NSString *const KEY_EDITOR_DRAWING_DELETE_ID                  = @"drawing_delete_id";
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
@@ -80,6 +87,8 @@ NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK     = @"noti_recv_edit
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT           = @"noti_recv_editor_photo_edit";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED  = @"noti_recv_editor_photo_edit_canceled";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT         = @"noti_recv_editor_drawing_edit";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL  = @"noti_recv_editor_drawing_edit_cancel";
 NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT       = @"noti_recv_editor_drawing_insert";
 NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE       = @"noti_recv_editor_drawing_update";
 NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE       = @"noti_recv_editor_drawing_delete";
@@ -236,6 +245,14 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
 //                [[MessageSyncManager sharedInstance] putMessage:receivedData];
 //            }
 //            break;
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_EDIT object:nil userInfo:receivedData];
+            NSLog(@"Received Edit Drawing Object");
+            break;
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL object:nil userInfo:receivedData];
+            NSLog(@"Received Edit Cancel Drawing Object");
+            break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil userInfo:receivedData];
             NSLog(@"Received Insert Drawing Object");

@@ -11,7 +11,6 @@
 @interface PhotoEditorViewController ()
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
-@property (nonatomic, strong) DrawingManager *drawingManager;
 
 @property (atomic, assign) NSIndexPath *selectedIndexPath;
 @property (atomic, strong) NSURL *selectedImageURL;
@@ -64,9 +63,8 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    self.drawCanvasView.backgroundColor = [UIColor clearColor];
-    self.drawingCanvasView.delegate = self;
-    self.drawingManager = [[DrawingManager alloc] init];
+    self.drawObjectDisplayView.delegate = self;
+    self.drawPenView.delegate = self;
     
     NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
     [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI / 2];
@@ -244,7 +242,7 @@
         
     //Pen Menu
     } else if (index == 2) {
-        [self.drawingCanvasView setHidden:NO];
+        [self.drawPenView setHidden:NO];
     }
 }
 
@@ -302,13 +300,57 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
+/**** PhotoDrawObjectDisplayView Delegate ****/
+- (void)drawObjectDidMoved:(WMPhotoDecorateObject *)decoObject {
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE),
+                               KEY_EDITOR_DRAWING_UPDATE_ID: [decoObject getID],
+                               KEY_EDITOR_DRAWING_UPDATE_DATA: [decoObject getData],
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X: @(decoObject.frame.origin.x),
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y: @(decoObject.frame.origin.y),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH: @(decoObject.frame.size.width),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT: @(decoObject.frame.size.height)};
+    
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
+- (void)drawObjectDidResized:(WMPhotoDecorateObject *)decoObject {
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE),
+                               KEY_EDITOR_DRAWING_UPDATE_ID: [decoObject getID],
+                               KEY_EDITOR_DRAWING_UPDATE_DATA: [decoObject getData],
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X: @(decoObject.frame.origin.x),
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y: @(decoObject.frame.origin.y),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH: @(decoObject.frame.size.width),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT: @(decoObject.frame.size.height)};
+    
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
+- (void)drawObjectDidRotate:(WMPhotoDecorateObject *)decoObject {
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE),
+                               KEY_EDITOR_DRAWING_UPDATE_ID: [decoObject getID],
+                               KEY_EDITOR_DRAWING_UPDATE_DATA: [decoObject getData],
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X: @(decoObject.frame.origin.x),
+                               KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y: @(decoObject.frame.origin.y),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH: @(decoObject.frame.size.width),
+                               KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT: @(decoObject.frame.size.height)};
+    
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
+- (void)drawObjectDidDelete:(WMPhotoDecorateObject *)decoObject {
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE),
+                               KEY_EDITOR_DRAWING_DELETE_ID: [decoObject getID]};
+    
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
 /**** PhotoDrawView Delegate ****/
-- (void)drawViewDidFinished:(PhotoDrawView *)drawView WithImage:(UIImage *)image {
-    [drawView setHidden:YES];
+- (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
+    [drawPenView setHidden:YES];
     
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
-    [self.drawingManager addDecorateObject:imageObject];
-    [self.drawingManager drawOnCanvasView:self.drawCanvasView];
+    
+    [self.drawObjectDisplayView addDrawObject:imageObject];
     
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT),
                                KEY_EDITOR_DRAWING_INSERT_DATA:image,
@@ -316,8 +358,8 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
-- (void)drawViewDidCancelled:(PhotoDrawView *)drawView {
-    [drawView setHidden:YES];
+- (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView {
+    [drawPenView setHidden:YES];
 }
 
 /**** UIAlertViewDelegate Methods. ****/
@@ -478,28 +520,39 @@
 - (void)receivedDrawingObjectInsert:(NSNotification *)notification {
     WMPhotoDecorateObject *decoObject;
     
-    if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[UIImage class]]) {
-        UIImage *image = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
+    if ([notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA] isKindOfClass:[UIImage class]]) {
+        UIImage *image = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
         NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
         decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image WithTimestamp:timestamp];
+    } else if ([notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA] isKindOfClass:[NSString class]]) {
+        NSString *text = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
+        NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
+        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:text WithTimestamp:timestamp];
+    }
+    
+    [self.drawObjectDisplayView addDrawObject:decoObject];
+}
+
+- (void)receivedDrawingObjectUpdate:(NSNotification *)notification {
+    WMPhotoDecorateObject *decoObject;
+    //timestamp 대신에 id 받아와야 됨.
+    //update 정보로 객체 구성한 뒤에 던지면, id값으로 이미 존재하는 객체 찾아낸 후 갱신함.
+    if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[UIImage class]]) {
+        UIImage *image = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
+        NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
+        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image WithID:identifier];
     } else if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[NSString class]]) {
         NSString *text = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
         NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
         decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:text WithTimestamp:timestamp];
     }
     
-//    [self.drawingManager sortDecorateObject];
-    [self.drawingManager addDecorateObject:decoObject];
+    decoObject.frame = CGRectMake([notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X] floatValue],
+                                  [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y] floatValue],
+                                  [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH] floatValue],
+                                  [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT] floatValue]);
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.drawingManager drawOnCanvasView:self.drawCanvasView];
-    });
-}
-
-- (void)receivedDrawingObjectUpdate:(NSNotification *)notification {
-//    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
-//    [self.drawingManager addDecorateObject:decoObject];
-//    [self.drawingManager drawOnCanvasView:self.drawCanvasView];
+    [self.drawObjectDisplayView updateDrawObject:decoObject];
 }
 
 - (void)receivedDrawingObjectDelete:(NSNotification *)notification {
