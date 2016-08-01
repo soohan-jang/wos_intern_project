@@ -9,10 +9,6 @@
 #import "WMPhotoDecorateObject.h"
 #import <CommonCrypto/CommonDigest.h>
 
-const NSInteger TYPE_NONE   = 0;
-const NSInteger TYPE_TEXT   = 1;
-const NSInteger TYPE_IMAGE  = 2;
-
 @interface WMPhotoDecorateObject ()
 
 - (NSString *)createObjectId:(NSString *)input;
@@ -25,8 +21,18 @@ const NSInteger TYPE_IMAGE  = 2;
     self = [super init];
     
     if (self) {
-        self.type = TYPE_NONE;
         self.z_order_timestamp = @([[NSDate date] timeIntervalSince1970]);
+        self.id_hashed_timestamp = [self createObjectId:self.z_order_timestamp.stringValue];
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithTimestamp:(NSNumber *)timestamp {
+    self = [super init];
+    
+    if (self) {
+        self.z_order_timestamp = timestamp;
         self.id_hashed_timestamp = [self createObjectId:self.z_order_timestamp.stringValue];
     }
     

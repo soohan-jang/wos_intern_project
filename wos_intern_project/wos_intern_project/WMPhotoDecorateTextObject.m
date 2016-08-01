@@ -20,7 +20,16 @@
     self = [super init];
     
     if (self) {
-        self.type = TYPE_TEXT;
+        self.text = text;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithText:(NSString *)text WithTimestamp:(NSNumber *)timestamp {
+    self = [super initWithTimestamp:timestamp];
+    
+    if (self) {
         self.text = text;
     }
     

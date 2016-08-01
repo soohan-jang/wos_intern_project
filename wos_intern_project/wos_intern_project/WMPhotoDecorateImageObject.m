@@ -20,7 +20,16 @@
     self = [super init];
     
     if (self) {
-        self.type = TYPE_IMAGE;
+        self.image = image;
+    }
+    
+    return self;
+}
+
+- (instancetype)initWithImage:(UIImage *)image WithTimestamp:(NSNumber *)timestamp {
+    self = [super initWithTimestamp:timestamp];
+    
+    if (self) {
         self.image = image;
     }
     
@@ -28,7 +37,9 @@
 }
 
 - (UIView *)getView {
-    return [[UIImageView alloc] initWithImage:self.image];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
+    imageView.frame = CGRectMake(0, 0, self.image.size.width, self.image.size.height);
+    return imageView;
 }
 
 - (void)containsPoint:(CGPoint)point {}

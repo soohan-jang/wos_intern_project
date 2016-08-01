@@ -12,5 +12,6 @@
 @interface WMPhotoDecorateTextObject : WMPhotoDecorateObject
 
 - (instancetype)initWithText:(NSString *)text;
+- (instancetype)initWithText:(NSString *)text WithTimestamp:(NSNumber *)timestamp;
 
 @end

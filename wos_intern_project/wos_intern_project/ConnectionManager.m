@@ -56,8 +56,10 @@ NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                   = @"photo_insert_a
 NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX                   = @"photo_edit_index";
 NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
 NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
+NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP           = @"drawing_insert_timestamp";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_ID                  = @"drawing_update_id";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
-NSString *const KEY_EDITOR_DRAWING_DELETE_DATA                = @"drawing_delete_data";
+NSString *const KEY_EDITOR_DRAWING_DELETE_ID                  = @"drawing_delete_id";
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
 NSString *const NOTIFICATION_PEER_CONNECTED                   = @"noti_peer_connected";

@@ -13,5 +13,6 @@
 @interface WMPhotoDecorateImageObject : WMPhotoDecorateObject
 
 - (instancetype)initWithImage:(UIImage *)image;
+- (instancetype)initWithImage:(UIImage *)image WithTimestamp:(NSNumber *)timestamp;
 
 @end

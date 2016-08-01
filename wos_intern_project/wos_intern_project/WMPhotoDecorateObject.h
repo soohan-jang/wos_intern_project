@@ -10,15 +10,13 @@
 #import <UIKit/UIView.h>
 #import <CoreGraphics/CoreGraphics.h>
 
-extern const NSInteger TYPE_NONE;
-extern const NSInteger TYPE_TEXT;
-extern const NSInteger TYPE_IMAGE;
-
 @interface WMPhotoDecorateObject : NSObject
 
-@property (nonatomic, assign) NSInteger type;
 @property (nonatomic, copy, setter=setID:, getter=getID) NSString * id_hashed_timestamp;
 @property (nonatomic, strong, setter=setZOrder:, getter=getZOrder) NSNumber *z_order_timestamp;
+@property (nonatomic, assign) CGRect frame;
+
+- (instancetype)initWithTimestamp:(NSNumber *)timestamp;
 
 - (UIView *)getView;
 - (void)containsPoint:(CGPoint)point;

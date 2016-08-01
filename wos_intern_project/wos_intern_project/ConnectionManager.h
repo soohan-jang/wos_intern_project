@@ -57,8 +57,10 @@ extern NSString *const KEY_EDITOR_PHOTO_INSERT_ACK;
 extern NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX;
 extern NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX;
 extern NSString *const KEY_EDITOR_DRAWING_INSERT_DATA;
+extern NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP;
+extern NSString *const KEY_EDITOR_DRAWING_UPDATE_ID;
 extern NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA;
-extern NSString *const KEY_EDITOR_DRAWING_DELETE_DATA;
+extern NSString *const KEY_EDITOR_DRAWING_DELETE_ID;
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
 extern NSString *const NOTIFICATION_PEER_CONNECTED;

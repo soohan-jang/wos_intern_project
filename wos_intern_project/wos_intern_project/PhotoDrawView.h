@@ -24,6 +24,7 @@
 
 @protocol PhotoDrawViewDelegate <NSObject>
 @required
-- (void)drawViewDidTouchedDone:(PhotoDrawView *)drawView WithImage:(UIImage *)image;
+- (void)drawViewDidFinished:(PhotoDrawView *)drawView WithImage:(UIImage *)image;
+- (void)drawViewDidCancelled:(PhotoDrawView *)drawView;
 
 @end

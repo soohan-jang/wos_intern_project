@@ -49,7 +49,7 @@
         }
     }
     
-    if ([self isEmpty]) {
+    if (![self isEmpty]) {
         for (WMPhotoDecorateObject *decoObject in self.decorateViewArray) {
             [canvasView addSubview:[decoObject getView]];
         }

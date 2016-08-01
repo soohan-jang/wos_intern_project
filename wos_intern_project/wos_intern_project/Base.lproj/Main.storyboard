@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5w0-7I-c3V">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -235,20 +235,31 @@
                                             <outlet property="delegate" destination="dKW-hc-NhL" id="6xO-NV-iAa"/>
                                         </connections>
                                     </collectionView>
+                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC">
+                                        <rect key="frame" x="20" y="-12" width="560" height="560"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="lUZ-73-XTC" secondAttribute="height" multiplier="1:1" id="f1e-5Z-fkP"/>
+                                            <constraint firstAttribute="width" secondItem="lUZ-73-XTC" secondAttribute="height" multiplier="1:1" id="lWV-Me-Pfb"/>
+                                        </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="f1e-5Z-fkP"/>
+                                            </mask>
+                                        </variation>
+                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="centerY" secondItem="kfz-pT-T9E" secondAttribute="centerY" id="4eY-CQ-B44"/>
+                                    <constraint firstItem="lUZ-73-XTC" firstAttribute="leading" secondItem="kfz-pT-T9E" secondAttribute="leading" constant="20" id="777-yi-cIl"/>
+                                    <constraint firstItem="lUZ-73-XTC" firstAttribute="centerX" secondItem="kfz-pT-T9E" secondAttribute="centerX" id="9Jx-GZ-rbm"/>
+                                    <constraint firstItem="lUZ-73-XTC" firstAttribute="centerY" secondItem="kfz-pT-T9E" secondAttribute="centerY" id="QJm-7L-I7X"/>
+                                    <constraint firstAttribute="trailing" secondItem="lUZ-73-XTC" secondAttribute="trailing" constant="20" id="ZAf-q6-NiF"/>
                                     <constraint firstAttribute="trailing" secondItem="7vD-hf-90M" secondAttribute="trailing" constant="20" id="f0w-Y1-TQT"/>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="centerX" secondItem="kfz-pT-T9E" secondAttribute="centerX" id="mXi-Yg-eVq"/>
                                     <constraint firstItem="7vD-hf-90M" firstAttribute="leading" secondItem="kfz-pT-T9E" secondAttribute="leading" constant="20" id="tfY-x5-zsF"/>
                                 </constraints>
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
-                            </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="lUZ-73-XTC" secondAttribute="height" multiplier="1:1" id="f1e-5Z-fkP"/>
-                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfh-aY-Vx8" customClass="XXXRoundMenuButton">
                                 <rect key="frame" x="465" y="465" width="200" height="200"/>
@@ -283,7 +294,7 @@
                                             <action selector="doneAction:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="6WL-S4-HEu"/>
                                         </connections>
                                     </button>
-                                    <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="SmoothLineView">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="SmoothLineView">
                                         <rect key="frame" x="10" y="-22" width="580" height="580"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -311,17 +322,13 @@
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-65" id="2hq-Sv-zz0"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2iG-aV-pcf"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="7AR-Mg-o4A"/>
-                            <constraint firstItem="lUZ-73-XTC" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="Kbb-lh-D4n"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="OH2-Kx-Zes"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-85" id="OPN-Hz-Lry"/>
                             <constraint firstAttribute="trailing" secondItem="Zh5-Kc-cgB" secondAttribute="trailing" id="P0g-LX-KCz"/>
-                            <constraint firstAttribute="trailing" secondItem="lUZ-73-XTC" secondAttribute="trailing" id="Syo-s9-93b"/>
-                            <constraint firstItem="lUZ-73-XTC" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="iJH-2z-pYo"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="bottom" id="ioP-Aa-f3A"/>
                             <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="pxH-kK-tJg"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" id="uJF-q3-FeH"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="vDl-zL-NFc"/>
-                            <constraint firstItem="lUZ-73-XTC" firstAttribute="centerY" secondItem="bsr-62-H2Z" secondAttribute="centerY" id="z6c-Id-dFf"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="s0S-z8-qVz">
@@ -353,7 +360,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jzB-Gq-28Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2462" y="317"/>
+            <point key="canvasLocation" x="1717" y="317"/>
         </scene>
         <!--Photo Crop View Controller-->
         <scene sceneID="R8X-vd-KNR">
@@ -415,7 +422,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zyG-J5-bee" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2462" y="1069"/>
+            <point key="canvasLocation" x="1717" y="1118"/>
         </scene>
         <!--Photo Frame Select View Controller-->
         <scene sceneID="hYQ-ZS-nHx">
@@ -495,7 +502,7 @@
                     <connections>
                         <outlet property="collectionView" destination="zLy-VH-rZn" id="Cea-BC-jbo"/>
                         <outlet property="doneButton" destination="zYR-Ek-9jY" id="eLv-V1-3jk"/>
-                        <segue destination="5w0-7I-c3V" kind="show" identifier="moveToPhotoEditor" id="Zdz-Lg-VRD"/>
+                        <segue destination="dKW-hc-NhL" kind="show" identifier="moveToPhotoEditor" id="BwI-io-4kG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UAg-L9-3zb" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -582,7 +589,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Zk-08-MVq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="943" y="1118"/>
+            <point key="canvasLocation" x="910" y="1118"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Z8K-Fq-5WU">
@@ -601,24 +608,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GdV-0p-grO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="167.5" y="-450.5"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="7ag-7E-Qr3">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5w0-7I-c3V" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="wXO-Hh-tzM">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="dKW-hc-NhL" kind="relationship" relationship="rootViewController" id="yIO-A6-Z7o"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="RGr-fb-jOE" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1650" y="317"/>
         </scene>
     </scenes>
     <resources>

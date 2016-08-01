@@ -30,7 +30,7 @@
 
 #define DEFAULT_COLOR               [UIColor blackColor]
 #define DEFAULT_WIDTH               5.0f
-#define DEFAULT_BACKGROUND_COLOR    [UIColor clearColor]
+#define DEFAULT_BACKGROUND_COLOR    [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]
 
 static const CGFloat kPointMinDistance = 5.0f;
 static const CGFloat kPointMinDistanceSquared = kPointMinDistance * kPointMinDistance;
@@ -58,6 +58,7 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
   
   if (self) {
     // NOTE: do not change the backgroundColor here, so it can be set in IB.
+      self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
     _path = CGPathCreateMutable();
     _lineWidth = DEFAULT_WIDTH;
     _lineColor = DEFAULT_COLOR;
@@ -164,25 +165,28 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
   [self setNeedsDisplayInRect:drawBox];
 }
 
-- (void)setHidden:(BOOL)hidden {
-    [super setHidden:hidden];
-    
-    if (hidden == YES) {
-        [self clear];
-    }
-}
-
 
 #pragma mark interface
 
 - (UIImage *)getPathImage {
-    UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:_path];
-    CGRect pathBounds = path.bounds;
+    self.backgroundColor = [UIColor clearColor];
     
-    UIGraphicsBeginImageContext(pathBounds.size);
-    [self drawViewHierarchyInRect:pathBounds afterScreenUpdates:YES];
-    UIImage *pathImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsBeginImageContext(self.bounds.size);
+    [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
+    UIImage *canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
+    UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:_path];
+    CGRect pathRect = CGRectMake(path.bounds.origin.x - 20,
+                                path.bounds.origin.y - 20,
+                                path.bounds.size.width + 40,
+                                path.bounds.size.height + 40);
+    
+    CGImageRef pathImageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], pathRect);
+    UIImage *pathImage = [UIImage imageWithCGImage:pathImageRef];
+    
+    self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
+    [self clear];
     
     return pathImage;
 }

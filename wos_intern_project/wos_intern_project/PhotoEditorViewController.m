@@ -64,6 +64,8 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    self.drawCanvasView.backgroundColor = [UIColor clearColor];
+    self.drawingCanvasView.delegate = self;
     self.drawingManager = [[DrawingManager alloc] init];
     
     NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
@@ -301,14 +303,21 @@
 }
 
 /**** PhotoDrawView Delegate ****/
-- (void)drawViewDidTouchedDone:(PhotoDrawView *)drawView WithImage:(UIImage *)image {
+- (void)drawViewDidFinished:(PhotoDrawView *)drawView WithImage:(UIImage *)image {
+    [drawView setHidden:YES];
+    
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
     [self.drawingManager addDecorateObject:imageObject];
-    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+    [self.drawingManager drawOnCanvasView:self.drawCanvasView];
     
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT),
-                               KEY_EDITOR_DRAWING_INSERT_DATA:imageObject};
+                               KEY_EDITOR_DRAWING_INSERT_DATA:image,
+                               KEY_EDITOR_DRAWING_INSERT_TIMESTAMP:[imageObject getZOrder]};
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
+- (void)drawViewDidCancelled:(PhotoDrawView *)drawView {
+    [drawView setHidden:YES];
 }
 
 /**** UIAlertViewDelegate Methods. ****/
@@ -467,21 +476,36 @@
 }
 
 - (void)receivedDrawingObjectInsert:(NSNotification *)notification {
-    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
+    WMPhotoDecorateObject *decoObject;
+    
+    if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[UIImage class]]) {
+        UIImage *image = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
+        NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
+        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image WithTimestamp:timestamp];
+    } else if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[NSString class]]) {
+        NSString *text = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
+        NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
+        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:text WithTimestamp:timestamp];
+    }
+    
+//    [self.drawingManager sortDecorateObject];
     [self.drawingManager addDecorateObject:decoObject];
-    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.drawingManager drawOnCanvasView:self.drawCanvasView];
+    });
 }
 
 - (void)receivedDrawingObjectUpdate:(NSNotification *)notification {
-    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
-    [self.drawingManager addDecorateObject:decoObject];
-    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+//    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
+//    [self.drawingManager addDecorateObject:decoObject];
+//    [self.drawingManager drawOnCanvasView:self.drawCanvasView];
 }
 
 - (void)receivedDrawingObjectDelete:(NSNotification *)notification {
-    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_DELETE_DATA];
-    [self.drawingManager addDecorateObject:decoObject];
-    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+//    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_DELETE_DATA];
+//    [self.drawingManager addDecorateObject:decoObject];
+//    [self.drawingManager drawOnCanvasView:self.drawCanvasView];
 }
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {
