@@ -11,6 +11,8 @@
 @interface PhotoEditorViewController ()
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
+@property (nonatomic, strong) DrawingManager *drawingManager;
+
 @property (atomic, assign) NSIndexPath *selectedIndexPath;
 @property (atomic, strong) NSURL *selectedImageURL;
 @property (nonatomic, assign) BOOL isMenuAppear;
@@ -24,6 +26,8 @@
  NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록 해제한다.
  */
 - (void)removeObservers;
+
+- (void)loadPhotoCropViewController;
 
 - (void)reloadData:(NSIndexPath *)indexPath;
 
@@ -44,6 +48,11 @@
  상대방이 사진을 삭제했을 때 호출되는 함수이다.
  */
 - (void)receivedPhotoDelete:(NSNotification *)notification;
+
+- (void)receivedDrawingObjectInsert:(NSNotification *)notification;
+- (void)receivedDrawingObjectUpdate:(NSNotification *)notification;
+- (void)receivedDrawingObjectDelete:(NSNotification *)notification;
+
 - (void)receivedSessionDisconnected:(NSNotification *)notification;
 
 @end
@@ -55,13 +64,13 @@
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    self.drawingManager = [[DrawingManager alloc] init];
+    
     NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
-    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI/2];
+    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI / 2];
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
-    [self.editMenuButton setButtonClickBlock:^(NSInteger idx) {
-        
-    }];
+    [self.editMenuButton setDelegate:self];
     
     self.editMenuButton.mainColor = [UIColor colorWithRed:45 / 255.f green:140 / 255.f blue:213 / 255.f alpha:1];
     
@@ -112,9 +121,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoEdit:) name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoEditCanceled:) name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoDelete:) name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirm:) name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectInsert:) name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectUpdate:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectDelete:) name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
 }
 
@@ -125,9 +134,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
 }
 
@@ -223,6 +232,20 @@
     self.isMenuAppear = NO;
 }
 
+/**** XXXRoundMenuButton Delegate Method ****/
+- (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
+    //Sticker Menu
+    if (index == 0) {
+    
+    //Text Menu
+    } else if (index == 1) {
+        
+    //Pen Menu
+    } else if (index == 2) {
+        [self.drawingCanvasView setHidden:NO];
+    }
+}
+
 /**** UIImagePickerController Delegate Methods ****/
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(nonnull NSDictionary<NSString *, id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
@@ -250,7 +273,7 @@
 }
 
 /**** PhotoCropViewController Delegate Methods ****/
-- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage {
+- (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
     if (filename != nil) {
@@ -270,10 +293,21 @@
     }
 }
 
-- (void)photoCropViewControllerDidCancel:(PhotoCropViewController *)controller {
+- (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
                                KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
     
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+}
+
+/**** PhotoDrawView Delegate ****/
+- (void)drawViewDidTouchedDone:(PhotoDrawView *)drawView WithImage:(UIImage *)image {
+    WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
+    [self.drawingManager addDecorateObject:imageObject];
+    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+    
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT),
+                               KEY_EDITOR_DRAWING_INSERT_DATA:imageObject};
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
@@ -430,6 +464,24 @@
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_DELETE_INDEX];
     [self.cellManager clearCellDataAtIndex:item.integerValue];
     [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+}
+
+- (void)receivedDrawingObjectInsert:(NSNotification *)notification {
+    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
+    [self.drawingManager addDecorateObject:decoObject];
+    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+}
+
+- (void)receivedDrawingObjectUpdate:(NSNotification *)notification {
+    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_DATA];
+    [self.drawingManager addDecorateObject:decoObject];
+    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
+}
+
+- (void)receivedDrawingObjectDelete:(NSNotification *)notification {
+    WMPhotoDecorateObject *decoObject = notification.userInfo[KEY_EDITOR_DRAWING_DELETE_DATA];
+    [self.drawingManager addDecorateObject:decoObject];
+    [self.drawingManager drawOnCanvasView:self.drawingCanvasView];
 }
 
 - (void)receivedSessionDisconnected:(NSNotification *)notification {

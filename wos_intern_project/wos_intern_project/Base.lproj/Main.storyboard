@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5w0-7I-c3V">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="5w0-7I-c3V">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -159,13 +159,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kfz-pT-T9E">
-                                <rect key="frame" x="0.0" y="64" width="600" height="472"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="7vD-hf-90M">
-                                        <rect key="frame" x="20" y="-44" width="560" height="560"/>
+                                        <rect key="frame" x="20" y="-12" width="560" height="560"/>
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="7vD-hf-90M" secondAttribute="height" multiplier="1:1" id="3Lg-FR-O5Y"/>
+                                            <constraint firstAttribute="width" secondItem="7vD-hf-90M" secondAttribute="height" multiplier="1:1" id="mKx-og-9WK"/>
                                         </constraints>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="6bF-Vh-CUb">
                                             <size key="itemSize" width="50" height="50"/>
@@ -237,52 +237,92 @@
                                     </collectionView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="7vD-hf-90M" firstAttribute="leading" secondItem="kfz-pT-T9E" secondAttribute="leading" constant="20" id="AGf-vo-YBp"/>
-                                    <constraint firstAttribute="trailing" secondItem="7vD-hf-90M" secondAttribute="trailing" constant="20" id="AKk-Cn-kM2"/>
-                                    <constraint firstItem="7vD-hf-90M" firstAttribute="centerY" secondItem="kfz-pT-T9E" secondAttribute="centerY" id="OFk-KS-nHh"/>
-                                    <constraint firstItem="7vD-hf-90M" firstAttribute="centerX" secondItem="kfz-pT-T9E" secondAttribute="centerX" id="TOg-Vw-C5W"/>
-                                    <constraint firstItem="7vD-hf-90M" firstAttribute="width" secondItem="kfz-pT-T9E" secondAttribute="width" id="jw6-WZ-jC5"/>
+                                    <constraint firstItem="7vD-hf-90M" firstAttribute="centerY" secondItem="kfz-pT-T9E" secondAttribute="centerY" id="4eY-CQ-B44"/>
+                                    <constraint firstAttribute="trailing" secondItem="7vD-hf-90M" secondAttribute="trailing" constant="20" id="f0w-Y1-TQT"/>
+                                    <constraint firstItem="7vD-hf-90M" firstAttribute="centerX" secondItem="kfz-pT-T9E" secondAttribute="centerX" id="mXi-Yg-eVq"/>
+                                    <constraint firstItem="7vD-hf-90M" firstAttribute="leading" secondItem="kfz-pT-T9E" secondAttribute="leading" constant="20" id="tfY-x5-zsF"/>
                                 </constraints>
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="jw6-WZ-jC5"/>
-                                    </mask>
-                                </variation>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="lUZ-73-XTC" secondAttribute="height" multiplier="1:1" id="f1e-5Z-fkP"/>
+                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfh-aY-Vx8" customClass="XXXRoundMenuButton">
                                 <rect key="frame" x="465" y="465" width="200" height="200"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="F6G-SH-K8Y"/>
-                                    <constraint firstAttribute="height" constant="200" id="Uf8-Se-hr7"/>
+                                    <constraint firstAttribute="height" constant="200" id="r6d-wG-jrP"/>
+                                    <constraint firstAttribute="width" constant="200" id="sX9-AL-VTz"/>
                                 </constraints>
+                            </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh5-Kc-cgB" customClass="PhotoDrawView">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aoE-ep-eG4">
+                                        <rect key="frame" x="20" y="20" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="45" id="8n5-mO-F6e"/>
+                                            <constraint firstAttribute="width" constant="45" id="ts2-hb-kbD"/>
+                                        </constraints>
+                                        <state key="normal" image="Close"/>
+                                        <connections>
+                                            <action selector="backAction:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="RiG-a9-YV5"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sg0-2x-dd8">
+                                        <rect key="frame" x="535" y="20" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="45" id="f6Q-JH-geB"/>
+                                            <constraint firstAttribute="height" constant="45" id="ghv-l8-g4q"/>
+                                        </constraints>
+                                        <state key="normal" image="Done"/>
+                                        <connections>
+                                            <action selector="doneAction:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="6WL-S4-HEu"/>
+                                        </connections>
+                                    </button>
+                                    <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="SmoothLineView">
+                                        <rect key="frame" x="10" y="-22" width="580" height="580"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="gsE-tO-utS" secondAttribute="height" multiplier="1:1" id="kkD-4U-lx3"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Sg0-2x-dd8" secondAttribute="trailing" constant="20" id="4tZ-v4-zXN"/>
+                                    <constraint firstItem="aoE-ep-eG4" firstAttribute="leading" secondItem="Zh5-Kc-cgB" secondAttribute="leading" constant="20" id="LbJ-8f-Hkt"/>
+                                    <constraint firstItem="gsE-tO-utS" firstAttribute="centerX" secondItem="Zh5-Kc-cgB" secondAttribute="centerX" id="Mqv-WY-qfc"/>
+                                    <constraint firstItem="gsE-tO-utS" firstAttribute="centerY" secondItem="Zh5-Kc-cgB" secondAttribute="centerY" id="Qgz-fb-fNg"/>
+                                    <constraint firstItem="gsE-tO-utS" firstAttribute="leading" secondItem="Zh5-Kc-cgB" secondAttribute="leading" constant="10" id="T0A-Is-vMd"/>
+                                    <constraint firstItem="aoE-ep-eG4" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="top" constant="20" id="kDc-CC-U2Q"/>
+                                    <constraint firstAttribute="trailing" secondItem="gsE-tO-utS" secondAttribute="trailing" constant="10" id="qiS-4Z-mPp"/>
+                                    <constraint firstItem="Sg0-2x-dd8" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="top" constant="20" id="upG-J5-hHk"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="canvasView" destination="gsE-tO-utS" id="rM8-ux-9DF"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2O5-KR-ahB"/>
-                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-65" id="2aF-mt-Qch"/>
-                            <constraint firstAttribute="trailing" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" id="4ZR-oW-lia"/>
-                            <constraint firstItem="kfz-pT-T9E" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="7YK-yN-e74"/>
-                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" constant="64" id="BjL-8L-GdM">
-                                <variation key="heightClass=regular" constant="44"/>
-                            </constraint>
-                            <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="D2c-sh-hZJ"/>
-                            <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leadingMargin" id="K7Z-zC-bbH"/>
-                            <constraint firstAttribute="trailing" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-65" id="ar6-f7-aAk"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="j6L-0H-DI4"/>
-                            <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="pOP-mv-h3f"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" id="yMR-yi-zVW"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-65" id="2hq-Sv-zz0"/>
+                            <constraint firstItem="Zh5-Kc-cgB" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2iG-aV-pcf"/>
+                            <constraint firstItem="Zh5-Kc-cgB" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="7AR-Mg-o4A"/>
+                            <constraint firstItem="lUZ-73-XTC" firstAttribute="centerX" secondItem="bsr-62-H2Z" secondAttribute="centerX" id="Kbb-lh-D4n"/>
+                            <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="OH2-Kx-Zes"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-85" id="OPN-Hz-Lry"/>
+                            <constraint firstAttribute="trailing" secondItem="Zh5-Kc-cgB" secondAttribute="trailing" id="P0g-LX-KCz"/>
+                            <constraint firstAttribute="trailing" secondItem="lUZ-73-XTC" secondAttribute="trailing" id="Syo-s9-93b"/>
+                            <constraint firstItem="lUZ-73-XTC" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="iJH-2z-pYo"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="bottom" id="ioP-Aa-f3A"/>
+                            <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="pxH-kK-tJg"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" id="uJF-q3-FeH"/>
+                            <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="vDl-zL-NFc"/>
+                            <constraint firstItem="lUZ-73-XTC" firstAttribute="centerY" secondItem="bsr-62-H2Z" secondAttribute="centerY" id="z6c-Id-dFf"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="K7Z-zC-bbH"/>
-                                <exclude reference="j6L-0H-DI4"/>
-                                <exclude reference="4ZR-oW-lia"/>
-                                <exclude reference="yMR-yi-zVW"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="s0S-z8-qVz">
                         <barButtonItem key="leftBarButtonItem" image="Back" id="zC7-oX-CRu">
@@ -305,6 +345,8 @@
                     <connections>
                         <outlet property="collectionContainerView" destination="kfz-pT-T9E" id="uYn-cB-lt8"/>
                         <outlet property="collectionView" destination="7vD-hf-90M" id="vgX-qa-46y"/>
+                        <outlet property="drawCanvasView" destination="lUZ-73-XTC" id="MTP-Nw-fI4"/>
+                        <outlet property="drawingCanvasView" destination="Zh5-Kc-cgB" id="cij-Ga-bB5"/>
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
                     </connections>
@@ -373,7 +415,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zyG-J5-bee" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1650" y="1118"/>
+            <point key="canvasLocation" x="2462" y="1069"/>
         </scene>
         <!--Photo Frame Select View Controller-->
         <scene sceneID="hYQ-ZS-nHx">
@@ -583,6 +625,7 @@
         <image name="Album" width="50" height="50"/>
         <image name="Back" width="48" height="48"/>
         <image name="BluetoothIcon" width="181" height="243"/>
+        <image name="Close" width="50" height="50"/>
         <image name="Delete" width="50" height="50"/>
         <image name="Done" width="50" height="50"/>
         <image name="Downloading" width="50" height="50"/>

@@ -25,6 +25,7 @@
 //
 
 #import "SmoothLineView.h"
+#import <UIkit/UIImage.h>
 #import <QuartzCore/QuartzCore.h>
 
 #define DEFAULT_COLOR               [UIColor blackColor]
@@ -91,7 +92,6 @@ CGPoint midPoint(CGPoint p1, CGPoint p2);
   CGContextSetLineCap(context, kCGLineCapRound);
   CGContextSetLineWidth(context, self.lineWidth);
   CGContextSetStrokeColorWithColor(context, self.lineColor.CGColor);
-  
   CGContextStrokePath(context);
   
   self.empty = NO;
@@ -164,8 +164,28 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
   [self setNeedsDisplayInRect:drawBox];
 }
 
+- (void)setHidden:(BOOL)hidden {
+    [super setHidden:hidden];
+    
+    if (hidden == YES) {
+        [self clear];
+    }
+}
+
 
 #pragma mark interface
+
+- (UIImage *)getPathImage {
+    UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:_path];
+    CGRect pathBounds = path.bounds;
+    
+    UIGraphicsBeginImageContext(pathBounds.size);
+    [self drawViewHierarchyInRect:pathBounds afterScreenUpdates:YES];
+    UIImage *pathImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return pathImage;
+}
 
 - (void)clear {
   CGMutablePathRef oldPath = _path;

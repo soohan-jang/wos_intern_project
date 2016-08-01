@@ -15,7 +15,11 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
     XXXIconTypeCustomImage,
 };
 
+@protocol XXXRoundMenuButtonDelegate;
+
 @interface XXXRoundMenuButton : UIControl
+
+@property (nonatomic, weak) id<XXXRoundMenuButtonDelegate> delegate;
 
 /**
  *  center button size ; default is CGSize(50,50)
@@ -30,7 +34,7 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
 /**
  *  default is nil, only used when centerIconType is XXXIconTypeCustomImage
  */
-@property (nonatomic, strong) UIImage* centerIcon;
+@property (nonatomic, strong) UIImage *centerIcon;
 
 
 /**
@@ -41,7 +45,7 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
 /**
  *  main color
  */
-@property (nonatomic, strong) UIColor* mainColor;
+@property (nonatomic, strong) UIColor *mainColor;
 
 /**
  *  config function
@@ -50,12 +54,12 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
  *  @param degree       start degree
  *  @param layoutDegree angle span
  */
-- (void)loadButtonWithIcons:(NSArray<UIImage*>*)icons startDegree:(double)degree layoutDegree:(double)layoutDegree;
+- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree;
 
 /**
  *  click block
  */
-@property (nonatomic, strong) void (^buttonClickBlock) (NSInteger idx);
+//@property (nonatomic, strong) void (^buttonClickBlock) (NSInteger idx);
 
 /**
  *  draw center icon block
@@ -65,6 +69,10 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
 
 @property (nonatomic, assign) BOOL isOpened;
 
+@end
 
+@protocol XXXRoundMenuButtonDelegate <NSObject>
+@required
+- (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index;
 
 @end

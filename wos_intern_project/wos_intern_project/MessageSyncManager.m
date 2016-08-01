@@ -35,14 +35,14 @@
         _messageQueue = [[NSMutableArray alloc] init];
     }
     
-    if ([message[KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
-        DrawingObject *deletedObject = (DrawingObject *)message[KEY_EDITOR_DRAWING_DELETE_DATA];
-        for (DrawingObject *object in _messageQueue) {
-            if ([deletedObject getID] == [object getID]) {
-                [_messageQueue removeObject:object];
-            }
-        }
-    }
+//    if ([message[KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
+//        DrawingObject *deletedObject = (DrawingObject *)message[KEY_EDITOR_DRAWING_DELETE_DATA];
+//        for (DrawingObject *object in _messageQueue) {
+//            if ([deletedObject getID] == [object getID]) {
+//                [_messageQueue removeObject:object];
+//            }
+//        }
+//    }
     
     [_messageQueue addObject:message];
 }

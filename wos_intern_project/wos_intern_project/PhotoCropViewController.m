@@ -59,18 +59,18 @@
 }
 
 - (IBAction)backAction:(id)sender {
-    if (self.delegate != nil) {
-        [self.delegate photoCropViewControllerDidCancel:self];
+    if ([self.delegate respondsToSelector:@selector(cropViewControllerDidCancelled:)]) {
+        [self.delegate cropViewControllerDidCancelled:self];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
 - (IBAction)doneAction:(id)sender {
-    if (self.delegate != nil) {
+    if ([self.delegate respondsToSelector:@selector(cropViewControllerDidFinished:withFullscreenImage:withCroppedImage:)]) {
         self.croppedImage = [self.cropView croppedImage];
         
         if (self.fullscreenImage != nil && self.croppedImage != nil) {
-            [self.delegate photoCropViewController:self didFinishCropImageWithImage:self.fullscreenImage croppedImage:self.croppedImage];
+            [self.delegate cropViewControllerDidFinished:self withFullscreenImage:self.fullscreenImage withCroppedImage:self.croppedImage];
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

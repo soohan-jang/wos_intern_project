@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "ConnectionManager.h"
 
-#import "DrawingObject.h"
-
 @interface MessageSyncManager : NSObject
 
 @property (nonatomic, setter=setMessageQueueEnabled:, getter=isMessageQueueEnabled) BOOL messageQueueEnabled;

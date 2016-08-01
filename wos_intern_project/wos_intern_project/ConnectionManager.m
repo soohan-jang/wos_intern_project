@@ -16,6 +16,7 @@ NSString *const SERVICE_TYPE                                  = @"Co-PhotoEditor
 NSString *const KEY_DATA_TYPE                                 = @"data_type";
 
 /** KEY_DATA_TYPE에 값으로 설정되는 값 **/
+//NSNumber로 설정하면 컴파일 시에 초기화되지 않아서 NSUInteger로 설정하였다.
 NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                  = 100;
 
 NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED         = 200;
@@ -77,9 +78,9 @@ NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK     = @"noti_recv_edit
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT           = @"noti_recv_editor_photo_edit";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED  = @"noti_recv_editor_photo_edit_canceled";
 NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
-//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT     = @"noti_recv_editor_drawing_nsert";
-//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE     = @"noti_recv_editor_drawing_update";
-//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE     = @"noti_recv_editor_drawing_delete";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT       = @"noti_recv_editor_drawing_insert";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE       = @"noti_recv_editor_drawing_update";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE       = @"noti_recv_editor_drawing_delete";
 NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_editor_disconnected";
 
 @implementation ConnectionManager
@@ -225,13 +226,25 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
             break;
+//        case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
+//        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE:
+//        case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
+//            if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
+//                //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
+//                [[MessageSyncManager sharedInstance] putMessage:receivedData];
+//            }
+//            break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil userInfo:receivedData];
+            NSLog(@"Received Insert Drawing Object");
+            break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil userInfo:receivedData];
+            NSLog(@"Received Update Drawing Object");
+            break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
-            if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
-                //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
-                [[MessageSyncManager sharedInstance] putMessage:receivedData];
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil userInfo:receivedData];
+            NSLog(@"Received Delete Drawing Object");
             break;
         case VALUE_DATA_TYPE_EDITOR_DICONNECTED:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil userInfo:nil];

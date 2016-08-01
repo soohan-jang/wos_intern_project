@@ -7,9 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WMPhotoDecorateObject.h"
+#import "WMPhotoDecorateImageObject.h"
+#import "WMPhotoDecorateTextObject.h"
 
 @interface DrawingManager : NSObject
 
-@property (nonatomic, strong) NSMutableArray *drawingObjectArray;
+- (void)addDecorateObject:(WMPhotoDecorateObject *)object;
+- (void)removeDecorateObjectAtIndex:(NSInteger)index;
+- (UIView *)getDecorateObjectAtIndex:(NSInteger)index;
+
+- (void)drawOnCanvasView:(UIView *)canvasView;
+- (void)sortDecorateObject;
+- (BOOL)isEmpty;
 
 @end

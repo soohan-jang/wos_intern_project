@@ -31,9 +31,9 @@
 
 @end
 
-@protocol PhotoCropViewControllerDelegate
+@protocol PhotoCropViewControllerDelegate <NSObject>
 @required
-- (void)photoCropViewController:(PhotoCropViewController *)controller didFinishCropImageWithImage:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage;
-- (void)photoCropViewControllerDidCancel:(PhotoCropViewController *)controller;
+- (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage;
+- (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller;
 
 @end

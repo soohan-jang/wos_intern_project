@@ -10,10 +10,10 @@
 
 @interface XXX_centerButton : UIButton
 
-@property (nonatomic, strong) UIColor* normalColor;
-@property (nonatomic, strong) UIColor* selectedColor;
-@property (nonatomic, strong) UIImage* centerIcon;
-@property (nonatomic, strong) UIImageView* centerIconView;
+@property (nonatomic, strong) UIColor *normalColor;
+@property (nonatomic, strong) UIColor *selectedColor;
+@property (nonatomic, strong) UIImage *centerIcon;
+@property (nonatomic, strong) UIImageView *centerIconView;
 
 @property (nonatomic, assign) XXXIconType type;
 - (instancetype)initWithFrame:(CGRect)frame type:(XXXIconType)type;
@@ -21,35 +21,33 @@
 @end
 
 @interface XXX_roundCircle : UIView
-@property (nonatomic, strong) UIColor* circleColor;
+
+@property (nonatomic, strong) UIColor *circleColor;
 - (void)clean;
-- (void)animatedLoadIcons:(NSArray<UIImage*>*)icons start:(CGFloat)start layoutDegree:(CGFloat)layoutDegree oneByOne:(BOOL)onebyone;
+- (void)animatedLoadIcons:(NSArray<UIImage *> *)icons start:(CGFloat)start layoutDegree:(CGFloat)layoutDegree oneByOne:(BOOL)onebyone;
+
 @end
 
 @interface XXXRoundMenuButton ()
-{
-    
-}
-@property (nonatomic, strong) XXX_centerButton * centerButton;
-@property (nonatomic, strong) XXX_roundCircle * roundCircle;
+
+@property (nonatomic, strong) XXX_centerButton *centerButton;
+@property (nonatomic, strong) XXX_roundCircle *roundCircle;
 
 - (void)drawCentenIconInRect:(CGRect)rect state:(UIControlState)state;
 
 @property (nonatomic, assign) CGFloat startDegree;
 @property (nonatomic, assign) CGFloat layoutDegree;
-@property (nonatomic, strong) NSMutableArray* icons;
-
+@property (nonatomic, strong) NSMutableArray *icons;
 
 @end
 
 @implementation XXXRoundMenuButton
 
-- (UIColor*)add_darkerColorWithValue:(CGFloat)value origin:(UIColor*)origin
-{
+- (UIColor *)add_darkerColorWithValue:(CGFloat)value origin:(UIColor *)origin {
     size_t totalComponents = CGColorGetNumberOfComponents(origin.CGColor);
     BOOL isGreyscale = (totalComponents == 2) ? YES : NO;
     
-    CGFloat const * oldComponents = (CGFloat *)CGColorGetComponents(origin.CGColor);
+    CGFloat const *oldComponents = (CGFloat *)CGColorGetComponents(origin.CGColor);
     CGFloat newComponents[4];
     
     CGFloat (^actionBlock)(CGFloat component) = ^CGFloat(CGFloat component) {
@@ -61,15 +59,12 @@
         return newComponent;
     };
     
-    if (isGreyscale)
-    {
+    if (isGreyscale) {
         newComponents[0] = actionBlock(oldComponents[0]);
         newComponents[1] = actionBlock(oldComponents[0]);
         newComponents[2] = actionBlock(oldComponents[0]);
         newComponents[3] = oldComponents[1];
-    }
-    else
-    {
+    } else {
         newComponents[0] = actionBlock(oldComponents[0]);
         newComponents[1] = actionBlock(oldComponents[1]);
         newComponents[2] = actionBlock(oldComponents[2]);
@@ -86,17 +81,14 @@
     return retColor;
 }
 
-
-- (NSMutableArray *)icons
-{
+- (NSMutableArray *)icons {
     if (!_icons) {
         _icons = [NSMutableArray array];
     }
     return _icons;
 }
 
-- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree
-{
+- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree {
     [self.icons removeAllObjects];
     [self.icons addObjectsFromArray:icons];
     
@@ -104,21 +96,18 @@
     self.layoutDegree = layoutDegree;
 }
 
-- (void)drawCentenIconInRect:(CGRect)rect state:(UIControlState)state
-{
+- (void)drawCentenIconInRect:(CGRect)rect state:(UIControlState)state {
     if (self.drawCenterButtonIconBlock) {
-        self.drawCenterButtonIconBlock(rect,state);
+        self.drawCenterButtonIconBlock(rect, state);
     }
 }
 
-- (void)awakeFromNib
-{
+- (void)awakeFromNib {
     self.backgroundColor = [UIColor clearColor];
     [self setup];
 }
-     
-     
-- (instancetype)initWithFrame:(CGRect)frame{
+
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -127,9 +116,8 @@
     return self;
 }
 
-- (void)setup{
-    
-    self.mainColor = [UIColor colorWithRed: 0.95 green: 0.2 blue: 0.39 alpha: 1];
+- (void)setup {
+    self.mainColor = [UIColor colorWithRed:0.95 green:0.2 blue:0.39 alpha:1];
     
     self.jumpOutButtonOnebyOne = NO;
     self.centerIconType = XXXIconTypePlus;
@@ -138,16 +126,14 @@
     [self addSubview:self.centerButton];
 }
 
-- (void)setMainColor:(UIColor *)mainColor
-{
+- (void)setMainColor:(UIColor *)mainColor {
     _mainColor = mainColor;
     self.centerButton.normalColor = mainColor;
     self.centerButton.selectedColor = [self add_darkerColorWithValue:0.2 origin:mainColor];
     self.roundCircle.circleColor = mainColor;
 }
 
-- (XXX_centerButton *)centerButton
-{
+- (XXX_centerButton *)centerButton {
     if (!_centerButton) {
         _centerButton = [[XXX_centerButton alloc] initWithFrame:CGRectMake(0, 0, self.centerButtonSize.width, self.centerButtonSize.height) type:self.centerIconType];
         [_centerButton addTarget:self action:@selector(centerButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -155,9 +141,7 @@
     return _centerButton;
 }
 
-
-- (XXX_roundCircle *)roundCircle
-{
+- (XXX_roundCircle *)roundCircle {
     if (!_roundCircle) {
         _roundCircle = [[XXX_roundCircle alloc] initWithFrame:CGRectZero];
         _roundCircle.tintColor = self.tintColor;
@@ -165,39 +149,33 @@
     return _roundCircle;
 }
 
-- (void)setTintColor:(UIColor *)tintColor
-{
+- (void)setTintColor:(UIColor *)tintColor {
     [super setTintColor:tintColor];
     
     [self.roundCircle setTintColor:tintColor];
 }
 
-- (void)centerButtonClicked:(UIButton*)sender
-{
+- (void)centerButtonClicked:(UIButton *)sender {
     sender.selected = !sender.selected;
 }
 
-- (void)setCenterButtonSize:(CGSize)centerButtonSize
-{
+- (void)setCenterButtonSize:(CGSize)centerButtonSize {
     _centerButtonSize = centerButtonSize;
     
     [self layoutSubviews];
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
     
     self.centerButton.bounds = CGRectMake(0, 0, self.centerButtonSize.width, self.centerButtonSize.height);
     
-    self.centerButton.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
+    self.centerButton.center = CGPointMake(self.frame.size.width / 2, self.frame.size.height / 2);
     
     if (self.selected) {
         
         self.roundCircle.frame = self.bounds;
-    }
-    else
-    {
+    } else {
         self.roundCircle.frame = self.centerButton.frame;
     }
     
@@ -205,19 +183,16 @@
     
 }
 
-- (void)setCenterIcon:(UIImage *)centerIcon
-{
+- (void)setCenterIcon:(UIImage *)centerIcon {
     [self.centerButton setCenterIcon:centerIcon];
     [self.centerButton setNeedsDisplay];
 }
 
-- (UIImage *)centerIcon
-{
+- (UIImage *)centerIcon {
     return [self.centerButton centerIcon];
 }
 
-- (void)setSelected:(BOOL)selected
-{
+- (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     
     if (!selected) {
@@ -232,18 +207,11 @@
                      animations:^{
                          
                          if (selected) {
-                             
                              self.roundCircle.frame = self.bounds;
-                         }
-                         else
-                         {
+                         } else {
                              self.roundCircle.frame = self.centerButton.frame;
-                            
                          }
-                         
                      } completion:^(BOOL finished) {
-                         
-                         
                          [self.roundCircle setNeedsDisplay];
                          
                          if (selected) {
@@ -253,20 +221,21 @@
                      }];
 }
 
-- (void)setCenterIconType:(XXXIconType)centerIconType
-{
+- (void)setCenterIconType:(XXXIconType)centerIconType {
     _centerIconType = centerIconType;
     
     [self.centerButton setType:centerIconType];
 }
 
-- (void)buttonClick:(id)sender
-{
+- (void)buttonClick:(id)sender {
     self.centerButton.selected = NO;
     
-    if (self.buttonClickBlock) {
-        self.buttonClickBlock([sender tag] - 9998);
+    if ([self.delegate respondsToSelector:@selector(xxxRoundMenuButtonDidSelected:WithSelectedIndex:)]) {
+        [self.delegate xxxRoundMenuButtonDidSelected:self WithSelectedIndex:([sender tag] - 9998)];
     }
+//    if (self.buttonClickBlock) {
+//        self.buttonClickBlock([sender tag] - 9998);
+//    }
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -277,9 +246,8 @@
 
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView* view = [super hitTest:point withEvent:event];
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *view = [super hitTest:point withEvent:event];
     
     if (self.isOpened) {
 
@@ -294,12 +262,9 @@
 
 @end
 
-
-
 @implementation XXX_centerButton
 
-- (UIImageView *)centerIconView
-{
+- (UIImageView *)centerIconView {
     if (!_centerIconView) {
         _centerIconView = [[UIImageView alloc] initWithFrame:self.bounds];
         [self addSubview:_centerIconView];
@@ -309,8 +274,7 @@
     return _centerIconView;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -319,8 +283,7 @@
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame type:(XXXIconType)type
-{
+- (instancetype)initWithFrame:(CGRect)frame type:(XXXIconType)type {
     self = [self initWithFrame:frame];
     if (self) {
         self.type = type;
@@ -328,46 +291,41 @@
     return self;
 }
 
-- (void)setType:(XXXIconType)type
-{
+- (void)setType:(XXXIconType)type {
     _type = type;
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     //// Color Declarations
     
-    UIColor* color = self.normalColor;
+    UIColor *color = self.normalColor;
     if (self.highlighted || self.selected) {
         color = self.selectedColor;
     }
     
     //// Oval Drawing
-    UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, rect.size.width, rect.size.height)];
+    UIBezierPath *ovalPath = [UIBezierPath bezierPathWithOvalInRect: CGRectMake(0, 0, rect.size.width, rect.size.height)];
     [color setFill];
     [ovalPath fill];
      self.centerIconView.alpha = 0;
     
     if (self.type == XXXIconTypePlus || self.state == UIControlStateSelected) {
         //// Rectangle Drawing
-        UIBezierPath* rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(15, rect.size.height/2 - 0.5, rect.size.width - 30, 1)];
+        UIBezierPath *rectanglePath = [UIBezierPath bezierPathWithRect: CGRectMake(15, rect.size.height / 2 - 0.5, rect.size.width - 30, 1)];
         [UIColor.whiteColor setFill];
         [rectanglePath fill];
         
         
         //// Rectangle 2 Drawing
-        UIBezierPath* rectangle2Path = [UIBezierPath bezierPathWithRect: CGRectMake(rect.size.width/2 - 0.5, 15, 1, rect.size.height - 30)];
+        UIBezierPath *rectangle2Path = [UIBezierPath bezierPathWithRect: CGRectMake(rect.size.width / 2 - 0.5, 15, 1, rect.size.height - 30)];
         [UIColor.whiteColor setFill];
         [rectangle2Path fill];
-    }
-    else if (self.type == XXXIconTypeUserDraw)
-    {
+    } else if (self.type == XXXIconTypeUserDraw) {
         if ([self.superview respondsToSelector:@selector(drawCentenIconInRect:state:)]) {
             [(id)self.superview drawCentenIconInRect:rect state:self.state];
         }
-    }
-    else if (self.type == XXXIconTypeCustomImage){
+    } else if (self.type == XXXIconTypeCustomImage){
        
         if (self.centerIcon) {
             [self.centerIconView setImage:self.centerIcon];
@@ -377,15 +335,13 @@
     }
 }
 
-- (void)setHighlighted:(BOOL)highlighted
-{
+- (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
     
     [self setNeedsDisplay];
 }
 
-- (void)setSelected:(BOOL)selected
-{
+- (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     
     [self setNeedsDisplay];
@@ -395,7 +351,7 @@
          usingSpringWithDamping:0.6 initialSpringVelocity:10
                         options:UIViewAnimationOptionCurveLinear
                      animations:^{
-                        self.transform = CGAffineTransformMakeRotation(selected?M_PI_2/2:0);
+                        self.transform = CGAffineTransformMakeRotation(selected ? (M_PI_2 / 2) : 0);
                          
                      } completion:^(BOOL finished) {
                          
@@ -410,29 +366,26 @@
 
 @implementation XXX_roundCircle
 
-- (void)clean
-{
+- (void)clean {
     [self.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj removeFromSuperview];
     }];
 }
 
-- (void)buttonClick:(id)sender
-{
+- (void)buttonClick:(id)sender {
     if ([self.superview respondsToSelector:@selector(buttonClick:)]) {
         [(id)self.superview buttonClick:sender];
     }
 }
 
-- (void)animatedLoadIcons:(NSArray<UIImage*>*)icons start:(CGFloat)start layoutDegree:(CGFloat)layoutDegree oneByOne:(BOOL)onebyone
-{
+- (void)animatedLoadIcons:(NSArray<UIImage *> *)icons start:(CGFloat)start layoutDegree:(CGFloat)layoutDegree oneByOne:(BOOL)onebyone {
     [self clean];
     
     CGFloat raduis = self.frame.size.width / 2 - 30;
     
     [icons enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        UIButton* button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
         [button setImage:obj forState:UIControlStateNormal];
         button.tintColor = self.tintColor;
         [self addSubview:button];
@@ -445,14 +398,14 @@
         button.center = self.center;
         
         [UIView animateWithDuration:0.2
-                              delay:onebyone?idx*0.02:0
+                              delay:onebyone ? (idx * 0.02) : 0
              usingSpringWithDamping:0.5
               initialSpringVelocity:5
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
                              button.alpha = 1;
                              button.transform = CGAffineTransformIdentity;
-                             button.center = CGPointMake(self.center.x + raduis * sin(start + layoutDegree/(icons.count-1)*idx) * 0.9f, self.center.y + raduis * cos(start + layoutDegree/(icons.count-1) * idx) * 0.9f);
+                             button.center = CGPointMake(self.center.x + raduis * sin(start + layoutDegree / (icons.count - 1) * idx) * 0.9f, self.center.y + raduis * cos(start + layoutDegree / (icons.count - 1) * idx) * 0.9f);
                          } completion:^(BOOL finished) {
                              
                          }];
@@ -461,8 +414,7 @@
     }];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
@@ -470,17 +422,14 @@
     return self;
 }
 
-- (void)drawRect:(CGRect)rect
-{
+- (void)drawRect:(CGRect)rect {
     //// Color Declarations
-    UIColor* color = self.circleColor;
+    UIColor *color = self.circleColor;
     
     //// Oval Drawing
-    UIBezierPath* ovalPath = [UIBezierPath bezierPathWithOvalInRect: rect];
+    UIBezierPath *ovalPath = [UIBezierPath bezierPathWithOvalInRect:rect];
     [color setFill];
     [ovalPath fill];
 }
-
-
 
 @end
