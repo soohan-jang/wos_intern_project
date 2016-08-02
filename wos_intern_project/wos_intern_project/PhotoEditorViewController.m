@@ -26,24 +26,19 @@
  NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록 해제한다.
  */
 - (void)removeObservers;
-
 - (void)loadPhotoCropViewController;
-
 - (void)reloadData:(NSIndexPath *)indexPath;
 
 /**
  상대방이 사진을 전송할 때 호출되는 함수이다. 상대방이 사진을 보낼 때, 시작되는 시점과 종료되는 시점을 구분하여 로직이 처리된다.
  */
 - (void)receivedPhotoInsert:(NSNotification *)notification;
-
 /**
  상대방이 사진 수신을 종료했음을 알릴 때 호출되는 함수이다.
  */
 - (void)receivedPhotoInsertAck:(NSNotification *)notification;
-
 - (void)receivedPhotoEdit:(NSNotification *)notification;
 - (void)receivedPhotoEditCanceled:(NSNotification *)notification;
-
 /**
  상대방이 사진을 삭제했을 때 호출되는 함수이다.
  */
@@ -161,7 +156,8 @@
     });
 }
 
-/**** CollectionViewController DataSource Methods ****/
+
+#pragma mark - CollectionViewController DataSource Methods
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return [self.cellManager getSectionNumber];
 }
@@ -181,12 +177,14 @@
     return cell;
 }
 
-/**** CollectionViewController Delegate Flowlayout Methods ****/
+
+#pragma mark - CollectionViewController Delegate Flowlayout Methods
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.cellManager getCellSizeWithIndex:indexPath.item withCollectionViewSize:collectionView.frame.size];
 }
 
-/**** SphereMenu Delegate Method ****/
+
+#pragma mark - SphereMenu Delegate Method
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
     BOOL isSendEditCancelMsg = NO;
     
@@ -243,7 +241,8 @@
     self.isMenuAppear = NO;
 }
 
-/**** XXXRoundMenuButton Delegate Method ****/
+
+#pragma mark - XXXRoundMenuButton Delegate Method
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
     //Sticker Menu
     if (index == 0) {
@@ -257,7 +256,8 @@
     }
 }
 
-/**** UIImagePickerController Delegate Methods ****/
+
+#pragma mark - UIImagePickerController Delegate Methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(nonnull NSDictionary<NSString *, id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
         self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
@@ -283,7 +283,8 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
-/**** PhotoCropViewController Delegate Methods ****/
+
+#pragma mark - PhotoCropViewController Delegate Methods
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
@@ -311,7 +312,8 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
-/**** PhotoDrawObjectDisplayView Delegate ****/
+
+#pragma mark - PhotoDrawObjectDisplayView Delegate Methods
 - (void)decoViewDidMovedWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
     [self.decoObjectManager updateDecorateObjectWithId:identifier WithOriginX:originX WithOriginY:originY];
     
@@ -353,7 +355,8 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
-/**** PhotoDrawPenView Delegate ****/
+
+#pragma mark - PhotoDrawPenView Delegate Methods
 - (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
     [drawPenView setHidden:YES];
     
@@ -375,7 +378,8 @@
     [drawPenView setHidden:YES];
 }
 
-/**** UIAlertViewDelegate Methods. ****/
+
+#pragma mark - UIAlertViewDelegate Methods
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_NOT_SAVE) {
         if (buttonIndex == 1) {
@@ -422,8 +426,8 @@
     }
 }
 
-/*** CollectionViewCell Selected Method ****/
 
+#pragma mark - CollectionViewCell Selected Method
 - (void)selectedCellAction:(NSNotification *)notification {
     if (!self.isMenuAppear) {
         self.isMenuAppear = YES;
@@ -476,7 +480,8 @@
     }
 }
 
-/**** Session Communication Methods ****/
+
+#pragma mark - Session Communication Methods
 - (void)receivedPhotoInsert:(NSNotification *)notification {
     NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
     NSString *dataType = (NSString *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA_TYPE];

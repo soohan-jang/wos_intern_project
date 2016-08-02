@@ -90,43 +90,6 @@
     
     return nil;
 }
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
-//    if (![self isEmpty]) {
-//        [self.decorateObjectArray[index] moveObject:CGPointMake(originX, originY)];
-//    }
-//}
-//
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
-//    if (![self isEmpty]) {
-//        [self.decorateObjectArray[index] resizeObject:CGSizeMake(width, height)];
-//    }
-//}
-//
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithAngle:(CGFloat)angle {
-//    if (![self isEmpty]) {
-//        [self.decorateObjectArray[index] rotateObject:angle];
-//    }
-//}
-//
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithZOrder:(NSInteger)zOrder {
-//    if (![self isEmpty]) {
-//        
-//    }
-//}
-//
-//- (void)deleteDecorateObjectWithIndex:(NSInteger)index {
-//    if (![self isEmpty]) {
-//        [self.decorateObjectArray removeObjectAtIndex:index];
-//    }
-//}
-//
-//- (WMPhotoDecorateObject *)getDecorateObjectWithIndex:(NSInteger)index {
-//    if (![self isEmpty]) {
-//        return self.decorateObjectArray[index];
-//    }
-//    
-//    return nil;
-//}
 
 //내부에 존재하는 deco object를 view로 변환하여 전달한다.
 - (NSArray *)getDecorateViewArray {

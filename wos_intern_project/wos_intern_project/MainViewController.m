@@ -147,6 +147,12 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     return YES;
 }
 
+- (void)loadPhotoFrameViewController {
+    [[ConnectionManager sharedInstance] stopAdvertise];
+    [self removeObservers];
+    [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
+}
+
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionConnected:) name:NOTIFICATION_PEER_CONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_PEER_DISCONNECTED object:nil];
@@ -157,8 +163,20 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
 
-/**** MCBrowserViewControllerDelegate Methods. ****/
+- (void)doneProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_connected", nil) delay:1];
+    }
+}
 
+- (void)rejectProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
+    }
+}
+
+
+#pragma mark - MCBrowserViewControllerDelegate Methods
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
@@ -171,8 +189,8 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[ConnectionManager sharedInstance] disconnectSession];
 }
 
-/**** MCNearbyServiceAdvertiserDelegate Methods. ****/
 
+#pragma mark - MCNearbyServiceAdvertiserDelegate Methods
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
     if (self.invitationHandlerArray != nil) {
         self.invitationHandlerArray = nil;
@@ -183,8 +201,8 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [alertView show];
 }
 
-/**** UIAlertViewDelegate Methods. ****/
 
+#pragma mark UIAlertViewDelegate Methods
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     //Accept
     if (buttonIndex == 1) {
@@ -200,32 +218,12 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     }
 }
 
-/**** CBCentralManagerDelegate Methods. ****/
 
+#pragma mark - CBCentralManagerDelegate Methods
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central { /** Do nothing... **/ }
 
-/**** PerformSelector Methods. ****/
 
-- (void)doneProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_connected", nil) delay:1];
-    }
-}
-
-- (void)rejectProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
-    }
-}
-
-- (void)loadPhotoFrameViewController {
-    [[ConnectionManager sharedInstance] stopAdvertise];
-    [self removeObservers];
-    [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
-}
-
-/**** Session Communication Methods. ****/
-
+#pragma mark - Session Commnication Methods
 - (void)receivedSessionConnected:(NSNotification *)notification {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
     NSDictionary *screenSizeDictionary =

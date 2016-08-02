@@ -179,8 +179,8 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
     [self.ownSession disconnect];
 }
 
-/**** MCSessionDelegate Methods. ****/
 
+#pragma mark - MCSessionDelegate Methods
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     //연결이 완료되면 연결된 peerId를 배열에 저장하고, 상대방에게 자신의 화면크기 정보를 보낸다.
     if (state == MCSessionStateConnected) {

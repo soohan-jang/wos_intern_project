@@ -22,13 +22,6 @@
 - (void)deleteDecorateObjectWithId:(NSString *)identifier;
 - (WMPhotoDecorateObject *)getDecorateObjectWithId:(NSString *)identifier;
 
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithAngle:(CGFloat)angle;
-//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithZOrder:(NSInteger)zOrder;
-//- (void)deleteDecorateObjectWithIndex:(NSInteger)index;
-//- (WMPhotoDecorateObject *)getDecorateObjectWithIndex:(NSInteger)index;
-
 - (NSArray *)getDecorateViewArray;
 
 - (void)sortDecorateObject;

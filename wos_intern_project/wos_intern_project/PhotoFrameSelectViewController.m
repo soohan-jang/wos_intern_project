@@ -115,6 +115,10 @@
     self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
 }
 
+- (void)loadPhotoEditorViewController {
+    [self performSegueWithIdentifier:@"moveToPhotoEditor" sender:self];
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
@@ -136,8 +140,35 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
 }
 
-/**** UIAlertViewDelegate Methods. ****/
+- (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell {
+    if (prevCell != nil) {
+        [prevCell changeFrameImage];
+    }
+    
+    if (currentCell != nil) {
+        [currentCell changeFrameImage];
+    }
+    
+    if (self.ownSelectedFrameIndex != nil && self.connectedPeerSelectedFrameIndex != nil && self.ownSelectedFrameIndex.item == self.connectedPeerSelectedFrameIndex.item) {
+        self.doneButton.enabled = YES;
+    } else {
+        self.doneButton.enabled = NO;
+    }
+}
 
+- (void)declineProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
+    }
+}
+
+- (void)acceptProgress {
+    if (!self.progressView.isHidden) {
+        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_confirmed", nil) delay:1];
+    }
+}
+
+#pragma mark - UIAlertViewDelegate Methods
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_DISCONNECT) {
         if (buttonIndex == 1) {
@@ -184,8 +215,8 @@
     }
 }
 
-/**** CollectionViewController DataSource Methods ****/
 
+#pragma mark - CollectionViewController DataSource Methods
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -253,8 +284,8 @@
     }
 }
 
-/**** CollectionViewController Delegate Flowlayout Methods ****/
 
+#pragma mark - CollectionViewController Delegate Flowlayout Methods
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     //한 라인에 셀 3개를 배치한다. 따라서 셀 간의 간격은 2곳이 생긴다.
     CGFloat cellBetweenSpace = 20.0f * 2.0f;
@@ -274,41 +305,8 @@
     return UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
 
-/*** Perform Selector Methods ****/
-- (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell {
-    if (prevCell != nil) {
-        [prevCell changeFrameImage];
-    }
-    
-    if (currentCell != nil) {
-        [currentCell changeFrameImage];
-    }
-    
-    if (self.ownSelectedFrameIndex != nil && self.connectedPeerSelectedFrameIndex != nil && self.ownSelectedFrameIndex.item == self.connectedPeerSelectedFrameIndex.item) {
-        self.doneButton.enabled = YES;
-    } else {
-        self.doneButton.enabled = NO;
-    }
-}
 
-- (void)declineProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:1 cancel:YES];
-    }
-}
-
-- (void)acceptProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_confirmed", nil) delay:1];
-    }
-}
-
-- (void)loadPhotoEditorViewController {
-    [self performSegueWithIdentifier:@"moveToPhotoEditor" sender:self];
-}
-
-/*** Session Communication Methods ****/
-
+#pragma mark - Session Communication Methods
 - (void)sendSelectFrameChanged {
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
                                KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};

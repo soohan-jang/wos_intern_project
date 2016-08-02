@@ -84,12 +84,12 @@
 
 - (void)doneProgress {
     if (!self.progressView.isHidden) {
-//        [self.progressView doneProgressWithTitle:@"불러오는 중..." delay:1];
         [self.progressView dismissProgress];
     }
 }
 
-/**** UIAlertView Delegate Methods ****/
+
+#pragma  mark - UIAlertView Delegate Methods
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
 }
