@@ -74,37 +74,37 @@ NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_Y               = @"drawing_upda
 NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH         = @"drawing_update_resized_width";;
 NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT        = @"drawing_update_resized_height";
 NSString *const KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE         = @"drawing_update_rotated_angle";
-NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER               = @"drawing_update_z_order";
+//NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER               = @"drawing_update_z_order";
 NSString *const KEY_EDITOR_DRAWING_DELETE_ID                    = @"drawing_delete_id";
 
-/** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_PEER_CONNECTED                     = @"noti_peer_connected";
-NSString *const NOTIFICATION_PEER_DISCONNECTED                  = @"noti_peer_disconnected";
-
-/** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_SCREEN_SIZE                   = @"noti_recv_screen_size";
-
-/** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED          = @"noti_recv_photo_frame_selected";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM           = @"noti_recv_photo_frame_confirm";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK       = @"noti_recv_photo_frame_confirm_ack";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED      = @"noti_recv_photo_frame_disconnected";
-
-/** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT           = @"noti_recv_editor_photo_insert";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK       = @"noti_recv_editor_photo_insert_ack";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT             = @"noti_recv_editor_photo_edit";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED    = @"noti_recv_editor_photo_edit_canceled";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE           = @"noti_recv_editor_photo_delete";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT           = @"noti_recv_editor_drawing_edit";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL    = @"noti_recv_editor_drawing_edit_cancel";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT         = @"noti_recv_editor_drawing_insert";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED   = @"noti_recv_editor_drawing_update_moved";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED = @"noti_recv_editor_drawing_update_resized";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED = @"noti_recv_editor_drawing_update_rotated";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER = @"noti_recv_editor_drawing_update_z_order";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE         = @"noti_recv_editor_drawing_delete";
-NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_editor_disconnected";
+///** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
+//NSString *const NOTIFICATION_PEER_CONNECTED                     = @"noti_peer_connected";
+//NSString *const NOTIFICATION_PEER_DISCONNECTED                  = @"noti_peer_disconnected";
+//
+///** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
+//NSString *const NOTIFICATION_RECV_SCREEN_SIZE                   = @"noti_recv_screen_size";
+//
+///** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
+//NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED          = @"noti_recv_photo_frame_selected";
+//NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM           = @"noti_recv_photo_frame_confirm";
+//NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK       = @"noti_recv_photo_frame_confirm_ack";
+//NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED      = @"noti_recv_photo_frame_disconnected";
+//
+///** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
+//NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT           = @"noti_recv_editor_photo_insert";
+//NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK       = @"noti_recv_editor_photo_insert_ack";
+//NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT             = @"noti_recv_editor_photo_edit";
+//NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED    = @"noti_recv_editor_photo_edit_canceled";
+//NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE           = @"noti_recv_editor_photo_delete";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT           = @"noti_recv_editor_drawing_edit";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL    = @"noti_recv_editor_drawing_edit_cancel";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT         = @"noti_recv_editor_drawing_insert";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED   = @"noti_recv_editor_drawing_update_moved";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED = @"noti_recv_editor_drawing_update_resized";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED = @"noti_recv_editor_drawing_update_rotated";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER = @"noti_recv_editor_drawing_update_z_order";
+//NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE         = @"noti_recv_editor_drawing_delete";
+//NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_editor_disconnected";
 
 @implementation ConnectionManager
 
@@ -181,13 +181,19 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
 
 
 #pragma mark - MCSessionDelegate Methods
+
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     //연결이 완료되면 연결된 peerId를 배열에 저장하고, 상대방에게 자신의 화면크기 정보를 보낸다.
     if (state == MCSessionStateConnected) {
         NSLog(@"Session Connected");
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PEER_CONNECTED object:nil];
+        if ([self.delegate respondsToSelector:@selector(receivedPeerConnected)]) {
+            [self.delegate receivedPeerConnected];
+        }
     } else if (state == MCSessionStateNotConnected) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PEER_DISCONNECTED object:nil];
+        NSLog(@"Session Disconnected");
+        if ([self.delegate respondsToSelector:@selector(receivedPeerDisconnected)]) {
+            [self.delegate receivedPeerDisconnected];
+        }
     }
 }
 
@@ -198,11 +204,12 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
     
     switch (dataType) {
         case VALUE_DATA_TYPE_SCREEN_SIZE:
+            NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
             connectedPeerScreenWidth = receivedData[KEY_SCREEN_SIZE_WIDTH];
             connectedPeerScreenHeight = receivedData[KEY_SCREEN_SIZE_HEIGHT];
-            NSLog(@"Received Screen Size : width(%f), height(%f)", [connectedPeerScreenWidth floatValue], [connectedPeerScreenHeight floatValue]);
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED:
+            NSLog(@"Received Selected Frame Index");
             if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
                 //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
                 //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
@@ -216,74 +223,110 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
 
                 }
             } else {
-                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil userInfo:receivedData];
+                if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameSelected:)]) {
+                    if ([receivedData[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
+                        [self.delegate receivedPhotoFrameSelected:nil];
+                    } else {
+                        [self.delegate receivedPhotoFrameSelected:receivedData[KEY_PHOTO_FRAME_SELECTED]];
+                    }
+                }
             }
-            
-            NSLog(@"Received Selected Frame Index");
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil userInfo:nil];
             NSLog(@"Received Confirm Frame Select");
+            if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameRequestConfirm)]) {
+                [self.delegate receivedPhotoFrameRequestConfirm];
+            }
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil userInfo:receivedData];
             NSLog(@"Received Confirm Ack Frame Select");
+            if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameConfirmAck:)]) {
+                [self.delegate receivedPhotoFrameConfirmAck:[receivedData[KEY_PHOTO_FRAME_CONFIRM_ACK] boolValue]];
+            }
             break;
         case VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil userInfo:nil];
             NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
-            break;
-        case VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil userInfo:receivedData];
-            NSLog(@"Received Insert Photo Ack");
+            if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameDisconnected)]) {
+                [self.delegate receivedPhotoFrameDisconnected];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil userInfo:receivedData];
             NSLog(@"Received Edit Photo");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoEditing:)]) {
+                [self.delegate receivedEditorPhotoEditing:[receivedData[KEY_EDITOR_PHOTO_EDIT_INDEX] integerValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil userInfo:receivedData];
             NSLog(@"Received Edit Photo Canceled");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoEditingCancelled:)]) {
+                [self.delegate receivedEditorPhotoEditingCancelled:[receivedData[KEY_EDITOR_PHOTO_EDIT_INDEX] integerValue]];
+            }
+            break;
+        case VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK:
+            NSLog(@"Received Insert Photo Ack");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsertAck:WithAck:)]) {
+                [self.delegate receivedEditorPhotoInsertAck:[receivedData[KEY_EDITOR_PHOTO_INSERT_INDEX] integerValue] WithAck:[receivedData[KEY_EDITOR_PHOTO_INSERT_ACK] boolValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoDelete:)]) {
+                [self.delegate receivedEditorPhotoDelete:[receivedData[KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_EDIT object:nil userInfo:receivedData];
             NSLog(@"Received Edit Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectEditing:)]) {
+                [self.delegate receivedEditorDecorateObjectEditing:receivedData[KEY_EDITOR_DRAWING_EDIT_ID]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL object:nil userInfo:receivedData];
             NSLog(@"Received Edit Cancel Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectEditCancelled:)]) {
+                [self.delegate receivedEditorDecorateObjectEditCancelled:receivedData[KEY_EDITOR_DRAWING_EDIT_ID]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil userInfo:receivedData];
             NSLog(@"Received Insert Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectInsert:WithTimestamp:)]) {
+                [self.delegate receivedEditorDecorateObjectInsert:receivedData[KEY_EDITOR_DRAWING_INSERT_DATA] WithTimestamp:receivedData[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED object:nil userInfo:receivedData];
             NSLog(@"Received Update Moved Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectMoved:WithOriginX:WithOriginY:)]) {
+                [self.delegate receivedEditorDecorateObjectMoved:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithOriginX:[receivedData[KEY_EDITOR_DRAWING_UPDATE_MOVED_X] floatValue] WithOriginY:[receivedData[KEY_EDITOR_DRAWING_UPDATE_MOVED_Y] floatValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED object:nil userInfo:receivedData];
             NSLog(@"Received Update Resized Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectResized:WithWidth:WithHeight:)]) {
+                [self.delegate receivedEditorDecorateObjectResized:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithWidth:[receivedData[KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH] floatValue] WithHeight:[receivedData[KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT] floatValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED object:nil userInfo:receivedData];
             NSLog(@"Received Update Rotated Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectRotated:WithAngle:)]) {
+                [self.delegate receivedEditorDecorateObjectRotated:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithAngle:[receivedData[KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE] floatValue]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_Z_ORDER:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER object:nil userInfo:receivedData];
             NSLog(@"Received Update Z Order Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectZOrderChanged:)]) {
+                [self.delegate receivedEditorDecorateObjectZOrderChanged:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Drawing Object");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectDelete:)]) {
+                [self.delegate receivedEditorDecorateObjectDelete:receivedData[KEY_EDITOR_DRAWING_DELETE_ID]];
+            }
             break;
         case VALUE_DATA_TYPE_EDITOR_DICONNECTED:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil userInfo:nil];
             NSLog(@"Received Session Disconnected at PhotoEditorViewController");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorDisconnected)]) {
+                [self.delegate receivedEditorDisconnected];
+            }
             break;
     }
 }
@@ -293,11 +336,10 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
     
     if (array != nil && array.count == 2) {
         if ([array[1] isEqualToString:@"_cropped"]) {
-            NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
-                                           KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
-            
             NSLog(@"Receive Start Insert Photo");
+            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
+                [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:nil];
+            }
         }
     }
 }
@@ -306,19 +348,17 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_ed
     NSArray *array = [resourceName componentsSeparatedByString:@"+"];
     
     if (array != nil && array.count == 2) {
-        NSDictionary *receivedData = @{KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue]),
-                                       KEY_EDITOR_PHOTO_INSERT_DATA_TYPE: array[1],
-                                       KEY_EDITOR_PHOTO_INSERT_DATA: localURL};
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil userInfo:receivedData];
+        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
+            [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:localURL];
+        }
         
         if ([array[1] isEqualToString:@"_fullscreen"]) {
+            NSLog(@"Receive Finish Insert Photo");
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
                                        KEY_EDITOR_PHOTO_INSERT_ACK: @YES,
                                        KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue])};
             
             [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-            
-            NSLog(@"Receive Finish Insert Photo");
         }
     }
 }

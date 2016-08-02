@@ -85,7 +85,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
     }
 }
 
-- (void)updateDecoViewWithId:(NSString *)identifier WithZOrder:(NSInteger)changeZOrder {
+- (void)updateDecoViewZOrderWithId:(NSString *)identifier {
 //    if (self.subviews.count > 0) {
 //        NSMutableArray *subViews = [self.subviews mutableCopy];
 //        

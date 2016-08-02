@@ -24,7 +24,7 @@ extern NSInteger const DECO_VIEW_Z_ORDER_DOWN;
 - (void)updateDecoViewWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
 - (void)updateDecoViewWithId:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
 - (void)updateDecoViewWithId:(NSString *)identifier WithAngle:(CGFloat)angle;
-- (void)updateDecoViewWithId:(NSString *)identifier WithZOrder:(NSInteger)changeZOrder;
+- (void)updateDecoViewZOrderWithId:(NSString *)identifier;
 - (void)deleteDecoViewWithId:(NSString *)identifier;
 
 - (void)drawDecoViews:(NSArray *)decoViews;
@@ -38,6 +38,7 @@ extern NSInteger const DECO_VIEW_Z_ORDER_DOWN;
 - (void)decoViewDidMovedWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
 - (void)decoViewDidResizedWithId:(NSString *)identifier WithResizedWidth:(CGFloat)width WithResizedHeight:(CGFloat)height;
 - (void)decoViewDidRotatedWithId:(NSString *)identifier WithRotatedAngle:(CGFloat)angle;
+- (void)decoViewDidChangedZOrderWithId:(NSString *)identifier;
 - (void)decoViewDidDeletedWithId:(NSString *)identifier;
 
 @end

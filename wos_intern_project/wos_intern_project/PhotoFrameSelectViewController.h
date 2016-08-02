@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, PhotoFrameSelectAlertType) {
     ALERT_FRAME_CONFIRM = 2
 };
 
-@interface PhotoFrameSelectViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate>
+@interface PhotoFrameSelectViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate, ConnectionManagerDelegate>
 
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;

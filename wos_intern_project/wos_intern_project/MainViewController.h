@@ -17,7 +17,7 @@
 
 extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
 
-@interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, CBCentralManagerDelegate>
+@interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, CBCentralManagerDelegate, ConnectionManagerDelegate>
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *albumButton;
 

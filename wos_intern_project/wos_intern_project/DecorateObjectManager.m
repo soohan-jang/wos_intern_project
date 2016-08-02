@@ -57,7 +57,7 @@
     }
 }
 
-- (void)updateDecorateObjectWithId:(NSString *)identifier WithZOrder:(NSInteger)zOrder {
+- (void)updateDecorateObjectZOrderWithId:(NSString *)identifier {
     if (![self isEmpty]) {
         for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
             if ([[decoObject getID] isEqualToString:identifier]) {

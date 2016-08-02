@@ -29,30 +29,6 @@
 - (void)loadPhotoCropViewController;
 - (void)reloadData:(NSIndexPath *)indexPath;
 
-/**
- 상대방이 사진을 전송할 때 호출되는 함수이다. 상대방이 사진을 보낼 때, 시작되는 시점과 종료되는 시점을 구분하여 로직이 처리된다.
- */
-- (void)receivedPhotoInsert:(NSNotification *)notification;
-/**
- 상대방이 사진 수신을 종료했음을 알릴 때 호출되는 함수이다.
- */
-- (void)receivedPhotoInsertAck:(NSNotification *)notification;
-- (void)receivedPhotoEdit:(NSNotification *)notification;
-- (void)receivedPhotoEditCanceled:(NSNotification *)notification;
-/**
- 상대방이 사진을 삭제했을 때 호출되는 함수이다.
- */
-- (void)receivedPhotoDelete:(NSNotification *)notification;
-
-- (void)receivedDrawingObjectInsert:(NSNotification *)notification;
-- (void)receivedDrawingObjectUpdateMoved:(NSNotification *)notification;
-- (void)receivedDrawingObjectUpdateResized:(NSNotification *)notification;
-- (void)receivedDrawingObjectUpdateRotated:(NSNotification *)notification;
-- (void)receivedDrawingObjectUpdateZOrder:(NSNotification *)notification;
-- (void)receivedDrawingObjectDelete:(NSNotification *)notification;
-
-- (void)receivedSessionDisconnected:(NSNotification *)notification;
-
 @end
 
 @implementation PhotoEditorViewController
@@ -77,6 +53,8 @@
     /**** End ****/
     
     self.isMenuAppear = NO;
+    
+    [ConnectionManager sharedInstance].delegate = self;
     [self addObservers];
 }
 
@@ -118,32 +96,10 @@
 
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedCellAction:) name:NOTIFICATION_SELECTED_CELL object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsert:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoInsertAck:) name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoEdit:) name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoEditCanceled:) name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedPhotoDelete:) name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectInsert:) name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectUpdateMoved:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectUpdateResized:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectUpdateRotated:) name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedDrawingObjectDelete:) name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
 }
 
 - (void)removeObservers {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SELECTED_CELL object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_EDITOR_DISCONNECTED object:nil];
 }
 
 - (void)setPhotoFrameNumber:(NSInteger)frameNumber {
@@ -158,6 +114,7 @@
 
 
 #pragma mark - CollectionViewController DataSource Methods
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return [self.cellManager getSectionNumber];
 }
@@ -179,12 +136,14 @@
 
 
 #pragma mark - CollectionViewController Delegate Flowlayout Methods
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return [self.cellManager getCellSizeWithIndex:indexPath.item withCollectionViewSize:collectionView.frame.size];
 }
 
 
 #pragma mark - SphereMenu Delegate Method
+
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
     BOOL isSendEditCancelMsg = NO;
     
@@ -243,6 +202,7 @@
 
 
 #pragma mark - XXXRoundMenuButton Delegate Method
+
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
     //Sticker Menu
     if (index == 0) {
@@ -258,6 +218,7 @@
 
 
 #pragma mark - UIImagePickerController Delegate Methods
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(nonnull NSDictionary<NSString *, id> *)info {
     [picker dismissViewControllerAnimated:YES completion:^{
         self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
@@ -285,6 +246,7 @@
 
 
 #pragma mark - PhotoCropViewController Delegate Methods
+
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
@@ -314,6 +276,7 @@
 
 
 #pragma mark - PhotoDrawObjectDisplayView Delegate Methods
+
 - (void)decoViewDidMovedWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
     [self.decoObjectManager updateDecorateObjectWithId:identifier WithOriginX:originX WithOriginY:originY];
     
@@ -355,8 +318,13 @@
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
+- (void)decoViewDidChangedZOrderWithId:(NSString *)identifier {
+    
+}
+
 
 #pragma mark - PhotoDrawPenView Delegate Methods
+
 - (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
     [drawPenView setHidden:YES];
     
@@ -380,6 +348,7 @@
 
 
 #pragma mark - UIAlertViewDelegate Methods
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_NOT_SAVE) {
         if (buttonIndex == 1) {
@@ -387,6 +356,7 @@
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [ConnectionManager sharedInstance].delegate = nil;
                 [self removeObservers];
                 
                 //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
@@ -403,6 +373,7 @@
             });
         }
     } else if (alertView.tag == ALERT_CONTINUE) {
+        [ConnectionManager sharedInstance].delegate = nil;
         [self removeObservers];
         
         //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
@@ -428,6 +399,7 @@
 
 
 #pragma mark - CollectionViewCell Selected Method
+
 - (void)selectedCellAction:(NSNotification *)notification {
     if (!self.isMenuAppear) {
         self.isMenuAppear = YES;
@@ -481,73 +453,60 @@
 }
 
 
-#pragma mark - Session Communication Methods
-- (void)receivedPhotoInsert:(NSNotification *)notification {
-    NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
-    NSString *dataType = (NSString *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA_TYPE];
-    NSURL *dataUrl = (NSURL *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_DATA];
-    
+#pragma mark - ConnectionManagerDelegate Methods
+
+- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex WithType:(NSString *)type WithURL:(NSURL *)url {
     //Data Receive Started.
-    if (dataUrl == nil) {
-        [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_DOWNLOADING];
-    //Data Receive Finished.
+    if (url == nil) {
+        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_DOWNLOADING];
+        //Data Receive Finished.
     } else {
-        if ([dataType isEqualToString:@"_cropped"]) {
-            UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
-            [self.cellManager setCellCroppedImageAtIndex:item.integerValue withCroppedImage:croppedImage];
-        } else if ([dataType isEqualToString:@"_fullscreen"]) {
-            UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:dataUrl]];
-            [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
-            [self.cellManager setCellFullscreenImageAtIndex:item.integerValue withFullscreenImage:fullscreenImage];
+        if ([type isEqualToString:@"_cropped"]) {
+            UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+            [self.cellManager setCellCroppedImageAtIndex:targetFrameIndex withCroppedImage:croppedImage];
+        } else if ([type isEqualToString:@"_fullscreen"]) {
+            UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+            [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+            [self.cellManager setCellFullscreenImageAtIndex:targetFrameIndex withFullscreenImage:fullscreenImage];
         }
     }
     
-    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+    [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedPhotoInsertAck:(NSNotification *)notification {
-    NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_INDEX];
-//    NSNumber *receivedAck = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_INSERT_ACK];
-//    if ([receivedAck boolValue]) {
-//    }
-//    else {
-//    }
-    
-    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
-    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex WithAck:(BOOL)insertAck {
+    if (insertAck) {
+        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+        [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
+    } else {
+        //error
+    }
 }
 
-- (void)receivedPhotoEdit:(NSNotification *)notification {
-    NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
-    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_EDITING];
-    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+- (void)receivedEditorPhotoEditing:(NSInteger)targetFrameIndex {
+    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_EDITING];
+    [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedPhotoEditCanceled:(NSNotification *)notification {
-    NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_EDIT_INDEX];
-    [self.cellManager setCellStateAtIndex:item.integerValue withState:CELL_STATE_NONE];
-    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+- (void)receivedEditorPhotoEditingCancelled:(NSInteger)targetFrameIndex {
+    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+    [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedPhotoDelete:(NSNotification *)notification {
-    NSNumber *item = (NSNumber *)notification.userInfo[KEY_EDITOR_PHOTO_DELETE_INDEX];
-    [self.cellManager clearCellDataAtIndex:item.integerValue];
-    [self reloadData:[NSIndexPath indexPathForItem:item.integerValue inSection:0]];
+- (void)receivedEditorPhotoDelete:(NSInteger)targetFrameIndex {
+    [self.cellManager clearCellDataAtIndex:targetFrameIndex];
+    [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedDrawingObjectInsert:(NSNotification *)notification {
+- (void)receivedEditorDecorateObjectInsert:(id)insertData WithTimestamp:(NSNumber *)timestamp {
     WMPhotoDecorateObject *decoObject;
     
-    if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[UIImage class]]) {
+    if ([insertData isKindOfClass:[UIImage class]]) {
         NSLog(@"I'm Image.");
-        UIImage *image = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
-        NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
-        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image WithTimestamp:timestamp];
-    } else if ([notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA] isKindOfClass:[NSString class]]) {
+        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:insertData WithTimestamp:timestamp];
+    } else if ([insertData isKindOfClass:[NSString class]]) {
         NSLog(@"I'm Text.");
-        NSString *text = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_DATA];
-        NSNumber *timestamp = notification.userInfo[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP];
-        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:text WithTimestamp:timestamp];
+        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:insertData WithTimestamp:timestamp];
     }
     
     [self.decoObjectManager addDecorateObject:decoObject];
@@ -558,58 +517,42 @@
     });
 }
 
-- (void)receivedDrawingObjectUpdateMoved:(NSNotification *)notification {
-    NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
-    CGFloat originX = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_MOVED_X] floatValue];
-    CGFloat originY = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_MOVED_Y] floatValue];
-    
+- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
     [self.decoObjectManager updateDecorateObjectWithId:identifier WithOriginX:originX WithOriginY:originY];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithOriginX:originX WithOriginY:originY];
     });
 }
 
-- (void)receivedDrawingObjectUpdateResized:(NSNotification *)notification {
-    NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
-    CGFloat width = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH] floatValue];
-    CGFloat height = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT] floatValue];
-    
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
     [self.decoObjectManager updateDecorateObjectWithId:identifier WithWidth:width WithHeight:height];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithWidth:width WithHeight:height];
     });
 }
 
-- (void)receivedDrawingObjectUpdateRotated:(NSNotification *)notification {
-    NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
-    CGFloat angle = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE] floatValue];
-    
+- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier WithAngle:(CGFloat)angle {
     [self.decoObjectManager updateDecorateObjectWithId:identifier WithAngle:angle];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithAngle:angle];
     });
 }
 
-- (void)receivedDrawingObjectUpdateZOrder:(NSNotification *)notification {
-    NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
-    CGFloat zOrder = [notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_Z_ORDER] floatValue];
-    
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithZOrder:zOrder];
+- (void)receivedEditorDecorateObjectZOrderChanged:(NSString *)identifier {
+    [self.decoObjectManager updateDecorateObjectZOrderWithId:identifier];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.drawObjectDisplayView updateDecoViewWithId:identifier WithZOrder:zOrder];
+        [self.drawObjectDisplayView updateDecoViewZOrderWithId:identifier];
     });
 }
 
-- (void)receivedDrawingObjectDelete:(NSNotification *)notification {
-    NSString *identifier = notification.userInfo[KEY_EDITOR_DRAWING_UPDATE_ID];
-    
+- (void)receivedEditorDecorateObjectDelete:(NSString *)identifier {
     [self.decoObjectManager deleteDecorateObjectWithId:identifier];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView deleteDecoViewWithId:identifier];
     });
 }
 
-- (void)receivedSessionDisconnected:(NSNotification *)notification {
+- (void)receivedEditorDisconnected {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_photo_edit_continue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
         alertView.tag = ALERT_CONTINUE;

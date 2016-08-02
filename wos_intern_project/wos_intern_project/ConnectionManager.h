@@ -73,41 +73,44 @@ extern NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_Y;
 extern NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH;
 extern NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT;
 extern NSString *const KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER;
+//extern NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER;
 extern NSString *const KEY_EDITOR_DRAWING_DELETE_ID;
 
-/** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
-extern NSString *const NOTIFICATION_PEER_CONNECTED;
-extern NSString *const NOTIFICATION_PEER_DISCONNECTED;
+///** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
+//extern NSString *const NOTIFICATION_PEER_CONNECTED;
+//extern NSString *const NOTIFICATION_PEER_DISCONNECTED;
+//
+///** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
+//extern NSString *const NOTIFICATION_RECV_SCREEN_SIZE;
+//
+///** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
+//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
+//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
+//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
+//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
+//
+///** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
+//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE;
+//
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE;
+//extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
 
-/** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
-extern NSString *const NOTIFICATION_RECV_SCREEN_SIZE;
-
-/** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
-extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
-extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
-extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
-extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
-
-/** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT;
-extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK;
-extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT;
-extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED;
-extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE;
-
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE;
-extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
+@protocol ConnectionManagerDelegate;
 
 @interface ConnectionManager : NSObject <MCSessionDelegate>
 
+@property (nonatomic, weak) id<ConnectionManagerDelegate> delegate;
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
 @property (nonatomic, strong, readonly) MCBrowserViewController *browserViewController;
@@ -148,5 +151,33 @@ extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
  Session의 연결을 해제한다.
  */
 - (void)disconnectSession;
+
+@end
+
+@protocol ConnectionManagerDelegate <NSObject>
+@optional
+- (void)receivedPeerConnected;
+- (void)receivedPeerDisconnected;
+
+- (void)receivedPhotoFrameSelected:(NSIndexPath *)selectedIndexPath;
+- (void)receivedPhotoFrameRequestConfirm;
+- (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck;
+- (void)receivedPhotoFrameDisconnected;
+
+- (void)receivedEditorPhotoEditing:(NSInteger)targetFrameIndex;
+- (void)receivedEditorPhotoEditingCancelled:(NSInteger)targetFrameIndex;
+- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex WithType:(NSString *)type WithURL:(NSURL *)url;
+- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex WithAck:(BOOL)insertAck;
+- (void)receivedEditorPhotoDelete:(NSInteger)targetFrameIndex;
+
+- (void)receivedEditorDecorateObjectEditing:(NSString *)identifier;
+- (void)receivedEditorDecorateObjectEditCancelled:(NSString *)identifier;
+- (void)receivedEditorDecorateObjectInsert:(id)insertData WithTimestamp:(NSNumber *)timestamp;
+- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
+- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier WithAngle:(CGFloat)angle;
+- (void)receivedEditorDecorateObjectZOrderChanged:(NSString *)identifier;
+- (void)receivedEditorDecorateObjectDelete:(NSString *)identifier;
+- (void)receivedEditorDisconnected;
 
 @end

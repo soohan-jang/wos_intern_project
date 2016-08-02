@@ -27,18 +27,6 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 - (void)viewDidUnwind:(NSNotification *)notification;
 
 /**
- NotificationCenter에 필요한 Observer를 등록한다.
- 세션연결, 세션연결해제를 처리하기 위한 Observer를 등록한다.
- */
-- (void)addObservers;
-
-/**
- NotificationCenter에 등록한 Observer를 등록해제한다.
- 세션연결, 세션연결해제를 처리하기 위한 Observer를 등록해제한다.
- */
-- (void)removeObservers;
-
-/**
  ProgressView의 상태를 완료로 바꾼 뒤에 종료한다.
  Main Thread에서 호출하기 위한 performSelector 용도의 함수이다.
  */
@@ -52,16 +40,6 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
  이를 방지하기 위하여 main thread에서 ViewController를 호출할 수 있도록 따로 함수를 만들었다.
  */
 - (void)loadPhotoFrameViewController;
-
-/**
- 세션이 연결되었을 때 호출되는 함수이다. 이 함수는 NotificationCenter에 의해 호출된다.
- */
-- (void)receivedSessionConnected:(NSNotification *)notification;
-
-/**
- 세션이 연결해제되었을 때 호출되는 함수이다. 이 함수는 NotificationCenter에 의해 호출된다.
- */
-- (void)receivedSessionDisconnected:(NSNotification *)notification;
 
 @end
 
@@ -78,13 +56,14 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     tabGestureRecognizer.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:tabGestureRecognizer];
     
-    [self addObservers];
+    [ConnectionManager sharedInstance].delegate = self;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidUnwind:) name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
 }
 
 - (void)viewDidUnwind:(NSNotification *)notification {
     NSLog(@"Unwinded, addObservers.");
-    [self addObservers];
+    [ConnectionManager sharedInstance].delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -149,18 +128,8 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 - (void)loadPhotoFrameViewController {
     [[ConnectionManager sharedInstance] stopAdvertise];
-    [self removeObservers];
+    [ConnectionManager sharedInstance].delegate = nil;
     [self performSegueWithIdentifier:@"moveToPhotoFrameSelect" sender:self];
-}
-
-- (void)addObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionConnected:) name:NOTIFICATION_PEER_CONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_PEER_DISCONNECTED object:nil];
-}
-
-- (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_CONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_PEER_DISCONNECTED object:nil];
 }
 
 - (void)doneProgress {
@@ -177,6 +146,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 
 #pragma mark - MCBrowserViewControllerDelegate Methods
+
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
@@ -191,6 +161,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 
 #pragma mark - MCNearbyServiceAdvertiserDelegate Methods
+
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
     if (self.invitationHandlerArray != nil) {
         self.invitationHandlerArray = nil;
@@ -203,6 +174,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 
 #pragma mark UIAlertViewDelegate Methods
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     //Accept
     if (buttonIndex == 1) {
@@ -220,16 +192,17 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 
 #pragma mark - CBCentralManagerDelegate Methods
+
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central { /** Do nothing... **/ }
 
 
-#pragma mark - Session Commnication Methods
-- (void)receivedSessionConnected:(NSNotification *)notification {
+#pragma mark - ConnectionManager Delegate Methods
+
+- (void)receivedPeerConnected {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
-    NSDictionary *screenSizeDictionary =
-    @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_SCREEN_SIZE),
-      KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
-      KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
+    NSDictionary *screenSizeDictionary = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_SCREEN_SIZE),
+                                           KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
+                                           KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
     
     //메시지 큐 사용을 활성화한다.
     [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
@@ -254,7 +227,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     }
 }
 
-- (void)receivedSessionDisconnected:(NSNotification *)notification {
+- (void)receivedEditorDisconnected {
     [[ConnectionManager sharedInstance] disconnectSession];
     
     if ([self.navigationController presentedViewController] != [ConnectionManager sharedInstance].browserViewController) {

@@ -18,7 +18,7 @@
 - (void)updateDecorateObjectWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
 - (void)updateDecorateObjectWithId:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
 - (void)updateDecorateObjectWithId:(NSString *)identifier WithAngle:(CGFloat)angle;
-- (void)updateDecorateObjectWithId:(NSString *)identifier WithZOrder:(NSInteger)zOrder;
+- (void)updateDecorateObjectZOrderWithId:(NSString *)identifier;
 - (void)deleteDecorateObjectWithId:(NSString *)identifier;
 - (WMPhotoDecorateObject *)getDecorateObjectWithId:(NSString *)identifier;
 

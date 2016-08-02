@@ -14,18 +14,6 @@
 @property (nonatomic, strong) WMProgressHUD *progressView;
 
 /**
- NotificationCenter에 필요한 Observer를 등록한다.
- 액자 선택, 액자 선택 해제를 처리하기 위한 Observer를 등록한다.
- */
-- (void)addObservers;
-
-/**
- NotificationCenter에 등록한 Observer를 등록해제한다.
- 액자 선택, 액자 선택 해제를 처리하기 위한 Observer를 등록해제한다.
- */
-- (void)removeObservers;
-
-/**
  ProgressHUD를 거절메시지 표시로 변경한다.
  */
 - (void)declineProgress;
@@ -49,14 +37,6 @@
  변경된 셀들의 상태를 갱신하기 위해 호출되는 함수이다.
  */
 - (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell;
-
-/**
- 상대방이 액자를 선택했을 때 호출되는 함수이다. 이 함수는 NotificationCenter에 의해 호출된다.
- */
-- (void)receivedSelectFrameChanged:(NSNotification *)notification;
-- (void)receivedSelectFrameConfirm:(NSNotification *)notification;
-- (void)receivedSelectFrameConfirmAck:(NSNotification *)notification;
-- (void)receivedSessionDisconnected:(NSNotification *)notification;
 
 @end
 
@@ -86,12 +66,11 @@
         [self updateFrameCells:nil currentCell:currentSelectedFrameCell];
     }
     
-    [self addObservers];
+    [ConnectionManager sharedInstance].delegate = self;
     [super viewDidAppear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [self removeObservers];
     [super viewDidDisappear:animated];
 }
 
@@ -126,18 +105,11 @@
     }
 }
 
-- (void)addObservers {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameChanged:) name:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirm:) name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSelectFrameConfirmAck:) name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receivedSessionDisconnected:) name:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
-}
-
-- (void)removeObservers {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_SELECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED object:nil];
+- (void)sendSelectFrameChanged {
+    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
+                               KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
+    
+    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell {
@@ -168,7 +140,9 @@
     }
 }
 
+
 #pragma mark - UIAlertViewDelegate Methods
+
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView.tag == ALERT_DISCONNECT) {
         if (buttonIndex == 1) {
@@ -181,6 +155,7 @@
                 [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
                 [[MessageSyncManager sharedInstance] clearMessageQueue];
                 
+                [ConnectionManager sharedInstance].delegate = nil;
                 [[ConnectionManager sharedInstance] disconnectSession];
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popViewControllerAnimated:YES];
@@ -191,6 +166,7 @@
         [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
         [[MessageSyncManager sharedInstance] clearMessageQueue];
         
+        [ConnectionManager sharedInstance].delegate = nil;
         [[ConnectionManager sharedInstance] disconnectSession];
         [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
         [self.navigationController popViewControllerAnimated:YES];
@@ -217,6 +193,7 @@
 
 
 #pragma mark - CollectionViewController DataSource Methods
+
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -286,6 +263,7 @@
 
 
 #pragma mark - CollectionViewController Delegate Flowlayout Methods
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     //한 라인에 셀 3개를 배치한다. 따라서 셀 간의 간격은 2곳이 생긴다.
     CGFloat cellBetweenSpace = 20.0f * 2.0f;
@@ -306,23 +284,11 @@
 }
 
 
-#pragma mark - Session Communication Methods
-- (void)sendSelectFrameChanged {
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED),
-                               KEY_PHOTO_FRAME_SELECTED: self.ownSelectedFrameIndex};
-    
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-}
+#pragma mark - ConnectionManager Delegate Methods
 
-- (void)receivedSelectFrameChanged:(NSNotification *)notification {
+- (void)receivedPhotoFrameSelected:(NSIndexPath *)selectedIndexPath {
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
-    
-    //전달받은 액자의 인덱스값이 null일 경우, nil을 대입한다.
-    if ([notification.userInfo[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
-        self.connectedPeerSelectedFrameIndex = nil;
-    } else {
-        self.connectedPeerSelectedFrameIndex = (NSIndexPath *)notification.userInfo[KEY_PHOTO_FRAME_SELECTED];
-    }
+    self.connectedPeerSelectedFrameIndex = selectedIndexPath;
     
     PhotoFrameSelectViewCell *prevSelectedFrameCell;
     PhotoFrameSelectViewCell *currentSelectedFrameCell;
@@ -333,7 +299,7 @@
         if (self.connectedPeerSelectedFrameIndex == nil) {
             currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:prevSelectedFrameIndex];
             currentSelectedFrameCell.isConnectedPeerSelected = NO;
-        //전달받은 액자의 값이 있다면, 액자가 선택된 것으로 간주한다.
+            //전달받은 액자의 값이 있다면, 액자가 선택된 것으로 간주한다.
         } else {
             prevSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:prevSelectedFrameIndex];
             currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];
@@ -341,7 +307,7 @@
             prevSelectedFrameCell.isConnectedPeerSelected = NO;
             currentSelectedFrameCell.isConnectedPeerSelected = YES;
         }
-    //이미 선택된 액자가 없으면, 현재 선택된 셀을 선택 상태로 변경한다.
+        //이미 선택된 액자가 없으면, 현재 선택된 셀을 선택 상태로 변경한다.
     } else {
         currentSelectedFrameCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];
         currentSelectedFrameCell.isConnectedPeerSelected = YES;
@@ -352,7 +318,7 @@
     });
 }
 
-- (void)receivedSelectFrameConfirm:(NSNotification *)notification {
+- (void)receivedPhotoFrameRequestConfirm {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_frame_select_confirm", nil) message:NSLocalizedString(@"alert_content_frame_select_confirm", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_decline", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_accept", nil), nil];
         alertView.tag = ALERT_FRAME_CONFIRM;
@@ -360,10 +326,8 @@
     });
 }
 
-- (void)receivedSelectFrameConfirmAck:(NSNotification *)notification {
-    NSNumber *confirmAck = (NSNumber *)notification.userInfo[KEY_PHOTO_FRAME_CONFIRM_ACK];
-    
-    if ([confirmAck boolValue]) {
+- (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck {
+    if (confirmAck) {
         //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
         [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
         [[MessageSyncManager sharedInstance] clearMessageQueue];
@@ -381,9 +345,10 @@
             [self declineProgress];
         });
     }
+
 }
 
-- (void)receivedSessionDisconnected:(NSNotification *)notification {
+- (void)receivedPhotoFrameDisconnected {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_session_disconnected", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         alertView.tag = ALERT_DISCONNECTED;
