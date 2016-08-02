@@ -18,7 +18,7 @@
     self = [super init];
     
     if (self) {
-        self.text = text;
+        self.data = text;
     }
     
     return self;
@@ -29,7 +29,7 @@
     
     if (self) {
         self.id_hashed_timestamp = [self createObjectId:identifier];
-        self.text = text;
+        self.data = text;
     }
     
     return self;
@@ -39,27 +39,18 @@
     self = [super initWithTimestamp:timestamp];
     
     if (self) {
-        self.text = text;
+        self.data = text;
     }
     
     return self;
 }
 
-- (id)getData {
-    return self.text;
-}
-
 - (UIView *)getView {
     UILabel *textLabel = [[UILabel alloc] init];
-    textLabel.text = self.text;
+    textLabel.text = self.data;
     textLabel.frame = self.frame;
     //이 시점에서 텍스트 길이와 크기를 계산하여 라벨의 너비와 높이를 할당해주어야 한다.
     return textLabel;
 }
-
-- (void)containsPoint:(CGPoint)point {}
-- (void)moveObject:(CGPoint)movePoint {}
-- (void)resizeObject:(CGRect)resizeRect {}
-- (void)rotateObject:(CGFloat)rotateAngle {}
 
 @end

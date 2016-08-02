@@ -8,21 +8,25 @@
 
 #import "PhotoDrawObjectDisplayView.h"
 
+NSInteger const DECO_VIEW_Z_ORDER_UP    = 0;
+NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
+
 @interface PhotoDrawObjectDisplayView ()
 
-@property (nonatomic, strong) DecorateObjectManager *decorateObjectManager;
-@property (nonatomic, strong) NSMutableArray *drawObjectViews;
 @property (nonatomic, assign) CGPoint previousPoint;
 
 - (void)backgroundTapAction:(UITapGestureRecognizer *)recognizer;
-- (void)drawObjectTapAction:(UITapGestureRecognizer *)recognizer;
-- (void)drawObjectPanAction:(UIPanGestureRecognizer *)recognizer;
+- (void)decoViewTapAction:(UITapGestureRecognizer *)recognizer;
+- (void)decoViewPanAction:(UIPanGestureRecognizer *)recognizer;
 - (void)resizeButtonPanAction;
 - (void)rotateButtonPanAction;
+- (void)zOrderUpButtonAction;
+- (void)zOrderDownButtonAction;
 - (void)deleteButtonTapAction;
 
-- (void)drawViewBoundary:(UIView *)view;
-- (void)removeViewBoundary:(UIView *)view;
+- (void)drawDecoViewBoundary:(UIView *)view;
+- (void)deleteAllDecoViewBoundary;
+- (void)deleteDecoViewBoundary:(UIView *)view;
 
 @end
 
@@ -34,112 +38,162 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTapAction:)]];
-        
-        self.decorateObjectManager = [[DecorateObjectManager alloc] init];
     }
     
     return self;
 }
 
-- (void)addDrawObject:(WMPhotoDecorateObject *)drawObject {
-    UIView *view = [drawObject getView];
-    NSLog(@"view frame x : %f, y : %f, w : %f, h : %f", view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+- (void)addDecoView:(UIView *)decoView {
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(decoViewTapAction:)];
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(decoViewPanAction:)];
+    [decoView setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
+    [decoView setUserInteractionEnabled:YES];
     
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(drawObjectTapAction:)];
-    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(drawObjectPanAction:)];
-    [view setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
-    [view setUserInteractionEnabled:YES];
-    
-    if (self.drawObjectViews == nil) {
-        self.drawObjectViews = [@[view] mutableCopy];
-    } else {
-        [self.drawObjectViews addObject:view];
-    }
-    
-    [self.decorateObjectManager addDecorateObject:drawObject];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self addSubview:view];;
-    });
+    [self addSubview:decoView];
 }
 
-//이 부분은 딕셔너리를 넘겨서, 해당 값으로 셋팅하는 것으로 변경하자.
-- (void)updateDrawObject:(WMPhotoDecorateObject *)drawObject {
-    if (self.drawObjectViews != nil && self.drawObjectViews.count > 0) {
-        for (UIView *view in self.drawObjectViews) {
-            [view removeFromSuperview];
-        }
-        
-        NSInteger index;
-        for (index = 0; index < [self.decorateObjectManager getCount]; index++) {
-            if ([[((WMPhotoDecorateObject *)[self.decorateObjectManager getDecorateObjectAtIndex:index]) getID] isEqualToString:[drawObject getID]]) {
+- (void)updateDecoViewWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
+    if (self.subviews.count > 0) {
+        for (UIView *view in self.subviews) {
+            if ([view.stringTag isEqualToString:identifier]) {
+                view.frame = CGRectMake(originX, originY, view.frame.size.width, view.frame.size.height);
                 break;
             }
         }
-        
-        for (UIGestureRecognizer *recognizer in ((UIView *)self.drawObjectViews[index]).gestureRecognizers) {
-            [self.drawObjectViews[index] removeGestureRecognizer:recognizer];
+    }
+}
+
+- (void)updateDecoViewWithId:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
+    if (self.subviews.count > 0) {
+        for (UIView *view in self.subviews) {
+            if ([view.stringTag isEqualToString:identifier]) {
+                view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, width, height);
+                break;
+            }
         }
-        
-        if ([[drawObject getData] isKindOfClass:[UIImage class]]) {
-            WMPhotoDecorateImageObject *decoObject = (WMPhotoDecorateImageObject *)[self.decorateObjectManager getDecorateObjectAtIndex:index];
-            decoObject.image = (UIImage *)[decoObject getData];
-            decoObject.frame = drawObject.frame;
-        } else if ([[drawObject getData] isKindOfClass:[NSString class]]) {
-            WMPhotoDecorateTextObject *decoObject = (WMPhotoDecorateTextObject *)[self.decorateObjectManager getDecorateObjectAtIndex:index];
-            decoObject.text = (NSString *)[drawObject getData];
-            decoObject.frame = drawObject.frame;
+    }
+}
+
+- (void)updateDecoViewWithId:(NSString *)identifier WithAngle:(CGFloat)angle {
+    if (self.subviews.count > 0) {
+        for (UIView *view in self.subviews) {
+            if ([view.stringTag isEqualToString:identifier]) {
+                //Angle 설정. Transform 먹여야 할 듯?
+                break;
+            }
         }
-        
-        [self sortDrawObject];
-        
-        [self.drawObjectViews removeAllObjects];
-        
-        for (int i = 0; i < [self.decorateObjectManager getCount]; i++) {
-            UIView *view = [((WMPhotoDecorateObject *)[self.decorateObjectManager getDecorateObjectAtIndex:i]) getView];
-            [self.drawObjectViews addObject:view];
+    }
+}
+
+- (void)updateDecoViewWithId:(NSString *)identifier WithZOrder:(NSInteger)changeZOrder {
+//    if (self.subviews.count > 0) {
+//        NSMutableArray *subViews = [self.subviews mutableCopy];
+//        
+//        for (int index = 0; index < subViews.count; index++) {
+//            if ([((UIView *)subViews[index]).stringTag isEqualToString:identifier]) {
+//                if (changeZOrder == DECO_VIEW_Z_ORDER_UP) {
+//                    //가장 상단에 위치한 뷰가 아닐 때만 Z Order를 변경한다.
+//                    if (index < subViews.count) {
+//                        UIView *tempView = subViews[index];
+//                        subViews[index] = subViews[index + 1];
+//                        subViews[index + 1] = tempView;
+//                    }
+//                } else if (changeZOrder == DECO_VIEW_Z_ORDER_DOWN) {
+//                    //가장 하단에 위치한 뷰가 아닐 때만 Z Order를 변경한다.
+//                    if (index > 0) {
+//                        UIView *tempView = subViews[index];
+//                        subViews[index] = subViews[index - 1];
+//                        subViews[index - 1] = tempView;
+//                    }
+//                }
+//                
+//                //모든 뷰를 내리고,
+//                for (UIView *view in self.subviews) {
+//                    for (UIGestureRecognizer *recognizer in view.gestureRecognizers) {
+//                        [view removeGestureRecognizer:recognizer];
+//                    }
+//                    
+//                    [view removeFromSuperview];
+//                }
+//                
+//                //다시 등록한다.
+//                for (UIView *view in subViews) {
+//                    [self addDecoView:view WithId:nil];
+//                }
+//                
+//                break;
+//            }
+//        }
+//
+//    }
+}
+
+- (void)deleteDecoViewWithId:(NSString *)identifier {
+    if (self.subviews.count > 0) {
+        for (UIView *view in self.subviews) {
+            if ([view.stringTag isEqualToString:identifier]) {
+                for (UIGestureRecognizer *recognizer in view.gestureRecognizers) {
+                    [view removeGestureRecognizer:recognizer];
+                }
+                
+                [view removeFromSuperview];
+                [self setNeedsDisplay];
+                break;
+            }
+        }
+    }
+}
+
+- (void)drawDecoViews:(NSArray *)decoViews {
+    if (self.subviews.count > 0) {
+        for (UIView *view in self.subviews) {
+            for (UIGestureRecognizer *recognizer in view.gestureRecognizers) {
+                [view removeGestureRecognizer:recognizer];
+            }
+            [view removeFromSuperview];
+        }
+    }
+    
+    if (decoViews != nil && decoViews.count > 0) {
+        for (UIView *view in decoViews) {
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(decoViewTapAction:)];
+            UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(decoViewPanAction:)];
+            [view setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
+            [view setUserInteractionEnabled:YES];
             [self addSubview:view];
         }
     }
-}
-
-- (void)removeDrawObjectWithID:(NSString *)identifier {
-    if (self.drawObjectViews != nil && self.drawObjectViews.count > 0) {
-        NSInteger index;
-        for (index = 0; index < [self.decorateObjectManager getCount]; index++) {
-            if ([[((WMPhotoDecorateObject *)[self.decorateObjectManager getDecorateObjectAtIndex:index]) getID] isEqualToString:identifier]) {
-                break;
-            }
-        }
-        
-        [self.drawObjectViews[index] removeFromSuperview];
-        [self.drawObjectViews removeObjectAtIndex:index];
-    }
-}
-
-- (void)sortDrawObject {
     
+    [self setNeedsDisplay];
+}
+
+- (void)setEnableWithId:(NSString *)indentifier WithEnable:(BOOL)enable {
+//    for (UIView *view in self.subviews) {
+//        
+//    }
 }
 
 - (void)backgroundTapAction:(UITapGestureRecognizer *)recognizer {
-    [self removeViewBoundary];
-    self.previousPoint = CGPointMake(-9999, -9999);
+    if (self.subviews.count > 0) {
+        [self deleteAllDecoViewBoundary];
+        self.previousPoint = CGPointMake(-9999, -9999);
+    }
 }
 
-- (void)drawObjectTapAction:(UITapGestureRecognizer *)recognizer {
-    [self removeViewBoundary:recognizer.view];
-    [self drawViewBoundary:recognizer.view];
+- (void)decoViewTapAction:(UITapGestureRecognizer *)recognizer {
+    [self deleteAllDecoViewBoundary];
+    [self drawDecoViewBoundary:recognizer.view];
 }
 
-- (void)drawObjectPanAction:(UIPanGestureRecognizer *)recognizer {
-    [self removeViewBoundary:recognizer.view];
-    [self drawViewBoundary:recognizer.view];
+- (void)decoViewPanAction:(UIPanGestureRecognizer *)recognizer {
+    [self deleteAllDecoViewBoundary];
+    [self drawDecoViewBoundary:recognizer.view];
     
     //이동거리 제한을 둬야함.
     CGFloat x1 = self.bounds.origin.x;
     CGFloat y1 = self.bounds.origin.y;
-    CGFloat x2 = self.bounds.size.width - x1;
-    CGFloat y2 = self.bounds.size.height - y1;
+    CGFloat x2 = self.bounds.size.width + x1;
+    CGFloat y2 = self.bounds.size.height + y1;
     
     CGFloat centerX = recognizer.view.center.x;
     CGFloat centerY = recognizer.view.center.y;
@@ -151,13 +205,10 @@
     //이렇게하면 경계에서 이동 제한이 걸려야되는데, 실제로는 마이너스값이 찍힌다. 이게 무슨????
     if ((x1 <= centerX && centerX <= x2) && (y1 <= centerY && centerY <= y2)) {
         recognizer.view.center = [recognizer locationInView:self];
-        
-        //이동이 종료된 이후에, 변경된 사항을 DrawingManager에게 전달하고, 상대방에게도 전달해야한다.
     }
     
-    if ([self.delegate respondsToSelector:@selector(drawObjectDidMoved:)]) {
-        NSInteger index = [self.drawObjectViews indexOfObject:recognizer.view];
-        [self.delegate drawObjectDidMoved:(WMPhotoDecorateObject *)[self.decorateObjectManager getDecorateObjectAtIndex:index]];
+    if ([self.delegate respondsToSelector:@selector(decoViewDidMovedWithId:WithOriginX:WithOriginY:)]) {
+        [self.delegate decoViewDidMovedWithId:recognizer.view.stringTag WithOriginX:recognizer.view.frame.origin.x WithOriginY:recognizer.view.frame.origin.y];
     }
 }
 
@@ -169,11 +220,19 @@
     
 }
 
+- (void)zOrderUpButtonAction {
+    
+}
+
+- (void)zOrderDownButtonAction {
+    
+}
+
 - (void)deleteButtonTapAction {
     
 }
 
-- (void)drawViewBoundary:(UIView *)view {
+- (void)drawDecoViewBoundary:(UIView *)view {
     CGFloat defaultMargin = 2.0f;
     CGFloat strokeLineWitdth = 1.0f;
     
@@ -198,13 +257,13 @@
     [view.layer addSublayer:shapeLayer];
 }
 
-- (void)removeViewBoundary {
-    for (UIView *view in self.drawObjectViews) {
-        [self removeViewBoundary:view];
+- (void)deleteAllDecoViewBoundary {
+    for (UIView *view in self.subviews) {
+        [self deleteDecoViewBoundary:view];
     }
 }
 
-- (void)removeViewBoundary:(UIView *)view {
+- (void)deleteDecoViewBoundary:(UIView *)view {
     if (view != nil) {
         for (CALayer *layer in view.layer.sublayers) {
             [layer removeFromSuperlayer];

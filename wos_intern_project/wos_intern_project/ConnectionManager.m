@@ -17,82 +17,94 @@ NSString *const KEY_DATA_TYPE                                 = @"data_type";
 
 /** KEY_DATA_TYPE에 값으로 설정되는 값 **/
 //NSNumber로 설정하면 컴파일 시에 초기화되지 않아서 NSUInteger로 설정하였다.
-NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                  = 100;
+NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE                    = 100;
 
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED         = 200;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM          = 201;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK      = 202;
-NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED     = 203;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED           = 200;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM            = 201;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK        = 202;
 
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT          = 300;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK      = 301;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT            = 302;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED   = 303;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE          = 304;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT          = 305;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED = 306;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT        = 307;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE        = 308;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE        = 309;
-NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED           = 310;
+NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED       = 300;
+
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT            = 400;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK        = 401;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT              = 402;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED     = 403;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE            = 404;
+
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT            = 500;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED   = 501;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT          = 502;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED    = 503;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED  = 504;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED  = 505;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_Z_ORDER  = 506;
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE          = 507;
+
+NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED             = 600;
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
 /** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
-NSString *const KEY_SCREEN_SIZE_WIDTH                         = @"screen_size_width";
-NSString *const KEY_SCREEN_SIZE_HEIGHT                        = @"screen_size_height";
+NSString *const KEY_SCREEN_SIZE_WIDTH                           = @"screen_size_width";
+NSString *const KEY_SCREEN_SIZE_HEIGHT                          = @"screen_size_height";
 
 /** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
 /** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-NSString *const KEY_PHOTO_FRAME_SELECTED                      = @"photo_frame_select";
+NSString *const KEY_PHOTO_FRAME_SELECTED                        = @"photo_frame_select";
 
 /** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
 /** NSNumber boolValue 값으로 매칭된다 **/
-NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                   = @"photo_frame_confirm_ack";
+NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK                     = @"photo_frame_confirm_ack";
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
 /** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
-NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX                 = @"photo_insert_index";
-NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE             = @"photo_insert_data_type";
-NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                  = @"photo_insert_data";
-NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                   = @"photo_insert_ack";
-NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX                   = @"photo_edit_index";
-NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                 = @"photo_delete_index";
-NSString *const KEY_EDITOR_DRAWING_EDIT_ID                    = @"drawing_edit_id";
-NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                = @"drawing_insert_data";
-NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP           = @"drawing_insert_timestamp";
-NSString *const KEY_EDITOR_DRAWING_UPDATE_ID                  = @"drawing_update_id";
-NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                = @"drawing_update_data";
-NSString *const KEY_EDITOR_DRAWING_UPDATE_ORIGIN_X            = @"drawing_update_origin_x";
-NSString *const KEY_EDITOR_DRAWING_UPDATE_ORIGIN_Y            = @"drawing_update_origin_y";;
-NSString *const KEY_EDITOR_DRAWING_UPDATE_SIZE_WIDTH          = @"drawing_update_size_width";;
-NSString *const KEY_EDITOR_DRAWING_UPDATE_SIZE_HEIGHT         = @"drawing_update_size_height";
-NSString *const KEY_EDITOR_DRAWING_DELETE_ID                  = @"drawing_delete_id";
+NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX                   = @"photo_insert_index";
+NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE               = @"photo_insert_data_type";
+NSString *const KEY_EDITOR_PHOTO_INSERT_DATA                    = @"photo_insert_data";
+NSString *const KEY_EDITOR_PHOTO_INSERT_ACK                     = @"photo_insert_ack";
+NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX                     = @"photo_edit_index";
+NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX                   = @"photo_delete_index";
+
+NSString *const KEY_EDITOR_DRAWING_EDIT_ID                      = @"drawing_edit_id";
+NSString *const KEY_EDITOR_DRAWING_INSERT_DATA                  = @"drawing_insert_data";
+NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP             = @"drawing_insert_timestamp";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_ID                    = @"drawing_update_id";
+//NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA                  = @"drawing_update_data";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_X               = @"drawing_update_moved_x";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_Y               = @"drawing_update_moved_y";;
+NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH         = @"drawing_update_resized_width";;
+NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT        = @"drawing_update_resized_height";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE         = @"drawing_update_rotated_angle";
+NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER               = @"drawing_update_z_order";
+NSString *const KEY_EDITOR_DRAWING_DELETE_ID                    = @"drawing_delete_id";
 
 /** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_PEER_CONNECTED                   = @"noti_peer_connected";
-NSString *const NOTIFICATION_PEER_DISCONNECTED                = @"noti_peer_disconnected";
+NSString *const NOTIFICATION_PEER_CONNECTED                     = @"noti_peer_connected";
+NSString *const NOTIFICATION_PEER_DISCONNECTED                  = @"noti_peer_disconnected";
 
 /** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_SCREEN_SIZE                 = @"noti_recv_screen_size";
+NSString *const NOTIFICATION_RECV_SCREEN_SIZE                   = @"noti_recv_screen_size";
 
 /** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED        = @"noti_recv_photo_frame_selected";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM         = @"noti_recv_photo_frame_confirm";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK     = @"noti_recv_photo_frame_confirm_ack";
-NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED    = @"noti_recv_photo_frame_disconnected";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED          = @"noti_recv_photo_frame_selected";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM           = @"noti_recv_photo_frame_confirm";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK       = @"noti_recv_photo_frame_confirm_ack";
+NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED      = @"noti_recv_photo_frame_disconnected";
 
 /** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT         = @"noti_recv_editor_photo_insert";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK     = @"noti_recv_editor_photo_insert_ack";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT           = @"noti_recv_editor_photo_edit";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED  = @"noti_recv_editor_photo_edit_canceled";
-NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE         = @"noti_recv_editor_photo_delete";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT         = @"noti_recv_editor_drawing_edit";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL  = @"noti_recv_editor_drawing_edit_cancel";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT       = @"noti_recv_editor_drawing_insert";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE       = @"noti_recv_editor_drawing_update";
-NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE       = @"noti_recv_editor_drawing_delete";
-NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_editor_disconnected";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT           = @"noti_recv_editor_photo_insert";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK       = @"noti_recv_editor_photo_insert_ack";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT             = @"noti_recv_editor_photo_edit";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED    = @"noti_recv_editor_photo_edit_canceled";
+NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE           = @"noti_recv_editor_photo_delete";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT           = @"noti_recv_editor_drawing_edit";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL    = @"noti_recv_editor_drawing_edit_cancel";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT         = @"noti_recv_editor_drawing_insert";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED   = @"noti_recv_editor_drawing_update_moved";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED = @"noti_recv_editor_drawing_update_resized";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED = @"noti_recv_editor_drawing_update_rotated";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER = @"noti_recv_editor_drawing_update_z_order";
+NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE         = @"noti_recv_editor_drawing_delete";
+NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED           = @"noti_recv_editor_disconnected";
 
 @implementation ConnectionManager
 
@@ -237,14 +249,6 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_PHOTO_DELETE object:nil userInfo:receivedData];
             NSLog(@"Received Delete Photo");
             break;
-//        case VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT:
-//        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE:
-//        case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
-//            if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
-//                //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
-//                [[MessageSyncManager sharedInstance] putMessage:receivedData];
-//            }
-//            break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_EDIT object:nil userInfo:receivedData];
             NSLog(@"Received Edit Drawing Object");
@@ -257,9 +261,21 @@ NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED         = @"noti_recv_edit
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_INSERT object:nil userInfo:receivedData];
             NSLog(@"Received Insert Drawing Object");
             break;
-        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE:
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE object:nil userInfo:receivedData];
-            NSLog(@"Received Update Drawing Object");
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED object:nil userInfo:receivedData];
+            NSLog(@"Received Update Moved Drawing Object");
+            break;
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED object:nil userInfo:receivedData];
+            NSLog(@"Received Update Resized Drawing Object");
+            break;
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED object:nil userInfo:receivedData];
+            NSLog(@"Received Update Rotated Drawing Object");
+            break;
+        case VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_Z_ORDER:
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER object:nil userInfo:receivedData];
+            NSLog(@"Received Update Z Order Drawing Object");
             break;
         case VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE:
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_RECV_EDITOR_DRAWING_DELETE object:nil userInfo:receivedData];

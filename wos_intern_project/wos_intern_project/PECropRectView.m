@@ -230,7 +230,7 @@
         
         if (self.keepingAspectRatio) {
             CGRect constrainedRect;
-            if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
+            if (fabsf((float)resizeControlView.translation.x) < fabsf((float)resizeControlView.translation.y)) {
                 constrainedRect = [self constrainedRectWithRectBasisOfHeight:rect aspectRatio:self.fixedAspectRatio];
             } else {
                 constrainedRect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
@@ -246,7 +246,7 @@
                           CGRectGetHeight(self.initialRect) - resizeControlView.translation.y);
         
         if (self.keepingAspectRatio) {
-            if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
+            if (fabsf((float)resizeControlView.translation.x) < fabsf((float)resizeControlView.translation.y)) {
                 rect = [self constrainedRectWithRectBasisOfHeight:rect aspectRatio:self.fixedAspectRatio];
             } else {
                 rect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
@@ -260,7 +260,7 @@
         
         if (self.keepingAspectRatio) {
             CGRect constrainedRect;
-            if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
+            if (fabsf((float)resizeControlView.translation.x) < fabsf((float)resizeControlView.translation.y)) {
                 constrainedRect = [self constrainedRectWithRectBasisOfHeight:rect aspectRatio:self.fixedAspectRatio];
             } else {
                 constrainedRect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];
@@ -275,7 +275,7 @@
                           CGRectGetHeight(self.initialRect) + resizeControlView.translation.y);
         
         if (self.keepingAspectRatio) {
-            if (fabsf(resizeControlView.translation.x) < fabsf(resizeControlView.translation.y)) {
+            if (fabsf((float)resizeControlView.translation.x) < fabsf((float)resizeControlView.translation.y)) {
                 rect = [self constrainedRectWithRectBasisOfHeight:rect aspectRatio:self.fixedAspectRatio];
             } else {
                 rect = [self constrainedRectWithRectBasisOfWidth:rect aspectRatio:self.fixedAspectRatio];

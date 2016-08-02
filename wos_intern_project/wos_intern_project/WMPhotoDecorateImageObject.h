@@ -14,8 +14,6 @@
 
 @interface WMPhotoDecorateImageObject : WMPhotoDecorateObject
 
-@property (nonatomic, strong) UIImage *image;
-
 - (instancetype)initWithImage:(UIImage *)image;
 - (instancetype)initWithImage:(UIImage *)image WithID:(NSString *)identifier;
 - (instancetype)initWithImage:(UIImage *)image WithTimestamp:(NSNumber *)timestamp;

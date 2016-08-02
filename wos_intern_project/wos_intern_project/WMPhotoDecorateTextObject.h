@@ -11,8 +11,6 @@
 
 @interface WMPhotoDecorateTextObject : WMPhotoDecorateObject
 
-@property (nonatomic, copy) NSString *text;
-
 - (instancetype)initWithText:(NSString *)text;
 - (instancetype)initWithText:(NSString *)text WithID:(NSString *)identifier;
 - (instancetype)initWithText:(NSString *)text WithTimestamp:(NSNumber *)timestamp;

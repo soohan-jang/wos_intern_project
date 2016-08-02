@@ -31,6 +31,7 @@
 		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
 		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
 		4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
+		4AA4D5E81D5075CF003F6B68 /* UIView+StringTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA4D5E71D5075CF003F6B68 /* UIView+StringTag.m */; };
 		4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
 		4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */; };
 		4B44909B1D3A607F00E5972F /* WMPhotoDecorateImageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909A1D3A607F00E5972F /* WMPhotoDecorateImageObject.m */; };
@@ -116,6 +117,8 @@
 		4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAlbumViewController.m; sourceTree = "<group>"; };
 		4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewerViewController.h; sourceTree = "<group>"; };
 		4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewerViewController.m; sourceTree = "<group>"; };
+		4AA4D5E61D5075CF003F6B68 /* UIView+StringTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+StringTag.h"; sourceTree = "<group>"; };
+		4AA4D5E71D5075CF003F6B68 /* UIView+StringTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+StringTag.m"; sourceTree = "<group>"; };
 		4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionManager.h; sourceTree = "<group>"; };
 		4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManager.m; sourceTree = "<group>"; };
 		4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorFrameViewCell.h; sourceTree = "<group>"; };
@@ -224,7 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				4A0C92DF1D374D4C0080E9A6 /* ExternalLib */,
-				4A97B60A1D336514003899F7 /* ViewController */,
+				4A97B60A1D336514003899F7 /* View */,
 				4A97B60C1D336540003899F7 /* Data */,
 				4A97B60B1D336520003899F7 /* Manager */,
 				4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */,
@@ -274,9 +277,10 @@
 			name = SmoothLineView;
 			sourceTree = "<group>";
 		};
-		4A97B60A1D336514003899F7 /* ViewController */ = {
+		4A97B60A1D336514003899F7 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				4AA4D5E51D5075BA003F6B68 /* UIViewExpanded */,
 				4B4490921D3A5D4D00E5972F /* CollectionViewCell */,
 				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
 				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
@@ -295,7 +299,7 @@
 				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
 				4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */,
 			);
-			name = ViewController;
+			name = View;
 			sourceTree = "<group>";
 		};
 		4A97B60B1D336520003899F7 /* Manager */ = {
@@ -326,6 +330,15 @@
 				4B44909D1D3A608A00E5972F /* WMPhotoDecorateTextObject.m */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		4AA4D5E51D5075BA003F6B68 /* UIViewExpanded */ = {
+			isa = PBXGroup;
+			children = (
+				4AA4D5E61D5075CF003F6B68 /* UIView+StringTag.h */,
+				4AA4D5E71D5075CF003F6B68 /* UIView+StringTag.m */,
+			);
+			name = UIViewExpanded;
 			sourceTree = "<group>";
 		};
 		4B4490921D3A5D4D00E5972F /* CollectionViewCell */ = {
@@ -525,6 +538,7 @@
 				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
 				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
 				4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */,
+				4AA4D5E81D5075CF003F6B68 /* UIView+StringTag.m in Sources */,
 				4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */,
 				4A5D86751D4C8445001EB2A9 /* WMPhotoDecorateObject.m in Sources */,
 				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,

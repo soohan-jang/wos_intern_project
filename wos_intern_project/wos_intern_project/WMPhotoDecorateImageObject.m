@@ -18,7 +18,7 @@
     self = [super init];
     
     if (self) {
-        self.image = image;
+        self.data = image;
         self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     }
     
@@ -30,7 +30,7 @@
     
     if (self) {
         self.id_hashed_timestamp = [self createObjectId:identifier];
-        self.image = image;
+        self.data = image;
     }
     
     return self;
@@ -40,27 +40,18 @@
     self = [super initWithTimestamp:timestamp];
     
     if (self) {
-        self.image = image;
+        self.data = image;
         self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     }
     
     return self;
 }
 
-- (id)getData {
-    return self.image;
-}
-
 - (UIView *)getView {
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.data];
     imageView.frame = self.frame;
     
     return imageView;
 }
-
-- (void)containsPoint:(CGPoint)point {}
-- (void)moveObject:(CGPoint)movePoint {}
-- (void)resizeObject:(CGRect)resizeRect {}
-- (void)rotateObject:(CGFloat)rotateAngle {}
 
 @end

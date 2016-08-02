@@ -11,6 +11,7 @@
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
+#import "DecorateObjectManager.h"
 
 #import "SphereMenu.h"
 #import "XXXRoundMenuButton.h"

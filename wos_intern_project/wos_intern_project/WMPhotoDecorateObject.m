@@ -37,12 +37,21 @@
     return self;
 }
 
-- (id)getData { return nil; }
 - (UIView *)getView { return nil; }
-- (void)containsPoint:(CGPoint)point {}
-- (void)moveObject:(CGPoint)movePoint {}
-- (void)resizeObject:(CGRect)resizeRect {}
-- (void)rotateObject:(CGFloat)rotateAngle {}
+
+- (void)moveObject:(CGPoint)movePoint {
+    self.frame = CGRectMake(movePoint.x, movePoint.y, self.frame.size.width, self.frame.size.height);
+}
+
+- (void)resizeObject:(CGSize)resizeRect {
+    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, resizeRect.width, resizeRect.height);
+}
+
+- (void)rotateObject:(CGFloat)rotateAngle {
+    self.angle = rotateAngle;
+}
+
+- (void)changeZOrder:(NSInteger)zOrder {}
 
 - (NSString *)createObjectId:(NSString *)input {
     const char *cstr = [input cStringUsingEncoding:NSUTF8StringEncoding];

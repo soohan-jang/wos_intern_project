@@ -24,39 +24,125 @@
     }
 }
 
-- (void)removeDecorateObjectAtIndex:(NSInteger)index {
+- (void)updateDecorateObjectWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
     if (![self isEmpty]) {
-        [self.decorateObjectArray removeObjectAtIndex:index];
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                [decoObject moveObject:CGPointMake(originX, originY)];
+                break;
+            }
+        }
     }
 }
 
-- (UIView *)getDecorateObjectAtIndex:(NSInteger)index {
+- (void)updateDecorateObjectWithId:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
     if (![self isEmpty]) {
-        return self.decorateObjectArray[index];
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                [decoObject resizeObject:CGSizeMake(width, height)];
+                break;
+            }
+        }
+    }
+}
+
+- (void)updateDecorateObjectWithId:(NSString *)identifier WithAngle:(CGFloat)angle {
+    if (![self isEmpty]) {
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                [decoObject rotateObject:angle];
+                break;
+            }
+        }
+    }
+}
+
+- (void)updateDecorateObjectWithId:(NSString *)identifier WithZOrder:(NSInteger)zOrder {
+    if (![self isEmpty]) {
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                
+                break;
+            }
+        }
+    }
+}
+
+- (void)deleteDecorateObjectWithId:(NSString *)identifier {
+    if (![self isEmpty]) {
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                [self.decorateObjectArray removeObject:decoObject];
+                break;
+            }
+        }
+    }
+}
+
+- (WMPhotoDecorateObject *)getDecorateObjectWithId:(NSString *)identifier {
+    if (![self isEmpty]) {
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            if ([[decoObject getID] isEqualToString:identifier]) {
+                return decoObject;
+            }
+        }
     }
     
     return nil;
 }
-//- (void)drawOnCanvasView:(UIView *)canvasView {
-//    if (canvasView == nil) {
-//        return;
-//    }
-//    
-//    if (canvasView.subviews.count > 0) {
-//        for (UIView *subView in canvasView.subviews) {
-//            for (UIGestureRecognizer *recognizer in subView.gestureRecognizers) {
-//                [subView removeGestureRecognizer:recognizer];
-//            }
-//            [subView removeFromSuperview];
-//        }
-//    }
-//    
+//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
 //    if (![self isEmpty]) {
-//        for (WMPhotoDecorateObject *decoObject in self.decorateViewArray) {
-//            [canvasView addSubview:[decoObject getView]];
-//        }
+//        [self.decorateObjectArray[index] moveObject:CGPointMake(originX, originY)];
 //    }
 //}
+//
+//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
+//    if (![self isEmpty]) {
+//        [self.decorateObjectArray[index] resizeObject:CGSizeMake(width, height)];
+//    }
+//}
+//
+//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithAngle:(CGFloat)angle {
+//    if (![self isEmpty]) {
+//        [self.decorateObjectArray[index] rotateObject:angle];
+//    }
+//}
+//
+//- (void)updateDecorateObjectWithIndex:(NSInteger)index WithZOrder:(NSInteger)zOrder {
+//    if (![self isEmpty]) {
+//        
+//    }
+//}
+//
+//- (void)deleteDecorateObjectWithIndex:(NSInteger)index {
+//    if (![self isEmpty]) {
+//        [self.decorateObjectArray removeObjectAtIndex:index];
+//    }
+//}
+//
+//- (WMPhotoDecorateObject *)getDecorateObjectWithIndex:(NSInteger)index {
+//    if (![self isEmpty]) {
+//        return self.decorateObjectArray[index];
+//    }
+//    
+//    return nil;
+//}
+
+//내부에 존재하는 deco object를 view로 변환하여 전달한다.
+- (NSArray *)getDecorateViewArray {
+    if (![self isEmpty]) {
+        NSMutableArray *viewArray = [[NSMutableArray alloc] initWithCapacity:self.decorateObjectArray.count];
+        for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
+            UIView *view = [decoObject getView];
+            [view setStringTag:[decoObject getID]];
+            [viewArray addObject:view];
+        }
+        
+        return viewArray;
+    }
+    
+    return nil;
+}
 
 - (void)sortDecorateObject {
     if (![self isEmpty]) {
