@@ -8,6 +8,12 @@
 
 #import "MessageSyncManager.h"
 
+@interface MessageSyncManager ()
+
+@property (atomic, strong) NSMutableArray *messageQueue;
+
+@end
+
 @implementation MessageSyncManager
 
 + (MessageSyncManager *)sharedInstance {

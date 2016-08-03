@@ -64,12 +64,12 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     self.connectionManager = [ConnectionManager sharedInstance];
     self.connectionManager.delegate = self;
     
-    self.browserViewController = [[MCBrowserViewController alloc] initWithServiceType:SERVICE_TYPE session:self.connectionManager.ownSession];
+    self.browserViewController = [[MCBrowserViewController alloc] initWithServiceType:SERVICE_TYPE session:[self.connectionManager getSession]];
     //1:1 통신이므로 연결할 피어의 수는 하나로 제한한다.
     self.browserViewController.maximumNumberOfPeers = 1;
     self.browserViewController.delegate = self;
     
-    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.connectionManager.ownPeerId discoveryInfo:nil serviceType:SERVICE_TYPE];
+    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:[self.connectionManager getPeerID] discoveryInfo:nil serviceType:SERVICE_TYPE];
     
     UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadBrowserViewController)];
     tabGestureRecognizer.numberOfTapsRequired = 1;
@@ -80,7 +80,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 }
 
 - (void)viewDidUnwind:(NSNotification *)notification {
-    [ConnectionManager sharedInstance].delegate = self;
+    self.connectionManager.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -179,7 +179,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 //Session Connect Cancel.
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
-    [[ConnectionManager sharedInstance] disconnectSession];
+    [self.connectionManager disconnectSession];
 }
 
 
@@ -202,14 +202,14 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     //Accept
     if (buttonIndex == 1) {
         void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlerArray[0];
-        invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
+        invitationHandler(YES, [self.connectionManager getSession]);
         
         self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_connecting", nil)];
         [self.view setUserInteractionEnabled:NO];
         //Decline
     } else {
         void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlerArray[0];
-        invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
+        invitationHandler(NO, [self.connectionManager getSession]);
     }
 }
 
@@ -218,13 +218,15 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 - (void)receivedPeerConnected {
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
+    CGSize screenSize = [self.connectionManager getScreenSize];
+    
     NSDictionary *screenSizeDictionary = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_SCREEN_SIZE),
-                                           KEY_SCREEN_SIZE_WIDTH:  [ConnectionManager sharedInstance].ownScreenWidth,
-                                           KEY_SCREEN_SIZE_HEIGHT: [ConnectionManager sharedInstance].ownScreenHeight};
+                                           KEY_SCREEN_SIZE_WIDTH:  @(screenSize.width),
+                                           KEY_SCREEN_SIZE_HEIGHT: @(screenSize.height)};
     
     //메시지 큐 사용을 활성화한다.
     [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
     if ([self.navigationController presentedViewController] == self.browserViewController) {
         [self.view setUserInteractionEnabled:NO];
@@ -246,7 +248,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 }
 
 - (void)receivedEditorDisconnected {
-    [[ConnectionManager sharedInstance] disconnectSession];
+    [self.connectionManager disconnectSession];
     
     if ([self.navigationController presentedViewController] != self.browserViewController) {
         dispatch_async(dispatch_get_main_queue(), ^{

@@ -262,7 +262,7 @@
                                 <edgeInsets key="layoutMargins" top="0.0" left="0.0" bottom="0.0" right="0.0"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wfh-aY-Vx8" customClass="XXXRoundMenuButton">
-                                <rect key="frame" x="465" y="465" width="200" height="200"/>
+                                <rect key="frame" x="460" y="460" width="200" height="200"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="r6d-wG-jrP"/>
@@ -319,11 +319,11 @@
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-65" id="2hq-Sv-zz0"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-60" id="2hq-Sv-zz0"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2iG-aV-pcf"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="7AR-Mg-o4A"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="OH2-Kx-Zes"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-85" id="OPN-Hz-Lry"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-80" id="OPN-Hz-Lry"/>
                             <constraint firstAttribute="trailing" secondItem="Zh5-Kc-cgB" secondAttribute="trailing" id="P0g-LX-KCz"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="bottom" id="ioP-Aa-f3A"/>
                             <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="pxH-kK-tJg"/>

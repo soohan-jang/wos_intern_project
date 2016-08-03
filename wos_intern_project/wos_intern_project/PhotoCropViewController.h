@@ -15,7 +15,7 @@
 
 @protocol PhotoCropViewControllerDelegate;
 
-@interface PhotoCropViewController : UIViewController <UIScrollViewDelegate, UIAlertViewDelegate>
+@interface PhotoCropViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UIView *cropAreaView;
 @property (weak, nonatomic) IBOutlet UIScrollView *filterListScrollView;

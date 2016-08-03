@@ -12,16 +12,20 @@
 
 @interface ConnectionManager ()
 
+@property (atomic, strong) MessageSyncManager *messageSyncManager;
 @property (nonatomic, strong) CBCentralManager *bluetoothManager;
+
+@property (nonatomic, strong) MCPeerID *ownPeerId;
+@property (nonatomic, strong) MCSession *ownSession;
+@property (nonatomic, assign) CGFloat ownScreenWidth, ownScreenHeight;
+/** 연결된 상대방 정보 **/
+//원래 이것도 배열로 구성해서 각 피어에 해당하는 셋을 맞춰야되는데, 당장은 1:1 통신을 하므로...
+//@property (nonatomic, strong, readonly) NSMutableArray *connectedPeerIds;
+@property (nonatomic, assign) CGFloat connectedPeerScreenWidth, connectedPeerScreenHeight;
 
 @end
 
 @implementation ConnectionManager
-
-//@synthesize ownPeerId, ownSession;
-//@synthesize browserViewController, advertiser;
-//@synthesize ownScreenWidth, ownScreenHeight;
-//@synthesize connectedPeerScreenWidth, connectedPeerScreenHeight;
 
 + (ConnectionManager *)sharedInstance {
     static ConnectionManager *instance = nil;
@@ -35,15 +39,29 @@
     return instance;
 }
 
-- (void)initInstanceProperties:(NSString *)deviceName withScreenWidthSize:(CGFloat)width withScreenHeightSize:(CGFloat)height {
-    _ownPeerId = [[MCPeerID alloc] initWithDisplayName:deviceName];
-    _ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
-    _ownSession.delegate = self;
+- (void)initialize {
+    self.ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
+    self.ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
+    self.ownSession.delegate = self;
     
-    _ownScreenWidth = @(width);
-    _ownScreenHeight = @(height);
+    CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
+    self.ownScreenWidth = mainScreenRect.size.width;
+    self.ownScreenHeight = mainScreenRect.size.height;
     
+    self.messageSyncManager = [MessageSyncManager sharedInstance];
     self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+}
+
+- (MCPeerID *)getPeerID {
+    return self.ownPeerId;
+}
+
+- (MCSession *)getSession {
+    return self.ownSession;
+}
+
+- (CGSize)getScreenSize {
+    return CGSizeMake(self.ownScreenWidth, self.ownScreenHeight);
 }
 
 - (NSInteger)getBluetoothState {
@@ -56,12 +74,12 @@
 
 - (void)sendPhotoDataWithFilename:(NSString *)filename withFullscreenImageURL:(NSURL *)fullscreenImageURL withCroppedImageURL:(NSURL *)croppedImageURL withIndex:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
-        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@+_cropped", [@(index) stringValue]];
+        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_CROPPED];
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             } else {
-                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@+_fullscreen", [@(index) stringValue]];
+                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_FULLSCREEN];
                 
                 [self.ownSession sendResourceAtURL:fullscreenImageURL withName:fullscreenImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
                     if (error) {
@@ -78,6 +96,19 @@
 
 - (void)disconnectSession {
     [self.ownSession disconnect];
+}
+
+- (void)clear {
+    self.ownPeerId = nil;
+    self.ownSession.delegate = nil;
+    self.ownSession = nil;
+    
+    self.ownScreenWidth = 0;
+    self.ownScreenHeight = 0;
+    
+    self.messageSyncManager = nil;
+    self.bluetoothManager.delegate = nil;
+    self.bluetoothManager = nil;
 }
 
 
@@ -104,21 +135,21 @@
     NSInteger dataType = [(NSNumber *)receivedData[KEY_DATA_TYPE] integerValue];
     
     if (dataType == VALUE_DATA_TYPE_SCREEN_SIZE) {
-        _connectedPeerScreenWidth = receivedData[KEY_SCREEN_SIZE_WIDTH];
-        _connectedPeerScreenHeight = receivedData[KEY_SCREEN_SIZE_HEIGHT];
-        NSLog(@"Received Screen Size : width(%f), height(%f)", [_connectedPeerScreenWidth floatValue], [_connectedPeerScreenHeight floatValue]);
+        self.connectedPeerScreenWidth = [receivedData[KEY_SCREEN_SIZE_WIDTH] floatValue];
+        self.connectedPeerScreenHeight = [receivedData[KEY_SCREEN_SIZE_HEIGHT] floatValue];
+        NSLog(@"Received Screen Size : width(%f), height(%f)", self.connectedPeerScreenWidth, self.connectedPeerScreenHeight);
     } else if (dataType == VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED) {
         NSLog(@"Received Selected Frame Index");
-        if ([[MessageSyncManager sharedInstance] isMessageQueueEnabled]) {
+        if ([self.messageSyncManager isMessageQueueEnabled]) {
             //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
             //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
             //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
             //어차피 상대방이 액자선택에 진입하는 시점과 본인이 액자선택에 진입하는 시점이 달라서 발생하는 동기화 오류는, 그 시간 폭이 매우 작다고 보기 때문에... 성능상 큰 문제가 있을 것 같지는 않다.
-            [[MessageSyncManager sharedInstance] clearMessageQueue];
+            [self.messageSyncManager clearMessageQueue];
             
             //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
             if (![receivedData[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
-                [[MessageSyncManager sharedInstance] putMessage:receivedData];
+                [self.messageSyncManager putMessage:receivedData];
                 
             }
         } else {
@@ -214,10 +245,10 @@
 }
 
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
-    NSArray *array = [resourceName componentsSeparatedByString:@"+"];
+    NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
     
     if (array != nil && array.count == 2) {
-        if ([array[1] isEqualToString:@"_cropped"]) {
+        if ([array[1] isEqualToString:POSTFIX_IMAGE_CROPPED]) {
             NSLog(@"Receive Start Insert Photo");
             if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
                 [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:nil];
@@ -227,14 +258,14 @@
 }
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
-    NSArray *array = [resourceName componentsSeparatedByString:@"+"];
+    NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
     
     if (array != nil && array.count == 2) {
         if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
             [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:localURL];
         }
         
-        if ([array[1] isEqualToString:@"_fullscreen"]) {
+        if ([array[1] isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
             NSLog(@"Receive Finish Insert Photo");
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
                                        KEY_EDITOR_PHOTO_INSERT_ACK: @YES,

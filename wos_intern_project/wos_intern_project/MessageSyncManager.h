@@ -12,7 +12,6 @@
 @interface MessageSyncManager : NSObject
 
 @property (nonatomic, setter=setMessageQueueEnabled:, getter=isMessageQueueEnabled) BOOL messageQueueEnabled;
-@property (atomic, strong, readonly) NSMutableArray *messageQueue;
 
 + (MessageSyncManager *)sharedInstance;
 - (instancetype)init;

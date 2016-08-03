@@ -9,6 +9,7 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#import "CommonConstants.h"
 #import "ConnectionManagerConstants.h"
 
 #import "MessageSyncManager.h"
@@ -19,23 +20,25 @@
 @interface ConnectionManager : NSObject <MCSessionDelegate, CBCentralManagerDelegate>
 
 @property (nonatomic, weak) id<ConnectionManagerDelegate> delegate;
-@property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
-@property (nonatomic, strong, readonly) MCSession *ownSession;
-@property (nonatomic, strong, readonly) NSNumber *ownScreenWidth, *ownScreenHeight;
-
-/** 연결된 상대방 정보 **/
-//원래 이것도 배열로 구성해서 각 피어에 해당하는 셋을 맞춰야되는데, 당장은 1:1 통신을 하므로...
-//@property (nonatomic, strong, readonly) NSMutableArray *connectedPeerIds;
-@property (nonatomic, strong, readonly) NSNumber *connectedPeerScreenWidth, *connectedPeerScreenHeight;
 
 + (ConnectionManager *)sharedInstance;
 
 /**
- 인스턴스의 프로퍼티를 초기화한다. 인자로 받은 deviceName은 자기자신의 peerID.displayName이 된다.
- 초기화되는 프로퍼티는 notificationCenter, ownPeerId, session, session.delegate, browserViewController, advertiser이다.
+ 인스턴스의 프로퍼티를 초기화한다.
  */
-- (void)initInstanceProperties:(NSString *)deviceName withScreenWidthSize:(CGFloat)width withScreenHeightSize:(CGFloat)height;
-
+- (void)initialize;
+/**
+ ConnectionManager에서 관리되는 MCPeerID를 반환한다.
+ */
+- (MCPeerID *)getPeerID;
+/**
+ ConnectionManager에서 관리되는 MCSession를 반환한다.
+ */
+- (MCSession *)getSession;
+/**
+ ConnectionManager에서 관리되는 ScreenSize를 반환한다.
+ */
+- (CGSize)getScreenSize;
 /**
  현재 블루투스 하드웨어의 상태를 가져온다. 반환값은 CBCentralManagerState의 값이 전달된다.
  */

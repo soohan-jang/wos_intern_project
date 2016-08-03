@@ -13,6 +13,9 @@
 
 @interface PhotoEditorViewController ()
 
+@property (nonatomic, strong) ConnectionManager *connectionManager;
+@property (nonatomic, strong) MessageSyncManager *messageSyncManager;
+
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
 @property (atomic, strong) DecorateObjectManager *decoObjectManager;
 
@@ -49,7 +52,7 @@
     NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"], [UIImage imageNamed:@"MenuPhoto"]];
     NSArray *menuItemsSlt = @[[UIImage imageNamed:@"MenuStickerSlt"], [UIImage imageNamed:@"MenuTextSlt"], [UIImage imageNamed:@"MenuPenSlt"], [UIImage imageNamed:@"MenuPhotoSlt"]];
     
-    [self.editMenuButton loadButtonWithIcons:menuItems selectedIcons:menuItemsSlt startDegree:-M_PI layoutDegree:M_PI / 2];
+    [self.editMenuButton loadButtonWithIcons:menuItems selectedIcons:menuItemsSlt startDegree:-M_PI * 1.07 layoutDegree:M_PI / 1.5];
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.editMenuButton setDelegate:self];
@@ -59,7 +62,9 @@
     
     self.isMenuAppear = NO;
     
-    [ConnectionManager sharedInstance].delegate = self;
+    self.connectionManager = [ConnectionManager sharedInstance];
+    self.connectionManager.delegate = self;
+    self.messageSyncManager = [MessageSyncManager sharedInstance];
     [self addObservers];
 }
 
@@ -75,7 +80,7 @@
 }
 
 - (IBAction)saveAction:(id)sender {
-//    [[ConnectionManager sharedInstance] disconnectSession];
+//    [self.connectionManager disconnectSession];
 //    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -190,7 +195,7 @@
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE),
                                        KEY_EDITOR_PHOTO_DELETE_INDEX: @(self.selectedIndexPath.item)};
             
-            [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         }
     }
     
@@ -198,7 +203,7 @@
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
                                    KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
         
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
     
     [sphereMenu dismissMenu];
@@ -237,7 +242,7 @@
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
                                        KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
             
-            [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
         } else {
             [self loadPhotoCropViewController];
         }
@@ -250,7 +255,7 @@
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
                                KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 
@@ -270,7 +275,7 @@
         [self reloadData:self.selectedIndexPath];
         
         //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename withFullscreenImageURL:fullscreenImageURL withCroppedImageURL:croppedImageURL withIndex:self.selectedIndexPath.item];
+        [self.connectionManager sendPhotoDataWithFilename:filename withFullscreenImageURL:fullscreenImageURL withCroppedImageURL:croppedImageURL withIndex:self.selectedIndexPath.item];
     } else {
         //alert.
     }
@@ -280,7 +285,7 @@
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
                                KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 
@@ -294,7 +299,7 @@
                                KEY_EDITOR_DRAWING_UPDATE_MOVED_X: @(originX),
                                KEY_EDITOR_DRAWING_UPDATE_MOVED_Y: @(originY)};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)decoViewDidResizedWithId:(NSString *)identifier WithResizedWidth:(CGFloat)width WithResizedHeight:(CGFloat)height {
@@ -305,7 +310,7 @@
                                KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH: @(width),
                                KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT: @(height)};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)decoViewDidRotatedWithId:(NSString *)identifier WithRotatedAngle:(CGFloat)angle {
@@ -315,7 +320,7 @@
                                KEY_EDITOR_DRAWING_UPDATE_ID: identifier,
                                KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE: @(angle)};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)decoViewDidDeletedWithId:(NSString *)identifier {
@@ -324,7 +329,7 @@
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE),
                                KEY_EDITOR_DRAWING_DELETE_ID: identifier};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)decoViewDidChangedZOrderWithId:(NSString *)identifier {
@@ -348,7 +353,7 @@
                                KEY_EDITOR_DRAWING_INSERT_DATA:[imageObject getData],
                                KEY_EDITOR_DRAWING_INSERT_TIMESTAMP:[imageObject getZOrder]};
     
-    [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
 }
 
 - (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView {
@@ -362,17 +367,17 @@
     if (alertView.tag == ALERT_NOT_SAVE) {
         if (buttonIndex == 1) {
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DICONNECTED)};
-            [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_TIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [ConnectionManager sharedInstance].delegate = nil;
+                self.connectionManager.delegate = nil;
                 [self removeObservers];
                 
                 //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-                [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
-                [[MessageSyncManager sharedInstance] clearMessageQueue];
+                [self.messageSyncManager setMessageQueueEnabled:NO];
+                [self.messageSyncManager clearMessageQueue];
                 
-                [[ConnectionManager sharedInstance] disconnectSession];
+                [self.connectionManager disconnectSession];
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popToRootViewControllerAnimated:YES];
@@ -382,14 +387,14 @@
             });
         }
     } else if (alertView.tag == ALERT_CONTINUE) {
-        [ConnectionManager sharedInstance].delegate = nil;
+        self.connectionManager.delegate = nil;
         [self removeObservers];
         
         //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-        [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
-        [[MessageSyncManager sharedInstance] clearMessageQueue];
+        [self.messageSyncManager setMessageQueueEnabled:NO];
+        [self.messageSyncManager clearMessageQueue];
         
-        [[ConnectionManager sharedInstance] disconnectSession];
+        [self.connectionManager disconnectSession];
         
         //계속하지 않겠다고 응답했으므로, 메인화면으로 돌아간다.
         if (buttonIndex == 1) {
@@ -457,7 +462,7 @@
         NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
                                    KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
         
-        [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
     }
 }
 

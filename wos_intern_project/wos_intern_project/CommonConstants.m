@@ -11,6 +11,7 @@
 NSString *const PREFIX_IMAGE_PHOTOFRAME   = @"PhotoFrame";
 NSString *const POSTFIX_IMAGE_FULLSCREEN  = @"_fullscreen";
 NSString *const POSTFIX_IMAGE_CROPPED     = @"_cropped";
+NSString *const SEPERATOR_IMAGE_NAME      = @"+";
 
 NSString *const SEGUE_MOVETO_FRAME_SLT    = @"moveToPhotoFrameSelect";
 NSString *const SEGUE_MOVE_TO_EDITOR      = @"moveToPhotoEditor";

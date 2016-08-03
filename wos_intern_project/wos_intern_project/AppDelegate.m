@@ -16,8 +16,8 @@
 
 // Override point for customization after application launch.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
-    [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name withScreenWidthSize:mainScreenRect.size.width withScreenHeightSize:mainScreenRect.size.height];
+    //어플리케이션이 시작될 때, ConnectionManager를 초기화한다.
+    [[ConnectionManager sharedInstance] initialize];
     return YES;
 }
 
