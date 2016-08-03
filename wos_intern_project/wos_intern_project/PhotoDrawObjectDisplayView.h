@@ -18,7 +18,7 @@ extern NSInteger const DECO_VIEW_Z_ORDER_DOWN;
 
 @interface PhotoDrawObjectDisplayView : UIView
 
-@property (nonatomic, weak) id<PhotoDrawObjectDisplayViewDelegate> delegate;
+@property (weak, nonatomic) id<PhotoDrawObjectDisplayViewDelegate> delegate;
 
 /**
  그려진 객체를 추가한다. 추가된 객체는 DisplayView에 addSubView되어 화면에 표시된다. GestureRecognizer도 함께 추가한다.

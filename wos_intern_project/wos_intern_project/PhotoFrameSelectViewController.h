@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "Constants.h"
+#import "CommonConstants.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
@@ -27,8 +27,8 @@ typedef NS_ENUM(NSInteger, PhotoFrameSelectAlertType) {
 
 @interface PhotoFrameSelectViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate, ConnectionManagerDelegate>
 
-@property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *doneButton;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)doneAction:(id)sender;

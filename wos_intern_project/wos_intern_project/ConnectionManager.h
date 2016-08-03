@@ -7,114 +7,20 @@
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+
+#import "ConnectionManagerConstants.h"
+
 #import "MessageSyncManager.h"
 #import "ImageUtility.h"
 
-/** MCSession Service Type **/
-/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
-extern NSString *const SERVICE_TYPE;
-
-/** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
-extern NSString *const KEY_DATA_TYPE;
-
-/** KEY_DATA_TYPE에 값으로 설정되는 값 **/
-extern NSUInteger const VALUE_DATA_TYPE_SCREEN_SIZE;
-
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED;
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM;
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK;
-extern NSUInteger const VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED;
-
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE;
-
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_Z_ORDER;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE;
-extern NSUInteger const VALUE_DATA_TYPE_EDITOR_DICONNECTED;
-
-/** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
-/** 너비와 높이가 NSNumber floatValue 값으로 매칭된다 **/
-extern NSString *const KEY_SCREEN_SIZE_WIDTH;
-extern NSString *const KEY_SCREEN_SIZE_HEIGHT;
-
-/** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
-/** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-extern NSString *const KEY_PHOTO_FRAME_SELECTED;
-
-/** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
-/** NSNumber boolValue 값으로 매칭된다 **/
-extern NSString *const KEY_PHOTO_FRAME_CONFIRM_ACK;
-
-/** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
-/** 아직 미정. 근데 아마 사진은 byte[], 그림 객체는 DrawingObject 값으로 매칭될 듯 **/
-extern NSString *const KEY_EDITOR_PHOTO_INSERT_INDEX;
-extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA_TYPE;
-extern NSString *const KEY_EDITOR_PHOTO_INSERT_DATA;
-extern NSString *const KEY_EDITOR_PHOTO_INSERT_ACK;
-extern NSString *const KEY_EDITOR_PHOTO_EDIT_INDEX;
-extern NSString *const KEY_EDITOR_PHOTO_DELETE_INDEX;
-
-extern NSString *const KEY_EDITOR_DRAWING_EDIT_ID;
-extern NSString *const KEY_EDITOR_DRAWING_INSERT_DATA;
-extern NSString *const KEY_EDITOR_DRAWING_INSERT_TIMESTAMP;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_ID;
-//extern NSString *const KEY_EDITOR_DRAWING_UPDATE_DATA;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_X;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_MOVED_Y;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT;
-extern NSString *const KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE;
-//extern NSString *const KEY_EDITOR_DRAWING_UPDATE_Z_ORDER;
-extern NSString *const KEY_EDITOR_DRAWING_DELETE_ID;
-
-///** 세션 연결, 연결 해제에 대한 노티피케이션 이름 **/
-//extern NSString *const NOTIFICATION_PEER_CONNECTED;
-//extern NSString *const NOTIFICATION_PEER_DISCONNECTED;
-//
-///** 스크린 크기값 수신에 대한 노티피케이션 이름 **/
-//extern NSString *const NOTIFICATION_RECV_SCREEN_SIZE;
-//
-///** 액자 선택, 결정, 결정응답, 연결해제에 대한 노티피케이션 이름 **/
-//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_SELECTED;
-//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM;
-//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_CONFIRM_ACK;
-//extern NSString *const NOTIFICATION_RECV_PHOTO_FRAME_DISCONNECTED;
-//
-///** 사진입력, 사진삭제, 그림객체 입력, 갱신, 삭제와 관련된 노티피케이션 이름 **/
-//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_INSERT_ACK;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_EDIT_CANCELED;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_PHOTO_DELETE;
-//
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_EDIT_CANCEL;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_INSERT;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_MOVED;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_RESIZED;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_ROTATED;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_UPDATE_Z_ORDER;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DRAWING_DELETE;
-//extern NSString *const NOTIFICATION_RECV_EDITOR_DISCONNECTED;
-
 @protocol ConnectionManagerDelegate;
 
-@interface ConnectionManager : NSObject <MCSessionDelegate>
+@interface ConnectionManager : NSObject <MCSessionDelegate, CBCentralManagerDelegate>
 
 @property (nonatomic, weak) id<ConnectionManagerDelegate> delegate;
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
-@property (nonatomic, strong, readonly) MCBrowserViewController *browserViewController;
-@property (nonatomic, strong, readonly) MCNearbyServiceAdvertiser *advertiser;
 @property (nonatomic, strong, readonly) NSNumber *ownScreenWidth, *ownScreenHeight;
 
 /** 연결된 상대방 정보 **/
@@ -131,14 +37,9 @@ extern NSString *const KEY_EDITOR_DRAWING_DELETE_ID;
 - (void)initInstanceProperties:(NSString *)deviceName withScreenWidthSize:(CGFloat)width withScreenHeightSize:(CGFloat)height;
 
 /**
- 다른 단말기에 자신의 단말기가 검색되는 것을 허용한다.
+ 현재 블루투스 하드웨어의 상태를 가져온다. 반환값은 CBCentralManagerState의 값이 전달된다.
  */
-- (void)startAdvertise;
-
-/**
- 다른 단말기에 자신의 단말기가 검색되는 것을 허용하지 않는다.
- */
-- (void)stopAdvertise;
+- (NSInteger)getBluetoothState;
 
 /**
  ConnectionManager가 관리하는 MCSession 객체를 이용하여 메시지를 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.

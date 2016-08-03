@@ -14,8 +14,8 @@
 
 @interface PhotoDrawPenView : UIView
 
-@property (nonatomic, weak) id<PhotoDrawPenViewDelegate> delegate;
-@property (strong, nonatomic) IBOutlet SmoothLineView *canvasView;
+@property (weak, nonatomic) id<PhotoDrawPenViewDelegate> delegate;
+@property (weak, nonatomic) IBOutlet SmoothLineView *canvasView;
 
 - (IBAction)backAction:(id)sender;
 - (IBAction)doneAction:(id)sender;

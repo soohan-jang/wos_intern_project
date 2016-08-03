@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
+#import <MultipeerConnectivity/MultipeerConnectivity.h>
 
-#import "Constants.h"
+#import "CommonConstants.h"
+#import "ConnectionManagerConstants.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
@@ -20,9 +21,9 @@
 
 extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
 
-@interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, CBCentralManagerDelegate, ConnectionManagerDelegate>
+@interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, ConnectionManagerDelegate>
 
-@property (strong, nonatomic) IBOutlet UIBarButtonItem *albumButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *albumButton;
 
 @end
 

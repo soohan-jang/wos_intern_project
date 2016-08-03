@@ -1,5 +1,5 @@
 //
-//  Constants.h
+//  CommonConstants.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 3..

@@ -1,12 +1,12 @@
 //
-//  Constants.m
+//  CommonConstants.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 3..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "Constants.h"
+#import "CommonConstants.h"
 
 NSString *const PREFIX_IMAGE_PHOTOFRAME   = @"PhotoFrame";
 NSString *const POSTFIX_IMAGE_FULLSCREEN  = @"_fullscreen";

@@ -14,26 +14,37 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 
 @interface MainViewController ()
 
-@property (nonatomic, strong) CBCentralManager *bluetoothManager;
-@property (nonatomic) BOOL isBluetoothUnsupported;
+@property (nonatomic, strong) ConnectionManager *connectionManager;
+
+@property (nonatomic, strong) MCBrowserViewController *browserViewController;
+@property (nonatomic, strong) MCNearbyServiceAdvertiser *advertiser;
 
 @property (nonatomic, strong) WMProgressHUD *progressView;
 @property (nonatomic, strong) NSArray *invitationHandlerArray;
 
-- (void)findDeviceAction;
-
 /**
  다른 뷰컨트롤러에서 pop하거나 popRootViewController를 통해 MainViewController로 복귀시에 호출되는 함수이다.
  이 함수는 NSNotificationCenter로 호출되며, Observer를 등록하기 위해 사용된다.
+ 얘도 이름 바꿔라
  */
 - (void)viewDidUnwind:(NSNotification *)notification;
-
+/**
+ BrowserViewController를 화면에 표시한다. 블루투스의 현재 상태를 확인하여, 블루투스가 켜지지 않은 상태라면 Alert를 표시한다.
+ */
+- (void)loadBrowserViewController;
 /**
  ProgressView의 상태를 완료로 바꾼 뒤에 종료한다.
  Main Thread에서 호출하기 위한 performSelector 용도의 함수이다.
  */
 - (void)doneProgress;
-
+/**
+ 다른 단말기에 자신의 단말기가 검색되는 것을 허용한다.
+ */
+- (void)startAdvertise;
+/**
+ 다른 단말기에 자신의 단말기가 검색되는 것을 허용하지 않는다.
+ */
+- (void)stopAdvertise;
 /**
  PhotoFrame ViewController를 호출한다.
  Main Thread에서 호출하기 위한 performSelector 용도의 함수이다.
@@ -50,43 +61,46 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
-    [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name withScreenWidthSize:self.view.frame.size.width withScreenHeightSize:self.view.frame.size.height];
-    [ConnectionManager sharedInstance].browserViewController.delegate = self;
+    self.connectionManager = [ConnectionManager sharedInstance];
+    self.connectionManager.delegate = self;
     
-    UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(findDeviceAction)];
+    self.browserViewController = [[MCBrowserViewController alloc] initWithServiceType:SERVICE_TYPE session:self.connectionManager.ownSession];
+    //1:1 통신이므로 연결할 피어의 수는 하나로 제한한다.
+    self.browserViewController.maximumNumberOfPeers = 1;
+    self.browserViewController.delegate = self;
+    
+    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:self.connectionManager.ownPeerId discoveryInfo:nil serviceType:SERVICE_TYPE];
+    
+    UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadBrowserViewController)];
     tabGestureRecognizer.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:tabGestureRecognizer];
     
-    [ConnectionManager sharedInstance].delegate = self;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidUnwind:) name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
 }
 
 - (void)viewDidUnwind:(NSNotification *)notification {
-    NSLog(@"Unwinded, addObservers.");
     [ConnectionManager sharedInstance].delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [self.view setUserInteractionEnabled:YES];
-    if (self.bluetoothManager.state == CBCentralManagerStateUnsupported) {
+    NSInteger bluetoothState = [self.connectionManager getBluetoothState];
+    
+    if (bluetoothState == CBCentralManagerStateUnsupported) {
         //Alert and application terminate.
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_unsupported", nil) message:NSLocalizedString(@"alert_content_bluetooth_unsupported", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
         [alertView show];
-        self.isBluetoothUnsupported = YES;
     } else {
-        self.isBluetoothUnsupported = NO;
-        
-        if (self.bluetoothManager.state == CBCentralManagerStatePoweredOff) {
+        if (bluetoothState == CBCentralManagerStatePoweredOff) {
             //Alert
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_off", nil) message:NSLocalizedString(@"alert_content_bluetooth_off", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil) otherButtonTitles:nil, nil];
             [alertView show];
         }
     }
     
-    [ConnectionManager sharedInstance].advertiser.delegate = self;
-    [[ConnectionManager sharedInstance] startAdvertise];
+    self.advertiser.delegate = self;
+    [self startAdvertise];
     
     [super viewDidAppear:animated];
 }
@@ -95,16 +109,23 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)startAdvertise {
+    if (self.advertiser != nil) {
+        [self.advertiser startAdvertisingPeer];
+    }
 }
 
-- (void)findDeviceAction {
-    if (self.bluetoothManager.state == CBCentralManagerStatePoweredOn) {
+- (void)stopAdvertise {
+    if (self.advertiser != nil) {
+        [self.advertiser stopAdvertisingPeer];
+    }
+}
+
+- (void)loadBrowserViewController {
+    if ([self.connectionManager getBluetoothState] == CBCentralManagerStatePoweredOn) {
         if ([self hasAccessPhotoAlbumAuthority]) {
-            [self presentViewController:[ConnectionManager sharedInstance].browserViewController animated:YES completion:nil];
-            [[ConnectionManager sharedInstance] stopAdvertise];
+            [self presentViewController:self.browserViewController animated:YES completion:nil];
+            [self stopAdvertise];
         }
     } else {
         //Alert
@@ -129,8 +150,8 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 }
 
 - (void)loadPhotoFrameViewController {
-    [[ConnectionManager sharedInstance] stopAdvertise];
-    [ConnectionManager sharedInstance].delegate = nil;
+    [self stopAdvertise];
+    self.connectionManager.delegate = nil;
     [self performSegueWithIdentifier:SEGUE_MOVETO_FRAME_SLT sender:self];
 }
 
@@ -193,11 +214,6 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 }
 
 
-#pragma mark - CBCentralManagerDelegate Methods
-
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central { /** Do nothing... **/ }
-
-
 #pragma mark - ConnectionManager Delegate Methods
 
 - (void)receivedPeerConnected {
@@ -210,9 +226,9 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
     [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:screenSizeDictionary]];
     
-    if ([self.navigationController presentedViewController] == [ConnectionManager sharedInstance].browserViewController) {
+    if ([self.navigationController presentedViewController] == self.browserViewController) {
         [self.view setUserInteractionEnabled:NO];
-        [[ConnectionManager sharedInstance].browserViewController dismissViewControllerAnimated:YES completion:^{
+        [self.browserViewController dismissViewControllerAnimated:YES completion:^{
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self loadPhotoFrameViewController];
             });
@@ -232,7 +248,7 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 - (void)receivedEditorDisconnected {
     [[ConnectionManager sharedInstance] disconnectSession];
     
-    if ([self.navigationController presentedViewController] != [ConnectionManager sharedInstance].browserViewController) {
+    if ([self.navigationController presentedViewController] != self.browserViewController) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self rejectProgress];
         });

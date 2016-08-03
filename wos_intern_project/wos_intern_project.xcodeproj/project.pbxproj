@@ -7,45 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A9409251D40B7C5007B5C3D /* SphereMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9409241D40B7C5007B5C3D /* SphereMenu.m */; };
-		4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */; };
-		4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */; };
-		4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */; };
-		4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
-		4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
-		4A0F100D1D45DDE800BF4EFC /* PhotoCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */; };
-		4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
-		4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
-		4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
-		4A4E28BD1D4ED8FA0014F162 /* PhotoDrawPenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */; };
-		4A4E28C01D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */; };
-		4A54489D1D51AB8C00883E08 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A54489C1D51AB8C00883E08 /* Constants.m */; };
-		4A5D86751D4C8445001EB2A9 /* WMPhotoDecorateObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86741D4C8445001EB2A9 /* WMPhotoDecorateObject.m */; };
-		4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */; };
-		4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
-		4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
-		4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
-		4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
-		4AA4D5E81D5075CF003F6B68 /* UIView+StringTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA4D5E71D5075CF003F6B68 /* UIView+StringTag.m */; };
-		4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
-		4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */; };
-		4B44909B1D3A607F00E5972F /* WMPhotoDecorateImageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909A1D3A607F00E5972F /* WMPhotoDecorateImageObject.m */; };
-		4B44909E1D3A608A00E5972F /* WMPhotoDecorateTextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909D1D3A608A00E5972F /* WMPhotoDecorateTextObject.m */; };
-		4B4490A11D3A609800E5972F /* DecorateObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A01D3A609800E5972F /* DecorateObjectManager.m */; };
+		4A5448A71D51E69E00883E08 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */; };
+		4A5448A81D51E69E00883E08 /* WMProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */; };
+		4A5448A91D51E69E00883E08 /* SphereMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A9409241D40B7C5007B5C3D /* SphereMenu.m */; };
+		4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B21D46664600E5972F /* PECropRectView.m */; };
+		4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B41D46664600E5972F /* PECropView.m */; };
+		4A5448AC1D51E69E00883E08 /* PECropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B61D46664600E5972F /* PECropViewController.m */; };
+		4A5448AD1D51E69E00883E08 /* PEResizeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B81D46664600E5972F /* PEResizeControl.m */; };
+		4A5448AE1D51E69E00883E08 /* UIImage+PECrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490BA1D46664600E5972F /* UIImage+PECrop.m */; };
+		4A5448AF1D51E69E00883E08 /* XXXRoundMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */; };
+		4A5448B01D51E69E00883E08 /* SmoothLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */; };
+		4A5448B11D51E69E00883E08 /* CommonConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A54489C1D51AB8C00883E08 /* CommonConstants.m */; };
+		4A5448B21D51E69E00883E08 /* ConnectionManagerConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5448A21D51D03500883E08 /* ConnectionManagerConstants.m */; };
+		4A5448B31D51E69E00883E08 /* UIView+StringTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AA4D5E71D5075CF003F6B68 /* UIView+StringTag.m */; };
+		4A5448B41D51E69E00883E08 /* PhotoFrameSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */; };
+		4A5448B51D51E69E00883E08 /* PhotoEditorFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */; };
+		4A5448B61D51E69E00883E08 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */; };
+		4A5448B71D51E69E00883E08 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
+		4A5448B81D51E69E00883E08 /* PhotoEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */; };
+		4A5448B91D51E69E00883E08 /* PhotoCropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */; };
+		4A5448BA1D51E69E00883E08 /* PhotoDrawObjectDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */; };
+		4A5448BB1D51E69E00883E08 /* PhotoDrawPenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */; };
+		4A5448BC1D51E69E00883E08 /* PhotoAlbumViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */; };
+		4A5448BD1D51E69E00883E08 /* PhotoViewerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */; };
+		4A5448BE1D51E69E00883E08 /* WMPhotoDecorateObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86741D4C8445001EB2A9 /* WMPhotoDecorateObject.m */; };
+		4A5448BF1D51E69E00883E08 /* WMPhotoDecorateImageObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909A1D3A607F00E5972F /* WMPhotoDecorateImageObject.m */; };
+		4A5448C01D51E69E00883E08 /* WMPhotoDecorateTextObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909D1D3A608A00E5972F /* WMPhotoDecorateTextObject.m */; };
+		4A5448C11D51E69E00883E08 /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
+		4A5448C21D51E69E00883E08 /* MessageSyncManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0C937F1D3F0A900080E9A6 /* MessageSyncManager.m */; };
+		4A5448C31D51E69E00883E08 /* ImageUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490AA1D426E2800E5972F /* ImageUtility.m */; };
+		4A5448C41D51E69E00883E08 /* PhotoFrameCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */; };
+		4A5448C51D51E69E00883E08 /* DecorateObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A01D3A609800E5972F /* DecorateObjectManager.m */; };
+		4A5448C61D51E69E00883E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
+		4A5448C71D51E69E00883E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
 		4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
-		4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490AA1D426E2800E5972F /* ImageUtility.m */; };
-		4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B21D46664600E5972F /* PECropRectView.m */; };
-		4B4490BC1D46664600E5972F /* PECropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B41D46664600E5972F /* PECropView.m */; };
-		4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B61D46664600E5972F /* PECropViewController.m */; };
-		4B4490BE1D46664600E5972F /* PEResizeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490B81D46664600E5972F /* PEResizeControl.m */; };
-		4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490BA1D46664600E5972F /* UIImage+PECrop.m */; };
-		4BA0B6391D4CF2EA00403318 /* XXXRoundMenuButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,8 +108,10 @@
 		4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawPenView.m; sourceTree = "<group>"; };
 		4A4E28BE1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoDrawObjectDisplayView.h; sourceTree = "<group>"; };
 		4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawObjectDisplayView.m; sourceTree = "<group>"; };
-		4A54489A1D51838700883E08 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		4A54489C1D51AB8C00883E08 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		4A54489A1D51838700883E08 /* CommonConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonConstants.h; sourceTree = "<group>"; };
+		4A54489C1D51AB8C00883E08 /* CommonConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonConstants.m; sourceTree = "<group>"; };
+		4A5448A11D51D03500883E08 /* ConnectionManagerConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionManagerConstants.h; sourceTree = "<group>"; };
+		4A5448A21D51D03500883E08 /* ConnectionManagerConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionManagerConstants.m; sourceTree = "<group>"; };
 		4A5D86741D4C8445001EB2A9 /* WMPhotoDecorateObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMPhotoDecorateObject.m; sourceTree = "<group>"; };
 		4A5D867E1D4CA133001EB2A9 /* SmoothLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothLineView.h; sourceTree = "<group>"; };
 		4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmoothLineView.m; sourceTree = "<group>"; };
@@ -230,6 +233,7 @@
 			isa = PBXGroup;
 			children = (
 				4A0C92DF1D374D4C0080E9A6 /* ExternalLib */,
+				4A5448A01D51CFD900883E08 /* Constants */,
 				4A97B60A1D336514003899F7 /* View */,
 				4A97B60C1D336540003899F7 /* Data */,
 				4A97B60B1D336520003899F7 /* Manager */,
@@ -269,6 +273,17 @@
 				4A4ACF521D2B6D2C00BC2FC4 /* Info.plist */,
 			);
 			path = wos_intern_projectUITests;
+			sourceTree = "<group>";
+		};
+		4A5448A01D51CFD900883E08 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				4A54489A1D51838700883E08 /* CommonConstants.h */,
+				4A54489C1D51AB8C00883E08 /* CommonConstants.m */,
+				4A5448A11D51D03500883E08 /* ConnectionManagerConstants.h */,
+				4A5448A21D51D03500883E08 /* ConnectionManagerConstants.m */,
+			);
+			name = Constants;
 			sourceTree = "<group>";
 		};
 		4A5D867D1D4CA11F001EB2A9 /* SmoothLineView */ = {
@@ -331,8 +346,6 @@
 				4B44909A1D3A607F00E5972F /* WMPhotoDecorateImageObject.m */,
 				4B44909C1D3A608A00E5972F /* WMPhotoDecorateTextObject.h */,
 				4B44909D1D3A608A00E5972F /* WMPhotoDecorateTextObject.m */,
-				4A54489A1D51838700883E08 /* Constants.h */,
-				4A54489C1D51AB8C00883E08 /* Constants.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -534,38 +547,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */,
-				4B4490A11D3A609800E5972F /* DecorateObjectManager.m in Sources */,
-				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
-				4A54489D1D51AB8C00883E08 /* Constants.m in Sources */,
-				4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */,
-				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
-				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
-				4A97B6061D3364AA003899F7 /* PhotoAlbumViewController.m in Sources */,
-				4AD6E64C1D347E8C00C379EF /* ConnectionManager.m in Sources */,
-				4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */,
-				4AA4D5E81D5075CF003F6B68 /* UIView+StringTag.m in Sources */,
-				4B4490BB1D46664600E5972F /* PECropRectView.m in Sources */,
-				4A5D86751D4C8445001EB2A9 /* WMPhotoDecorateObject.m in Sources */,
-				4A4ACF331D2B6D2C00BC2FC4 /* MainViewController.m in Sources */,
-				4A0C93551D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m in Sources */,
-				4A4E28C01D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m in Sources */,
-				4B4490AB1D426E2800E5972F /* ImageUtility.m in Sources */,
-				4BA0B6391D4CF2EA00403318 /* XXXRoundMenuButton.m in Sources */,
-				4B44909B1D3A607F00E5972F /* WMPhotoDecorateImageObject.m in Sources */,
-				4A4ACF301D2B6D2C00BC2FC4 /* AppDelegate.m in Sources */,
-				4A0F100D1D45DDE800BF4EFC /* PhotoCropViewController.m in Sources */,
-				4A4E28BD1D4ED8FA0014F162 /* PhotoDrawPenView.m in Sources */,
-				4A0C93811D3F8CAF0080E9A6 /* MessageSyncManager.m in Sources */,
-				4B44909E1D3A608A00E5972F /* WMPhotoDecorateTextObject.m in Sources */,
-				4B4490911D3A5D4700E5972F /* PhotoEditorFrameViewCell.m in Sources */,
-				4A97B6031D33649A003899F7 /* PhotoEditorViewController.m in Sources */,
-				4A0C92DE1D374D460080E9A6 /* MBProgressHUD.m in Sources */,
-				4B4490BD1D46664600E5972F /* PECropViewController.m in Sources */,
-				4A97B6091D3364CA003899F7 /* PhotoViewerViewController.m in Sources */,
-				4A4ACF2D1D2B6D2C00BC2FC4 /* main.m in Sources */,
-				4B4490BE1D46664600E5972F /* PEResizeControl.m in Sources */,
-				0A9409251D40B7C5007B5C3D /* SphereMenu.m in Sources */,
+				4A5448A71D51E69E00883E08 /* MBProgressHUD.m in Sources */,
+				4A5448A81D51E69E00883E08 /* WMProgressHUD.m in Sources */,
+				4A5448A91D51E69E00883E08 /* SphereMenu.m in Sources */,
+				4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */,
+				4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */,
+				4A5448AC1D51E69E00883E08 /* PECropViewController.m in Sources */,
+				4A5448AD1D51E69E00883E08 /* PEResizeControl.m in Sources */,
+				4A5448AE1D51E69E00883E08 /* UIImage+PECrop.m in Sources */,
+				4A5448AF1D51E69E00883E08 /* XXXRoundMenuButton.m in Sources */,
+				4A5448B01D51E69E00883E08 /* SmoothLineView.m in Sources */,
+				4A5448B11D51E69E00883E08 /* CommonConstants.m in Sources */,
+				4A5448B21D51E69E00883E08 /* ConnectionManagerConstants.m in Sources */,
+				4A5448B31D51E69E00883E08 /* UIView+StringTag.m in Sources */,
+				4A5448B41D51E69E00883E08 /* PhotoFrameSelectViewCell.m in Sources */,
+				4A5448B51D51E69E00883E08 /* PhotoEditorFrameViewCell.m in Sources */,
+				4A5448B61D51E69E00883E08 /* MainViewController.m in Sources */,
+				4A5448B71D51E69E00883E08 /* PhotoFrameSelectViewController.m in Sources */,
+				4A5448B81D51E69E00883E08 /* PhotoEditorViewController.m in Sources */,
+				4A5448B91D51E69E00883E08 /* PhotoCropViewController.m in Sources */,
+				4A5448BA1D51E69E00883E08 /* PhotoDrawObjectDisplayView.m in Sources */,
+				4A5448BB1D51E69E00883E08 /* PhotoDrawPenView.m in Sources */,
+				4A5448BC1D51E69E00883E08 /* PhotoAlbumViewController.m in Sources */,
+				4A5448BD1D51E69E00883E08 /* PhotoViewerViewController.m in Sources */,
+				4A5448BE1D51E69E00883E08 /* WMPhotoDecorateObject.m in Sources */,
+				4A5448BF1D51E69E00883E08 /* WMPhotoDecorateImageObject.m in Sources */,
+				4A5448C01D51E69E00883E08 /* WMPhotoDecorateTextObject.m in Sources */,
+				4A5448C11D51E69E00883E08 /* ConnectionManager.m in Sources */,
+				4A5448C21D51E69E00883E08 /* MessageSyncManager.m in Sources */,
+				4A5448C31D51E69E00883E08 /* ImageUtility.m in Sources */,
+				4A5448C41D51E69E00883E08 /* PhotoFrameCellManager.m in Sources */,
+				4A5448C51D51E69E00883E08 /* DecorateObjectManager.m in Sources */,
+				4A5448C61D51E69E00883E08 /* AppDelegate.m in Sources */,
+				4A5448C71D51E69E00883E08 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,6 +16,8 @@
 
 // Override point for customization after application launch.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
+    [[ConnectionManager sharedInstance] initInstanceProperties:[UIDevice currentDevice].name withScreenWidthSize:mainScreenRect.size.width withScreenHeightSize:mainScreenRect.size.height];
     return YES;
 }
 

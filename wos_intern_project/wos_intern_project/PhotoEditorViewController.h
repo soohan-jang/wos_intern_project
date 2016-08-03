@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "Constants.h"
+#import "CommonConstants.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
@@ -33,14 +33,14 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 
 @interface PhotoEditorViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenViewDelegate, UIAlertViewDelegate, ConnectionManagerDelegate>
 
-@property (nonatomic, strong) IBOutlet UIView *collectionContainerView;
-@property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
-@property (strong, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
+@property (weak, nonatomic) IBOutlet UIView *collectionContainerView;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
 
 //그려진 객체들이 위치하는 뷰
-@property (strong, nonatomic) IBOutlet PhotoDrawObjectDisplayView *drawObjectDisplayView;
+@property (weak, nonatomic) IBOutlet PhotoDrawObjectDisplayView *drawObjectDisplayView;
 //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
-@property (strong, nonatomic) IBOutlet PhotoDrawPenView *drawPenView;
+@property (weak, nonatomic) IBOutlet PhotoDrawPenView *drawPenView;
 
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
