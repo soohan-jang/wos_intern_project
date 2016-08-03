@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+
+#import "Constants.h"
+
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 

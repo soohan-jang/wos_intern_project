@@ -129,7 +129,11 @@
 }
 
 - (NSInteger)getCount {
-    return self.decorateObjectArray.count;
+    if ([self isEmpty]) {
+        return 0;
+    } else {
+        return self.decorateObjectArray.count;
+    }
 }
 
 @end

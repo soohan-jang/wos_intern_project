@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+#import "Constants.h"
+
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 #import "DecorateObjectManager.h"
@@ -33,9 +35,10 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 
 @property (nonatomic, strong) IBOutlet UIView *collectionContainerView;
 @property (nonatomic, strong) IBOutlet UICollectionView *collectionView;
+@property (strong, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
+
 //그려진 객체들이 위치하는 뷰
 @property (strong, nonatomic) IBOutlet PhotoDrawObjectDisplayView *drawObjectDisplayView;
-@property (strong, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
 //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
 @property (strong, nonatomic) IBOutlet PhotoDrawPenView *drawPenView;
 
@@ -49,6 +52,10 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  */
 - (IBAction)saveAction:(id)sender;
 
+/**
+ 선택된 사진 액자를 전달한다. 파라메터는 NSInteger로 선택된 사진 액자의 indexPath.item을 받는다.
+ 전달된 indexPath.item의 값에 따라 정해진 사진 액자를 구성하도록 설정한다.
+ */
 - (void)setPhotoFrameNumber:(NSInteger)frameNumber;
 
 @end

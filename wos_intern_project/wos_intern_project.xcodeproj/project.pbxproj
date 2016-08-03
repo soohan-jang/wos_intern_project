@@ -25,6 +25,7 @@
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
 		4A4E28BD1D4ED8FA0014F162 /* PhotoDrawPenView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */; };
 		4A4E28C01D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */; };
+		4A54489D1D51AB8C00883E08 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A54489C1D51AB8C00883E08 /* Constants.m */; };
 		4A5D86751D4C8445001EB2A9 /* WMPhotoDecorateObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D86741D4C8445001EB2A9 /* WMPhotoDecorateObject.m */; };
 		4A5D86801D4CA133001EB2A9 /* SmoothLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */; };
 		4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
@@ -106,6 +107,8 @@
 		4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawPenView.m; sourceTree = "<group>"; };
 		4A4E28BE1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoDrawObjectDisplayView.h; sourceTree = "<group>"; };
 		4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawObjectDisplayView.m; sourceTree = "<group>"; };
+		4A54489A1D51838700883E08 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		4A54489C1D51AB8C00883E08 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		4A5D86741D4C8445001EB2A9 /* WMPhotoDecorateObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WMPhotoDecorateObject.m; sourceTree = "<group>"; };
 		4A5D867E1D4CA133001EB2A9 /* SmoothLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothLineView.h; sourceTree = "<group>"; };
 		4A5D867F1D4CA133001EB2A9 /* SmoothLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmoothLineView.m; sourceTree = "<group>"; };
@@ -328,6 +331,8 @@
 				4B44909A1D3A607F00E5972F /* WMPhotoDecorateImageObject.m */,
 				4B44909C1D3A608A00E5972F /* WMPhotoDecorateTextObject.h */,
 				4B44909D1D3A608A00E5972F /* WMPhotoDecorateTextObject.m */,
+				4A54489A1D51838700883E08 /* Constants.h */,
+				4A54489C1D51AB8C00883E08 /* Constants.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -532,6 +537,7 @@
 				4B4490BF1D46664600E5972F /* UIImage+PECrop.m in Sources */,
 				4B4490A11D3A609800E5972F /* DecorateObjectManager.m in Sources */,
 				4A0C92E31D3754C80080E9A6 /* WMProgressHUD.m in Sources */,
+				4A54489D1D51AB8C00883E08 /* Constants.m in Sources */,
 				4A0917E71D49CD310028899A /* PhotoFrameCellManager.m in Sources */,
 				4B4490BC1D46664600E5972F /* PECropView.m in Sources */,
 				4A97B6001D336486003899F7 /* PhotoFrameSelectViewController.m in Sources */,
@@ -656,6 +662,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -669,6 +676,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -698,6 +706,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -706,6 +715,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -717,6 +727,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = wos_intern_project/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -732,6 +743,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = wos_intern_project/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

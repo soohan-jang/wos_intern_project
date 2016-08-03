@@ -235,7 +235,7 @@
                                             <outlet property="delegate" destination="dKW-hc-NhL" id="6xO-NV-iAa"/>
                                         </connections>
                                     </collectionView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDrawObjectDisplayView">
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDrawObjectDisplayView">
                                         <rect key="frame" x="20" y="-12" width="560" height="560"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>

@@ -5,7 +5,10 @@
 //  Created by Naver on 2016. 7. 11..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
+
 #import "PhotoFrameSelectViewController.h"
+
+#define DELAY_TIME  1.0f
 
 @interface PhotoFrameSelectViewController ()
 
@@ -95,11 +98,11 @@
 }
 
 - (void)loadPhotoEditorViewController {
-    [self performSegueWithIdentifier:@"moveToPhotoEditor" sender:self];
+    [self performSegueWithIdentifier:SEGUE_MOVE_TO_EDITOR sender:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"moveToPhotoEditor"]) {
+    if ([segue.identifier isEqualToString:SEGUE_MOVE_TO_EDITOR]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.ownSelectedFrameIndex.item];
     }
@@ -150,7 +153,7 @@
             
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_TIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
                 [[MessageSyncManager sharedInstance] setMessageQueueEnabled:NO];
                 [[MessageSyncManager sharedInstance] clearMessageQueue];
@@ -203,9 +206,9 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"frameSelectCell" forIndexPath:indexPath];
+    PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:REUSE_CELL_FRAME_SLT forIndexPath:indexPath];
     cell.cellIndex = indexPath.item;
-    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"PhotoFrame%ld", (long)indexPath.item]]];
+    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@%ld", PREFIX_IMAGE_PHOTOFRAME, (long)indexPath.item]]];
     
     return cell;
 }
@@ -336,7 +339,7 @@
             [self acceptProgress];
         });
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_TIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self loadPhotoEditorViewController];
         });
     } else {

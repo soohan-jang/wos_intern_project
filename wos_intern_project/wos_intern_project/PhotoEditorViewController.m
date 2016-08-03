@@ -8,6 +8,9 @@
 
 #import "PhotoEditorViewController.h"
 
+#define MAIN_MENU_BACKGROUND_COLOR [UIColor colorWithRed:45 / 255.f green:140 / 255.f blue:213 / 255.f alpha:1]
+#define DELAY_TIME                 1.0f
+
 @interface PhotoEditorViewController ()
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
@@ -43,13 +46,15 @@
     self.drawPenView.delegate = self;
     
     /**** Set Main Menu ****/
-    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
-    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI / 2];
+    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"], [UIImage imageNamed:@"MenuPhoto"]];
+    NSArray *menuItemsSlt = @[[UIImage imageNamed:@"MenuStickerSlt"], [UIImage imageNamed:@"MenuTextSlt"], [UIImage imageNamed:@"MenuPenSlt"], [UIImage imageNamed:@"MenuPhotoSlt"]];
+    
+    [self.editMenuButton loadButtonWithIcons:menuItems selectedIcons:menuItemsSlt startDegree:-M_PI layoutDegree:M_PI / 2];
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.editMenuButton setDelegate:self];
     
-    self.editMenuButton.mainColor = [UIColor colorWithRed:45 / 255.f green:140 / 255.f blue:213 / 255.f alpha:1];
+    self.editMenuButton.mainColor = MAIN_MENU_BACKGROUND_COLOR;
     /**** End ****/
     
     self.isMenuAppear = NO;
@@ -75,11 +80,11 @@
 }
 
 - (void)loadPhotoCropViewController {
-    [self performSegueWithIdentifier:@"moveToPhotoCrop" sender:self];
+    [self performSegueWithIdentifier:SEGUE_MOVE_TO_CROPPER sender:self];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:@"moveToPhotoCrop"]) {
+    if ([segue.identifier isEqualToString:SEGUE_MOVE_TO_CROPPER]) {
         PhotoCropViewController *viewController = [segue destinationViewController];
         viewController.delegate = self;
         viewController.cellSize = [self.collectionView cellForItemAtIndexPath:self.selectedIndexPath].frame.size;
@@ -124,7 +129,7 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoEditorFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoFrameCell" forIndexPath:indexPath];
+    PhotoEditorFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:REUSE_CELL_EDITOR forIndexPath:indexPath];
     [cell setIndexPath:indexPath];
     [cell setTapGestureRecognizer];
     [cell setStrokeBorder];
@@ -213,7 +218,11 @@
     //Pen Menu
     } else if (index == 2) {
         [self.drawPenView setHidden:NO];
+    //Photo Menu
+    } else if (index == 3) {
+        
     }
+    
 }
 
 
@@ -355,7 +364,7 @@
             NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DICONNECTED)};
             [[ConnectionManager sharedInstance] sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_TIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [ConnectionManager sharedInstance].delegate = nil;
                 [self removeObservers];
                 
@@ -461,10 +470,10 @@
         [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_DOWNLOADING];
         //Data Receive Finished.
     } else {
-        if ([type isEqualToString:@"_cropped"]) {
+        if ([type isEqualToString:POSTFIX_IMAGE_CROPPED]) {
             UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
             [self.cellManager setCellCroppedImageAtIndex:targetFrameIndex withCroppedImage:croppedImage];
-        } else if ([type isEqualToString:@"_fullscreen"]) {
+        } else if ([type isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
             UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
             [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
             [self.cellManager setCellFullscreenImageAtIndex:targetFrameIndex withFullscreenImage:fullscreenImage];

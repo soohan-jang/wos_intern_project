@@ -88,7 +88,7 @@
     return _icons;
 }
 
-- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree {
+- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons selectedIcons:(NSArray<UIImage *> *)selectedIcons startDegree:(double)degree layoutDegree:(double)layoutDegree {
     [self.icons removeAllObjects];
     [self.icons addObjectsFromArray:icons];
     

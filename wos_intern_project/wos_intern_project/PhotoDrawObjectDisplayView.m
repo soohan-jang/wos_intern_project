@@ -8,6 +8,9 @@
 
 #import "PhotoDrawObjectDisplayView.h"
 
+#define INITIAL_VALUE_OF_POINT          -9999
+#define BOUNDARY_STROKE_COLOR           [[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]
+
 NSInteger const DECO_VIEW_Z_ORDER_UP    = 0;
 NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
 
@@ -15,17 +18,47 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
 
 @property (nonatomic, assign) CGPoint previousPoint;
 
+/**
+ 배경에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 그려진 객체들에 경계가 표시되어 있다면, 이를 해제하는 작업을 수행한다.
+ */
 - (void)backgroundTapAction:(UITapGestureRecognizer *)recognizer;
+/**
+ 그려진 객체에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 경계를 그리고, 수정에 필요한 버튼(크기조절, 회전, 삭제, Z-order 변경)을 표시한다.
+ */
 - (void)decoViewTapAction:(UITapGestureRecognizer *)recognizer;
+/**
+ 그려진 객체에 Pan 이벤트가 발생했을 때 수행되는 메소드이다. 이벤트의 좌표값에 따라 객체의 위치를 변경한다.
+ 객체의 이동은 객체의 Center 값을 이벤트의 좌표로 할당함으로 수행한다.
+ */
 - (void)decoViewPanAction:(UIPanGestureRecognizer *)recognizer;
+/**
+ 그려진 객체에 표시된 크기변경 버튼에 Pan 이벤트가 발생했을 때 수행되는 메소드이다. 이벤트의 좌표값에 따라 객체의 크기를 변경한다.
+ 객체의 크기는 높이와 너비의 비율을 유지하며 조절된다.
+ */
 - (void)resizeButtonPanAction;
+/**
+ 그려진 객체에 표시된 회전 버튼에 Pan 이벤트가 발생했을 때 수행되는 메소드이다. 이벤트의 좌표값에 따라 객체의 회전각도가 결정된다.
+ */
 - (void)rotateButtonPanAction;
+/**
+ 그려진 객체에 표시된 Z-order 변경 버튼에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 해당되는 객체를 bringToFront하여 최상위로 올린다.
+ */
 - (void)zOrderUpButtonAction;
-- (void)zOrderDownButtonAction;
+/**
+ 그려진 객체에 표시된 삭제 버튼에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 해당되는 객체의 GestrueRecognizer를 제거하고, DisplayView에서 제거한다.
+ */
 - (void)deleteButtonTapAction;
-
+/**
+ View의 경계에 점선을 그려 경계를 표시한다.
+ */
 - (void)drawDecoViewBoundary:(UIView *)view;
+/**
+ 모든 View의 경계에 그려진 점선을 제거한다.
+ */
 - (void)deleteAllDecoViewBoundary;
+/**
+ View의 경계에 그려진 점선을 제거한다.
+ */
 - (void)deleteDecoViewBoundary:(UIView *)view;
 
 @end
@@ -176,7 +209,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
 - (void)backgroundTapAction:(UITapGestureRecognizer *)recognizer {
     if (self.subviews.count > 0) {
         [self deleteAllDecoViewBoundary];
-        self.previousPoint = CGPointMake(-9999, -9999);
+        self.previousPoint = CGPointMake(INITIAL_VALUE_OF_POINT, INITIAL_VALUE_OF_POINT);
     }
 }
 
@@ -205,10 +238,10 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
     //이렇게하면 경계에서 이동 제한이 걸려야되는데, 실제로는 마이너스값이 찍힌다. 이게 무슨????
     if ((x1 <= centerX && centerX <= x2) && (y1 <= centerY && centerY <= y2)) {
         recognizer.view.center = [recognizer locationInView:self];
-    }
-    
-    if ([self.delegate respondsToSelector:@selector(decoViewDidMovedWithId:WithOriginX:WithOriginY:)]) {
-        [self.delegate decoViewDidMovedWithId:recognizer.view.stringTag WithOriginX:recognizer.view.frame.origin.x WithOriginY:recognizer.view.frame.origin.y];
+        
+        if ([self.delegate respondsToSelector:@selector(decoViewDidMovedWithId:WithOriginX:WithOriginY:)]) {
+            [self.delegate decoViewDidMovedWithId:recognizer.view.stringTag WithOriginX:recognizer.view.frame.origin.x WithOriginY:recognizer.view.frame.origin.y];
+        }
     }
 }
 
@@ -221,10 +254,6 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
 }
 
 - (void)zOrderUpButtonAction {
-    
-}
-
-- (void)zOrderDownButtonAction {
     
 }
 
@@ -246,7 +275,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
     [shapeLayer setBounds:shapeRect];
     [shapeLayer setPosition:CGPointMake(view.frame.size.width / 2.0f, view.frame.size.height / 2.0f)];
     [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
-    [shapeLayer setStrokeColor:[[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]];
+    [shapeLayer setStrokeColor:BOUNDARY_STROKE_COLOR];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];

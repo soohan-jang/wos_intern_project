@@ -35,4 +35,5 @@ progress_title_connected             = "연결됨!";
 progress_title_confirming            = "승인중...";
 progress_title_confirmed             = "승인됨!";
 progress_title_rejected              = "거절됨!";
+progress_title_loadding              = "불러오는 중...";
 

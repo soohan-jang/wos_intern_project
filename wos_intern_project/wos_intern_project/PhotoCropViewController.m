@@ -46,7 +46,7 @@
         
         [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *image) {
             if (image == nil) {
-                NSLog(@"이미지를 가져오지 못함.");
+                //error
             } else {
                 self.fullscreenImage = image;
                 [self.cropView setImage:image];
@@ -78,7 +78,7 @@
 
 - (void)loadProgress {
     if (self.progressView == nil) {
-        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:@"불러오는 중..."];
+        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_loadding", nil)];
     }
 }
 

@@ -11,19 +11,12 @@
 #define SECTION_NUMBER  1
 #define DEFAULT_MARGIN  5
 
-const NSInteger CELL_STATE_NONE         = 0;
-const NSInteger CELL_STATE_UPLOADING    = 1;
-const NSInteger CELL_STATE_DOWNLOADING  = 2;
-const NSInteger CELL_STATE_EDITING      = 3;
-
 @interface PhotoFrameCellManager ()
 
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
-
-//@property (atomic, strong) NSMutableDictionary *cellDataDictionary;
 @property (atomic, strong) NSMutableDictionary *cellFullscreenImages;
 @property (atomic, strong) NSMutableDictionary *cellCroppedImages;
 @property (atomic, strong) NSMutableDictionary *cellStates;

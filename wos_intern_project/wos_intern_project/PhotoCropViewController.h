@@ -31,9 +31,19 @@
 
 @end
 
+/**
+ 사진을 편집하는 ViewController의 Delegate이다.
+ 이 Delegate는 작업이 완료되었을 때와 취소되었을 때의 메시지를 전달한다.
+ */
 @protocol PhotoCropViewControllerDelegate <NSObject>
 @required
+/**
+ 편집이 완료된 후에 원본 이미지와 편집된 이미지를 전달한다.
+ */
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage;
+/**
+ 편집이 취소되었음을 알린다.
+ */
 - (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller;
 
 @end

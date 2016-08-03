@@ -5,8 +5,12 @@
 //  Created by Naver on 2016. 7. 11..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
+
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+
+#import "Constants.h"
+
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 
