@@ -83,6 +83,16 @@
 //    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+- (IBAction)decoreateVisibleToggled:(id)sender {
+    if (self.decorateToggleButton.isSelected) {
+        [self.decorateToggleButton setSelected:NO];
+        [self.drawObjectDisplayView setHidden:YES];
+    } else {
+        [self.decorateToggleButton setSelected:YES];
+        [self.drawObjectDisplayView setHidden:NO];
+    }
+}
+
 - (void)loadPhotoCropViewController {
     [self performSegueWithIdentifier:SEGUE_MOVE_TO_CROPPER sender:self];
 }
@@ -221,12 +231,14 @@
         
     //Pen Menu
     } else if (index == 2) {
+        if (!self.decorateToggleButton.isSelected) {
+            [self.decorateToggleButton setSelected:YES];
+            [self.drawObjectDisplayView setHidden:NO];
+        }
         [self.drawPenView setHidden:NO];
-    //Photo Menu
-    } else if (index == 3) {
-        
     }
     
+    [self.decorateToggleButton setHidden:YES];
 }
 
 
@@ -341,6 +353,7 @@
 
 - (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
     [drawPenView setHidden:YES];
+    [self.decorateToggleButton setHidden:NO];
     
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
     [self.decoObjectManager addDecorateObject:imageObject];

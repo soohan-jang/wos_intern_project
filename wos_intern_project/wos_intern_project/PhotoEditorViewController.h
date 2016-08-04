@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 
 @property (weak, nonatomic) IBOutlet UIView *collectionContainerView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIButton *decorateToggleButton;
 @property (weak, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
 
 //그려진 객체들이 위치하는 뷰
@@ -50,6 +51,8 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
  네비게이션바에 위치한 "저장" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
  */
 - (IBAction)saveButtonTapped:(id)sender;
+
+- (IBAction)decoreateVisibleToggled:(id)sender;
 
 /**
  선택된 사진 액자를 전달한다. 파라메터는 NSInteger로 선택된 사진 액자의 indexPath.item을 받는다.
