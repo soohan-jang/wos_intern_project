@@ -49,10 +49,9 @@
     self.drawPenView.delegate = self;
     
     /**** Set Main Menu ****/
-    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"], [UIImage imageNamed:@"MenuPhoto"]];
-    NSArray *menuItemsSlt = @[[UIImage imageNamed:@"MenuStickerSlt"], [UIImage imageNamed:@"MenuTextSlt"], [UIImage imageNamed:@"MenuPenSlt"], [UIImage imageNamed:@"MenuPhotoSlt"]];
+    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
     
-    [self.editMenuButton loadButtonWithIcons:menuItems selectedIcons:menuItemsSlt startDegree:-M_PI * 1.07 layoutDegree:M_PI / 1.5];
+    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI / 2];
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.editMenuButton setDelegate:self];
@@ -73,13 +72,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)backAction:(id)sender {
+- (IBAction)backButtonTapped:(id)sender {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil) message:NSLocalizedString(@"alert_content_data_not_save", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
     alertView.tag = ALERT_NOT_SAVE;
     [alertView show];
 }
 
-- (IBAction)saveAction:(id)sender {
+- (IBAction)saveButtonTapped:(id)sender {
 //    [self.connectionManager disconnectSession];
 //    [self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -263,10 +262,11 @@
 
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     //임시로 전달받은 두개의 파일을 저장한다.
-    NSString *filename = [[ImageUtility sharedInstance] saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
+    NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
+    
     if (filename != nil) {
-        NSURL *fullscreenImageURL = [[ImageUtility sharedInstance] getFullscreenImageURLWithFilename:filename];
-        NSURL *croppedImageURL = [[ImageUtility sharedInstance] getCroppedImageURLWithFilename:filename];
+        NSURL *fullscreenImageURL = [ImageUtility generateFullscreenImageURLWithFilename:filename];
+        NSURL *croppedImageURL = [ImageUtility generateCroppedImageURLWithFilename:filename];
         
         //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
         [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item withFullscreenImage:fullscreenImage];
@@ -275,7 +275,7 @@
         [self reloadData:self.selectedIndexPath];
         
         //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [self.connectionManager sendPhotoDataWithFilename:filename withFullscreenImageURL:fullscreenImageURL withCroppedImageURL:croppedImageURL withIndex:self.selectedIndexPath.item];
+        [self.connectionManager sendPhotoDataWithFilename:filename WithFullscreenImageURL:fullscreenImageURL WithCroppedImageURL:croppedImageURL WithIndex:self.selectedIndexPath.item];
     } else {
         //alert.
     }
@@ -378,12 +378,10 @@
                 [self.messageSyncManager clearMessageQueue];
                 
                 [self.connectionManager disconnectSession];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popToRootViewControllerAnimated:YES];
                 
                 //사용된 임시 파일을 삭제한다
-                [[ImageUtility sharedInstance] removeAllTempImages];
+                [ImageUtility removeAllTemporaryImages];
             });
         }
     } else if (alertView.tag == ALERT_CONTINUE) {
@@ -398,11 +396,10 @@
         
         //계속하지 않겠다고 응답했으므로, 메인화면으로 돌아간다.
         if (buttonIndex == 1) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
             [self.navigationController popToRootViewControllerAnimated:YES];
             
             //사용된 임시 파일을 삭제한다
-            [[ImageUtility sharedInstance] removeAllTempImages];
+            [ImageUtility removeAllTemporaryImages];
         }
     } else if (alertView.tag == ALERT_ALBUM_AUTH) {
         if (buttonIndex == 1) {

@@ -15,22 +15,20 @@
     // Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)backButtonTapped:(id)sender {
+    
 }
 
-- (IBAction)backAction:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+- (IBAction)modifyButtonTapped:(id)sender {
+    
 }
 
-- (IBAction)modifyAction:(id)sender {
+- (IBAction)sharedButtonTapped:(id)sender {
+    
 }
 
-- (IBAction)shareAction:(id)sender {
-}
-
-- (IBAction)deleteAction:(id)sender {
+- (IBAction)deleteButtonTapped:(id)sender {
+    
 }
 
 @end

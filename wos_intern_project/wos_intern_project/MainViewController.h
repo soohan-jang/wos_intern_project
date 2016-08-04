@@ -17,12 +17,15 @@
 
 #import "WMProgressHUD.h"
 #import "PhotoFrameSelectViewController.h"
-
-extern NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER;
+#import "PhotoEditorViewController.h"
 
 @interface MainViewController : UIViewController <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, ConnectionManagerDelegate>
 
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *albumButton;
+/**
+ PhotoAlbum ViewController를 호출한다.
+ Storyboard와 연결된 함수이다.
+ */
+- (IBAction)albumButtonTapped:(id)sender;
 
 @end
 

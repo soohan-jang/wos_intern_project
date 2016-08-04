@@ -16,11 +16,11 @@
 
 @implementation DecorateObjectManager
 
-- (void)addDecorateObject:(WMPhotoDecorateObject *)object {
+- (void)addDecorateObject:(WMPhotoDecorateObject *)decoObject {
     if (self.decorateObjectArray == nil) {
-        self.decorateObjectArray = [@[object] mutableCopy];
+        self.decorateObjectArray = [@[decoObject] mutableCopy];
     } else {
-        [self.decorateObjectArray addObject:object];
+        [self.decorateObjectArray addObject:decoObject];
     }
 }
 
@@ -107,7 +107,7 @@
     return nil;
 }
 
-- (void)sortDecorateObject {
+- (void)sortDecorateObjects {
     if (![self isEmpty]) {
         [self.decorateObjectArray sortUsingComparator:^NSComparisonResult(WMPhotoDecorateObject  *_Nonnull obj1, WMPhotoDecorateObject  *_Nonnull obj2) {
             //뭐가 오름차순인지 모르겠네? 일단 구현해놓고 나중에 수정하자.

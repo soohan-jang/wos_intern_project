@@ -8,8 +8,6 @@
 
 #import "MainViewController.h"
 
-NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController";
-
 #define DELAY_TIME  1.0f
 
 @interface MainViewController ()
@@ -23,40 +21,40 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
 @property (nonatomic, strong) NSArray *invitationHandlerArray;
 
 /**
- 다른 뷰컨트롤러에서 pop하거나 popRootViewController를 통해 MainViewController로 복귀시에 호출되는 함수이다.
- 이 함수는 NSNotificationCenter로 호출되며, Observer를 등록하기 위해 사용된다.
- 얘도 이름 바꿔라
+ PhotoFrame ViewController를 호출한다.
  */
-- (void)viewDidUnwind:(NSNotification *)notification;
+- (void)loadPhotoFrameViewController;
+
 /**
  BrowserViewController를 화면에 표시한다. 블루투스의 현재 상태를 확인하여, 블루투스가 켜지지 않은 상태라면 Alert를 표시한다.
  */
 - (void)loadBrowserViewController;
+
+/**
+ 포토 앨범 접근 권한을 가지고 있는지 확인한다.
+ */
+- (BOOL)hasAccessPhotoAlbumAuthority;
+
 /**
  ProgressView의 상태를 완료로 바꾼 뒤에 종료한다.
  Main Thread에서 호출하기 위한 performSelector 용도의 함수이다.
  */
 - (void)doneProgress;
+
 /**
  다른 단말기에 자신의 단말기가 검색되는 것을 허용한다.
  */
 - (void)startAdvertise;
+
 /**
  다른 단말기에 자신의 단말기가 검색되는 것을 허용하지 않는다.
  */
 - (void)stopAdvertise;
-/**
- PhotoFrame ViewController를 호출한다.
- Main Thread에서 호출하기 위한 performSelector 용도의 함수이다.
- ...
- NotificationCenter로 호출되는 함수에서 ViewController를 호출헀더니, Thread가 구분되는지 딜레이가 심하게 발생한다.
- 이를 방지하기 위하여 main thread에서 ViewController를 호출할 수 있도록 따로 함수를 만들었다.
- */
-- (void)loadPhotoFrameViewController;
 
 @end
 
 @implementation MainViewController
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -69,18 +67,11 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     self.browserViewController.maximumNumberOfPeers = 1;
     self.browserViewController.delegate = self;
     
-    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:[self.connectionManager getPeerID] discoveryInfo:nil serviceType:SERVICE_TYPE];
+    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:[self.connectionManager getOwnPeerID] discoveryInfo:nil serviceType:SERVICE_TYPE];
     
     UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(loadBrowserViewController)];
     tabGestureRecognizer.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:tabGestureRecognizer];
-    
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewDidUnwind:) name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
-}
-
-- (void)viewDidUnwind:(NSNotification *)notification {
-    self.connectionManager.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -99,26 +90,11 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
         }
     }
     
+    self.connectionManager.delegate = self;
     self.advertiser.delegate = self;
     [self startAdvertise];
     
     [super viewDidAppear:animated];
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
-}
-
-- (void)startAdvertise {
-    if (self.advertiser != nil) {
-        [self.advertiser startAdvertisingPeer];
-    }
-}
-
-- (void)stopAdvertise {
-    if (self.advertiser != nil) {
-        [self.advertiser stopAdvertisingPeer];
-    }
 }
 
 - (void)loadBrowserViewController {
@@ -134,19 +110,10 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     }
 }
 
-- (BOOL)hasAccessPhotoAlbumAuthority {
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-    
-    if (!(status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized)) {
-        //앨범 접근 권한 없음. 해당 Alert 표시.
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil) message:NSLocalizedString(@"alert_content_album_not_authorized", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-        alertView.tag = ALERT_ALBUM_AUTH;
-        [alertView show];
-        
-        return NO;
-    }
-    
-    return YES;
+- (IBAction)albumButtonTapped:(id)sender {
+    [self stopAdvertise];
+    self.connectionManager.delegate = nil;
+    [self performSegueWithIdentifier:SEGUE_MOVETO_ALBUM sender:self];
 }
 
 - (void)loadPhotoFrameViewController {
@@ -167,13 +134,39 @@ NSString *const NOTIFICATION_POP_ROOT_VIEW_CONTROLLER = @"popRootViewController"
     }
 }
 
+- (BOOL)hasAccessPhotoAlbumAuthority {
+    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
+    
+    if (!(status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized)) {
+        //앨범 접근 권한 없음. 해당 Alert 표시.
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil) message:NSLocalizedString(@"alert_content_album_not_authorized", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
+        alertView.tag = ALERT_ALBUM_AUTH;
+        [alertView show];
+        
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)startAdvertise {
+    if (self.advertiser != nil) {
+        [self.advertiser startAdvertisingPeer];
+    }
+}
+
+- (void)stopAdvertise {
+    if (self.advertiser != nil) {
+        [self.advertiser stopAdvertisingPeer];
+    }
+}
+
 
 #pragma mark - MCBrowserViewControllerDelegate Methods
 
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
-//    [self loadPhotoFrameViewController];
 }
 
 //Session Connect Cancel.

@@ -44,7 +44,7 @@
     } else {
         [self loadProgress];
         
-        [[ImageUtility sharedInstance] getFullScreenUIImageWithURL:self.imageUrl resultBlock:^(UIImage *image) {
+        [ImageUtility getFullscreenUIImageAthURL:self.imageUrl resultBlock:^(UIImage *image) {
             if (image == nil) {
                 //error
             } else {
@@ -58,14 +58,14 @@
     }
 }
 
-- (IBAction)backAction:(id)sender {
+- (IBAction)backButtonTapped:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cropViewControllerDidCancelled:)]) {
         [self.delegate cropViewControllerDidCancelled:self];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
-- (IBAction)doneAction:(id)sender {
+- (IBAction)doneButtonTapped:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cropViewControllerDidFinished:withFullscreenImage:withCroppedImage:)]) {
         self.croppedImage = [self.cropView croppedImage];
         

@@ -14,7 +14,6 @@
 @property (nonatomic, setter=setMessageQueueEnabled:, getter=isMessageQueueEnabled) BOOL messageQueueEnabled;
 
 + (MessageSyncManager *)sharedInstance;
-- (instancetype)init;
 
 /**
  Message Queue에 메시지를 저장한다. 메시지는 MessageQueue의 맨 끝에 저장된다.

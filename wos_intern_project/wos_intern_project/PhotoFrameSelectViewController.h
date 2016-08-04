@@ -30,7 +30,7 @@ typedef NS_ENUM(NSInteger, PhotoFrameSelectAlertType) {
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
-- (IBAction)backAction:(id)sender;
-- (IBAction)doneAction:(id)sender;
+- (IBAction)backButtonTapped:(id)sender;
+- (IBAction)doneButtonTapped:(id)sender;
 
 @end

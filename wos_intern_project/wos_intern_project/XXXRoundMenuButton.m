@@ -88,7 +88,7 @@
     return _icons;
 }
 
-- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons selectedIcons:(NSArray<UIImage *> *)selectedIcons startDegree:(double)degree layoutDegree:(double)layoutDegree {
+- (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree {
     [self.icons removeAllObjects];
     [self.icons addObjectsFromArray:icons];
     
@@ -385,7 +385,7 @@
     
     [icons enumerateObjectsUsingBlock:^(UIImage * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35, 35)];
         [button setImage:obj forState:UIControlStateNormal];
         button.tintColor = self.tintColor;
         [self addSubview:button];

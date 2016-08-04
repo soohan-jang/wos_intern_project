@@ -13,6 +13,7 @@ extern NSString *const POSTFIX_IMAGE_FULLSCREEN;
 extern NSString *const POSTFIX_IMAGE_CROPPED;
 extern NSString *const SEPERATOR_IMAGE_NAME;
 
+extern NSString *const SEGUE_MOVETO_ALBUM;
 extern NSString *const SEGUE_MOVETO_FRAME_SLT;
 extern NSString *const SEGUE_MOVE_TO_EDITOR;
 extern NSString *const SEGUE_MOVE_TO_CROPPER;

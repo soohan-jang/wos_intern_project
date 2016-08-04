@@ -84,13 +84,13 @@
     [super viewDidDisappear:animated];
 }
 
-- (IBAction)backAction:(id)sender {
+- (IBAction)backButtonTapped:(id)sender {
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil) message:NSLocalizedString(@"alert_content_session_disconnect_ask", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
     alertView.tag = ALERT_DISCONNECT;
     [alertView show];
 }
 
-- (IBAction)doneAction:(id)sender {
+- (IBAction)doneButtonTapped:(id)sender {
     self.doneButton.enabled = NO;
     
     NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM)};
@@ -99,15 +99,15 @@
     self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
 }
 
-- (void)loadPhotoEditorViewController {
-    [self performSegueWithIdentifier:SEGUE_MOVE_TO_EDITOR sender:self];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:SEGUE_MOVE_TO_EDITOR]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.ownSelectedFrameIndex.item];
     }
+}
+
+- (void)loadPhotoEditorViewController {
+    [self performSegueWithIdentifier:SEGUE_MOVE_TO_EDITOR sender:self];
 }
 
 - (void)sendSelectFrameChanged {
@@ -162,7 +162,6 @@
                 
                 self.connectionManager.delegate = nil;
                 [self.connectionManager disconnectSession];
-                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
                 [self.navigationController popViewControllerAnimated:YES];
             });
         }
@@ -173,7 +172,6 @@
         
         self.connectionManager.delegate = nil;
         [self.connectionManager disconnectSession];
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POP_ROOT_VIEW_CONTROLLER object:nil];
         [self.navigationController popViewControllerAnimated:YES];
     } else if (alertView.tag == ALERT_FRAME_CONFIRM) {
         if (buttonIndex == 1) {

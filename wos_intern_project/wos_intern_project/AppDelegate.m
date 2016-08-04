@@ -16,8 +16,6 @@
 
 // Override point for customization after application launch.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //어플리케이션이 시작될 때, ConnectionManager를 초기화한다.
-    [[ConnectionManager sharedInstance] initialize];
     return YES;
 }
 
@@ -42,10 +40,12 @@
 // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 - (void)applicationWillTerminate:(UIApplication *)application {
     //세션 연결을 끊고, 정보를 정리한다.
-    [[ConnectionManager sharedInstance] disconnectSession];
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    [connectionManager disconnectSession];
+    [connectionManager clear];
     
     //사용된 임시 파일을 정리한다.
-    [[ImageUtility sharedInstance] removeAllTempImages];
+    [ImageUtility removeAllTemporaryImages];
 }
 
 @end

@@ -39,20 +39,26 @@
     return instance;
 }
 
-- (void)initialize {
-    self.ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
-    self.ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
-    self.ownSession.delegate = self;
+- (instancetype)init {
+    self = [super init];
     
-    CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
-    self.ownScreenWidth = mainScreenRect.size.width;
-    self.ownScreenHeight = mainScreenRect.size.height;
+    if (self) {
+        self.ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
+        self.ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
+        self.ownSession.delegate = self;
+        
+        CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
+        self.ownScreenWidth = mainScreenRect.size.width;
+        self.ownScreenHeight = mainScreenRect.size.height;
+        
+        self.messageSyncManager = [MessageSyncManager sharedInstance];
+        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+    }
     
-    self.messageSyncManager = [MessageSyncManager sharedInstance];
-    self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+    return self;
 }
 
-- (MCPeerID *)getPeerID {
+- (MCPeerID *)getOwnPeerID {
     return self.ownPeerId;
 }
 
@@ -72,7 +78,7 @@
     [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
-- (void)sendPhotoDataWithFilename:(NSString *)filename withFullscreenImageURL:(NSURL *)fullscreenImageURL withCroppedImageURL:(NSURL *)croppedImageURL withIndex:(NSInteger)index {
+- (void)sendPhotoDataWithFilename:(NSString *)filename WithFullscreenImageURL:(NSURL *)fullscreenImageURL WithCroppedImageURL:(NSURL *)croppedImageURL WithIndex:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
         NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_CROPPED];
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
@@ -87,7 +93,7 @@
                     }
                     
                     //파일 전송이 종료되었으므로, 파일 전송을 위해 임시저장했던 이미지 파일을 삭제한다.
-                    [[ImageUtility sharedInstance] removeTempImageWithFilename:filename];
+                    [ImageUtility removeTemporaryImageWithFilename:filename];
                 }];
             }
         }];

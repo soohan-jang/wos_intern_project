@@ -10,9 +10,9 @@
 
 @interface PhotoViewerViewController : UIViewController
 
-- (IBAction)backAction:(id)sender;
-- (IBAction)modifyAction:(id)sender;
-- (IBAction)shareAction:(id)sender;
-- (IBAction)deleteAction:(id)sender;
+- (IBAction)backButtonTapped:(id)sender;
+- (IBAction)modifyButtonTapped:(id)sender;
+- (IBAction)sharedButtonTapped:(id)sender;
+- (IBAction)deleteButtonTapped:(id)sender;
 
 @end

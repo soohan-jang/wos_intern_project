@@ -18,7 +18,6 @@
 #import "SphereMenu.h"
 #import "XXXRoundMenuButton.h"
 
-#import "MainViewController.h"
 #import "PhotoFrameCellManager.h"
 #import "PhotoEditorFrameViewCell.h"
 #import "PhotoCropViewController.h"
@@ -45,12 +44,12 @@ typedef NS_ENUM(NSInteger, PhotoEditorAlertType) {
 /**
  네비게이션바에 위치한 "뒤로" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
  */
-- (IBAction)backAction:(id)sender;
+- (IBAction)backButtonTapped:(id)sender;
 
 /**
  네비게이션바에 위치한 "저장" 버튼을 눌렀을 때의 처리를 담당하는 함수이다.
  */
-- (IBAction)saveAction:(id)sender;
+- (IBAction)saveButtonTapped:(id)sender;
 
 /**
  선택된 사진 액자를 전달한다. 파라메터는 NSInteger로 선택된 사진 액자의 indexPath.item을 받는다.

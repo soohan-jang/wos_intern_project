@@ -26,8 +26,8 @@
 @property (strong, nonatomic) NSURL *imageUrl;
 @property (strong, nonatomic) UIImage *fullscreenImage;
 
-- (IBAction)backAction:(id)sender;
-- (IBAction)doneAction:(id)sender;
+- (IBAction)backButtonTapped:(id)sender;
+- (IBAction)doneButtonTapped:(id)sender;
 
 @end
 

@@ -8,24 +8,9 @@
 
 #import "ImageUtility.h"
 
-NSString *const FILE_POSTFIX_CROPPED     = @"_cropped";
-NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
-
 @implementation ImageUtility
 
-+ (ImageUtility *)sharedInstance {
-    static ImageUtility *instance = nil;
-    
-    @synchronized (self) {
-        if (instance == nil) {
-            instance = [[ImageUtility alloc] init];
-        }
-    }
-    
-    return instance;
-}
-
-- (void)getFullScreenUIImageWithURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
++ (void)getFullscreenUIImageAthURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
     ALAssetsLibrary *assetslibrary = [[ALAssetsLibrary alloc] init];
     
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
@@ -67,13 +52,13 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
     }];
 }
 
-- (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
++ (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     NSData *fullscreenImageData = UIImagePNGRepresentation(fullscreenImage);
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
     NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
-    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN];
-    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED];
+    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN];
+    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED];
     
     BOOL isSaved = [fullscreenImageData writeToFile:fullscreenImageDirectory atomically:YES] && [croppedImageData writeToFile:croppedImageDirectory atomically:YES];
     
@@ -81,32 +66,32 @@ NSString *const FILE_POSTFIX_FULLSCREEN  = @"_fullscreen";
         return filename;
     } else {
         //하나라도 성공한 경우가 있을 수 있으므로, 이 경우를 대비하여 임시 파일 삭제 로직을 수행한다.
-        [self removeTempImageWithFilename:filename];
+        [self removeTemporaryImageWithFilename:filename];
         return nil;
     }
 }
 
-- (void)removeTempImageWithFilename:(NSString *)filename {
++ (void)removeTemporaryImageWithFilename:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN]];
-    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
+    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN]];
+    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED]];
     
     [fileManager removeItemAtURL:fullscreenImageURL error:nil];
     [fileManager removeItemAtURL:croppedImageURL error:nil];
 }
 
-- (void)removeAllTempImages {
++ (void)removeAllTemporaryImages {
     NSFileManager *fileManage = [NSFileManager defaultManager];
     [fileManage removeItemAtPath:NSTemporaryDirectory() error:nil];
 }
 
-- (NSURL *)getFullscreenImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_FULLSCREEN]];
++ (NSURL *)generateFullscreenImageURLWithFilename:(NSString *)filename {
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN]];
 }
 
-- (NSURL *)getCroppedImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, FILE_POSTFIX_CROPPED]];
++ (NSURL *)generateCroppedImageURLWithFilename:(NSString *)filename {
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED]];
 }
 
 @end
