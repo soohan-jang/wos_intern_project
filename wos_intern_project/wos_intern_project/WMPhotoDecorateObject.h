@@ -6,9 +6,7 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIView.h>
-#import <CoreGraphics/CoreGraphics.h>
+#import <UIKit/UIKit.h>
 
 @interface WMPhotoDecorateObject : NSObject
 

@@ -7,13 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ConnectionManager.h"
 
 @interface MessageSyncManager : NSObject
 
-@property (nonatomic, setter=setMessageQueueEnabled:, getter=isMessageQueueEnabled) BOOL messageQueueEnabled;
+@property (nonatomic, getter=isMessageQueueEnabled) BOOL messageQueueEnabled;
 
-+ (MessageSyncManager *)sharedInstance;
++ (instancetype)sharedInstance;
+
+/**
+ Message Queue를 초기화하고, 전달받은 enabled으로 Message Queue 사용 여부를 설정한다.
+ */
+- (void)initializeMessageSyncManagerWithEnabled:(BOOL)enabled;
 
 /**
  Message Queue에 메시지를 저장한다. 메시지는 MessageQueue의 맨 끝에 저장된다.

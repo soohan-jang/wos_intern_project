@@ -8,26 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ImageUtility.h"
-
-#import "WMProgressHUD.h"
-#import "PECropView.h"
-
 @protocol PhotoCropViewControllerDelegate;
 
 @interface PhotoCropViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIView *cropAreaView;
-@property (weak, nonatomic) IBOutlet UIScrollView *filterListScrollView;
-
-
 @property (weak, nonatomic) id<PhotoCropViewControllerDelegate> delegate;
+
 @property (assign, nonatomic) CGSize cellSize;
 @property (strong, nonatomic) NSURL *imageUrl;
 @property (strong, nonatomic) UIImage *fullscreenImage;
-
-- (IBAction)backButtonTapped:(id)sender;
-- (IBAction)doneButtonTapped:(id)sender;
 
 @end
 

@@ -12,12 +12,8 @@
 
 @interface ConnectionManager ()
 
-@property (atomic, strong) MessageSyncManager *messageSyncManager;
 @property (nonatomic, strong) CBCentralManager *bluetoothManager;
 
-@property (nonatomic, strong) MCPeerID *ownPeerId;
-@property (nonatomic, strong) MCSession *ownSession;
-@property (nonatomic, assign) CGFloat ownScreenWidth, ownScreenHeight;
 /** 연결된 상대방 정보 **/
 //원래 이것도 배열로 구성해서 각 피어에 해당하는 셋을 맞춰야되는데, 당장은 1:1 통신을 하므로...
 //@property (nonatomic, strong, readonly) NSMutableArray *connectedPeerIds;
@@ -27,14 +23,15 @@
 
 @implementation ConnectionManager
 
-+ (ConnectionManager *)sharedInstance {
++ (instancetype)sharedInstance {
     static ConnectionManager *instance = nil;
     
-    @synchronized (self) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         if (instance == nil) {
             instance = [[self alloc] init];
         }
-    }
+    });
     
     return instance;
 }
@@ -43,42 +40,36 @@
     self = [super init];
     
     if (self) {
-        self.ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
-        self.ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
-        self.ownSession.delegate = self;
+        _ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
+        _ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
+        _ownSession.delegate = self;
         
         CGRect mainScreenRect = [[UIScreen mainScreen] bounds];
-        self.ownScreenWidth = mainScreenRect.size.width;
-        self.ownScreenHeight = mainScreenRect.size.height;
+        _ownScreenWidth = mainScreenRect.size.width;
+        _ownScreenHeight = mainScreenRect.size.height;
         
-        self.messageSyncManager = [MessageSyncManager sharedInstance];
-        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+        self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
     }
     
     return self;
 }
 
-- (MCPeerID *)getOwnPeerID {
-    return self.ownPeerId;
+- (BOOL)isBluetoothAvailable {
+    NSInteger state = self.bluetoothManager.state;
+    
+    if (state == CBCentralManagerStatePoweredOn) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
-- (MCSession *)getSession {
-    return self.ownSession;
+- (void)sendData:(NSDictionary *)data {
+    NSData *archivedData = [NSKeyedArchiver archivedDataWithRootObject:data];
+    [self.ownSession sendData:archivedData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
 }
 
-- (CGSize)getScreenSize {
-    return CGSizeMake(self.ownScreenWidth, self.ownScreenHeight);
-}
-
-- (NSInteger)getBluetoothState {
-    return self.bluetoothManager.state;
-}
-
-- (void)sendData:(NSData *)sendData {
-    [self.ownSession sendData:sendData toPeers:self.ownSession.connectedPeers withMode:MCSessionSendDataReliable error:nil];
-}
-
-- (void)sendPhotoDataWithFilename:(NSString *)filename WithFullscreenImageURL:(NSURL *)fullscreenImageURL WithCroppedImageURL:(NSURL *)croppedImageURL WithIndex:(NSInteger)index {
+- (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
         NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_CROPPED];
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
@@ -105,14 +96,13 @@
 }
 
 - (void)clear {
-    self.ownPeerId = nil;
-    self.ownSession.delegate = nil;
-    self.ownSession = nil;
+    _ownPeerId = nil;
+    _ownSession.delegate = nil;
+    _ownSession = nil;
     
-    self.ownScreenWidth = 0;
-    self.ownScreenHeight = 0;
+    _ownScreenWidth = 0;
+    _ownScreenHeight = 0;
     
-    self.messageSyncManager = nil;
     self.bluetoothManager.delegate = nil;
     self.bluetoothManager = nil;
 }
@@ -121,16 +111,13 @@
 #pragma mark - MCSessionDelegate Methods
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
-    //연결이 완료되면 연결된 peerId를 배열에 저장하고, 상대방에게 자신의 화면크기 정보를 보낸다.
-    if (state == MCSessionStateConnected) {
-        NSLog(@"Session Connected");
-        if ([self.delegate respondsToSelector:@selector(receivedPeerConnected)]) {
-            [self.delegate receivedPeerConnected];
-        }
-    } else if (state == MCSessionStateNotConnected) {
-        NSLog(@"Session Disconnected");
-        if ([self.delegate respondsToSelector:@selector(receivedPeerDisconnected)]) {
-            [self.delegate receivedPeerDisconnected];
+    if (self.sessionConnectDelegate) {
+        if (state == MCSessionStateConnected) {
+            NSLog(@"Session Connected");
+            [self.sessionConnectDelegate receivedPeerConnected];
+        } else if (state == MCSessionStateNotConnected) {
+            NSLog(@"Session Disconnected");
+            [self.sessionConnectDelegate receivedPeerDisconnected];
         }
     }
 }
@@ -138,155 +125,163 @@
 - (void)session:(MCSession *)session didReceiveData:(NSData *)data fromPeer:(MCPeerID *)peerID {
     NSDictionary *receivedData = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
     
-    NSInteger dataType = [(NSNumber *)receivedData[KEY_DATA_TYPE] integerValue];
+    NSInteger dataType = [receivedData[kDataType] integerValue];
+    MessageSyncManager *messageSyncManager = [MessageSyncManager sharedInstance];
     
-    if (dataType == VALUE_DATA_TYPE_SCREEN_SIZE) {
-        self.connectedPeerScreenWidth = [receivedData[KEY_SCREEN_SIZE_WIDTH] floatValue];
-        self.connectedPeerScreenHeight = [receivedData[KEY_SCREEN_SIZE_HEIGHT] floatValue];
-        NSLog(@"Received Screen Size : width(%f), height(%f)", self.connectedPeerScreenWidth, self.connectedPeerScreenHeight);
-    } else if (dataType == VALUE_DATA_TYPE_PHOTO_FRAME_SELECTED) {
-        NSLog(@"Received Selected Frame Index");
-        if ([self.messageSyncManager isMessageQueueEnabled]) {
-            //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
-            //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
-            //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
-            //어차피 상대방이 액자선택에 진입하는 시점과 본인이 액자선택에 진입하는 시점이 달라서 발생하는 동기화 오류는, 그 시간 폭이 매우 작다고 보기 때문에... 성능상 큰 문제가 있을 것 같지는 않다.
-            [self.messageSyncManager clearMessageQueue];
-            
-            //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
-            if (![receivedData[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
-                [self.messageSyncManager putMessage:receivedData];
-                
-            }
-        } else {
-            if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameSelected:)]) {
-                if ([receivedData[KEY_PHOTO_FRAME_SELECTED] isEqual:[NSNull null]]) {
-                    [self.delegate receivedPhotoFrameSelected:nil];
+    if (self.photoFrameSelectDelegate) {
+        switch (dataType) {
+            case vDataTypeScreenSize:
+                self.connectedPeerScreenWidth = [receivedData[kScreenWidth] floatValue];
+                self.connectedPeerScreenHeight = [receivedData[kScreenHeight] floatValue];
+                NSLog(@"Received Screen Size : width(%f), height(%f)", self.connectedPeerScreenWidth, self.connectedPeerScreenHeight);
+                break;
+            case vDataTypePhotoFrameSelected:
+                NSLog(@"Received Selected Frame Index");
+                if ([messageSyncManager isMessageQueueEnabled]) {
+                    //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
+                    //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
+                    //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
+                    //어차피 상대방이 액자선택에 진입하는 시점과 본인이 액자선택에 진입하는 시점이 달라서 발생하는 동기화 오류는, 그 시간 폭이 매우 작다고 보기 때문에... 성능상 큰 문제가 있을 것 같지는 않다.
+                    [messageSyncManager clearMessageQueue];
+                    
+                    //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
+                    if (![receivedData[kPhotoFrameSelected] isKindOfClass:[NSNull class]]) {
+                        [messageSyncManager putMessage:receivedData];
+                    }
                 } else {
-                    [self.delegate receivedPhotoFrameSelected:receivedData[KEY_PHOTO_FRAME_SELECTED]];
+                    if ([receivedData[kPhotoFrameSelected] isKindOfClass:[NSNull class]]) {
+                        [self.photoFrameSelectDelegate receivedPhotoFrameSelected:nil];
+                    } else {
+                        [self.photoFrameSelectDelegate receivedPhotoFrameSelected:receivedData[kPhotoFrameSelected]];
+                    }
                 }
-            }
+                break;
+            case vDataTypePhotoFrameConfirm:
+                NSLog(@"Received Confirm Frame Select");
+                [self.photoFrameSelectDelegate receivedPhotoFrameRequestConfirm];
+                break;
+            case vDataTypePhotoFrameConfirmAck:
+                NSLog(@"Received Confirm Ack Frame Select");
+                [self.photoFrameSelectDelegate receivedPhotoFrameConfirmAck:[receivedData[kPhotoFrameSelectedConfirmAck] boolValue]];
+                break;
+            case vDataTypePhotoFrameDisconnected:
+                NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
+                [self.photoFrameSelectDelegate receivedPhotoFrameDisconnected];
+                break;
         }
-    } else if (dataType == VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM) {
-        NSLog(@"Received Confirm Frame Select");
-        if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameRequestConfirm)]) {
-            [self.delegate receivedPhotoFrameRequestConfirm];
+    }
+    
+    if (self.photoEditorDelegate) {
+        switch (dataType) {
+            case vDataTypeEditorPhotoInsertAck:
+                NSLog(@"Received Insert Photo Ack");
+                [self.photoEditorDelegate receivedEditorPhotoInsertAck:[receivedData[kEditorPhotoInsertIndex] integerValue]
+                                                                   ack:[receivedData[kEditorPhotoInsertAck] boolValue]];
+                break;
+            case vDataTypeEditorPhotoEdit:
+                NSLog(@"Received Edit Photo");
+                [self.photoEditorDelegate receivedEditorPhotoEditing:[receivedData[kEditorPhotoEditIndex] integerValue]];
+                break;
+            case vDataTypeEditorPhotoEditCancel:
+                NSLog(@"Received Edit Photo Canceled");
+                [self.photoEditorDelegate receivedEditorPhotoEditingCancelled:[receivedData[kEditorPhotoEditIndex] integerValue]];
+                break;
+            case vDataTypeEditorPhotoDelete:
+                NSLog(@"Received Delete Photo");
+                [self.photoEditorDelegate receivedEditorPhotoDelete:[receivedData[kEditorPhotoDeleteIndex] integerValue]];
+                break;
+            case vDataTypeEditorDrawingEdit:
+                NSLog(@"Received Edit Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectEditing:receivedData[kEditorDrawingEditID]];
+                break;
+            case vDataTypeEditorDrawingEditCancel:
+                NSLog(@"Received Edit Cancel Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectEditCancelled:receivedData[kEditorDrawingEditID]];
+                break;
+            case vDataTypeEditorDrawingInsert:
+                NSLog(@"Received Insert Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectInsert:receivedData[kEditorDrawingInsertData]
+                                                                   timestamp:receivedData[kEditorDrawingInsertTimestamp]];
+                break;
+            case vDataTypeEditorDrawingUpdateMoved:
+                NSLog(@"Received Update Moved Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectMoved:receivedData[kEditorDrawingUpdateID]
+                                                                    originX:[receivedData[kEditorDrawingUpdateMovedX] floatValue]
+                                                                    originY:[receivedData[kEditorDrawingUpdateMovedY] floatValue]];
+                break;
+            case vDataTypeEditorDrawingUpdateResized:
+                NSLog(@"Received Update Resized Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectResized:receivedData[kEditorDrawingUpdateID]
+                                                                        width:[receivedData[kEditorDrawingUpdateResizedWidth] floatValue]
+                                                                       height:[receivedData[kEditorDrawingUpdateResizedHeight] floatValue]];
+                break;
+            case vDataTypeEditorDrawingUpdateRotated:
+                NSLog(@"Received Update Rotated Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectRotated:receivedData[kEditorDrawingUpdateID]
+                                                                        angle:[receivedData[kEditorDrawingUpdateRotatedAngle] floatValue]];
+                break;
+            case vDataTypeEditorDrawingUpdateZOrder:
+                NSLog(@"Received Update Z Order Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectZOrderChanged:receivedData[kEditorDrawingUpdateID]];
+                break;
+            case vDataTypeEditorDrawingDelete:
+                NSLog(@"Received Delete Drawing Object");
+                [self.photoEditorDelegate receivedEditorDecorateObjectDelete:receivedData[kEditorDrawingDeleteID]];
+                break;
+            case vDataTypeEditorDisconnected:
+                NSLog(@"Received Session Disconnected at PhotoEditorViewController");
+                [self.photoEditorDelegate receivedEditorDisconnected];
+                break;
         }
-    } else if (dataType == VALUE_DATA_TYPE_PHOTO_FRAME_CONFIRM_ACK) {
-        NSLog(@"Received Confirm Ack Frame Select");
-        if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameConfirmAck:)]) {
-            [self.delegate receivedPhotoFrameConfirmAck:[receivedData[KEY_PHOTO_FRAME_CONFIRM_ACK] boolValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_PHOTO_FRAME_DISCONNECTED) {
-        NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
-        if ([self.delegate respondsToSelector:@selector(receivedPhotoFrameDisconnected)]) {
-            [self.delegate receivedPhotoFrameDisconnected];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT) {
-        NSLog(@"Received Edit Photo");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoEditing:)]) {
-            [self.delegate receivedEditorPhotoEditing:[receivedData[KEY_EDITOR_PHOTO_EDIT_INDEX] integerValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED) {
-        NSLog(@"Received Edit Photo Canceled");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoEditingCancelled:)]) {
-            [self.delegate receivedEditorPhotoEditingCancelled:[receivedData[KEY_EDITOR_PHOTO_EDIT_INDEX] integerValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK) {
-        NSLog(@"Received Insert Photo Ack");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsertAck:WithAck:)]) {
-            [self.delegate receivedEditorPhotoInsertAck:[receivedData[KEY_EDITOR_PHOTO_INSERT_INDEX] integerValue] WithAck:[receivedData[KEY_EDITOR_PHOTO_INSERT_ACK] boolValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE) {
-        NSLog(@"Received Delete Photo");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoDelete:)]) {
-            [self.delegate receivedEditorPhotoDelete:[receivedData[KEY_EDITOR_PHOTO_DELETE_INDEX] integerValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT) {
-        NSLog(@"Received Edit Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectEditing:)]) {
-            [self.delegate receivedEditorDecorateObjectEditing:receivedData[KEY_EDITOR_DRAWING_EDIT_ID]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_EDIT_CANCELED) {
-        NSLog(@"Received Edit Cancel Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectEditCancelled:)]) {
-            [self.delegate receivedEditorDecorateObjectEditCancelled:receivedData[KEY_EDITOR_DRAWING_EDIT_ID]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT) {
-        NSLog(@"Received Insert Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectInsert:WithTimestamp:)]) {
-            [self.delegate receivedEditorDecorateObjectInsert:receivedData[KEY_EDITOR_DRAWING_INSERT_DATA] WithTimestamp:receivedData[KEY_EDITOR_DRAWING_INSERT_TIMESTAMP]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED) {
-        NSLog(@"Received Update Moved Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectMoved:WithOriginX:WithOriginY:)]) {
-            [self.delegate receivedEditorDecorateObjectMoved:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithOriginX:[receivedData[KEY_EDITOR_DRAWING_UPDATE_MOVED_X] floatValue] WithOriginY:[receivedData[KEY_EDITOR_DRAWING_UPDATE_MOVED_Y] floatValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED) {
-        NSLog(@"Received Update Resized Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectResized:WithWidth:WithHeight:)]) {
-            [self.delegate receivedEditorDecorateObjectResized:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithWidth:[receivedData[KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH] floatValue] WithHeight:[receivedData[KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT] floatValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED) {
-        NSLog(@"Received Update Rotated Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectRotated:WithAngle:)]) {
-            [self.delegate receivedEditorDecorateObjectRotated:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID] WithAngle:[receivedData[KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE] floatValue]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_Z_ORDER) {
-        NSLog(@"Received Update Z Order Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectZOrderChanged:)]) {
-            [self.delegate receivedEditorDecorateObjectZOrderChanged:receivedData[KEY_EDITOR_DRAWING_UPDATE_ID]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
-        NSLog(@"Received Delete Drawing Object");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDecorateObjectDelete:)]) {
-            [self.delegate receivedEditorDecorateObjectDelete:receivedData[KEY_EDITOR_DRAWING_DELETE_ID]];
-        }
-    } else if (dataType == VALUE_DATA_TYPE_EDITOR_DICONNECTED) {
-        NSLog(@"Received Session Disconnected at PhotoEditorViewController");
-        if ([self.delegate respondsToSelector:@selector(receivedEditorDisconnected)]) {
-            [self.delegate receivedEditorDisconnected];
-        }
+
     }
 }
 
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
     NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
     
-    if (array != nil && array.count == 2) {
-        if ([array[1] isEqualToString:POSTFIX_IMAGE_CROPPED]) {
-            NSLog(@"Receive Start Insert Photo");
-            if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
-                [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:nil];
-            }
-        }
+    if (array == nil || array.count != 2)
+        return;
+    
+    NSInteger photoFrameIndex = [array[0] integerValue];
+    NSString *fileType = array[1];
+    
+    if ([fileType isEqualToString:POSTFIX_IMAGE_CROPPED]) {
+        NSLog(@"Receive Start Insert Photo");
+        [self.photoEditorDelegate receivedEditorPhotoInsert:photoFrameIndex type:fileType url:nil];
     }
 }
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
     NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
     
-    if (array != nil && array.count == 2) {
-        if ([self.delegate respondsToSelector:@selector(receivedEditorPhotoInsert:WithType:WithURL:)]) {
-            [self.delegate receivedEditorPhotoInsert:[array[0] integerValue] WithType:array[1] WithURL:localURL];
-        }
+    if (array == nil || array.count != 2)
+        return;
+    
+    NSInteger photoFrameIndex = [array[0] integerValue];
+    NSString *fileType = array[1];
+    
+    [self.photoEditorDelegate receivedEditorPhotoInsert:photoFrameIndex type:fileType url:localURL];
+    
+    if ([fileType isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
+        NSLog(@"Receive Finish Insert Photo");
+        NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoInsertAck),
+                                   kEditorPhotoInsertAck: @YES,
+                                   kEditorPhotoEditIndex: @(photoFrameIndex)};
         
-        if ([array[1] isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
-            NSLog(@"Receive Finish Insert Photo");
-            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_INSERT_ACK),
-                                       KEY_EDITOR_PHOTO_INSERT_ACK: @YES,
-                                       KEY_EDITOR_PHOTO_INSERT_INDEX: @([array[0] integerValue])};
-            
-            [self sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
-        }
+        [self sendData:sendData];
     }
 }
 
-- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {}
+- (void)session:(MCSession *)session didReceiveStream:(NSInputStream *)stream withName:(NSString *)streamName fromPeer:(MCPeerID *)peerID {
+
+}
 
 
 #pragma mark - CBCentralManagerDelegate Methods
 
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central { /** Do nothing... **/ }
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+
+}
 
 @end

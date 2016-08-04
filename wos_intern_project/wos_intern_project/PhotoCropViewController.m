@@ -8,13 +8,18 @@
 
 #import "PhotoCropViewController.h"
 
+#import "ImageUtility.h"
+
+#import "WMProgressHUD.h"
+#import "PECropView.h"
+
 @interface PhotoCropViewController ()
+
+@property (weak, nonatomic) IBOutlet UIView *cropAreaView;
+@property (weak, nonatomic) IBOutlet UIScrollView *filterListScrollView;
 
 @property (strong, nonatomic) PECropView *cropView;
 @property (strong, nonatomic) UIImage *croppedImage;
-
-- (void)loadProgress;
-- (void)doneProgress;
 
 @end
 
@@ -29,7 +34,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self setupCropView];
+}
+
+- (void)setupCropView {
     self.cropView = [[PECropView alloc] initWithFrame:self.cropAreaView.bounds];
     [self.cropAreaView addSubview:self.cropView];
     
@@ -58,6 +66,9 @@
     }
 }
 
+
+#pragma mark - EventHandle Methods
+
 - (IBAction)backButtonTapped:(id)sender {
     if ([self.delegate respondsToSelector:@selector(cropViewControllerDidCancelled:)]) {
         [self.delegate cropViewControllerDidCancelled:self];
@@ -75,6 +86,9 @@
         }
     }
 }
+
+
+#pragma mark - Progess Methods
 
 - (void)loadProgress {
     if (self.progressView == nil) {

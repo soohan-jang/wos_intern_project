@@ -7,33 +7,52 @@
 //
 
 #import "PhotoEditorViewController.h"
+#import "UIView+StringTag.h"
 
-#define MAIN_MENU_BACKGROUND_COLOR [UIColor colorWithRed:45 / 255.f green:140 / 255.f blue:213 / 255.f alpha:1]
-#define DELAY_TIME                 1.0f
+#import "CommonConstants.h"
 
-@interface PhotoEditorViewController ()
+#import "ConnectionManager.h"
+#import "MessageSyncManager.h"
+#import "DecorateObjectController.h"
 
-@property (nonatomic, strong) ConnectionManager *connectionManager;
-@property (nonatomic, strong) MessageSyncManager *messageSyncManager;
+#import "SphereMenu.h"
+#import "XXXRoundMenuButton.h"
+
+#import "PhotoFrameCellManager.h"
+#import "PhotoEditorFrameViewCell.h"
+#import "PhotoCropViewController.h"
+#import "PhotoDrawObjectDisplayView.h"
+#import "PhotoDrawPenView.h"
+
+#import "WMPhotoDecorateImageObject.h"
+#import "WMPhotoDecorateTextObject.h"
+
+typedef NS_ENUM(NSInteger, AlertType) {
+    ALERT_NOT_SAVE   = 0,
+    ALERT_CONTINUE   = 1,
+    ALERT_ALBUM_AUTH = 2
+};
+
+float const DelayTime = 1.0f;
+
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenViewDelegate, UIAlertViewDelegate, ConnectionManagerPhotoEditorDelegate>
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
-@property (atomic, strong) DecorateObjectManager *decoObjectManager;
+@property (atomic, strong) DecorateObjectController *decoObjectController;
 
 @property (atomic, assign) NSIndexPath *selectedIndexPath;
 @property (atomic, strong) NSURL *selectedImageURL;
 @property (nonatomic, assign) BOOL isMenuAppear;
 
-/**
- NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록한다.
- */
-- (void)addObservers;
+@property (weak, nonatomic) IBOutlet UIView *collectionContainerView;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
+@property (weak, nonatomic) IBOutlet UIButton *decorateToggleButton;
+@property (weak, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
 
-/**
- NotificationCenter가 알리는 Notification을 처리하기 위한 Observer들을 등록 해제한다.
- */
-- (void)removeObservers;
-- (void)loadPhotoCropViewController;
-- (void)reloadData:(NSIndexPath *)indexPath;
+//그려진 객체들이 위치하는 뷰
+@property (weak, nonatomic) IBOutlet PhotoDrawObjectDisplayView *drawObjectDisplayView;
+//그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
+@property (weak, nonatomic) IBOutlet PhotoDrawPenView *drawPenView;
 
 @end
 
@@ -41,60 +60,52 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    self.decoObjectManager = [[DecorateObjectManager alloc] init];
-    self.drawObjectDisplayView.delegate = self;
-    self.drawPenView.delegate = self;
+    [self setupConnectionManager];
+    [self setupMenu];
+    [self setupDrawController];
     
-    /**** Set Main Menu ****/
+    self.isMenuAppear = NO;
+    [self addObservers];
+}
+
+- (void)setupConnectionManager {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.photoEditorDelegate = self;
+}
+
+- (void)setupMenu {
     NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
     
-    [self.editMenuButton loadButtonWithIcons:menuItems startDegree:-M_PI layoutDegree:M_PI / 2];
+    [self.editMenuButton loadButtonWithIcons:menuItems
+                                 startDegree:-M_PI
+                                layoutDegree:M_PI / 2];
+    
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.editMenuButton setDelegate:self];
     
-    self.editMenuButton.mainColor = MAIN_MENU_BACKGROUND_COLOR;
-    /**** End ****/
-    
-    self.isMenuAppear = NO;
-    
-    self.connectionManager = [ConnectionManager sharedInstance];
-    self.connectionManager.delegate = self;
-    self.messageSyncManager = [MessageSyncManager sharedInstance];
-    [self addObservers];
+    self.editMenuButton.mainColor = [UIColor colorWithRed:45 / 255.f
+                                                    green:140 / 255.f
+                                                     blue:213 / 255.f
+                                                    alpha:1];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)setupDrawController {
+    self.decoObjectController = [[DecorateObjectController alloc] init];
+    self.drawObjectDisplayView.delegate = self;
+    self.drawPenView.delegate = self;
 }
 
-- (IBAction)backButtonTapped:(id)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil) message:NSLocalizedString(@"alert_content_data_not_save", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-    alertView.tag = ALERT_NOT_SAVE;
-    [alertView show];
+- (void)setPhotoFrameNumber:(NSInteger)frameNumber {
+    self.cellManager = [[PhotoFrameCellManager alloc] initWithFrameNumber:frameNumber];
 }
 
-- (IBAction)saveButtonTapped:(id)sender {
-//    [self.connectionManager disconnectSession];
-//    [self.navigationController popToRootViewControllerAnimated:YES];
-}
-
-- (IBAction)decoreateVisibleToggled:(id)sender {
-    if (self.decorateToggleButton.isSelected) {
-        [self.decorateToggleButton setSelected:NO];
-        [self.drawObjectDisplayView setHidden:YES];
-    } else {
-        [self.decorateToggleButton setSelected:YES];
-        [self.drawObjectDisplayView setHidden:NO];
-    }
-}
-
-- (void)loadPhotoCropViewController {
-    [self performSegueWithIdentifier:SEGUE_MOVE_TO_CROPPER sender:self];
+- (void)reloadData:(NSIndexPath *)indexPath {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    });
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -113,6 +124,26 @@
     }
 }
 
+- (void)dealloc {
+    [ConnectionManager sharedInstance].photoEditorDelegate = nil;
+    [ImageUtility removeAllTemporaryImages];
+    [self removeObservers];
+}
+
+
+#pragma mark - Load Other ViewController Methods
+
+- (void)loadPhotoCropViewController {
+    [self performSegueWithIdentifier:SEGUE_MOVE_TO_CROPPER sender:self];
+}
+
+- (void)loadMainViewController {
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+
+#pragma mark - Observer Add & Remove Methods
+
 - (void)addObservers {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectedCellAction:) name:NOTIFICATION_SELECTED_CELL object:nil];
 }
@@ -121,14 +152,32 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NOTIFICATION_SELECTED_CELL object:nil];
 }
 
-- (void)setPhotoFrameNumber:(NSInteger)frameNumber {
-    self.cellManager = [[PhotoFrameCellManager alloc] initWithFrameNumber:frameNumber];
+
+#pragma mark - EventHandle Methods
+
+- (IBAction)backButtonTapped:(id)sender {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil)
+                                                        message:NSLocalizedString(@"alert_content_data_not_save", nil)
+                                                       delegate:self
+                                              cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil)
+                                              otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
+    alertView.tag = ALERT_NOT_SAVE;
+    [alertView show];
 }
 
-- (void)reloadData:(NSIndexPath *)indexPath {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
-    });
+- (IBAction)saveButtonTapped:(id)sender {
+//    [self.connectionManager disconnectSession];
+//    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (IBAction)decoreateVisibleToggled:(id)sender {
+    if (self.decorateToggleButton.isSelected) {
+        [self.decorateToggleButton setSelected:NO];
+        [self.drawObjectDisplayView setHidden:YES];
+    } else {
+        [self.decorateToggleButton setSelected:YES];
+        [self.drawObjectDisplayView setHidden:NO];
+    }
 }
 
 
@@ -164,6 +213,7 @@
 #pragma mark - SphereMenu Delegate Method
 
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     BOOL isSendEditCancelMsg = NO;
     
     if (index < 0) {
@@ -183,7 +233,11 @@
                 });
             } else {
                 //권한 없음. 해당 Alert 표시.
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil) message:NSLocalizedString(@"alert_content_album_not_authorized", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil)
+                                                                    message:NSLocalizedString(@"alert_content_album_not_authorized", nil)
+                                                                   delegate:self
+                                                          cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil)
+                                                          otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
                 alertView.tag = ALERT_ALBUM_AUTH;
                 [alertView show];
                 
@@ -201,18 +255,18 @@
             [self.cellManager clearCellDataAtIndex:self.selectedIndexPath.item];
             [self reloadData:self.selectedIndexPath];
             
-            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_DELETE),
-                                       KEY_EDITOR_PHOTO_DELETE_INDEX: @(self.selectedIndexPath.item)};
+            NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoDelete),
+                                       kEditorPhotoDeleteIndex: @(self.selectedIndexPath.item)};
             
-            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            [connectionManager sendData:sendData];
         }
     }
     
     if (isSendEditCancelMsg) {
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+        NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoEditCancel),
+                                   kEditorPhotoEditIndex: @(self.selectedIndexPath.item)};
         
-        [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        [connectionManager sendData:sendData];
     }
     
     [sphereMenu dismissMenu];
@@ -250,10 +304,10 @@
         
         if (self.selectedImageURL == nil) {
             //Error Alert.
-            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                                       KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+            NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoEditCancel),
+                                       kEditorPhotoEditIndex: @(self.selectedIndexPath.item)};
             
-            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            [[ConnectionManager sharedInstance] sendData:sendData];
         } else {
             [self loadPhotoCropViewController];
         }
@@ -263,10 +317,10 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                               KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoEditCancel),
+                               kEditorPhotoEditIndex: @(self.selectedIndexPath.item)};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
 
@@ -287,61 +341,64 @@
         [self reloadData:self.selectedIndexPath];
         
         //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [self.connectionManager sendPhotoDataWithFilename:filename WithFullscreenImageURL:fullscreenImageURL WithCroppedImageURL:croppedImageURL WithIndex:self.selectedIndexPath.item];
+        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename
+                                                   fullscreenImageURL:fullscreenImageURL
+                                                      croppedImageURL:croppedImageURL
+                                                                index:self.selectedIndexPath.item];
     } else {
         //alert.
     }
 }
 
 - (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT_CANCELED),
-                               KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoEditCancel),
+                               kEditorPhotoEditIndex: @(self.selectedIndexPath.item)};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
 
 #pragma mark - PhotoDrawObjectDisplayView Delegate Methods
 
-- (void)decoViewDidMovedWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithOriginX:originX WithOriginY:originY];
+- (void)decoViewDidMovedWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY {
+    [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_MOVED),
-                               KEY_EDITOR_DRAWING_UPDATE_ID: identifier,
-                               KEY_EDITOR_DRAWING_UPDATE_MOVED_X: @(originX),
-                               KEY_EDITOR_DRAWING_UPDATE_MOVED_Y: @(originY)};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingUpdateMoved),
+                               kEditorDrawingUpdateID: identifier,
+                               kEditorDrawingUpdateMovedX: @(originX),
+                               kEditorDrawingUpdateMovedY: @(originY)};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
-- (void)decoViewDidResizedWithId:(NSString *)identifier WithResizedWidth:(CGFloat)width WithResizedHeight:(CGFloat)height {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithWidth:width WithHeight:height];
+- (void)decoViewDidResizedWithId:(NSString *)identifier resizedWidth:(CGFloat)width resizedHeight:(CGFloat)height {
+    [self.decoObjectController updateDecorateObjectWithId:identifier width:width height:height];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_RESIZED),
-                               KEY_EDITOR_DRAWING_UPDATE_ID: identifier,
-                               KEY_EDITOR_DRAWING_UPDATE_RESIZED_WIDTH: @(width),
-                               KEY_EDITOR_DRAWING_UPDATE_RESIZED_HEIGHT: @(height)};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingUpdateResized),
+                               kEditorDrawingUpdateID: identifier,
+                               kEditorDrawingUpdateResizedWidth: @(width),
+                               kEditorDrawingUpdateResizedHeight: @(height)};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
-- (void)decoViewDidRotatedWithId:(NSString *)identifier WithRotatedAngle:(CGFloat)angle {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithAngle:angle];
+- (void)decoViewDidRotatedWithId:(NSString *)identifier rotatedAngle:(CGFloat)angle {
+    [self.decoObjectController updateDecorateObjectWithId:identifier angle:angle];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_UPDATE_ROTATED),
-                               KEY_EDITOR_DRAWING_UPDATE_ID: identifier,
-                               KEY_EDITOR_DRAWING_UPDATE_ROTATED_ANGLE: @(angle)};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingUpdateRotated),
+                               kEditorDrawingUpdateID: identifier,
+                               kEditorDrawingUpdateRotatedAngle: @(angle)};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
 - (void)decoViewDidDeletedWithId:(NSString *)identifier {
-    [self.decoObjectManager deleteDecorateObjectWithId:identifier];
+    [self.decoObjectController deleteDecorateObjectWithId:identifier];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE),
-                               KEY_EDITOR_DRAWING_DELETE_ID: identifier};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingDelete),
+                               kEditorDrawingDeleteID: identifier};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
 - (void)decoViewDidChangedZOrderWithId:(NSString *)identifier {
@@ -356,17 +413,17 @@
     [self.decorateToggleButton setHidden:NO];
     
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
-    [self.decoObjectManager addDecorateObject:imageObject];
+    [self.decoObjectController addDecorateObject:imageObject];
     
     UIView *decoView = [imageObject getView];
     decoView.stringTag = [imageObject getID];
     [self.drawObjectDisplayView addDecoView:decoView];
     
-    NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DRAWING_INSERT),
-                               KEY_EDITOR_DRAWING_INSERT_DATA:[imageObject getData],
-                               KEY_EDITOR_DRAWING_INSERT_TIMESTAMP:[imageObject getZOrder]};
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingInsert),
+                               kEditorDrawingInsertData:[imageObject getData],
+                               kEditorDrawingInsertTimestamp:[imageObject getZOrder]};
     
-    [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+    [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
 - (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView {
@@ -377,42 +434,29 @@
 #pragma mark - UIAlertViewDelegate Methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    
     if (alertView.tag == ALERT_NOT_SAVE) {
         if (buttonIndex == 1) {
-            NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_DICONNECTED)};
-            [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+            NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDisconnected)};
+            [connectionManager sendData:sendData];
             
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DELAY_TIME * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                self.connectionManager.delegate = nil;
-                [self removeObservers];
-                
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-                [self.messageSyncManager setMessageQueueEnabled:NO];
-                [self.messageSyncManager clearMessageQueue];
+                [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+                [connectionManager disconnectSession];
                 
-                [self.connectionManager disconnectSession];
-                [self.navigationController popToRootViewControllerAnimated:YES];
-                
-                //사용된 임시 파일을 삭제한다
-                [ImageUtility removeAllTemporaryImages];
+                [self loadMainViewController];
             });
         }
     } else if (alertView.tag == ALERT_CONTINUE) {
-        self.connectionManager.delegate = nil;
-        [self removeObservers];
-        
         //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-        [self.messageSyncManager setMessageQueueEnabled:NO];
-        [self.messageSyncManager clearMessageQueue];
-        
-        [self.connectionManager disconnectSession];
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+        [connectionManager disconnectSession];
         
         //계속하지 않겠다고 응답했으므로, 메인화면으로 돌아간다.
         if (buttonIndex == 1) {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            
-            //사용된 임시 파일을 삭제한다
-            [ImageUtility removeAllTemporaryImages];
+            [self loadMainViewController];
         }
     } else if (alertView.tag == ALERT_ALBUM_AUTH) {
         if (buttonIndex == 1) {
@@ -469,17 +513,17 @@
         sphereMenu.delegate = self;
         [sphereMenu presentMenu];
         
-        NSDictionary *sendData = @{KEY_DATA_TYPE: @(VALUE_DATA_TYPE_EDITOR_PHOTO_EDIT),
-                                   KEY_EDITOR_PHOTO_EDIT_INDEX: @(self.selectedIndexPath.item)};
+        NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoEdit),
+                                   kEditorPhotoEditIndex: @(self.selectedIndexPath.item)};
         
-        [self.connectionManager sendData:[NSKeyedArchiver archivedDataWithRootObject:sendData]];
+        [[ConnectionManager sharedInstance] sendData:sendData];
     }
 }
 
 
 #pragma mark - ConnectionManagerDelegate Methods
 
-- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex WithType:(NSString *)type WithURL:(NSURL *)url {
+- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex type:(NSString *)type url:(NSURL *)url {
     //Data Receive Started.
     if (url == nil) {
         [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_DOWNLOADING];
@@ -498,7 +542,7 @@
     [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex WithAck:(BOOL)insertAck {
+- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex ack:(BOOL)insertAck {
     if (insertAck) {
         [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
         [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
@@ -522,18 +566,26 @@
     [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
-- (void)receivedEditorDecorateObjectInsert:(id)insertData WithTimestamp:(NSNumber *)timestamp {
+- (void)receivedEditorDecorateObjectEditing:(NSString *)identifier {
+    
+}
+
+- (void)receivedEditorDecorateObjectEditCancelled:(NSString *)identifier {
+    
+}
+
+- (void)receivedEditorDecorateObjectInsert:(id)insertData timestamp:(NSNumber *)timestamp {
     WMPhotoDecorateObject *decoObject;
     
     if ([insertData isKindOfClass:[UIImage class]]) {
         NSLog(@"I'm Image.");
-        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:insertData WithTimestamp:timestamp];
+        decoObject = [[WMPhotoDecorateImageObject alloc] initWithImage:insertData timestamp:timestamp];
     } else if ([insertData isKindOfClass:[NSString class]]) {
         NSLog(@"I'm Text.");
-        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:insertData WithTimestamp:timestamp];
+        decoObject = [[WMPhotoDecorateTextObject alloc] initWithText:insertData timestamp:timestamp];
     }
     
-    [self.decoObjectManager addDecorateObject:decoObject];
+    [self.decoObjectController addDecorateObject:decoObject];
     dispatch_async(dispatch_get_main_queue(), ^{
         UIView *decoView = [decoObject getView];
         decoView.stringTag = [decoObject getID];
@@ -541,36 +593,36 @@
     });
 }
 
-- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithOriginX:originX WithOriginY:originY];
+- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY {
+    [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithOriginX:originX WithOriginY:originY];
     });
 }
 
-- (void)receivedEditorDecorateObjectResized:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithWidth:width WithHeight:height];
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height {
+    [self.decoObjectController updateDecorateObjectWithId:identifier width:width height:height];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithWidth:width WithHeight:height];
     });
 }
 
-- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier WithAngle:(CGFloat)angle {
-    [self.decoObjectManager updateDecorateObjectWithId:identifier WithAngle:angle];
+- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier angle:(CGFloat)angle {
+    [self.decoObjectController updateDecorateObjectWithId:identifier angle:angle];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewWithId:identifier WithAngle:angle];
     });
 }
 
 - (void)receivedEditorDecorateObjectZOrderChanged:(NSString *)identifier {
-    [self.decoObjectManager updateDecorateObjectZOrderWithId:identifier];
+    [self.decoObjectController updateDecorateObjectZOrderWithId:identifier];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView updateDecoViewZOrderWithId:identifier];
     });
 }
 
 - (void)receivedEditorDecorateObjectDelete:(NSString *)identifier {
-    [self.decoObjectManager deleteDecorateObjectWithId:identifier];
+    [self.decoObjectController deleteDecorateObjectWithId:identifier];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView deleteDecoViewWithId:identifier];
     });

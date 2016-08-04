@@ -10,6 +10,4 @@
 
 @interface PhotoAlbumViewController : UIViewController
 
-- (IBAction)backButtonTapped:(id)sender;
-
 @end

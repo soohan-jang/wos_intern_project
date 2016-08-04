@@ -7,15 +7,11 @@
 //
 
 #import "WMPhotoDecorateObject.h"
-#import <UIKit/UIImage.h>
-#import <UIKit/UIImageView.h>
-#import <UIKit/UITapGestureRecognizer.h>
-#import <UIKit/UIPanGestureRecognizer.h>
 
 @interface WMPhotoDecorateImageObject : WMPhotoDecorateObject
 
 - (instancetype)initWithImage:(UIImage *)image;
-- (instancetype)initWithImage:(UIImage *)image WithID:(NSString *)identifier;
-- (instancetype)initWithImage:(UIImage *)image WithTimestamp:(NSNumber *)timestamp;
+- (instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier;
+- (instancetype)initWithImage:(UIImage *)image timestamp:(NSNumber *)timestamp;
 
 @end

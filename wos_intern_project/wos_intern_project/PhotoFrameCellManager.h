@@ -7,10 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
-#import <ImageIO/ImageIO.h>
-
-#define SECTION_NUMBER  1
 
 typedef NS_ENUM(NSInteger, CellState) {
     CELL_STATE_NONE         = 0,

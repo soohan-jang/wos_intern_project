@@ -7,9 +7,11 @@
 //
 
 #import "PhotoFrameCellManager.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
 
-#define SECTION_NUMBER  1
-#define DEFAULT_MARGIN  5
+NSInteger const SectionNumber = 1;
+NSInteger const DefaultMargin = 5;
 
 @interface PhotoFrameCellManager ()
 
@@ -52,44 +54,44 @@
      return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
      **/
     if (self.photoFrameNumber == 0) {
-        return CGSizeMake(containerWidth - DEFAULT_MARGIN, containerHeight - DEFAULT_MARGIN);
+        return CGSizeMake(containerWidth - DefaultMargin, containerHeight - DefaultMargin);
     } else if (self.photoFrameNumber == 1) {
-        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, containerHeight - DEFAULT_MARGIN);
+        return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, containerHeight - DefaultMargin);
     } else if (self.photoFrameNumber == 2) {
-        return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
     } else if (self.photoFrameNumber == 3) {
-        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 3.0f, containerHeight - DEFAULT_MARGIN);
+        return CGSizeMake((containerWidth - DefaultMargin) / 3.0f, containerHeight - DefaultMargin);
     } else if (self.photoFrameNumber == 4) {
-        return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 3.0f);
+        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 3.0f);
     } else if (self.photoFrameNumber == 5) {
-        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 4.0f, containerHeight - DEFAULT_MARGIN);
+        return CGSizeMake((containerWidth - DefaultMargin) / 4.0f, containerHeight - DefaultMargin);
     } else if (self.photoFrameNumber == 6) {
-        return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 4.0f);
+        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 4.0f);
     } else if (self.photoFrameNumber == 7) {
-        return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+        return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
     } else if (self.photoFrameNumber == 8) {
         if (cellIndex == 0) {
-            return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         } else {
-            return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         }
     } else if (self.photoFrameNumber == 9) {
         if (cellIndex == 2) {
-            return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         } else {
-            return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         }
     } else if (self.photoFrameNumber == 10) {
         if (cellIndex == 0) {
-            return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         } else {
-            return CGSizeMake((containerWidth - DEFAULT_MARGIN * 1.01f) / 3.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         }
     } else if (self.photoFrameNumber == 11) {
         if (cellIndex == 3) {
-            return CGSizeMake(containerWidth - DEFAULT_MARGIN, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         } else {
-            return CGSizeMake((containerWidth - DEFAULT_MARGIN * 1.01f) / 3.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
+            return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
         }
     } else {
         cellWidth = cellHeight = 0;
@@ -99,7 +101,7 @@
 }
 
 - (NSInteger)getSectionNumber {
-    return SECTION_NUMBER;
+    return SectionNumber;
 }
 
 - (NSInteger)getItemNumber {

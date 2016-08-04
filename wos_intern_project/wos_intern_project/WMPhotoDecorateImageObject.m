@@ -25,7 +25,7 @@
     return self;
 }
 
-- (instancetype)initWithImage:(UIImage *)image WithID:(NSString *)identifier {
+- (instancetype)initWithImage:(UIImage *)image identifier:(NSString *)identifier {
     self = [super init];
     
     if (self) {
@@ -36,7 +36,7 @@
     return self;
 }
 
-- (instancetype)initWithImage:(UIImage *)image WithTimestamp:(NSNumber *)timestamp {
+- (instancetype)initWithImage:(UIImage *)image timestamp:(NSNumber *)timestamp {
     self = [super initWithTimestamp:timestamp];
     
     if (self) {

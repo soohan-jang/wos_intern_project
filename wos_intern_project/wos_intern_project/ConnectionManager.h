@@ -15,46 +15,41 @@
 #import "MessageSyncManager.h"
 #import "ImageUtility.h"
 
-@protocol ConnectionManagerDelegate;
+@protocol ConnectionManagerSessionConnectDelegate;
+@protocol ConnectionManagerPhotoFrameSelectDelegate;
+@protocol ConnectionManagerPhotoEditorDelegate;
 
 @interface ConnectionManager : NSObject <MCSessionDelegate, CBCentralManagerDelegate>
 
-@property (nonatomic, weak) id<ConnectionManagerDelegate> delegate;
+@property (nonatomic, weak) id<ConnectionManagerSessionConnectDelegate> sessionConnectDelegate;
+@property (nonatomic, weak) id<ConnectionManagerPhotoFrameSelectDelegate> photoFrameSelectDelegate;
+@property (nonatomic, weak) id<ConnectionManagerPhotoEditorDelegate> photoEditorDelegate;
+
+@property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
+@property (nonatomic, strong, readonly) MCSession *ownSession;
+@property (nonatomic, assign, readonly) CGFloat ownScreenWidth, ownScreenHeight;
 
 /**
+ @breif
  싱글턴 인스턴스를 가져온다.
  */
 + (ConnectionManager *)sharedInstance;
 
 /**
- ConnectionManager에서 관리되는 MCPeerID를 반환한다.
+ @breif
+ 블루투스를 사용할 수 있는 상태인지를 확인한다.
  */
-- (MCPeerID *)getOwnPeerID;
-
-/**
- ConnectionManager에서 관리되는 MCSession를 반환한다.
- */
-- (MCSession *)getSession;
-
-/**
- ConnectionManager에서 관리되는 ScreenSize를 반환한다.
- */
-- (CGSize)getScreenSize;
-
-/**
- 현재 블루투스 하드웨어의 상태를 가져온다. 반환값은 CBCentralManagerState의 값이 전달된다.
- */
-- (NSInteger)getBluetoothState;
+- (BOOL)isBluetoothAvailable;
 
 /**
  ConnectionManager가 관리하는 MCSession 객체를 이용하여 메시지를 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.
  */
-- (void)sendData:(NSData *)sendData;
+- (void)sendData:(NSDictionary *)data;
 
 /**
  ConnectionManager가 관리하는 MCSession 객체를 이용하여 전달받은 이미지 파일을 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.
  */
-- (void)sendPhotoDataWithFilename:(NSString *)filename WithFullscreenImageURL:(NSURL *)fullscreenImageURL WithCroppedImageURL:(NSURL *)croppedImageURL WithIndex:(NSInteger)index;
+- (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index;
 
 /**
  Session의 연결을 해제한다.
@@ -68,12 +63,15 @@
 
 @end
 
+
+#pragma mark - ConnectionManagerSessionConnectDelegate
+
 /**
  MCSessionDelegate를 전파하기 위한 ConnectionManager의 Delegate이다.
  MCSessionDelegate에 전달되는 값을 확인하여, 세분화한 뒤 그에 해당하는 Delegate로 메시지를 전달한다.
  */
-@protocol ConnectionManagerDelegate <NSObject>
-@optional
+@protocol ConnectionManagerSessionConnectDelegate <NSObject>
+@required
 /**
  Peer가 연결되었을 때  호출된다. didStateChanged에 의해 호출된다.
  */
@@ -84,6 +82,13 @@
  */
 - (void)receivedPeerDisconnected;
 
+@end
+
+
+#pragma mark - ConnectionManagerPhotoFrameSelectDelegate
+
+@protocol ConnectionManagerPhotoFrameSelectDelegate <NSObject>
+@required
 /**
  선택된 사진 액자의 종류를 받았을 때 호출된다. 여기서의 사진 액자는 전체 사진 액자의 틀을 의미한다.
  */
@@ -105,6 +110,13 @@
  */
 - (void)receivedPhotoFrameDisconnected;
 
+@end
+
+
+#pragma mark - ConnectionManagerPhotoEditorDelegate
+
+@protocol ConnectionManagerPhotoEditorDelegate <NSObject>
+
 /**
  상대방이 특정 사진 액자 영역을 선택했을 때 호출된다.
  */
@@ -120,18 +132,17 @@
  사진이 삽입되었을 때 총 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
  사진 정보는 cropped와 fullscreen으로 구분되며, cropped는
  */
-- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex WithType:(NSString *)type WithURL:(NSURL *)url;
+- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex type:(NSString *)type url:(NSURL *)url;
 
 /**
  상대방이 사진 정보를 모두 수신한 뒤에 이 여부를 전달했을 때 호출된다.
  */
-- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex WithAck:(BOOL)insertAck;
+- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex ack:(BOOL)insertAck;
 
 /**
  상대방이 사진 정보를 삭제했을 때 호출된다.
  */
 - (void)receivedEditorPhotoDelete:(NSInteger)targetFrameIndex;
-
 
 /**
  상대방에 특정 그림 객체를 선택했을 때 호출된다.
@@ -146,22 +157,22 @@
 /**
  상대방이 그림 객체를 삽입했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectInsert:(id)insertData WithTimestamp:(NSNumber *)timestamp;
+- (void)receivedEditorDecorateObjectInsert:(id)insertData timestamp:(NSNumber *)timestamp;
 
 /**
  상대방이 그림 객체의 위치를 이동시켰을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
+- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY;
 
 /**
  상대방이 그림 객체의 크기를 변경했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectResized:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height;
 
 /**
  상대방이 그림 객체를 회전시켰을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier WithAngle:(CGFloat)angle;
+- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier angle:(CGFloat)angle;
 
 /**
  상대방이 그림 객체의 Z-order를 변경했을 때 호출된다.

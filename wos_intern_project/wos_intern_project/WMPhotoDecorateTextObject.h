@@ -7,12 +7,11 @@
 //
 
 #import "WMPhotoDecorateObject.h"
-#import <UIKit/UILabel.h>
 
 @interface WMPhotoDecorateTextObject : WMPhotoDecorateObject
 
 - (instancetype)initWithText:(NSString *)text;
-- (instancetype)initWithText:(NSString *)text WithID:(NSString *)identifier;
-- (instancetype)initWithText:(NSString *)text WithTimestamp:(NSNumber *)timestamp;
+- (instancetype)initWithText:(NSString *)text identifier:(NSString *)identifier;
+- (instancetype)initWithText:(NSString *)text timestamp:(NSNumber *)timestamp;
 
 @end

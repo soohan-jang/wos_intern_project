@@ -8,11 +8,10 @@
 
 #import "PhotoDrawObjectDisplayView.h"
 
-#define INITIAL_VALUE_OF_POINT          -9999
-#define BOUNDARY_STROKE_COLOR           [[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]
+#import "UIView+StringTag.h"
+#import "WMPhotoDecorateObject.h"
 
-NSInteger const DECO_VIEW_Z_ORDER_UP    = 0;
-NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
+NSInteger const InitialValueOfPoint = - 9999;
 
 @interface PhotoDrawObjectDisplayView ()
 
@@ -209,7 +208,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
 - (void)backgroundTapAction:(UITapGestureRecognizer *)recognizer {
     if (self.subviews.count > 0) {
         [self deleteAllDecoViewBoundary];
-        self.previousPoint = CGPointMake(INITIAL_VALUE_OF_POINT, INITIAL_VALUE_OF_POINT);
+        self.previousPoint = CGPointMake(InitialValueOfPoint, InitialValueOfPoint);
     }
 }
 
@@ -238,10 +237,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
     //이렇게하면 경계에서 이동 제한이 걸려야되는데, 실제로는 마이너스값이 찍힌다. 이게 무슨????
     if ((x1 <= centerX && centerX <= x2) && (y1 <= centerY && centerY <= y2)) {
         recognizer.view.center = [recognizer locationInView:self];
-        
-        if ([self.delegate respondsToSelector:@selector(decoViewDidMovedWithId:WithOriginX:WithOriginY:)]) {
-            [self.delegate decoViewDidMovedWithId:recognizer.view.stringTag WithOriginX:recognizer.view.frame.origin.x WithOriginY:recognizer.view.frame.origin.y];
-        }
+        [self.delegate decoViewDidMovedWithId:recognizer.view.stringTag originX:recognizer.view.frame.origin.x originY:recognizer.view.frame.origin.y];
     }
 }
 
@@ -275,7 +271,7 @@ NSInteger const DECO_VIEW_Z_ORDER_DOWN  = 1;
     [shapeLayer setBounds:shapeRect];
     [shapeLayer setPosition:CGPointMake(view.frame.size.width / 2.0f, view.frame.size.height / 2.0f)];
     [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
-    [shapeLayer setStrokeColor:BOUNDARY_STROKE_COLOR];
+    [shapeLayer setStrokeColor:[[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];

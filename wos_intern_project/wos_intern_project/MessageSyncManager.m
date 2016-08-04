@@ -16,24 +16,28 @@
 
 @implementation MessageSyncManager
 
-+ (MessageSyncManager *)sharedInstance {
++ (instancetype)sharedInstance {
     static MessageSyncManager *instance = nil;
     
-    @synchronized (self) {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         if (instance == nil) {
             instance = [[self alloc] init];
+            
         }
-    }
+    });
     
     return instance;
 }
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _messageQueue = [[NSMutableArray alloc] init];
+- (void)initializeMessageSyncManagerWithEnabled:(BOOL)enabled {
+    if (self.messageQueue == nil) {
+        self.messageQueue = [[NSMutableArray alloc] init];
+    } else {
+        [self.messageQueue removeAllObjects];
     }
     
-    return self;
+    self.messageQueueEnabled = enabled;
 }
 
 - (void)putMessage:(NSDictionary *)message {

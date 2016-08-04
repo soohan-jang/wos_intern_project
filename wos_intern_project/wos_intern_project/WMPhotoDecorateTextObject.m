@@ -24,7 +24,7 @@
     return self;
 }
 
-- (instancetype)initWithText:(NSString *)text WithID:(NSString *)identifier {
+- (instancetype)initWithText:(NSString *)text identifier:(NSString *)identifier {
     self = [super init];
     
     if (self) {
@@ -35,7 +35,7 @@
     return self;
 }
 
-- (instancetype)initWithText:(NSString *)text WithTimestamp:(NSNumber *)timestamp {
+- (instancetype)initWithText:(NSString *)text timestamp:(NSNumber *)timestamp {
     self = [super initWithTimestamp:timestamp];
     
     if (self) {

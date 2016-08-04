@@ -7,8 +7,14 @@
 //
 
 #import "PhotoDrawPenView.h"
+#import "SmoothLineView.h"
 
 @interface PhotoDrawPenView ()
+
+@property (weak, nonatomic) IBOutlet SmoothLineView *canvasView;
+
+- (IBAction)backAction:(id)sender;
+- (IBAction)doneAction:(id)sender;
 
 @end
 

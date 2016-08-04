@@ -8,17 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-#import "SmoothLineView.h"
-
 @protocol PhotoDrawPenViewDelegate;
 
 @interface PhotoDrawPenView : UIView
 
 @property (weak, nonatomic) id<PhotoDrawPenViewDelegate> delegate;
-@property (weak, nonatomic) IBOutlet SmoothLineView *canvasView;
-
-- (IBAction)backAction:(id)sender;
-- (IBAction)doneAction:(id)sender;
 
 @end
 

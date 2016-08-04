@@ -1,5 +1,5 @@
 //
-//  DecorateObjectManager.h
+//  DecorateObjectController.h
 //  wos_intern_project
 //
 //  Created by 장수한 on 2016. 7. 16..
@@ -7,14 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#import "UIView+StringTag.h"
-
 #import "WMPhotoDecorateObject.h"
-#import "WMPhotoDecorateImageObject.h"
-#import "WMPhotoDecorateTextObject.h"
 
-@interface DecorateObjectManager : NSObject
+@interface DecorateObjectController : NSObject
 
 /**
  그림 객체를 매니저에 저장한다.
@@ -24,17 +19,17 @@
 /**
  저장된 그림 객체의 위치정보를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.
  */
-- (void)updateDecorateObjectWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
+- (void)updateDecorateObjectWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY;
 
 /**
  저장된 그림 객체의 크기정보를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.
  */
-- (void)updateDecorateObjectWithId:(NSString *)identifier WithWidth:(CGFloat)width WithHeight:(CGFloat)height;
+- (void)updateDecorateObjectWithId:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height;
 
 /**
  저장된 그림 객체의 회전정보를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.
  */
-- (void)updateDecorateObjectWithId:(NSString *)identifier WithAngle:(CGFloat)angle;
+- (void)updateDecorateObjectWithId:(NSString *)identifier angle:(CGFloat)angle;
 
 /**
  저장된 그림 객체의 Z-order를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.

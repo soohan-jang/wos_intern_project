@@ -8,12 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "UIView+StringTag.h"
-#import "WMPhotoDecorateObject.h"
-
-extern NSInteger const DECO_VIEW_Z_ORDER_UP;
-extern NSInteger const DECO_VIEW_Z_ORDER_DOWN;
-
 @protocol PhotoDrawObjectDisplayViewDelegate;
 
 @interface PhotoDrawObjectDisplayView : UIView
@@ -67,15 +61,15 @@ extern NSInteger const DECO_VIEW_Z_ORDER_DOWN;
 /**
  객체가 이동했을 때 identifier, 이동한 위치를 전달한다.
  */
-- (void)decoViewDidMovedWithId:(NSString *)identifier WithOriginX:(CGFloat)originX WithOriginY:(CGFloat)originY;
+- (void)decoViewDidMovedWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY;
 /**
  객체의 크기가 변경되었을 때 identifier, 변경된 높이와 너비를 전달한다.
  */
-- (void)decoViewDidResizedWithId:(NSString *)identifier WithResizedWidth:(CGFloat)width WithResizedHeight:(CGFloat)height;
+- (void)decoViewDidResizedWithId:(NSString *)identifier resizedWidth:(CGFloat)width resizedHeight:(CGFloat)height;
 /**
  객체가 회전되었을 때 identifier, 회전한 각도를 전달한다.
  */
-- (void)decoViewDidRotatedWithId:(NSString *)identifier WithRotatedAngle:(CGFloat)angle;
+- (void)decoViewDidRotatedWithId:(NSString *)identifier rotatedAngle:(CGFloat)angle;
 /**
  객체의 Z-order가 변경되었을 때 identifier를 전달한다.
  */
