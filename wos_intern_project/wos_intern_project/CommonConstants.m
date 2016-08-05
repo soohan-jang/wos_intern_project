@@ -8,15 +8,17 @@
 
 #import "CommonConstants.h"
 
-NSString *const PREFIX_IMAGE_PHOTOFRAME   = @"PhotoFrame";
-NSString *const POSTFIX_IMAGE_FULLSCREEN  = @"_fullscreen";
-NSString *const POSTFIX_IMAGE_CROPPED     = @"_cropped";
-NSString *const SEPERATOR_IMAGE_NAME      = @"+";
+NSString *const PrefixImagePhotoFrame   = @"PhotoFrame";
+NSString *const PostfixImageFullscreen  = @"_fullscreen";
+NSString *const PostfixImageCropped     = @"_cropped";
+NSString *const SperatorImageName       = @"+";
 
-NSString *const SEGUE_MOVETO_ALBUM        = @"moveToPhotoAlbum";
-NSString *const SEGUE_MOVETO_FRAME_SLT    = @"moveToPhotoFrameSelect";
-NSString *const SEGUE_MOVE_TO_EDITOR      = @"moveToPhotoEditor";
-NSString *const SEGUE_MOVE_TO_CROPPER     = @"moveToPhotoCrop";
+NSString *const SegueMoveToAlbum        = @"moveToPhotoAlbum";
+NSString *const SegueMoveToFrameSelect  = @"moveToPhotoFrameSelect";
+NSString *const SegueMoveToEditor       = @"moveToPhotoEditor";
+NSString *const SegueMoveToCropper      = @"moveToPhotoCrop";
 
-NSString *const REUSE_CELL_FRAME_SLT      = @"frameSelectCell";
-NSString *const REUSE_CELL_EDITOR         = @"photoFrameCell";
+NSString *const ReuseCellFrameSlt       = @"frameSelectCell";
+NSString *const ReuseCellEditor         = @"photoFrameCell";
+
+NSInteger const DelayTime               = 1;

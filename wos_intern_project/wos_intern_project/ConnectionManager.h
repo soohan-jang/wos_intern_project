@@ -167,7 +167,7 @@
 /**
  상대방이 그림 객체의 크기를 변경했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectResized:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height;
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height;
 
 /**
  상대방이 그림 객체를 회전시켰을 때 호출된다.

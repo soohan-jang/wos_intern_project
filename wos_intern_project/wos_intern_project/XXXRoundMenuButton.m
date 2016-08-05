@@ -157,6 +157,9 @@
 
 - (void)centerButtonClicked:(UIButton *)sender {
     sender.selected = !sender.selected;
+    if ([self.delegate respondsToSelector:@selector(xxxRoundMenuButtonDidOpened)]) {
+        [self.delegate xxxRoundMenuButtonDidOpened];
+    }
 }
 
 - (void)setCenterButtonSize:(CGSize)centerButtonSize {

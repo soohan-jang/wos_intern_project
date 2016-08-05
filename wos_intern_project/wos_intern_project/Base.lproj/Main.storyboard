@@ -235,7 +235,7 @@
                                             <outlet property="delegate" destination="dKW-hc-NhL" id="6xO-NV-iAa"/>
                                         </connections>
                                     </collectionView>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDrawObjectDisplayView">
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDrawObjectDisplayView">
                                         <rect key="frame" x="20" y="-12" width="560" height="560"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -248,7 +248,7 @@
                                             </mask>
                                         </variation>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJv-y5-Fa3">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uJv-y5-Fa3">
                                         <rect key="frame" x="535" y="20" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="45" id="dId-qd-sUZ"/>
@@ -372,7 +372,7 @@
                     <connections>
                         <outlet property="collectionContainerView" destination="kfz-pT-T9E" id="uYn-cB-lt8"/>
                         <outlet property="collectionView" destination="7vD-hf-90M" id="vgX-qa-46y"/>
-                        <outlet property="decorateToggleButton" destination="uJv-y5-Fa3" id="S2k-OH-cYH"/>
+                        <outlet property="decoObjectVisibleToggleButton" destination="uJv-y5-Fa3" id="dR0-e9-pjD"/>
                         <outlet property="drawObjectDisplayView" destination="lUZ-73-XTC" id="VrJ-dR-mBU"/>
                         <outlet property="drawPenView" destination="Zh5-Kc-cgB" id="y28-X3-gr9"/>
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>

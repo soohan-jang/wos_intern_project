@@ -67,6 +67,8 @@ extern NSString *const kEditorDrawingUpdateID;
 //extern NSString *const kEditorDrawingUpdateData;
 extern NSString *const kEditorDrawingUpdateMovedX;
 extern NSString *const kEditorDrawingUpdateMovedY;
+extern NSString *const kEditorDrawingUpdateResizedX;
+extern NSString *const kEditorDrawingUpdateResizedY;
 extern NSString *const kEditorDrawingUpdateResizedWidth;
 extern NSString *const kEditorDrawingUpdateResizedHeight;
 extern NSString *const kEditorDrawingUpdateRotatedAngle;

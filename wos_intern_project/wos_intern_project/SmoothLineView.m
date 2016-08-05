@@ -177,6 +177,10 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UIGraphicsEndImageContext();
     
     UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:_path];
+    
+    if (path == nil || (path.bounds.size.width == 0 && path.bounds.size.height == 0))
+        return nil;
+    
     CGRect pathRect = CGRectMake(path.bounds.origin.x - 20,
                                 path.bounds.origin.y - 20,
                                 path.bounds.size.width + 40,

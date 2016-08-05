@@ -24,7 +24,7 @@
 /**
  저장된 그림 객체의 크기정보를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.
  */
-- (void)updateDecorateObjectWithId:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height;
+- (void)updateDecorateObjectWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height;
 
 /**
  저장된 그림 객체의 회전정보를 갱신한다. 매니저 내부에 저장된 객체가 없을 시 작업을 수행하지 않는다.

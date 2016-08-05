@@ -43,8 +43,8 @@
     self.frame = CGRectMake(movePoint.x, movePoint.y, self.frame.size.width, self.frame.size.height);
 }
 
-- (void)resizeObject:(CGSize)resizeRect {
-    self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, resizeRect.width, resizeRect.height);
+- (void)resizeObject:(CGRect)resizeRect {
+    self.frame = resizeRect;
 }
 
 - (void)rotateObject:(CGFloat)rotateAngle {

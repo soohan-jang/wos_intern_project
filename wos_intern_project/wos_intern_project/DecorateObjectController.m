@@ -36,11 +36,11 @@
     }
 }
 
-- (void)updateDecorateObjectWithId:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height {
+- (void)updateDecorateObjectWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height {
     if (![self isEmpty]) {
         for (WMPhotoDecorateObject *decoObject in self.decorateObjectArray) {
             if ([[decoObject getID] isEqualToString:identifier]) {
-                [decoObject resizeObject:CGSizeMake(width, height)];
+                [decoObject resizeObject:CGRectMake(originX, originY, width, height)];
                 break;
             }
         }

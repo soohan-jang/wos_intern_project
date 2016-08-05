@@ -33,8 +33,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
     ALERT_ALBUM_AUTH = 2
 };
 
-float const DelayTime = 1.0f;
-
 @interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenViewDelegate, UIAlertViewDelegate, ConnectionManagerPhotoEditorDelegate>
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
@@ -46,7 +44,7 @@ float const DelayTime = 1.0f;
 
 @property (weak, nonatomic) IBOutlet UIView *collectionContainerView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
-@property (weak, nonatomic) IBOutlet UIButton *decorateToggleButton;
+@property (weak, nonatomic) IBOutlet UIButton *decoObjectVisibleToggleButton;
 @property (weak, nonatomic) IBOutlet XXXRoundMenuButton *editMenuButton;
 
 //그려진 객체들이 위치하는 뷰
@@ -109,7 +107,7 @@ float const DelayTime = 1.0f;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:SEGUE_MOVE_TO_CROPPER]) {
+    if ([segue.identifier isEqualToString:SegueMoveToCropper]) {
         PhotoCropViewController *viewController = [segue destinationViewController];
         viewController.delegate = self;
         viewController.cellSize = [self.collectionView cellForItemAtIndexPath:self.selectedIndexPath].frame.size;
@@ -131,10 +129,40 @@ float const DelayTime = 1.0f;
 }
 
 
+#pragma mark - DrawObjectView & DrawObjectDisplayView's Set Visibility Methods
+
+- (void)setVisibleDrawObjectView:(BOOL)visible {
+    //그리기 뷰를 표시해야하면, 그려진 객체들을 보여줘야 하므로 DisplayView를 표시 상태로 변경한다.
+    //그려진 객체를 숨기거나 표시할 수 있는 토글 버튼과 편집 메뉴 버튼을 숨긴다.
+    //그려진 객체가 화면에 표시되므로, 토글 버튼의 상태를 Selected 상태로 변경한다.
+    //이후 그림을 그릴 수 있는 DrawingPenView를 표시 상태로 변경한다.
+    if (visible) {
+        [self.decoObjectVisibleToggleButton setHidden:YES];
+        [self.editMenuButton setHidden:YES];
+        [self.drawPenView setHidden:NO];
+    } else {
+        [self.decoObjectVisibleToggleButton setHidden:NO];
+        [self.editMenuButton setHidden:NO];
+        [self.drawPenView setHidden:YES];
+    }
+}
+
+- (void)setVisibleDrawObjectDisplayView:(BOOL)visible {
+    //visible이 yes이면 DrawObject가 화면에 표시되는 상태를 의미한다.
+    if (visible) {
+        [self.drawObjectDisplayView setHidden:NO];
+        [self.decoObjectVisibleToggleButton setSelected:YES];
+    } else {
+        [self.drawObjectDisplayView setHidden:YES];
+        [self.decoObjectVisibleToggleButton setSelected:NO];
+    }
+}
+
+
 #pragma mark - Load Other ViewController Methods
 
 - (void)loadPhotoCropViewController {
-    [self performSegueWithIdentifier:SEGUE_MOVE_TO_CROPPER sender:self];
+    [self performSegueWithIdentifier:SegueMoveToCropper sender:self];
 }
 
 - (void)loadMainViewController {
@@ -166,18 +194,15 @@ float const DelayTime = 1.0f;
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
-//    [self.connectionManager disconnectSession];
-//    [self.navigationController popToRootViewControllerAnimated:YES];
+    //    [self.connectionManager disconnectSession];
+    //    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (IBAction)decoreateVisibleToggled:(id)sender {
-    if (self.decorateToggleButton.isSelected) {
-        [self.decorateToggleButton setSelected:NO];
-        [self.drawObjectDisplayView setHidden:YES];
-    } else {
-        [self.decorateToggleButton setSelected:YES];
-        [self.drawObjectDisplayView setHidden:NO];
-    }
+    UIButton *view = sender;
+    view.selected = !view.selected;
+    
+    [self setVisibleDrawObjectDisplayView:view.selected];
 }
 
 
@@ -192,7 +217,7 @@ float const DelayTime = 1.0f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoEditorFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:REUSE_CELL_EDITOR forIndexPath:indexPath];
+    PhotoEditorFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ReuseCellEditor forIndexPath:indexPath];
     [cell setIndexPath:indexPath];
     [cell setTapGestureRecognizer];
     [cell setStrokeBorder];
@@ -229,7 +254,7 @@ float const DelayTime = 1.0f;
                 picker.delegate = self;
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                   [self presentViewController:picker animated:YES completion:nil];
+                    [self presentViewController:picker animated:YES completion:nil];
                 });
             } else {
                 //권한 없음. 해당 Alert 표시.
@@ -276,23 +301,22 @@ float const DelayTime = 1.0f;
 
 #pragma mark - XXXRoundMenuButton Delegate Method
 
+- (void)xxxRoundMenuButtonDidOpened {
+    [self.drawObjectDisplayView deselectDrawObject];
+}
+
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
     //Sticker Menu
     if (index == 0) {
-    
-    //Text Menu
+        
+        //Text Menu
     } else if (index == 1) {
         
-    //Pen Menu
+        //Pen Menu
     } else if (index == 2) {
-        if (!self.decorateToggleButton.isSelected) {
-            [self.decorateToggleButton setSelected:YES];
-            [self.drawObjectDisplayView setHidden:NO];
-        }
-        [self.drawPenView setHidden:NO];
+        [self setVisibleDrawObjectView:YES];
+        [self setVisibleDrawObjectDisplayView:YES];
     }
-    
-    [self.decorateToggleButton setHidden:YES];
 }
 
 
@@ -360,6 +384,20 @@ float const DelayTime = 1.0f;
 
 #pragma mark - PhotoDrawObjectDisplayView Delegate Methods
 
+- (void)decoViewDidSelected:(NSString *)identifier {
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingEdit),
+                               kEditorDrawingEditID: identifier};
+    
+    [[ConnectionManager sharedInstance] sendData:sendData];
+}
+
+- (void)decoViewDidDeselected:(NSString *)identifier {
+    NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingEditCancel),
+                               kEditorDrawingEditID: identifier};
+    
+    [[ConnectionManager sharedInstance] sendData:sendData];
+}
+
 - (void)decoViewDidMovedWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY {
     [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY];
     
@@ -371,11 +409,13 @@ float const DelayTime = 1.0f;
     [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
-- (void)decoViewDidResizedWithId:(NSString *)identifier resizedWidth:(CGFloat)width resizedHeight:(CGFloat)height {
-    [self.decoObjectController updateDecorateObjectWithId:identifier width:width height:height];
+- (void)decoViewDidResizedWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY resizedWidth:(CGFloat)width resizedHeight:(CGFloat)height {
+    [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY width:width height:height];
     
     NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDrawingUpdateResized),
                                kEditorDrawingUpdateID: identifier,
+                               kEditorDrawingUpdateResizedX: @(originX),
+                               kEditorDrawingUpdateResizedY: @(originY),
                                kEditorDrawingUpdateResizedWidth: @(width),
                                kEditorDrawingUpdateResizedHeight: @(height)};
     
@@ -409,9 +449,11 @@ float const DelayTime = 1.0f;
 #pragma mark - PhotoDrawPenView Delegate Methods
 
 - (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
-    [drawPenView setHidden:YES];
-    [self.decorateToggleButton setHidden:NO];
+    [self setVisibleDrawObjectView:NO];
     
+    if (!image)
+        return;
+        
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
     [self.decoObjectController addDecorateObject:imageObject];
     
@@ -427,7 +469,7 @@ float const DelayTime = 1.0f;
 }
 
 - (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView {
-    [drawPenView setHidden:YES];
+    [self setVisibleDrawObjectView:NO];
 }
 
 
@@ -529,10 +571,10 @@ float const DelayTime = 1.0f;
         [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_DOWNLOADING];
         //Data Receive Finished.
     } else {
-        if ([type isEqualToString:POSTFIX_IMAGE_CROPPED]) {
+        if ([type isEqualToString:PostfixImageCropped]) {
             UIImage *croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
             [self.cellManager setCellCroppedImageAtIndex:targetFrameIndex withCroppedImage:croppedImage];
-        } else if ([type isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
+        } else if ([type isEqualToString:PostfixImageFullscreen]) {
             UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
             [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
             [self.cellManager setCellFullscreenImageAtIndex:targetFrameIndex withFullscreenImage:fullscreenImage];
@@ -567,11 +609,15 @@ float const DelayTime = 1.0f;
 }
 
 - (void)receivedEditorDecorateObjectEditing:(NSString *)identifier {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.drawObjectDisplayView setEnableWithId:identifier enable:NO];
+    });
 }
 
 - (void)receivedEditorDecorateObjectEditCancelled:(NSString *)identifier {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.drawObjectDisplayView setEnableWithId:identifier enable:YES];
+    });
 }
 
 - (void)receivedEditorDecorateObjectInsert:(id)insertData timestamp:(NSNumber *)timestamp {
@@ -596,21 +642,21 @@ float const DelayTime = 1.0f;
 - (void)receivedEditorDecorateObjectMoved:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY {
     [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.drawObjectDisplayView updateDecoViewWithId:identifier WithOriginX:originX WithOriginY:originY];
+        [self.drawObjectDisplayView updateDecoViewWithId:identifier originX:originX originY:originY];
     });
 }
 
-- (void)receivedEditorDecorateObjectResized:(NSString *)identifier width:(CGFloat)width height:(CGFloat)height {
-    [self.decoObjectController updateDecorateObjectWithId:identifier width:width height:height];
+- (void)receivedEditorDecorateObjectResized:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height {
+    [self.decoObjectController updateDecorateObjectWithId:identifier originX:originX originY:originY width:width height:height];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.drawObjectDisplayView updateDecoViewWithId:identifier WithWidth:width WithHeight:height];
+        [self.drawObjectDisplayView updateDecoViewWithId:identifier originX:originX originY:originY width:width height:height];
     });
 }
 
 - (void)receivedEditorDecorateObjectRotated:(NSString *)identifier angle:(CGFloat)angle {
     [self.decoObjectController updateDecorateObjectWithId:identifier angle:angle];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.drawObjectDisplayView updateDecoViewWithId:identifier WithAngle:angle];
+        [self.drawObjectDisplayView updateDecoViewWithId:identifier angle:angle];
     });
 }
 

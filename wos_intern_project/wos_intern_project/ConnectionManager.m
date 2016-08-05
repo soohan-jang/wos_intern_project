@@ -71,12 +71,12 @@
 
 - (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
-        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_CROPPED];
+        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SperatorImageName, PostfixImageCropped];
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             } else {
-                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SEPERATOR_IMAGE_NAME, POSTFIX_IMAGE_FULLSCREEN];
+                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SperatorImageName, PostfixImageFullscreen];
                 
                 [self.ownSession sendResourceAtURL:fullscreenImageURL withName:fullscreenImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
                     if (error) {
@@ -212,6 +212,8 @@
             case vDataTypeEditorDrawingUpdateResized:
                 NSLog(@"Received Update Resized Drawing Object");
                 [self.photoEditorDelegate receivedEditorDecorateObjectResized:receivedData[kEditorDrawingUpdateID]
+                                                                      originX:[receivedData[kEditorDrawingUpdateResizedX] floatValue]
+                                                                      originY:[receivedData[kEditorDrawingUpdateResizedY] floatValue]
                                                                         width:[receivedData[kEditorDrawingUpdateResizedWidth] floatValue]
                                                                        height:[receivedData[kEditorDrawingUpdateResizedHeight] floatValue]];
                 break;
@@ -238,7 +240,7 @@
 }
 
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
-    NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
+    NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
     if (array == nil || array.count != 2)
         return;
@@ -246,14 +248,14 @@
     NSInteger photoFrameIndex = [array[0] integerValue];
     NSString *fileType = array[1];
     
-    if ([fileType isEqualToString:POSTFIX_IMAGE_CROPPED]) {
+    if ([fileType isEqualToString:PostfixImageCropped]) {
         NSLog(@"Receive Start Insert Photo");
         [self.photoEditorDelegate receivedEditorPhotoInsert:photoFrameIndex type:fileType url:nil];
     }
 }
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
-    NSArray *array = [resourceName componentsSeparatedByString:SEPERATOR_IMAGE_NAME];
+    NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
     if (array == nil || array.count != 2)
         return;
@@ -263,7 +265,7 @@
     
     [self.photoEditorDelegate receivedEditorPhotoInsert:photoFrameIndex type:fileType url:localURL];
     
-    if ([fileType isEqualToString:POSTFIX_IMAGE_FULLSCREEN]) {
+    if ([fileType isEqualToString:PostfixImageFullscreen]) {
         NSLog(@"Receive Finish Insert Photo");
         NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoInsertAck),
                                    kEditorPhotoInsertAck: @YES,

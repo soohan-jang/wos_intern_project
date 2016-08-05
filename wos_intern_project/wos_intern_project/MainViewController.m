@@ -23,8 +23,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
     ALERT_ALBUM_AUTH = 0
 };
 
-float const DelayTime = 1.0f;
-
 @interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, ConnectionManagerSessionConnectDelegate>
 
 @property (nonatomic, strong) MCBrowserViewController *browserViewController;
@@ -111,14 +109,14 @@ float const DelayTime = 1.0f;
  PhotoAlbumViewController를 호출한다.
  */
 - (IBAction)loadPhotoAlbumViewController:(id)sender {
-    [self performSegueWithIdentifier:SEGUE_MOVETO_ALBUM sender:self];
+    [self performSegueWithIdentifier:SegueMoveToAlbum sender:self];
 }
 
 /**
  PhotoFrameViewController를 호출한다.
  */
 - (void)loadPhotoFrameViewController {
-    [self performSegueWithIdentifier:SEGUE_MOVETO_FRAME_SLT sender:self];
+    [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];
 }
 
 /**
@@ -255,14 +253,19 @@ float const DelayTime = 1.0f;
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSInteger const Accepted = 1;
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
-    invitationHandler(YES, connectionManager.ownSession);
     
     //Accept
     if (buttonIndex == Accepted) {
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        
+        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
+        invitationHandler(YES, connectionManager.ownSession);
+        
         [self showWaitProgress];
+    //Decline
+    } else {
+        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
+        invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
     }
 }
 

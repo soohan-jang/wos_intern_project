@@ -8,15 +8,17 @@
 
 #import <Foundation/NSString.h>
 
-extern NSString *const PREFIX_IMAGE_PHOTOFRAME;
-extern NSString *const POSTFIX_IMAGE_FULLSCREEN;
-extern NSString *const POSTFIX_IMAGE_CROPPED;
-extern NSString *const SEPERATOR_IMAGE_NAME;
+extern NSString *const PrefixImagePhotoFrame;
+extern NSString *const PostfixImageFullscreen;
+extern NSString *const PostfixImageCropped;
+extern NSString *const SperatorImageName;
 
-extern NSString *const SEGUE_MOVETO_ALBUM;
-extern NSString *const SEGUE_MOVETO_FRAME_SLT;
-extern NSString *const SEGUE_MOVE_TO_EDITOR;
-extern NSString *const SEGUE_MOVE_TO_CROPPER;
+extern NSString *const SegueMoveToAlbum;
+extern NSString *const SegueMoveToFrameSelect;
+extern NSString *const SegueMoveToEditor;
+extern NSString *const SegueMoveToCropper;
 
-extern NSString *const REUSE_CELL_FRAME_SLT;
-extern NSString *const REUSE_CELL_EDITOR;
+extern NSString *const ReuseCellFrameSlt;
+extern NSString *const ReuseCellEditor;
+
+extern NSInteger const DelayTime;

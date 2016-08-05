@@ -73,6 +73,7 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
 
 @protocol XXXRoundMenuButtonDelegate <NSObject>
 @required
+- (void)xxxRoundMenuButtonDidOpened;
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index;
 
 @end

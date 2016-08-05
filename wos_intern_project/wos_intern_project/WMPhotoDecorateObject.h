@@ -36,7 +36,7 @@
 /**
  객체의 크기정보를 갱신한다.
  */
-- (void)resizeObject:(CGSize)resizeRect;
+- (void)resizeObject:(CGRect)resizeRect;
 /**
  객체의 회전정보를 갱신한다.
  */

@@ -24,8 +24,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
     ALERT_FRAME_CONFIRM = 2
 };
 
-float const DelayTime = 1.0f;
-
 @interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate, ConnectionManagerPhotoFrameSelectDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -54,7 +52,7 @@ float const DelayTime = 1.0f;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([segue.identifier isEqualToString:SEGUE_MOVE_TO_EDITOR]) {
+    if ([segue.identifier isEqualToString:SegueMoveToEditor]) {
         PhotoEditorViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.ownSelectedFrameIndex.item];
     }
@@ -103,7 +101,7 @@ float const DelayTime = 1.0f;
 #pragma mark - Load Other ViewController Methods
 
 - (void)loadPhotoEditorViewController {
-    [self performSegueWithIdentifier:SEGUE_MOVE_TO_EDITOR sender:self];
+    [self performSegueWithIdentifier:SegueMoveToEditor sender:self];
 }
 
 - (void)loadMainViewController {
@@ -235,9 +233,9 @@ float const DelayTime = 1.0f;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:REUSE_CELL_FRAME_SLT forIndexPath:indexPath];
+    PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ReuseCellFrameSlt forIndexPath:indexPath];
     cell.cellIndex = indexPath.item;
-    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@%ld", PREFIX_IMAGE_PHOTOFRAME, (long)indexPath.item]]];
+    [cell.frameImageView setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@%ld", PrefixImagePhotoFrame, (long)indexPath.item]]];
     
     return cell;
 }

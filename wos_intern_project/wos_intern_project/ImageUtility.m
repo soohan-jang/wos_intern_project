@@ -57,8 +57,8 @@
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
     NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
-    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN];
-    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED];
+    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageFullscreen];
+    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageCropped];
     
     BOOL isSaved = [fullscreenImageData writeToFile:fullscreenImageDirectory atomically:YES] && [croppedImageData writeToFile:croppedImageDirectory atomically:YES];
     
@@ -74,8 +74,8 @@
 + (void)removeTemporaryImageWithFilename:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN]];
-    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED]];
+    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageFullscreen]];
+    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageCropped]];
     
     [fileManager removeItemAtURL:fullscreenImageURL error:nil];
     [fileManager removeItemAtURL:croppedImageURL error:nil];
@@ -87,11 +87,11 @@
 }
 
 + (NSURL *)generateFullscreenImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_FULLSCREEN]];
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageFullscreen]];
 }
 
 + (NSURL *)generateCroppedImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, POSTFIX_IMAGE_CROPPED]];
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageCropped]];
 }
 
 @end
