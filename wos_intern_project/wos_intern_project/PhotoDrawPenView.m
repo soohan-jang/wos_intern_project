@@ -13,23 +13,37 @@
 
 @property (weak, nonatomic) IBOutlet SmoothLineView *canvasView;
 
-- (IBAction)backAction:(id)sender;
-- (IBAction)doneAction:(id)sender;
-
 @end
 
 @implementation PhotoDrawPenView
 
-- (IBAction)doneAction:(id)sender {
+
+#pragma mark - EventHandle Methods
+
+- (IBAction)tappedDoneButton:(id)sender {
     if ([self.delegate respondsToSelector:@selector(drawPenViewDidFinished:WithImage:)]) {
         [self.delegate drawPenViewDidFinished:self WithImage:[self.canvasView getPathImage]];
     }
 }
 
-- (IBAction)backAction:(id)sender {
+- (IBAction)tappedCancelButton:(id)sender {
     if ([self.delegate respondsToSelector:@selector(drawPenViewDidCancelled:)]) {
         [self.delegate drawPenViewDidCancelled:self];
     }
+    
+    [self.canvasView clear];
+}
+
+- (IBAction)tappedPaletteButton:(id)sender {
+    
+}
+
+- (IBAction)tappedLineWidthButton:(id)sender {
+    
+}
+
+- (IBAction)tappedEraserButton:(id)sender {
+    
 }
 
 @end

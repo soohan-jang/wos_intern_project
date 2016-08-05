@@ -96,6 +96,14 @@ typedef NS_ENUM(NSInteger, AlertType) {
     self.drawPenView.delegate = self;
 }
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (!self.editMenuButton)
+        return;
+    
+    if (!self.editMenuButton.isOpened)
+        [self.editMenuButton dismissMenuButton];
+}
+
 - (void)setPhotoFrameNumber:(NSInteger)frameNumber {
     self.cellManager = [[PhotoFrameCellManager alloc] initWithFrameNumber:frameNumber];
 }
@@ -453,7 +461,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
     
     if (!image)
         return;
-        
+    
     WMPhotoDecorateImageObject *imageObject = [[WMPhotoDecorateImageObject alloc] initWithImage:image];
     [self.decoObjectController addDecorateObject:imageObject];
     

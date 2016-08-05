@@ -57,6 +57,11 @@ typedef NS_OPTIONS(NSInteger, XXXIconType) {
 - (void)loadButtonWithIcons:(NSArray<UIImage *> *)icons startDegree:(double)degree layoutDegree:(double)layoutDegree;
 
 /**
+ * dismiss function
+ */
+- (void)dismissMenuButton;
+
+/**
  *  click block
  */
 //@property (nonatomic, strong) void (^buttonClickBlock) (NSInteger idx);

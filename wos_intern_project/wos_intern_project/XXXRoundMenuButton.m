@@ -157,6 +157,10 @@
 
 - (void)centerButtonClicked:(UIButton *)sender {
     sender.selected = !sender.selected;
+    
+    if (!sender.selected)
+        return;
+    
     if ([self.delegate respondsToSelector:@selector(xxxRoundMenuButtonDidOpened)]) {
         [self.delegate xxxRoundMenuButtonDidOpened];
     }
@@ -236,9 +240,6 @@
     if ([self.delegate respondsToSelector:@selector(xxxRoundMenuButtonDidSelected:WithSelectedIndex:)]) {
         [self.delegate xxxRoundMenuButtonDidSelected:self WithSelectedIndex:([sender tag] - 9998)];
     }
-//    if (self.buttonClickBlock) {
-//        self.buttonClickBlock([sender tag] - 9998);
-//    }
 }
 
 // Only override drawRect: if you perform custom drawing.
@@ -261,6 +262,14 @@
         return self.centerButton;
     }
     return nil;
+}
+
+- (void)dismissMenuButton {
+    if (!_isOpened)
+        return;
+    
+    _isOpened = NO;
+    [_centerButton setSelected:NO];
 }
 
 @end

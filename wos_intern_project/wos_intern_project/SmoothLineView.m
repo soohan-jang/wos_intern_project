@@ -176,18 +176,18 @@ CGPoint midPoint(CGPoint p1, CGPoint p2) {
     UIImage *canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    UIBezierPath *path = [UIBezierPath bezierPathWithCGPath:_path];
+    CGRect pathRect = CGPathGetBoundingBox(_path);
+    UIImage *pathImage = nil;
     
-    if (path == nil || (path.bounds.size.width == 0 && path.bounds.size.height == 0))
-        return nil;
-    
-    CGRect pathRect = CGRectMake(path.bounds.origin.x - 20,
-                                path.bounds.origin.y - 20,
-                                path.bounds.size.width + 40,
-                                path.bounds.size.height + 40);
-    
-    CGImageRef pathImageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], pathRect);
-    UIImage *pathImage = [UIImage imageWithCGImage:pathImageRef];
+    if (!(CGRectIsNull(pathRect) || (pathRect.size.width == 0 && pathRect.size.height == 0))) {
+        pathRect = CGRectMake(pathRect.origin.x - 10,
+                              pathRect.origin.y - 10,
+                              pathRect.size.width + 20,
+                              pathRect.size.height + 20);
+        
+        CGImageRef pathImageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], pathRect);
+        pathImage = [UIImage imageWithCGImage:pathImageRef];
+    }
     
     self.backgroundColor = DEFAULT_BACKGROUND_COLOR;
     [self clear];

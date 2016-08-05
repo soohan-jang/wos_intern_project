@@ -48,4 +48,19 @@
     [ImageUtility removeAllTemporaryImages];
 }
 
+//Crash 발생하여 강제적으로 종료될 될 때, 세션을 정리하기 위하여 사용한다.
+void uncaughtExceptionHandler(NSException *exception) {
+    //세션 연결을 끊고, 정보를 정리한다.
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    [connectionManager disconnectSession];
+    [connectionManager clear];
+    
+    //메시지큐를 비운다.
+    MessageSyncManager *messageSyncManager = [MessageSyncManager sharedInstance];
+    [messageSyncManager clearMessageQueue];
+    
+    //사용된 임시 파일을 정리한다.
+    [ImageUtility removeAllTemporaryImages];
+}
+
 @end
