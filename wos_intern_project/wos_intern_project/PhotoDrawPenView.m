@@ -43,13 +43,13 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     if (self.eraseButton.tag == Selected)
         [self toggleEraseButton];
     
-    [self.lineWidthSlider setValue:10.f];
+    [self.lineWidthSlider setValue:10];
     [self.lineWidthLabel setText:@"10"];
     
     //CanvasView를 초기화한다.
     [self.canvasView clear];
     [self.canvasView setLineColor:[UIColor blackColor]];
-    [self.canvasView setLineWidth:10.f];
+    [self.canvasView setLineWidth:10];
 }
 
 
@@ -153,7 +153,7 @@ NSInteger const Selected = 1;
 #pragma mark - EventHandler Line Width Menu Methods
 
 - (IBAction)valueChnagedLineWidthSlider:(UISlider *)sender {
-    float lineWidth = sender.value;
+    int lineWidth = sender.value;
     
     self.lineWidthLabel.text = @(lineWidth).stringValue;
     [self.canvasView setLineWidth:lineWidth];

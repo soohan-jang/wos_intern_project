@@ -8,7 +8,7 @@
 
 #import "PhotoDrawCanvasView.h"
 
-float const DefaultLineWidth = 4.0f;
+int const DefaultLineWidth = 4;
 
 @interface PhotoDrawCanvasView ()
 

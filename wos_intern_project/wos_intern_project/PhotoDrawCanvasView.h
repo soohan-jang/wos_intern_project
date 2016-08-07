@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, Mode) {
 @interface PhotoDrawCanvasView : UIView
 
 @property (nonatomic, strong) UIColor *lineColor;
-@property (nonatomic, assign) CGFloat lineWidth;
+@property (nonatomic, assign) NSInteger lineWidth;
 @property (nonatomic, assign) NSInteger drawMode;
 
 - (UIImage *)getPathImage;
