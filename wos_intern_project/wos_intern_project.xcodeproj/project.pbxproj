@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A23C6FD1D54EA30007A7996 /* PhotoDrawCanvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */; };
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
@@ -68,6 +69,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoDrawCanvasView.h; sourceTree = "<group>"; };
+		0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawCanvasView.m; sourceTree = "<group>"; };
 		0A9409231D40B7C5007B5C3D /* SphereMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereMenu.h; sourceTree = "<group>"; };
 		0A9409241D40B7C5007B5C3D /* SphereMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereMenu.m; sourceTree = "<group>"; };
 		4A0917E51D49CD310028899A /* PhotoFrameCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameCellManager.h; sourceTree = "<group>"; };
@@ -315,6 +318,8 @@
 				4A4E28BF1D4F54ED0014F162 /* PhotoDrawObjectDisplayView.m */,
 				4A4E28BB1D4ED8FA0014F162 /* PhotoDrawPenView.h */,
 				4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenView.m */,
+				0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */,
+				0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */,
 				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
 				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
 				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
@@ -557,6 +562,7 @@
 				4A5448A91D51E69E00883E08 /* SphereMenu.m in Sources */,
 				4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */,
 				4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */,
+				0A23C6FD1D54EA30007A7996 /* PhotoDrawCanvasView.m in Sources */,
 				4A5448AC1D51E69E00883E08 /* PECropViewController.m in Sources */,
 				4A5448AD1D51E69E00883E08 /* PEResizeControl.m in Sources */,
 				4A5448AE1D51E69E00883E08 /* UIImage+PECrop.m in Sources */,
