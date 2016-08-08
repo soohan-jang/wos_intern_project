@@ -451,6 +451,8 @@ NSInteger const PreventImageHeight  = 40;
     
     UIImageView *preventImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Editing"]];
     [preventImageView setContentMode:UIViewContentModeScaleAspectFit];
+    [preventImageView setUserInteractionEnabled:YES];
+    
     preventImageView.frame = CGRectMake(0, 0, PreventImageWidth, PreventImageHeight);
     preventImageView.center = preventView.center;
     //이 부분은 차후 AutoLayout으로 변경하여 항상 부모의 중간에 위치하도록 설정한다.

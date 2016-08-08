@@ -9,6 +9,7 @@
 #import "PhotoFrameSelectViewController.h"
 
 #import "CommonConstants.h"
+#import "ConnectionManagerConstants.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"

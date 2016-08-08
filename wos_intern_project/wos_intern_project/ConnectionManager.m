@@ -6,9 +6,13 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <CoreBluetooth/CoreBluetooth.h>
-
 #import "ConnectionManager.h"
+
+#import "CommonConstants.h"
+#import "ConnectionManagerConstants.h"
+
+#import "MessageSyncManager.h"
+#import "ImageUtility.h"
 
 @interface ConnectionManager ()
 

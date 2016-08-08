@@ -9,7 +9,6 @@
 #import "ImageUtility.h"
 
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <ImageIO/ImageIO.h>
 
 #import "CommonConstants.h"
 

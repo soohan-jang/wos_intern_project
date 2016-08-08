@@ -8,6 +8,10 @@
 
 #import "AppDelegate.h"
 
+#import "ConnectionManager.h"
+#import "MessageSyncManager.h"
+#import "ImageUtility.h"
+
 @interface AppDelegate ()
 
 @end
@@ -16,6 +20,7 @@
 
 // Override point for customization after application launch.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[ConnectionManager sharedInstance] disconnectSession];
     return YES;
 }
 

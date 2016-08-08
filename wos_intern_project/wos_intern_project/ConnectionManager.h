@@ -9,12 +9,6 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-#import "CommonConstants.h"
-#import "ConnectionManagerConstants.h"
-
-#import "MessageSyncManager.h"
-#import "ImageUtility.h"
-
 @protocol ConnectionManagerSessionConnectDelegate;
 @protocol ConnectionManagerPhotoFrameSelectDelegate;
 @protocol ConnectionManagerPhotoEditorDelegate;

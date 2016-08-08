@@ -131,7 +131,7 @@ NSInteger const DefaultMargin = 5;
     if (self.cellStates == nil) {
         self.cellStates = [@{@(index): @(state)} mutableCopy];
     } else {
-        [self.cellStates setObject:@(state) forKey:@(index)];
+        self.cellStates[@(index)] = @(state);
     }
 }
 
@@ -139,7 +139,7 @@ NSInteger const DefaultMargin = 5;
     if (self.cellFullscreenImages == nil) {
         self.cellFullscreenImages = [@{@(index): fullscreenImage} mutableCopy];
     } else {
-        [self.cellFullscreenImages setObject:fullscreenImage forKey:@(index)];
+        self.cellFullscreenImages[@(index)] = fullscreenImage;
     }
 }
 
@@ -147,7 +147,7 @@ NSInteger const DefaultMargin = 5;
     if (self.cellCroppedImages == nil) {
         self.cellCroppedImages = [@{@(index): croppedImage} mutableCopy];
     } else {
-        [self.cellCroppedImages setObject:croppedImage forKey:@(index)];
+        self.cellCroppedImages[@(index)] = croppedImage;
     }
 }
 

@@ -10,6 +10,7 @@
 #import "UIView+StringTag.h"
 
 #import "CommonConstants.h"
+#import "ConnectionManagerConstants.h"
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
@@ -29,6 +30,7 @@
 #import "WMPhotoDecorateTextObject.h"
 
 #import "AlertHelper.h"
+#import "ImageUtility.h"
 
 @interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
 
