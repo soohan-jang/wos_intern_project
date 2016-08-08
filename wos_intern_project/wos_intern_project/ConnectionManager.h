@@ -104,12 +104,6 @@
  */
 - (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck;
 
-/**
- 사진 액자 선택에서 상대방이 연결을 끊었을 때 호출된다.
- receivedPeerDisconnected로 통폐합 예정이다.
- */
-- (void)receivedPhotoFrameDisconnected;
-
 @end
 
 
@@ -129,8 +123,8 @@
 
 /**
  상대방이 특정 사진 액자 영역에 사진을 삽입했을 때 호출된다.
- 사진이 삽입되었을 때 총 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
- 사진 정보는 cropped와 fullscreen으로 구분되며, cropped는
+ 사진이 삽입되었을 때 내부적으로 sendResourceAtURL을 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
+ 우선적으로 CroppedImage를 먼저 보내고, CroppedImage 전송이 종료되면 FullscreenImage를 전송한다.
  */
 - (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex type:(NSString *)type url:(NSURL *)url;
 
@@ -183,11 +177,5 @@
  상대방이 그림 객체를 삭제했을 때 호출된다.
  */
 - (void)receivedEditorDecorateObjectDelete:(NSString *)identifier;
-
-/**
- 사진 편집에서 상대방이 연결을 끊었을 때 호출된다.
- receivedPeerDisconnected로 통폐합할 예정이다.
- */
-- (void)receivedEditorDisconnected;
 
 @end

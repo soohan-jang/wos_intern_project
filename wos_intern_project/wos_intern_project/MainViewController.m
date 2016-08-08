@@ -14,16 +14,15 @@
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
+#import "ValidateCheckUtility.h"
 
-#import "WMProgressHUD.h"
 #import "PhotoFrameSelectViewController.h"
 #import "PhotoEditorViewController.h"
 
-typedef NS_ENUM(NSInteger, AlertType) {
-    ALERT_ALBUM_AUTH = 0
-};
+#import "ProgressHelper.h"
+#import "AlertHelper.h"
 
-@interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, UIAlertViewDelegate, ConnectionManagerSessionConnectDelegate>
+@interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, ConnectionManagerSessionConnectDelegate>
 
 @property (nonatomic, strong) MCBrowserViewController *browserViewController;
 @property (nonatomic, strong) MCNearbyServiceAdvertiser *advertiser;
@@ -38,7 +37,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setupConnectionManager];
     [self setupBluetoothBrowser];
     [self setupBluetoothAdvertiser];
     [self setupGestureRecognizer];
@@ -46,6 +44,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self setupConnectionManager];
     [self startAdvertise];
 }
 
@@ -99,7 +98,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
     }
     
     self.progressView = nil;
-    
 }
 
      
@@ -123,78 +121,38 @@ typedef NS_ENUM(NSInteger, AlertType) {
  BrowserViewController를 화면에 표시한다. 블루투스의 현재 상태를 확인하여, 블루투스가 켜지지 않은 상태라면 Alert를 표시한다.
  */
 - (void)loadBrowserViewController {
-    if (![self checkBluetoothState])
-        return;
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     
-    [self presentViewController:self.browserViewController animated:YES completion:nil];
-}
-
-
-#pragma mark - Authority & Validate Check Methods
-
-/**
- */
-- (BOOL)checkBluetoothState {
-    if ([[ConnectionManager sharedInstance] isBluetoothAvailable])
-        return YES;
-    
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_bluetooth_off", nil)
-                                                        message:NSLocalizedString(@"alert_content_bluetooth_off", nil)
-                                                       delegate:nil cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil)
-                                              otherButtonTitles:nil, nil];
-    [alertView show];
-    
-    return NO;
-}
-
-/**
- 포토 앨범 접근 권한을 가지고 있는지 확인한다.
- */
-- (BOOL)checkPhotoAlbumAccessAuthority {
-    ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-    
-    if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized)
-        return YES;
-    
-    //앨범 접근 권한 없음. 해당 Alert 표시.
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil)
-                                                        message:NSLocalizedString(@"alert_content_album_not_authorized", nil)
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil)
-                                              otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-    alertView.tag = ALERT_ALBUM_AUTH;
-    [alertView show];
-    
-    return NO;
-}
-
-
-#pragma mark - Progress Methods
-
-/**
- ProgressView에 승인 대기 중 메시지를 설정하여 띄운다.
- */
-- (void)showWaitProgress {
-    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_connecting", nil)];
-    [self.view setUserInteractionEnabled:NO];
-}
-
-/**
- ProgressView의 상태를 완료로 바꾼 뒤에 종료한다.
- */
-- (void)doneProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_connected", nil) delay:DelayTime];
+    if ([connectionManager isBluetoothAvailable]) {
+        if ([ValidateCheckUtility checkPhotoAlbumAccessAuthority]) {
+            [self presentViewController:self.browserViewController animated:YES completion:nil];
+            return;
+        }
+        
+        //앨범 접근 권한 없음. 해당 Alert 표시.
+        UIAlertController *albumAuthAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_album_not_authorized"
+                                                                                messageKey:@"alert_content_album_not_authorized"];
+        //NO 버튼 터치 시, 그냥 닫는다.
+        [AlertHelper addButtonOnAlertController:albumAuthAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
+            [AlertHelper dismissAlertController:albumAuthAlert];
+        }];
+        //YES 버튼 터치 시, 설정 화면으로 이동한다.
+        [AlertHelper addButtonOnAlertController:albumAuthAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            [AlertHelper dismissAlertController:albumAuthAlert];
+        }];
+        //AlertController를 화면에 표시한다.
+        [AlertHelper showAlertControllerOnViewController:self alertController:albumAuthAlert];
     }
-}
-
-/**
- ProgressView의 상태를 거절로 바꾼 뒤에 종료한다.
- */
-- (void)rejectProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:DelayTime cancel:YES];
-    }
+    
+    UIAlertController *bluetoothAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_bluetooth_off"
+                                                                            messageKey:@"alert_content_bluetooth_off"];
+    //블루투스를 활성화시키라고 알리는 것이 주목적이므로, OK 버튼 터치 시, 그냥 닫는다.
+    [AlertHelper addButtonOnAlertController:bluetoothAlert titleKey:@"alert_button_text_ok" handler:^(UIAlertAction * _Nonnull action) {
+       [AlertHelper dismissAlertController:bluetoothAlert];
+    }];
+    //AlertController를 화면에 표시한다.
+    [AlertHelper showAlertControllerOnViewController:self alertController:bluetoothAlert];
 }
 
 
@@ -223,14 +181,12 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
-    [browserViewController dismissViewControllerAnimated:YES
-                                              completion:nil];
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //Session Connect Cancel.
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
-    [browserViewController dismissViewControllerAnimated:YES
-                                              completion:nil];
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
     [[ConnectionManager sharedInstance] disconnectSession];
 }
 
@@ -240,33 +196,25 @@ typedef NS_ENUM(NSInteger, AlertType) {
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
     self.invitationHandlerArray = [NSArray arrayWithObjects:[invitationHandler copy], nil];
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_invitation_received", nil)
-                                                        message:[NSString stringWithFormat:@"\"%@\" %@", peerID.displayName, NSLocalizedString(@"alert_content_invitation_received", nil)]
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"alert_button_text_decline", nil)
-                                              otherButtonTitles:NSLocalizedString(@"alert_button_text_accept", nil), nil];
-    [alertView show];
-}
-
-
-#pragma mark UIAlertViewDelegate Methods
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    NSInteger const Accepted = 1;
-    
-    //Accept
-    if (buttonIndex == Accepted) {
-        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-        
-        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
-        invitationHandler(YES, connectionManager.ownSession);
-        
-        [self showWaitProgress];
-    //Decline
-    } else {
+    UIAlertController *invitationAlert = [AlertHelper createAlertControllerWithTitle:NSLocalizedString(@"alert_title_invitation_received", nil)
+                                                                             message:[NSString stringWithFormat:@"\"%@\" %@", peerID.displayName, NSLocalizedString(@"alert_content_invitation_received", nil)]];
+    //NO 버튼 터치 시, 거절 정보를 상대방에게 전송한다.
+    [AlertHelper addButtonOnAlertController:invitationAlert titleKey:@"alert_button_text_decline" handler:^(UIAlertAction * _Nonnull action) {
         void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
         invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
-    }
+        
+        [AlertHelper dismissAlertController:invitationAlert];
+    }];
+    //YES 버튼 터치 시, 승인 정보를 상대방에게 전송한다.
+    [AlertHelper addButtonOnAlertController:invitationAlert titleKey:@"alert_button_text_accept" handler:^(UIAlertAction * _Nonnull action) {
+        void (^invitationHandler)(BOOL, MCSession *) = [self.invitationHandlerArray firstObject];
+        invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
+        
+        self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
+        [AlertHelper dismissAlertController:invitationAlert];
+    }];
+    //AlertController를 화면에 표시한다.
+    [AlertHelper showAlertControllerOnViewController:self alertController:invitationAlert];
 }
 
 
@@ -284,33 +232,33 @@ typedef NS_ENUM(NSInteger, AlertType) {
     [[MessageSyncManager sharedInstance] setMessageQueueEnabled:YES];
     [connectionManager sendData:sendData];
     
+    __weak typeof(self) weakSelf = self;
     if ([self.navigationController presentedViewController] == self.browserViewController) {
-        [self.view setUserInteractionEnabled:NO];
         [self.browserViewController dismissViewControllerAnimated:YES completion:^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self loadPhotoFrameViewController];
+                [weakSelf loadPhotoFrameViewController];
             });
         }];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self doneProgress];
+            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_connected" dismissType:DismissWithDone];
         });
         
         //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self loadPhotoFrameViewController];
+            [weakSelf loadPhotoFrameViewController];
         });
     }
 }
 
 - (void)receivedPeerDisconnected {
-    [[ConnectionManager sharedInstance] disconnectSession];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!self.progressView.isHidden) {
+            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithDone];
+        }
+    });
     
-    if ([self.navigationController presentedViewController] != self.browserViewController) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self rejectProgress];
-        });
-    }
+    [[ConnectionManager sharedInstance] disconnectSession];
 }
 
 @end

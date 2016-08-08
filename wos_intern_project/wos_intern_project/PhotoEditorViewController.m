@@ -13,6 +13,7 @@
 
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
+#import "ValidateCheckUtility.h"
 #import "DecorateObjectController.h"
 
 #import "SphereMenu.h"
@@ -22,18 +23,14 @@
 #import "PhotoEditorFrameViewCell.h"
 #import "PhotoCropViewController.h"
 #import "PhotoDrawObjectDisplayView.h"
-#import "PhotoDrawPenView.h"
+#import "PhotoDrawPenMenuView.h"
 
 #import "WMPhotoDecorateImageObject.h"
 #import "WMPhotoDecorateTextObject.h"
 
-typedef NS_ENUM(NSInteger, AlertType) {
-    ALERT_NOT_SAVE   = 0,
-    ALERT_CONTINUE   = 1,
-    ALERT_ALBUM_AUTH = 2
-};
+#import "AlertHelper.h"
 
-@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenViewDelegate, UIAlertViewDelegate, ConnectionManagerPhotoEditorDelegate>
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDrawObjectDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
 @property (atomic, strong) DecorateObjectController *decoObjectController;
@@ -50,7 +47,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
 //그려진 객체들이 위치하는 뷰
 @property (weak, nonatomic) IBOutlet PhotoDrawObjectDisplayView *drawObjectDisplayView;
 //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
-@property (weak, nonatomic) IBOutlet PhotoDrawPenView *drawPenView;
+@property (weak, nonatomic) IBOutlet PhotoDrawPenMenuView *drawPenMenuView;
 
 @end
 
@@ -70,6 +67,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 - (void)setupConnectionManager {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.sessionConnectDelegate = self;
     connectionManager.photoEditorDelegate = self;
 }
 
@@ -80,20 +78,20 @@ typedef NS_ENUM(NSInteger, AlertType) {
                                  startDegree:-M_PI
                                 layoutDegree:M_PI / 2];
     
+    [self.editMenuButton setMainColor:[UIColor colorWithRed:45 / 255.f
+                                                      green:140 / 255.f
+                                                       blue:213 / 255.f
+                                                      alpha:1]];
+    
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.editMenuButton setDelegate:self];
-    
-    self.editMenuButton.mainColor = [UIColor colorWithRed:45 / 255.f
-                                                    green:140 / 255.f
-                                                     blue:213 / 255.f
-                                                    alpha:1];
 }
 
 - (void)setupDrawController {
     self.decoObjectController = [[DecorateObjectController alloc] init];
     self.drawObjectDisplayView.delegate = self;
-    self.drawPenView.delegate = self;
+    self.drawPenMenuView.delegate = self;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -147,11 +145,11 @@ typedef NS_ENUM(NSInteger, AlertType) {
     if (visible) {
         [self.decoObjectVisibleToggleButton setHidden:YES];
         [self.editMenuButton setHidden:YES];
-        [self.drawPenView setHidden:NO];
+        [self.drawPenMenuView setHidden:NO];
     } else {
         [self.decoObjectVisibleToggleButton setHidden:NO];
         [self.editMenuButton setHidden:NO];
-        [self.drawPenView setHidden:YES];
+        [self.drawPenMenuView setHidden:YES];
     }
 }
 
@@ -192,13 +190,27 @@ typedef NS_ENUM(NSInteger, AlertType) {
 #pragma mark - EventHandle Methods
 
 - (IBAction)backButtonTapped:(id)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil)
-                                                        message:NSLocalizedString(@"alert_content_data_not_save", nil)
-                                                       delegate:self
-                                              cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil)
-                                              otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-    alertView.tag = ALERT_NOT_SAVE;
-    [alertView show];
+    UIAlertController *disconnectAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnect_ask"
+                                                                             messageKey:@"alert_content_data_not_save"];
+    
+    [AlertHelper addButtonOnAlertController:disconnectAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
+        [AlertHelper dismissAlertController:disconnectAlert];
+    }];
+    
+    __weak typeof(self) weakSelf = self;
+    [AlertHelper addButtonOnAlertController:disconnectAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
+        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoEditorDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+        
+        [weakSelf loadMainViewController];
+    }];
+    
+    [AlertHelper showAlertControllerOnViewController:self alertController:disconnectAlert];
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
@@ -245,6 +257,13 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 #pragma mark - SphereMenu Delegate Method
 
+typedef NS_ENUM(NSInteger, PhotoMenu) {
+    PhotoMenuTakePhotoAtAlbum  = 0,
+    PhotoMenuTakePhotoAtCamera = 1,
+    PhotoMenuEditPhoto         = 2,
+    PhotoMenuDeletePhoto       = 3
+};
+
 - (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     BOOL isSendEditCancelMsg = NO;
@@ -252,46 +271,54 @@ typedef NS_ENUM(NSInteger, AlertType) {
     if (index < 0) {
         isSendEditCancelMsg = YES;
     } else {
-        if (index == 0) {
-            ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
-            
-            if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized) {
-                //아직 권한이 설정되지 않은 경우엔, System에서 Alert 띄워준다.
-                UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-                picker.delegate = self;
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self presentViewController:picker animated:YES completion:nil];
-                });
-            } else {
-                //권한 없음. 해당 Alert 표시.
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_album_not_authorized", nil)
-                                                                    message:NSLocalizedString(@"alert_content_album_not_authorized", nil)
-                                                                   delegate:self
-                                                          cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil)
-                                                          otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-                alertView.tag = ALERT_ALBUM_AUTH;
-                [alertView show];
-                
+        switch (index) {
+            case PhotoMenuTakePhotoAtAlbum:
+                if ([ValidateCheckUtility checkPhotoAlbumAccessAuthority]) {
+                    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+                    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                    picker.delegate = self;
+                    
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentViewController:picker animated:YES completion:nil];
+                    });
+                } else {
+                    //권한 없음. 해당 Alert 표시.
+                    UIAlertController *albumAuthAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_album_not_authorized"
+                                                                                            messageKey:@"alert_content_album_not_authorized"];
+                    
+                    [AlertHelper addButtonOnAlertController:albumAuthAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
+                        [AlertHelper dismissAlertController:albumAuthAlert];
+                    }];
+                    
+                    [AlertHelper addButtonOnAlertController:albumAuthAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                        [AlertHelper dismissAlertController:albumAuthAlert];
+                    }];
+                    
+                    [AlertHelper showAlertControllerOnViewController:self alertController:albumAuthAlert];
+                    
+                    isSendEditCancelMsg = YES;
+                }
+                break;
+            case PhotoMenuTakePhotoAtCamera:
+                //camera
+                //아래의 코드는 버그 방지를 위해, 임시로 추가시킨 코드이다. 기능이 구현되면 삭제될 예정이다.
                 isSendEditCancelMsg = YES;
-            }
-        } else if (index == 1) {
-            //camera
-            //아래의 코드는 버그 방지를 위해, 임시로 추가시킨 코드이다. 기능이 구현되면 삭제될 예정이다.
-            isSendEditCancelMsg = YES;
-        } else if (index == 2) {
-            //edit
-            self.selectedImageURL = nil;
-            [self loadPhotoCropViewController];
-        } else if (index == 3) {
-            [self.cellManager clearCellDataAtIndex:self.selectedIndexPath.item];
-            [self reloadData:self.selectedIndexPath];
-            
-            NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoDelete),
-                                       kEditorPhotoDeleteIndex: @(self.selectedIndexPath.item)};
-            
-            [connectionManager sendData:sendData];
+                break;
+            case PhotoMenuEditPhoto:
+                //edit
+                self.selectedImageURL = nil;
+                [self loadPhotoCropViewController];
+                break;
+            case PhotoMenuDeletePhoto:
+                [self.cellManager clearCellDataAtIndex:self.selectedIndexPath.item];
+                [self reloadData:self.selectedIndexPath];
+                
+                NSDictionary *sendData = @{kDataType: @(vDataTypeEditorPhotoDelete),
+                                           kEditorPhotoDeleteIndex: @(self.selectedIndexPath.item)};
+                
+                [connectionManager sendData:sendData];
+                break;
         }
     }
     
@@ -309,22 +336,33 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 #pragma mark - XXXRoundMenuButton Delegate Method
 
+typedef NS_ENUM(NSInteger, MainMenu) {
+    MainMenuSticker     = 0,
+    MainMenuText        = 1,
+    MainMenuPen         = 2
+};
+
 - (void)xxxRoundMenuButtonDidOpened {
     [self.drawObjectDisplayView deselectDrawObject];
 }
 
+float const WaitUntilAnimationFinish = 0.24 + 0.06;
+
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
-    //Sticker Menu
-    if (index == 0) {
-        
-        //Text Menu
-    } else if (index == 1) {
-        
-        //Pen Menu
-    } else if (index == 2) {
-        [self setVisibleDrawObjectView:YES];
-        [self setVisibleDrawObjectDisplayView:YES];
-    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(WaitUntilAnimationFinish * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        switch (index) {
+            case MainMenuPen:
+                [self setVisibleDrawObjectView:YES];
+                [self setVisibleDrawObjectDisplayView:YES];
+                break;
+            case MainMenuText:
+                
+                break;
+            case MainMenuSticker:
+                
+                break;
+        }
+    });
 }
 
 
@@ -359,27 +397,33 @@ typedef NS_ENUM(NSInteger, AlertType) {
 #pragma mark - PhotoCropViewController Delegate Methods
 
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
+    if (!fullscreenImage || !croppedImage) {
+        //Alert. 사진 가져오지 못함.
+        return;
+    }
+    
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
     
-    if (filename != nil) {
-        NSURL *fullscreenImageURL = [ImageUtility generateFullscreenImageURLWithFilename:filename];
-        NSURL *croppedImageURL = [ImageUtility generateCroppedImageURLWithFilename:filename];
-        
-        //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
-        [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item withFullscreenImage:fullscreenImage];
-        [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item withCroppedImage:croppedImage];
-        [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item withState:CELL_STATE_UPLOADING];
-        [self reloadData:self.selectedIndexPath];
-        
-        //저장된 파일의 경로를 이용하여 파일을 전송한다.
-        [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename
-                                                   fullscreenImageURL:fullscreenImageURL
-                                                      croppedImageURL:croppedImageURL
-                                                                index:self.selectedIndexPath.item];
-    } else {
-        //alert.
+    if (!filename) {
+        //Alert. 사진 저장 실패.
+        return;
     }
+    
+    NSURL *fullscreenImageURL = [ImageUtility generateFullscreenImageURLWithFilename:filename];
+    NSURL *croppedImageURL = [ImageUtility generateCroppedImageURLWithFilename:filename];
+    
+    //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
+    [self.cellManager setCellFullscreenImageAtIndex:self.selectedIndexPath.item withFullscreenImage:fullscreenImage];
+    [self.cellManager setCellCroppedImageAtIndex:self.selectedIndexPath.item withCroppedImage:croppedImage];
+    [self.cellManager setCellStateAtIndex:self.selectedIndexPath.item withState:CellStateUploading];
+    [self reloadData:self.selectedIndexPath];
+    
+    //저장된 파일의 경로를 이용하여 파일을 전송한다.
+    [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename
+                                               fullscreenImageURL:fullscreenImageURL
+                                                  croppedImageURL:croppedImageURL
+                                                            index:self.selectedIndexPath.item];
 }
 
 - (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
@@ -454,9 +498,9 @@ typedef NS_ENUM(NSInteger, AlertType) {
 }
 
 
-#pragma mark - PhotoDrawPenView Delegate Methods
+#pragma mark - PhotoDrawPenMenuView Delegate Methods
 
-- (void)drawPenViewDidFinished:(PhotoDrawPenView *)drawPenView WithImage:(UIImage *)image {
+- (void)drawPenMenuViewDidFinished:(PhotoDrawPenMenuView *)drawPenMenuView WithImage:(UIImage *)image {
     [self setVisibleDrawObjectView:NO];
     
     if (!image)
@@ -476,43 +520,8 @@ typedef NS_ENUM(NSInteger, AlertType) {
     [[ConnectionManager sharedInstance] sendData:sendData];
 }
 
-- (void)drawPenViewDidCancelled:(PhotoDrawPenView *)drawPenView {
+- (void)drawPenMenuViewDidCancelled:(PhotoDrawPenMenuView *)drawPenMenuView {
     [self setVisibleDrawObjectView:NO];
-}
-
-
-#pragma mark - UIAlertViewDelegate Methods
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    if (alertView.tag == ALERT_NOT_SAVE) {
-        if (buttonIndex == 1) {
-            NSDictionary *sendData = @{kDataType: @(vDataTypeEditorDisconnected)};
-            [connectionManager sendData:sendData];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-                [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-                [connectionManager disconnectSession];
-                
-                [self loadMainViewController];
-            });
-        }
-    } else if (alertView.tag == ALERT_CONTINUE) {
-        //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-        [connectionManager disconnectSession];
-        
-        //계속하지 않겠다고 응답했으므로, 메인화면으로 돌아간다.
-        if (buttonIndex == 1) {
-            [self loadMainViewController];
-        }
-    } else if (alertView.tag == ALERT_ALBUM_AUTH) {
-        if (buttonIndex == 1) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-        }
-    }
 }
 
 
@@ -532,34 +541,8 @@ typedef NS_ENUM(NSInteger, AlertType) {
         }
         
         CGPoint sphereMenuCenter = CGPointMake([notification.userInfo[KEY_SELECTED_CELL_CENTER_X] floatValue], [notification.userInfo[KEY_SELECTED_CELL_CENTER_Y] floatValue]);
-        CGFloat angleOffset;
-        
-        //사진 액자가 화면의 중간 범위에 위치할 때,
-        if (self.view.center.x - 10 <= sphereMenuCenter.x && sphereMenuCenter.x <= self.view.center.x + 10) {
-            if (images.count == 2) {
-                angleOffset = M_PI * 1.1f;
-            } else {
-                angleOffset = M_PI * -1.13f;
-            }
-        } else {
-            //사진 액자가 화면의 왼쪽에 위치할 때,
-            if (sphereMenuCenter.x < self.view.center.x) {
-                if (images.count == 2) {
-                    angleOffset = M_PI * 1.2f;
-                } else {
-                    angleOffset = M_PI * 1.15f;
-                }
-                //사진 액자가 화면의 오른쪽에 위치할 때,
-            } else if (sphereMenuCenter.x > self.view.center.x) {
-                if (images.count == 2) {
-                    angleOffset = M_PI * 1.05f;
-                } else {
-                    angleOffset = M_PI * -1.4f;
-                }
-            }
-        }
-        
-        SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.collectionContainerView Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images StartAngle:angleOffset];
+
+        SphereMenu *sphereMenu = [[SphereMenu alloc] initWithRootView:self.collectionContainerView Center:sphereMenuCenter CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
         sphereMenu.delegate = self;
         [sphereMenu presentMenu];
         
@@ -571,12 +554,54 @@ typedef NS_ENUM(NSInteger, AlertType) {
 }
 
 
-#pragma mark - ConnectionManagerDelegate Methods
+#pragma mark - ConnectionManager Session Connect Delegate Methods
+
+- (void)receivedPeerConnected {
+    
+}
+
+- (void)receivedPeerDisconnected {
+    UIAlertController *diconnectedAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnected"
+                                                                              messageKey:@"alert_content_photo_edit_continue"];
+    
+    [AlertHelper addButtonOnAlertController:diconnectedAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
+        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoEditorDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+
+        
+        [AlertHelper dismissAlertController:diconnectedAlert];
+    }];
+    
+    [AlertHelper addButtonOnAlertController:diconnectedAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
+        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoEditorDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+        
+        [self loadMainViewController];
+    }];
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [AlertHelper showAlertControllerOnViewController:weakSelf alertController:diconnectedAlert];
+    });
+}
+
+
+#pragma mark - ConnectionManager Photo Editor Delegate Methods
 
 - (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex type:(NSString *)type url:(NSURL *)url {
     //Data Receive Started.
     if (url == nil) {
-        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_DOWNLOADING];
+        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CellStateDownloading];
         //Data Receive Finished.
     } else {
         if ([type isEqualToString:PostfixImageCropped]) {
@@ -584,7 +609,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
             [self.cellManager setCellCroppedImageAtIndex:targetFrameIndex withCroppedImage:croppedImage];
         } else if ([type isEqualToString:PostfixImageFullscreen]) {
             UIImage *fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
-            [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+            [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CellStateNone];
             [self.cellManager setCellFullscreenImageAtIndex:targetFrameIndex withFullscreenImage:fullscreenImage];
         }
     }
@@ -594,7 +619,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 - (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex ack:(BOOL)insertAck {
     if (insertAck) {
-        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+        [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CellStateNone];
         [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
     } else {
         //error
@@ -602,12 +627,12 @@ typedef NS_ENUM(NSInteger, AlertType) {
 }
 
 - (void)receivedEditorPhotoEditing:(NSInteger)targetFrameIndex {
-    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_EDITING];
+    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CellStateEditing];
     [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
 - (void)receivedEditorPhotoEditingCancelled:(NSInteger)targetFrameIndex {
-    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CELL_STATE_NONE];
+    [self.cellManager setCellStateAtIndex:targetFrameIndex withState:CellStateNone];
     [self reloadData:[NSIndexPath indexPathForItem:targetFrameIndex inSection:0]];
 }
 
@@ -679,14 +704,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
     [self.decoObjectController deleteDecorateObjectWithId:identifier];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.drawObjectDisplayView deleteDecoViewWithId:identifier];
-    });
-}
-
-- (void)receivedEditorDisconnected {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil) message:NSLocalizedString(@"alert_content_photo_edit_continue", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-        alertView.tag = ALERT_CONTINUE;
-        [alertView show];
     });
 }
 

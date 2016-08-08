@@ -8,6 +8,11 @@
 
 #import "ImageUtility.h"
 
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <ImageIO/ImageIO.h>
+
+#import "CommonConstants.h"
+
 @implementation ImageUtility
 
 + (void)getFullscreenUIImageAthURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {

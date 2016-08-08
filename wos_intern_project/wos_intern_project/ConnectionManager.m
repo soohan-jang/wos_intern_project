@@ -164,10 +164,6 @@
                 NSLog(@"Received Confirm Ack Frame Select");
                 [self.photoFrameSelectDelegate receivedPhotoFrameConfirmAck:[receivedData[kPhotoFrameSelectedConfirmAck] boolValue]];
                 break;
-            case vDataTypePhotoFrameDisconnected:
-                NSLog(@"Received Session Disconnected at PhotoFrameSelectViewController");
-                [self.photoFrameSelectDelegate receivedPhotoFrameDisconnected];
-                break;
         }
     }
     
@@ -229,10 +225,6 @@
             case vDataTypeEditorDrawingDelete:
                 NSLog(@"Received Delete Drawing Object");
                 [self.photoEditorDelegate receivedEditorDecorateObjectDelete:receivedData[kEditorDrawingDeleteID]];
-                break;
-            case vDataTypeEditorDisconnected:
-                NSLog(@"Received Session Disconnected at PhotoEditorViewController");
-                [self.photoEditorDelegate receivedEditorDisconnected];
                 break;
         }
 

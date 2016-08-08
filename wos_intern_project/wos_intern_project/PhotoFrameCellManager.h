@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSInteger, CellState) {
-    CELL_STATE_NONE         = 0,
-    CELL_STATE_UPLOADING    = 1,
-    CELL_STATE_DOWNLOADING  = 2,
-    CELL_STATE_EDITING      = 3
+    CellStateNone           = 0,
+    CellStateUploading      = 1,
+    CellStateDownloading    = 2,
+    CellStateEditing        = 3
 };
 
 @interface PhotoFrameCellManager : NSObject

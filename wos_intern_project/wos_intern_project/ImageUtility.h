@@ -6,13 +6,7 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
-#import <ImageIO/ImageIO.h>
-
 #import <UIKit/UIkit.h>
-
-#import "CommonConstants.h"
 
 typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
 

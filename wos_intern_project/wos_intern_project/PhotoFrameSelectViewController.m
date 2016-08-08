@@ -13,25 +13,20 @@
 #import "ConnectionManager.h"
 #import "MessageSyncManager.h"
 
-#import "WMProgressHUD.h"
-
 #import "PhotoFrameSelectViewCell.h"
 #import "PhotoEditorViewController.h"
 
-typedef NS_ENUM(NSInteger, AlertType) {
-    ALERT_DISCONNECT = 0,
-    ALERT_DISCONNECTED = 1,
-    ALERT_FRAME_CONFIRM = 2
-};
+#import "ProgressHelper.h"
+#import "AlertHelper.h"
 
-@interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIAlertViewDelegate, ConnectionManagerPhotoFrameSelectDelegate>
+@interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoFrameSelectDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
-@property (nonatomic, strong) NSIndexPath *ownSelectedFrameIndex;
-@property (nonatomic, strong) NSIndexPath *connectedPeerSelectedFrameIndex;
-@property (nonatomic, strong) WMProgressHUD *progressView;
+@property (strong, nonatomic) NSIndexPath *ownSelectedFrameIndex;
+@property (strong, nonatomic) NSIndexPath *connectedPeerSelectedFrameIndex;
+@property (strong, nonatomic) WMProgressHUD *progressView;
 
 @end
 
@@ -60,6 +55,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
 
 - (void)setupConnectionManager {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.sessionConnectDelegate = self;
     connectionManager.photoFrameSelectDelegate = self;
 }
 
@@ -113,9 +109,27 @@ typedef NS_ENUM(NSInteger, AlertType) {
 #pragma mark - EventHandle Methods
 
 - (IBAction)backButtonTapped:(id)sender {
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnect_ask", nil) message:NSLocalizedString(@"alert_content_session_disconnect_ask", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"alert_button_text_no", nil) otherButtonTitles:NSLocalizedString(@"alert_button_text_yes", nil), nil];
-    alertView.tag = ALERT_DISCONNECT;
-    [alertView show];
+    UIAlertController *askDisconnectAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnect_ask"
+                                                                                messageKey:@"alert_content_session_disconnect_ask"];
+    
+    [AlertHelper addButtonOnAlertController:askDisconnectAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
+        [AlertHelper dismissAlertController:askDisconnectAlert];
+    }];
+    
+    __weak typeof(self) weakSelf = self;
+    [AlertHelper addButtonOnAlertController:askDisconnectAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
+        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoFrameSelectDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+        
+        [weakSelf loadMainViewController];
+    }];
+    
+    [AlertHelper showAlertControllerOnViewController:weakSelf alertController:askDisconnectAlert];
 }
 
 - (IBAction)doneButtonTapped:(id)sender {
@@ -124,7 +138,7 @@ typedef NS_ENUM(NSInteger, AlertType) {
     NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirm)};
     [[ConnectionManager sharedInstance] sendData:sendData];
     
-    [self showConfirmProgress];
+    self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_confirming"];
 }
 
 - (void)sendSelectFrameChanged {
@@ -146,78 +160,6 @@ typedef NS_ENUM(NSInteger, AlertType) {
         self.doneButton.enabled = YES;
     } else {
         self.doneButton.enabled = NO;
-    }
-}
-
-
-#pragma mark - Progress Methods
-
-/**
- ProgressView에 승인 대기 중 메시지를 설정하여 띄운다.
- */
-- (void)showConfirmProgress {
-    self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_confirming", nil)];
-}
-
-/**
- ProgressView의 상태를 거절로 바꾼 뒤에 종료한다.
- */
-- (void)declineProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_rejected", nil) delay:DelayTime cancel:YES];
-    }
-}
-
-/**
- ProgressView의 상태를 승인으로 바꾼 뒤에 종료한다.
- */
-- (void)acceptProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView doneProgressWithTitle:NSLocalizedString(@"progress_title_confirmed", nil) delay:DelayTime];
-    }
-}
-
-
-#pragma mark - UIAlertViewDelegate Methods
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    if (alertView.tag == ALERT_DISCONNECT) {
-        if (buttonIndex == 1) {
-            NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameDisconnected)};
-            [connectionManager sendData:sendData];
-            
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-                [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-                [connectionManager disconnectSession];
-                [self loadMainViewController];
-            });
-        }
-    } else if (alertView.tag == ALERT_DISCONNECTED) {
-        //세션 종료 시, 동기화 큐 사용을 막고 리소스를 정리한다.
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-        [connectionManager disconnectSession];
-        
-        [self loadMainViewController];
-    } else if (alertView.tag == ALERT_FRAME_CONFIRM) {
-        BOOL confirmAck;
-        
-        if (buttonIndex == 1) {
-            confirmAck = YES;
-            
-            //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-            [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:YES];
-            [self loadPhotoEditorViewController];
-        } else {
-            confirmAck = NO;
-            
-        }
-        
-        NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirmAck),
-                                   kPhotoFrameSelectedConfirmAck: @(confirmAck)};
-        [connectionManager sendData:sendData];
     }
 }
 
@@ -314,7 +256,35 @@ typedef NS_ENUM(NSInteger, AlertType) {
 }
 
 
-#pragma mark - ConnectionManager Delegate Methods
+#pragma mark - ConnectionManager Session Connect Delegate Methods
+
+- (void)receivedPeerConnected {
+    
+}
+
+- (void)receivedPeerDisconnected {
+    UIAlertController *disconnectedAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnected"
+                                                                               messageKey:@"alert_content_session_disconnected"];
+    __weak typeof(self) weakSelf = self;
+    [AlertHelper addButtonOnAlertController:disconnectedAlert titleKey:@"alert_button_text_ok" handler:^(UIAlertAction * _Nonnull action) {
+        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoFrameSelectDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
+        
+        [weakSelf loadMainViewController];
+    }];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [AlertHelper showAlertControllerOnViewController:weakSelf alertController:disconnectedAlert];
+    });
+}
+
+
+#pragma mark - ConnectionManager Photo Frame Select Delegate Methods
 
 - (void)receivedPhotoFrameSelected:(NSIndexPath *)selectedIndexPath {
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
@@ -343,20 +313,39 @@ typedef NS_ENUM(NSInteger, AlertType) {
         currentSelectedFrameCell.isConnectedPeerSelected = YES;
     }
     
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self updateFrameCells:prevSelectedFrameCell currentCell:currentSelectedFrameCell];
+        [weakSelf updateFrameCells:prevSelectedFrameCell currentCell:currentSelectedFrameCell];
     });
 }
 
 - (void)receivedPhotoFrameRequestConfirm {
+    UIAlertController *frameConfirmAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_frame_select_confirm"
+                                                                               messageKey:@"alert_content_frame_select_confirm"];
+    
+    [AlertHelper addButtonOnAlertController:frameConfirmAlert titleKey:@"alert_button_text_decline" handler:^(UIAlertAction * _Nonnull action) {
+        NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirmAck),
+                                   kPhotoFrameSelectedConfirmAck: @NO};
+        [[ConnectionManager sharedInstance] sendData:sendData];
+        
+        [AlertHelper dismissAlertController:frameConfirmAlert];
+    }];
+    
+    __weak typeof(self) weakSelf = self;
+    [AlertHelper addButtonOnAlertController:frameConfirmAlert titleKey:@"alert_button_text_accept" handler:^(UIAlertAction * _Nonnull action) {
+        //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
+        NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirmAck),
+                                   kPhotoFrameSelectedConfirmAck: @YES};
+        [[ConnectionManager sharedInstance] sendData:sendData];
+        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:YES];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf loadPhotoEditorViewController];
+        });
+    }];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_frame_select_confirm", nil)
-                                                            message:NSLocalizedString(@"alert_content_frame_select_confirm", nil)
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"alert_button_text_decline", nil)
-                                                  otherButtonTitles:NSLocalizedString(@"alert_button_text_accept", nil), nil];
-        alertView.tag = ALERT_FRAME_CONFIRM;
-        [alertView show];
+        [AlertHelper showAlertControllerOnViewController:weakSelf alertController:frameConfirmAlert];
     });
 }
 
@@ -366,31 +355,20 @@ typedef NS_ENUM(NSInteger, AlertType) {
         [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:YES];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self acceptProgress];
+            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_confirmed" dismissType:DismissWithDone];
         });
         
+        __weak typeof(self) weakSelf = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self loadPhotoEditorViewController];
+            [weakSelf loadPhotoEditorViewController];
         });
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
             self.doneButton.enabled = YES;
-            [self declineProgress];
+            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithCancel];
         });
     }
 
-}
-
-- (void)receivedPhotoFrameDisconnected {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_session_disconnected", nil)
-                                                            message:NSLocalizedString(@"alert_content_session_disconnected", nil)
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"alert_button_text_ok", nil)
-                                                  otherButtonTitles:nil, nil];
-        alertView.tag = ALERT_DISCONNECTED;
-        [alertView show];
-    });
 }
 
 @end

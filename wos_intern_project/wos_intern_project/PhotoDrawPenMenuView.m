@@ -1,12 +1,12 @@
 //
-//  PhotoEditorDrawViewController.m
+//  PhotoDrawPenMenuView.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 1..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoDrawPenView.h"
+#import "PhotoDrawPenMenuView.h"
 #import "PhotoDrawCanvasView.h"
 
 typedef NS_ENUM(NSInteger, LineColorMenuItem) {
@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     LineColorClose  = 5
 };
 
-@interface PhotoDrawPenView ()
+@interface PhotoDrawPenMenuView ()
 
 @property (nonatomic, weak) IBOutlet PhotoDrawCanvasView *canvasView;
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *eraseButton;
@@ -31,7 +31,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
 
 @end
 
-@implementation PhotoDrawPenView
+@implementation PhotoDrawPenMenuView
 
 - (void)setHidden:(BOOL)hidden {
     [super setHidden:hidden];
@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self closeLineWidthSubMenu];
     [self closeEraseSubMenu];
     
-    [self.delegate drawPenViewDidFinished:self WithImage:[self.canvasView getPathImage]];
+    [self.delegate drawPenMenuViewDidFinished:self WithImage:[self.canvasView getPathImage]];
 }
 
 - (IBAction)tappedCancelButton:(id)sender {
@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self closeLineWidthSubMenu];
     [self closeEraseSubMenu];
     
-    [self.delegate drawPenViewDidCancelled:self];
+    [self.delegate drawPenMenuViewDidCancelled:self];
 }
 
 - (IBAction)tappedPaletteButton:(id)sender {

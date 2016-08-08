@@ -21,7 +21,6 @@ typedef NS_ENUM(NSInteger, ValueDataType) {
     vDataTypePhotoFrameSelected           = 200,
     vDataTypePhotoFrameConfirm            = 201,
     vDataTypePhotoFrameConfirmAck         = 202,
-    vDataTypePhotoFrameDisconnected       = 203,
     
     vDataTypeEditorPhotoInsertAck         = 301,
     vDataTypeEditorPhotoEdit              = 302,
@@ -36,7 +35,6 @@ typedef NS_ENUM(NSInteger, ValueDataType) {
     vDataTypeEditorDrawingUpdateRotated   = 310,
     vDataTypeEditorDrawingUpdateZOrder    = 311,
     vDataTypeEditorDrawingDelete          = 312,
-    vDataTypeEditorDisconnected           = 313
 };
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/

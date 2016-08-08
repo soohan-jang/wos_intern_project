@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -74,7 +74,7 @@
                         <barButtonItem key="rightBarButtonItem" image="Album" id="FY3-cc-wpi">
                             <inset key="imageInsets" minX="16" minY="8" maxX="0.0" maxY="8"/>
                             <connections>
-                                <action selector="albumButtonTapped:" destination="O8G-ct-xDM" id="Rmw-et-KmC"/>
+                                <action selector="loadPhotoAlbumViewController:" destination="O8G-ct-xDM" id="pBZ-wz-u0R"/>
                                 <segue destination="zGW-6d-CIL" kind="show" id="HO4-Z4-dcV"/>
                             </connections>
                         </barButtonItem>
@@ -290,7 +290,7 @@
                                     <constraint firstAttribute="width" constant="200" id="sX9-AL-VTz"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh5-Kc-cgB" customClass="PhotoDrawPenView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh5-Kc-cgB" customClass="PhotoDrawPenMenuView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="PhotoDrawCanvasView">
@@ -428,7 +428,6 @@
                                 <constraints>
                                     <constraint firstItem="QzL-H7-SyN" firstAttribute="width" secondItem="Zh5-Kc-cgB" secondAttribute="width" id="18z-wc-jBk"/>
                                     <constraint firstItem="QzL-H7-SyN" firstAttribute="centerX" secondItem="Zh5-Kc-cgB" secondAttribute="centerX" id="2EH-89-dbn"/>
-                                    <constraint firstItem="Qdr-Ub-FbH" firstAttribute="top" secondItem="gsE-tO-utS" secondAttribute="top" constant="-30" id="C3f-do-Aau"/>
                                     <constraint firstItem="Dgt-wX-GiS" firstAttribute="leading" secondItem="Zh5-Kc-cgB" secondAttribute="leading" id="J5P-Kp-Xkb"/>
                                     <constraint firstItem="gsE-tO-utS" firstAttribute="centerX" secondItem="Zh5-Kc-cgB" secondAttribute="centerX" id="Mqv-WY-qfc"/>
                                     <constraint firstItem="gsE-tO-utS" firstAttribute="centerY" secondItem="Zh5-Kc-cgB" secondAttribute="centerY" id="Qgz-fb-fNg"/>
@@ -436,16 +435,9 @@
                                     <constraint firstAttribute="trailing" secondItem="Dgt-wX-GiS" secondAttribute="trailing" id="TBk-EP-lQi"/>
                                     <constraint firstItem="Qdr-Ub-FbH" firstAttribute="centerX" secondItem="Zh5-Kc-cgB" secondAttribute="centerX" id="XdT-cx-nqt"/>
                                     <constraint firstItem="Qdr-Ub-FbH" firstAttribute="leading" secondItem="Zh5-Kc-cgB" secondAttribute="leading" id="gVF-ZY-C4h"/>
-                                    <constraint firstItem="Qdr-Ub-FbH" firstAttribute="top" secondItem="Dgt-wX-GiS" secondAttribute="bottom" constant="75" id="ipv-nX-QHF"/>
                                     <constraint firstAttribute="trailing" secondItem="gsE-tO-utS" secondAttribute="trailing" constant="10" id="qiS-4Z-mPp"/>
                                     <constraint firstAttribute="trailing" secondItem="Qdr-Ub-FbH" secondAttribute="trailing" id="v0H-OC-k9v"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="C3f-do-Aau"/>
-                                        <exclude reference="ipv-nX-QHF"/>
-                                    </mask>
-                                </variation>
                                 <connections>
                                     <outlet property="canvasView" destination="gsE-tO-utS" id="htB-Aa-bzK"/>
                                     <outlet property="eraseButton" destination="d0N-50-ppk" id="pnG-iW-UAU"/>
@@ -496,7 +488,7 @@
                         <outlet property="collectionView" destination="7vD-hf-90M" id="vgX-qa-46y"/>
                         <outlet property="decoObjectVisibleToggleButton" destination="uJv-y5-Fa3" id="dR0-e9-pjD"/>
                         <outlet property="drawObjectDisplayView" destination="lUZ-73-XTC" id="VrJ-dR-mBU"/>
-                        <outlet property="drawPenView" destination="Zh5-Kc-cgB" id="y28-X3-gr9"/>
+                        <outlet property="drawPenMenuView" destination="Zh5-Kc-cgB" id="0qR-xq-fGh"/>
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
                     </connections>

@@ -8,10 +8,10 @@
 
 #import "PhotoCropViewController.h"
 
-#import "ImageUtility.h"
-
-#import "WMProgressHUD.h"
 #import "PECropView.h"
+
+#import "ImageUtility.h"
+#import "ProgressHelper.h"
 
 @interface PhotoCropViewController ()
 
@@ -25,7 +25,6 @@
 
 @interface PhotoCropViewController ()
 
-@property (nonatomic, strong) ALAssetsLibrary *assetslibrary;
 @property (nonatomic, strong) WMProgressHUD *progressView;
 
 @end
@@ -50,7 +49,7 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     } else {
-        [self loadProgress];
+        self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_loadding"];
         
         [ImageUtility getFullscreenUIImageAthURL:self.imageUrl resultBlock:^(UIImage *image) {
             if (image == nil) {
@@ -61,7 +60,7 @@
                 self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
             }
             
-            [self doneProgress];
+            [ProgressHelper dismissProgress:self.progressView];
         }];
     }
 }
@@ -84,21 +83,6 @@
             [self.delegate cropViewControllerDidFinished:self withFullscreenImage:self.fullscreenImage withCroppedImage:self.croppedImage];
             [self.navigationController popViewControllerAnimated:YES];
         }
-    }
-}
-
-
-#pragma mark - Progess Methods
-
-- (void)loadProgress {
-    if (self.progressView == nil) {
-        self.progressView = [WMProgressHUD showHUDAddedTo:self.view animated:YES title:NSLocalizedString(@"progress_title_loadding", nil)];
-    }
-}
-
-- (void)doneProgress {
-    if (!self.progressView.isHidden) {
-        [self.progressView dismissProgress];
     }
 }
 

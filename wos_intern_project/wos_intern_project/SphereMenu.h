@@ -12,7 +12,7 @@
 
 @interface SphereMenu : UIView
 
-- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle;
+- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images;
 - (void)presentMenu;
 - (void)dismissMenu;
 

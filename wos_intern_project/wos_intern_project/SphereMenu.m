@@ -38,13 +38,36 @@ static const float kSphereDamping = 0.3;
 
 @implementation SphereMenu
 
-- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images StartAngle:(CGFloat)startAngle {
+- (instancetype)initWithRootView:(UIView *)rootView Center:(CGPoint)center CloseImage:(UIImage *)image MenuImages:(NSArray *)images {
     if (self = [super init]) {
         _angle = kAngleOffset;
         _sphereLength = kSphereLength;
         _sphereDamping = kSphereDamping;
         
-        _startAngle = startAngle;
+        //사진 액자가 화면의 중간 범위에 위치할 때,
+        if (rootView.center.x - 10 <= center.x && center.x <= rootView.center.x + 10) {
+            if (images.count == 2) {
+                _startAngle = M_PI * 1.1f;
+            } else {
+                _startAngle = M_PI * -1.13f;
+            }
+        } else {
+            //사진 액자가 화면의 왼쪽에 위치할 때,
+            if (center.x < rootView.center.x) {
+                if (images.count == 2) {
+                    _startAngle = M_PI * 1.2f;
+                } else {
+                    _startAngle = M_PI * 1.15f;
+                }
+                //사진 액자가 화면의 오른쪽에 위치할 때,
+            } else if (center.x > rootView.center.x) {
+                if (images.count == 2) {
+                    _startAngle = M_PI * 1.05f;
+                } else {
+                    _startAngle = M_PI * -1.4f;
+                }
+            }
+        }
         
         _start = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
         [_start setImage:image forState:UIControlStateNormal];
