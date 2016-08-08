@@ -8,14 +8,13 @@
 
 #import "PhotoDrawCanvasView.h"
 
+#import "CanvasPathObject.h"
+
 int const DefaultLineWidth = 4;
 
 @interface PhotoDrawCanvasView ()
 
-//이건 따로 뷰 모델로 만들어서 관리하고, PhotoDrawCanvasView도 Controller화 시켜도 될 것 같은데?
-@property (nonatomic, strong) NSMutableArray<UIBezierPath *> *pathArray;
-@property (nonatomic, strong) NSMutableArray<UIColor *> *pathColorArray;
-@property (nonatomic, strong) NSMutableArray<NSNumber *> *pathWidthArray;
+@property (nonatomic, strong) NSMutableArray<CanvasPathObject *> *pathObjects;
 
 @end
 
@@ -30,9 +29,7 @@ int const DefaultLineWidth = 4;
     
     if (self) {
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
-        self.pathArray = [[NSMutableArray alloc] init];
-        self.pathColorArray = [[NSMutableArray alloc] init];
-        self.pathWidthArray = [[NSMutableArray alloc] init];
+        self.pathObjects = [[NSMutableArray alloc] init];
         
         self.lineColor = [UIColor blackColor];
         self.lineWidth = DefaultLineWidth;
@@ -49,9 +46,7 @@ int const DefaultLineWidth = 4;
     
     if (self) {
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
-        self.pathArray = [[NSMutableArray alloc] init];
-        self.pathColorArray = [[NSMutableArray alloc] init];
-        self.pathWidthArray = [[NSMutableArray alloc] init];
+        self.pathObjects = [[NSMutableArray alloc] init];
         
         path = [UIBezierPath bezierPath];
         path.lineWidth = DefaultLineWidth;
@@ -63,12 +58,10 @@ int const DefaultLineWidth = 4;
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
 - (void)drawRect:(CGRect)rect {
-    for (int i = 0; i < self.pathArray.count; i++) {
-        UIBezierPath *drawPath = self.pathArray[i];
-        
-        [self.pathColorArray[i] setStroke];
-        [drawPath setLineWidth:self.pathWidthArray[i].floatValue];
-        [drawPath stroke];
+    for (CanvasPathObject *pathObject in self.pathObjects) {
+        [pathObject.color setStroke];
+        [pathObject.path setLineWidth:pathObject.width];
+        [pathObject.path stroke];
     }
     
     if (path == nil || path.isEmpty)
@@ -137,41 +130,42 @@ int const DefaultLineWidth = 4;
 #pragma mark - Add Path in Array
 
 - (void)addPath {
-    [self.pathArray addObject:[path copy]];
-    [self.pathColorArray addObject:[self.lineColor copy]];
-    [self.pathWidthArray addObject:@(self.lineWidth)];
+    [self.pathObjects addObject:[[CanvasPathObject alloc] initWithPath:path color:self.lineColor width:self.lineWidth]];
     [path removeAllPoints];
     [self setNeedsDisplay];
 }
 
 //지우개 기능 초기버전. 개선의 여지가 많다.
 - (void)removePathLocatedAtPoint:(CGPoint)point {
-    if (self.pathArray == nil || self.pathArray.count == 0)
+    if (self.pathObjects == nil || self.pathObjects.count == 0)
         return;
     
-    for (int i = (int)self.pathArray.count - 1; i >= 0; i--) {
-        CGPathRef pathRef = [self.pathArray[i] CGPath];
+    NSArray *reversedArray = [[self.pathObjects reverseObjectEnumerator] allObjects];
+    
+    for (CanvasPathObject *pathObject in reversedArray) {
+        CGPathRef pathRef = [pathObject.path CGPath];
         if (!CGPathContainsPoint(pathRef, NULL, point, true))
             continue;
         
-        [self.pathArray removeObjectAtIndex:i];
-        [self.pathColorArray removeObjectAtIndex:i];
-        [self.pathWidthArray removeObjectAtIndex:i];
+        [self.pathObjects removeObject:pathObject];
         [self setNeedsDisplay];
         break;
     }
+    
+    reversedArray = nil;
 }
 
 
 #pragma mark - Calculate Bounds & Get Path Image
 
 - (CGRect)calculatePathBounds {
-    if (self.pathArray == nil || self.pathArray.count == 0)
+    if (self.pathObjects == nil || self.pathObjects.count == 0)
         return CGRectNull;
     
     CGMutablePathRef mutalblePathRef = CGPathCreateMutable();
-    for (UIBezierPath *subPath in self.pathArray)
-        CGPathAddPath(mutalblePathRef, NULL, [subPath CGPath]);
+    
+    for (CanvasPathObject *pathObject in self.pathObjects)
+        CGPathAddPath(mutalblePathRef, NULL, [pathObject.path CGPath]);
     
     CGRect bounds = CGPathGetBoundingBox(mutalblePathRef);
     bounds = CGRectMake(bounds.origin.x - 10,
@@ -215,9 +209,7 @@ int const DefaultLineWidth = 4;
 #pragma mark - Clear Canvas View
 
 - (void)clear {
-    [self.pathArray removeAllObjects];
-    [self.pathColorArray removeAllObjects];
-    [self.pathWidthArray removeAllObjects];
+    [self.pathObjects removeAllObjects];
     [path removeAllPoints];
     [self setNeedsDisplay];
 }
