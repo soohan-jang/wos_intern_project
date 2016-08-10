@@ -1,19 +1,17 @@
 //
-//  PhotoDrawObjectDisplayView.m
+//  PhotoDecorateDataDisplayView.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 1..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoDrawObjectDisplayView.h"
+#import "PhotoDecorateDataDisplayView.h"
+#import "PhotoDecorateData.h"
 
-#import "UIView+StringTag.h"
-#import "WMPhotoDecorateObject.h"
+@interface PhotoDecorateDataDisplayView ()
 
-@interface PhotoDrawObjectDisplayView ()
-
-@property (nonatomic, copy) NSString *selectedDrawingObjectId;
+@property (nonatomic, assign) NSInteger selectedDecoViewIndex;
 
 @property (nonatomic, strong) UIButton *resizeButton;
 @property (nonatomic, strong) UIButton *rotateButton;
@@ -22,14 +20,15 @@
 
 @end
 
-@implementation PhotoDrawObjectDisplayView
+@implementation PhotoDecorateDataDisplayView
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     
     if (self) {
+        self.selectedDecoViewIndex = -1;
         self.backgroundColor = [UIColor clearColor];
-        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deselectDrawObject)]];
+        [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deselectDecoView)]];
         [self setupSubMenuButtons];
     }
     
@@ -42,31 +41,35 @@ NSInteger const SubMenuHeight          = 30;
 - (void)setupSubMenuButtons {
     self.resizeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SubMenuWidth, SubMenuHeight)];
     [self.resizeButton setImage:[UIImage imageNamed:@"SubMenuResize"] forState:UIControlStateNormal];
+//    [self.resizeButton setHidden:YES];
     [self.resizeButton setUserInteractionEnabled:YES];
-    [self.resizeButton addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pannedResizeButton:)]];
-    [self.resizeButton setHidden:YES];
+    [self.resizeButton addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                    action:@selector(pannedResizeButton:)]];
     
     self.deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SubMenuWidth, SubMenuHeight)];
     [self.deleteButton setImage:[UIImage imageNamed:@"SubMenuDelete"] forState:UIControlStateNormal];
+//    [self.deleteButton setHidden:YES];
     [self.deleteButton setUserInteractionEnabled:YES];
-    [self.deleteButton addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedDeleteButton:)]];
-    [self.deleteButton setHidden:YES];
+    [self.deleteButton addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                    action:@selector(tappedDeleteButton:)]];
     
-    [self addSubview:self.resizeButton];
-    [self addSubview:self.deleteButton];
+//    [self addSubview:self.resizeButton];
+//    [self addSubview:self.deleteButton];
 }
 
 - (void)addDecoView:(UIView *)decoView {
     if (!decoView)
         return;
     
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedDrawObjectView:)];
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(tappedDrawObjectView:)];
     [tapGestureRecognizer setNumberOfTouchesRequired:1];
-    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pannedDrawObjectView:)];
-    [decoView setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
+    
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(pannedDrawObjectView:)];
     
     [decoView setUserInteractionEnabled:YES];
-    
+    [decoView setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
     [self addSubview:decoView];
 }
 
@@ -81,39 +84,28 @@ NSInteger const SubMenuHeight          = 30;
     }
 }
 
-- (void)updateDecoViewWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY {
-    if (![self hasSubViews])
+- (void)updateDecoViewAtIndex:(NSInteger)index point:(CGPoint)point {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
-    
-    view.frame = CGRectMake(originX, originY, view.frame.size.width, view.frame.size.height);
+    UIView *view = self.subviews[index];
+    view.frame = CGRectMake(point.x, point.y, view.frame.size.width, view.frame.size.height);
 }
 
-- (void)updateDecoViewWithId:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height {
-    if (![self hasSubViews])
+- (void)updateDecoViewAtIndex:(NSInteger)index rect:(CGRect)rect {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
-    
-    view.frame = CGRectMake(originX, originY, width, height);
+    UIView *view = self.subviews[index];
+    view.frame = rect;
     [self drawDecoViewEditPreventImage:view];
 }
 
-- (void)updateDecoViewWithId:(NSString *)identifier angle:(CGFloat)angle {
-    if (![self hasSubViews])
+- (void)updateDecoViewAtIndex:(NSInteger)index angle:(CGFloat)angle {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
+//    UIView *view = self.subviews[index];
     
     //View에 대한 Angle 설정. Transform 먹여야 할 듯?
 }
@@ -122,26 +114,19 @@ NSInteger const SubMenuHeight          = 30;
  @berif
  파라메터로 받은 View를 최상위로 올린다. 이 메소드를 호출하기 전, 반드시 Controller에 저장된 View Model의 Z-order를 변경해주어야 한다.
  */
-- (void)updateDecoViewZOrderWithId:(NSString *)identifier {
-    if (![self hasSubViews])
+- (void)updateDecoViewZOrderAtIndex:(NSInteger)index {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
-    
+    UIView *view = self.subviews[index];
     [self bringSubviewToFront:view];
 }
 
-- (void)deleteDecoViewWithId:(NSString *)identifier {
-    if (![self hasSubViews])
+- (void)deleteDecoViewAtIndex:(NSInteger)index {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
+    UIView *view = self.subviews[index];
     
     [self removeRecognizerOfView:view];
     [view removeFromSuperview];
@@ -157,14 +142,11 @@ NSInteger const SubMenuHeight          = 30;
     }
 }
 
-- (void)setEnableWithId:(NSString *)identifier enable:(BOOL)enable {
-    if (![self hasSubViews])
+- (void)setDecoViewEditableAtIndex:(NSInteger)index enable:(BOOL)enable {
+    if (![self hasSubViews] || [self isOutBoundIndex:index])
         return;
     
-    UIView *view = [self getViewWithId:identifier];
-    
-    if (!view)
-        return;
+    UIView *view = self.subviews[index];
     
     if (enable) {
         [self removeDecoViewEditPreventImage:view];
@@ -173,15 +155,14 @@ NSInteger const SubMenuHeight          = 30;
     }
 }
 
-- (void)deselectDrawObject {
+- (void)deselectDecoView {
     if (![self hasSubViews])
         return;
     
-    if (!self.selectedDrawingObjectId)
+    if (self.selectedDecoViewIndex == -1)
         return;
     
-    [self.delegate decoViewDidDeselected:self.selectedDrawingObjectId];
-    [self changeSelectedDrawObjectView:nil];
+    [self changeSelectedDecoViewIndex:-1];
 }
 
 /**
@@ -190,41 +171,28 @@ NSInteger const SubMenuHeight          = 30;
  이전에 선택되었던 뷰의 바운더리와 서브메뉴를 제거하고, 현재 선택된 객체에 바운더리와 서브메뉴를 그린다.
  changedView가 nil이면 선택해제만 된 것으로 간주한다.
  */
-- (void)changeSelectedDrawObjectView:(UIView *)changedView {
+- (void)changeSelectedDecoViewIndex:(NSInteger)changedIndex {
     //만약 이전에 선택된 뷰와 현재 선택된 뷰가 같다면, 종료한다.
-    if ([self.selectedDrawingObjectId isEqual:changedView.stringTag])
+    if (self.selectedDecoViewIndex == changedIndex)
         return;
     
     //이전에 선택된 뷰가 있었다면,
-    if (self.selectedDrawingObjectId) {
+    if (self.selectedDecoViewIndex != -1) {
         [self removeDecoViewBoundary];
         [self removeSubMenu];
-        [self.delegate decoViewDidDeselected:self.selectedDrawingObjectId];
+        [self.delegate decoViewDidDeselected:self.selectedDecoViewIndex];
     }
     
     //현재 선택된 뷰가 있다면,
-    if (changedView) {
-        self.selectedDrawingObjectId = changedView.stringTag;
+    if (changedIndex != -1) {
+        self.selectedDecoViewIndex = changedIndex;
         
         [self drawDecoViewBoundary];
         [self drawSubMenus];
-        [self.delegate decoViewDidSelected:changedView.stringTag];
+        [self.delegate decoViewDidSelected:self.selectedDecoViewIndex];
     } else {
-        self.selectedDrawingObjectId = nil;
+        self.selectedDecoViewIndex = -1;
     }
-}
-
-- (UIView *)getViewWithId:(NSString *)identifier {
-    if (![self hasSubViews])
-        return nil;
-    
-    for (UIView *view in self.subviews) {
-        if ([view.stringTag isEqualToString:identifier]) {
-            return view;
-        }
-    }
-    
-    return nil;
 }
          
 - (void)removeRecognizerOfView:(UIView *)view {
@@ -249,6 +217,20 @@ NSInteger const SubMenuHeight          = 30;
     return YES;
 }
 
+- (BOOL)isOutBoundIndex:(NSInteger)index {
+    if (self.subviews.count > index)
+        return NO;
+    
+    return YES;
+}
+
+- (NSInteger)getDecoViewIndex:(UIView *)decoView {
+    if (![self hasSubViews])
+        return -1;
+    
+    return [self.subviews indexOfObject:decoView];
+}
+
 
 #pragma mark - EventHandler Methods
 
@@ -256,7 +238,7 @@ NSInteger const SubMenuHeight          = 30;
  그려진 객체에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 경계를 그리고, 수정에 필요한 버튼(크기조절, 회전, 삭제, Z-order 변경)을 표시한다.
  */
 - (void)tappedDrawObjectView:(UITapGestureRecognizer *)recognizer {
-    [self changeSelectedDrawObjectView:recognizer.view];
+    [self changeSelectedDecoViewIndex:[self getDecoViewIndex:recognizer.view]];
 }
 
 /**
@@ -265,8 +247,9 @@ NSInteger const SubMenuHeight          = 30;
  */
 - (void)pannedDrawObjectView:(UIPanGestureRecognizer *)recognizer {
     UIView *view = recognizer.view;
+    NSInteger index = [self getDecoViewIndex:recognizer.view];
     
-    [self changeSelectedDrawObjectView:view];
+    [self changeSelectedDecoViewIndex:index];
     
     //이동거리 제한을 둬야함.
     CGFloat x1 = self.bounds.origin.x;
@@ -282,7 +265,7 @@ NSInteger const SubMenuHeight          = 30;
     view.center = point;
     [self drawSubMenus];
     
-    [self.delegate decoViewDidMovedWithId:view.stringTag originX:view.frame.origin.x originY:view.frame.origin.y];
+    [self.delegate decoViewDidMovedAtIndex:index movedPoint:view.frame.origin];
 }
 
 /**
@@ -290,7 +273,7 @@ NSInteger const SubMenuHeight          = 30;
  객체의 크기는 높이와 너비의 비율을 유지하며 조절된다.
  */
 - (void)pannedResizeButton:(UIPanGestureRecognizer *)recognizer {
-    UIView *view = [self getViewWithId:self.selectedDrawingObjectId];
+    UIView *view = self.subviews[self.selectedDecoViewIndex];
     CGPoint point = [recognizer locationInView:self];
     
     CGRect frame = view.frame;
@@ -314,7 +297,7 @@ NSInteger const SubMenuHeight          = 30;
     [self drawDecoViewBoundary];
     [self drawSubMenus];
     
-    [self.delegate decoViewDidResizedWithId:self.selectedDrawingObjectId originX:frame.origin.x originY:frame.origin.y resizedWidth:width resizedHeight:height];
+    [self.delegate decoViewDidResizedAtIndex:self.selectedDecoViewIndex resizedRect:view.frame];
 }
 
 /**
@@ -335,9 +318,9 @@ NSInteger const SubMenuHeight          = 30;
  그려진 객체에 표시된 삭제 버튼에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 해당되는 객체의 GestrueRecognizer를 제거하고, DisplayView에서 제거한다.
  */
 - (void)tappedDeleteButton:(UITapGestureRecognizer *)recognizer {
-    [self deleteDecoViewWithId:self.selectedDrawingObjectId];
-    [self.delegate decoViewDidDeletedWithId:self.selectedDrawingObjectId];
-    [self changeSelectedDrawObjectView:nil];
+    [self deleteDecoViewAtIndex:self.selectedDecoViewIndex];
+    [self.delegate decoViewDidDeletedAtIndex:self.selectedDecoViewIndex];
+    [self changeSelectedDecoViewIndex:-1];
 }
 
 
@@ -349,7 +332,7 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
  View의 경계에 점선을 그려 경계를 표시한다.
  */
 - (void)drawDecoViewBoundary {
-    if (!self.selectedDrawingObjectId)
+    if (self.selectedDecoViewIndex == -1)
         return;
     
     CGFloat defaultMargin = 2.0f;
@@ -357,7 +340,7 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
     
     CAShapeLayer *shapeLayer = [CAShapeLayer layer];
     
-    UIView *view = [self getViewWithId:self.selectedDrawingObjectId];
+    UIView *view = self.subviews[self.selectedDecoViewIndex];
     CGRect frame = view.frame;
     CGRect shapeRect = CGRectMake(frame.origin.x,
                                   frame.origin.y,
@@ -389,15 +372,14 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
  View의 경계에 그려진 점선을 제거하고, 선택해제된 View의 identifier를 반환한다.
  */
 - (void)removeDecoViewBoundary {
-    if (!self.selectedDrawingObjectId)
+    if (self.selectedDecoViewIndex == -1)
         return;
     
-    UIView *view = [self getViewWithId:self.selectedDrawingObjectId];
+    UIView *view = self.subviews[self.selectedDecoViewIndex];
     
     for (CALayer *layer in [view.layer.sublayers copy]) {
         if (layer.name != nil && [layer.name isEqualToString:BoundaryLayerName]) {
             [layer removeFromSuperlayer];
-            break;
         }
     }
 }
@@ -406,19 +388,22 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
 #pragma mark - Draw & Remove SubMenu Buttons
 
 - (void)drawSubMenus {
-    if (!self.selectedDrawingObjectId)
+    if (self.selectedDecoViewIndex == -1)
         return;
     
-    CGRect frame = [self getViewWithId:self.selectedDrawingObjectId].frame;
+    CGRect frame = self.subviews[self.selectedDecoViewIndex].frame;
     
     [self.resizeButton setCenter:CGPointMake(frame.origin.x + frame.size.width, frame.origin.y)];
     [self.deleteButton setCenter:CGPointMake(frame.origin.x + frame.size.width, frame.origin.y + frame.size.height)];
     
-    [self.resizeButton setHidden:NO];
-    [self.deleteButton setHidden:NO];
+    [self addSubview:self.resizeButton];
+    [self addSubview:self.deleteButton];
     
-    [self bringSubviewToFront:self.resizeButton];
-    [self bringSubviewToFront:self.deleteButton];
+//    [self.resizeButton setHidden:NO];
+//    [self.deleteButton setHidden:NO];
+//    
+//    [self bringSubviewToFront:self.resizeButton];
+//    [self bringSubviewToFront:self.deleteButton];
 }
 
 /**
@@ -426,11 +411,13 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
  현재 선택된 DrawObjectView 위에 그려진 크기변경, 회전, Z-order 변경, 삭제 버튼을 제거하고 EventHandle Methods를 제거한다.
  */
 - (void)removeSubMenu {
-    if (!self.selectedDrawingObjectId)
+    if (self.selectedDecoViewIndex == -1)
         return;
     
-    [self.resizeButton setHidden:YES];
-    [self.deleteButton setHidden:YES];
+    [self.resizeButton removeFromSuperview];
+    [self.deleteButton removeFromSuperview];
+//    [self.resizeButton setHidden:YES];
+//    [self.deleteButton setHidden:YES];
 }
 
 
@@ -446,12 +433,10 @@ NSInteger const PreventImageHeight  = 40;
 - (UIView *)generateEditPreventImageView:(CGRect)frame {
     UIView *preventView = [[UIView alloc] initWithFrame:frame];
     [preventView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]];
-    [preventView setUserInteractionEnabled:YES];
     [preventView setTag:PreventViewTag];
     
     UIImageView *preventImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Editing"]];
     [preventImageView setContentMode:UIViewContentModeScaleAspectFit];
-    [preventImageView setUserInteractionEnabled:YES];
     
     preventImageView.frame = CGRectMake(0, 0, PreventImageWidth, PreventImageHeight);
     preventImageView.center = preventView.center;
@@ -474,7 +459,9 @@ NSInteger const PreventImageHeight  = 40;
     UIView *preventView = [view viewWithTag:PreventViewTag];
     
     if (!preventView) {
-        [view addSubview:[self generateEditPreventImageView:view.bounds]];
+        preventView = [self generateEditPreventImageView:view.bounds];
+        [view addSubview:preventView];
+        [view setUserInteractionEnabled:NO];
     } else {
         preventView.frame = view.bounds;
         //이 부분은 차후 AutoLayout으로 변경되면 삭제될 부분이다.
@@ -487,12 +474,14 @@ NSInteger const PreventImageHeight  = 40;
     if (!view)
         return;
     
-    UIImageView *preventImageView = [view viewWithTag:PreventViewTag];
+    UIView *preventView = [view viewWithTag:PreventViewTag];
     
-    if (preventImageView) {
-        [preventImageView removeFromSuperview];
-        preventImageView = nil;
+    if (preventView) {
+        [preventView removeFromSuperview];
+        preventView = nil;
     }
+    
+    [view setUserInteractionEnabled:YES];
 }
 
 @end

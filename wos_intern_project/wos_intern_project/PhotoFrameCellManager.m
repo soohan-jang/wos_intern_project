@@ -37,7 +37,7 @@ NSInteger const DefaultMargin = 5;
     return self;
 }
 
-- (CGSize)getCellSizeWithIndex:(NSInteger)cellIndex withCollectionViewSize:(CGSize)collectionViewSize {
+- (CGSize)getCellSizeAtIndexPath:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize {
     CGFloat containerWidth = collectionViewSize.width;
     CGFloat containerHeight = collectionViewSize.height;
     CGFloat cellWidth;
@@ -53,48 +53,62 @@ NSInteger const DefaultMargin = 5;
     /** 너비 0.5. 높이 0.5
      return CGSizeMake((containerWidth - DEFAULT_MARGIN) / 2.0f, (containerHeight - (DEFAULT_MARGIN / 2.0f * 3.0f)) / 2.0f);
      **/
-    if (self.photoFrameNumber == 0) {
-        return CGSizeMake(containerWidth - DefaultMargin, containerHeight - DefaultMargin);
-    } else if (self.photoFrameNumber == 1) {
-        return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, containerHeight - DefaultMargin);
-    } else if (self.photoFrameNumber == 2) {
-        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-    } else if (self.photoFrameNumber == 3) {
-        return CGSizeMake((containerWidth - DefaultMargin) / 3.0f, containerHeight - DefaultMargin);
-    } else if (self.photoFrameNumber == 4) {
-        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 3.0f);
-    } else if (self.photoFrameNumber == 5) {
-        return CGSizeMake((containerWidth - DefaultMargin) / 4.0f, containerHeight - DefaultMargin);
-    } else if (self.photoFrameNumber == 6) {
-        return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 4.0f);
-    } else if (self.photoFrameNumber == 7) {
-        return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-    } else if (self.photoFrameNumber == 8) {
-        if (cellIndex == 0) {
+    switch (self.photoFrameNumber) {
+        case 0:
+            return CGSizeMake(containerWidth - DefaultMargin, containerHeight - DefaultMargin);
+            break;
+        case 1:
+            return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, containerHeight - DefaultMargin);
+            break;
+        case 2:
             return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        } else {
+            break;
+        case 3:
+            return CGSizeMake((containerWidth - DefaultMargin) / 3.0f, containerHeight - DefaultMargin);
+            break;
+        case 4:
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 3.0f);
+            break;
+        case 5:
+            return CGSizeMake((containerWidth - DefaultMargin) / 4.0f, containerHeight - DefaultMargin);
+            break;
+        case 6:
+            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 4.0f);
+            break;
+        case 7:
             return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        }
-    } else if (self.photoFrameNumber == 9) {
-        if (cellIndex == 2) {
-            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        } else {
-            return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        }
-    } else if (self.photoFrameNumber == 10) {
-        if (cellIndex == 0) {
-            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        } else {
-            return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        }
-    } else if (self.photoFrameNumber == 11) {
-        if (cellIndex == 3) {
-            return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        } else {
-            return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
-        }
-    } else {
-        cellWidth = cellHeight = 0;
+            break;
+        case 8:
+            if (indexPath.item == 0) {
+                return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            } else {
+                return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            }
+            break;
+        case 9:
+            if (indexPath.item == 2) {
+                return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            } else {
+                return CGSizeMake((containerWidth - DefaultMargin) / 2.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            }
+            break;
+        case 10:
+            if (indexPath.item == 0) {
+                return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            } else {
+                return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            }
+            break;
+        case 11:
+            if (indexPath.item == 3) {
+                return CGSizeMake(containerWidth - DefaultMargin, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            } else {
+                return CGSizeMake((containerWidth - DefaultMargin * 1.01f) / 3.0f, (containerHeight - (DefaultMargin / 2.0f * 3.0f)) / 2.0f);
+            }
+            break;
+        default:
+            cellWidth = cellHeight = 0;
+            break;
     }
     
     return CGSizeMake(cellWidth, cellHeight);
@@ -127,46 +141,46 @@ NSInteger const DefaultMargin = 5;
     }
 }
 
-- (void)setCellStateAtIndex:(NSInteger)index withState:(NSInteger)state {
+- (void)setCellStateAtIndexPath:(NSIndexPath *)indexPath state:(NSInteger)state {
     if (self.cellStates == nil) {
-        self.cellStates = [@{@(index): @(state)} mutableCopy];
+        self.cellStates = [@{indexPath: @(state)} mutableCopy];
     } else {
-        self.cellStates[@(index)] = @(state);
+        self.cellStates[indexPath] = @(state);
     }
 }
 
-- (void)setCellFullscreenImageAtIndex:(NSInteger)index withFullscreenImage:(UIImage *)fullscreenImage {
+- (void)setCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath fullscreenImage:(UIImage *)fullscreenImage {
     if (self.cellFullscreenImages == nil) {
-        self.cellFullscreenImages = [@{@(index): fullscreenImage} mutableCopy];
+        self.cellFullscreenImages = [@{indexPath: fullscreenImage} mutableCopy];
     } else {
-        self.cellFullscreenImages[@(index)] = fullscreenImage;
+        self.cellFullscreenImages[indexPath] = fullscreenImage;
     }
 }
 
-- (void)setCellCroppedImageAtIndex:(NSInteger)index withCroppedImage:(UIImage *)croppedImage {
+- (void)setCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath croppedImage:(UIImage *)croppedImage {
     if (self.cellCroppedImages == nil) {
-        self.cellCroppedImages = [@{@(index): croppedImage} mutableCopy];
+        self.cellCroppedImages = [@{indexPath: croppedImage} mutableCopy];
     } else {
-        self.cellCroppedImages[@(index)] = croppedImage;
+        self.cellCroppedImages[indexPath] = croppedImage;
     }
 }
 
-- (NSInteger)getCellStateAtIndex:(NSInteger)index {
-    return [self.cellStates[@(index)] integerValue];
+- (NSInteger)getCellStateAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.cellStates[indexPath] integerValue];
 }
 
-- (UIImage *)getCellFullscreenImageAtIndex:(NSInteger)index {
-    return self.cellFullscreenImages[@(index)];
+- (UIImage *)getCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath {
+    return self.cellFullscreenImages[indexPath];
 }
 
-- (UIImage *)getCellCroppedImageAtIndex:(NSInteger)index {
-    return self.cellCroppedImages[@(index)];
+- (UIImage *)getCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath {
+    return self.cellCroppedImages[indexPath];
 }
 
-- (void)clearCellDataAtIndex:(NSInteger)index {
-    self.cellStates[@(index)] = nil;
-    self.cellFullscreenImages[@(index)] = nil;
-    self.cellCroppedImages[@(index)] = nil;
+- (void)clearCellDataAtIndexPath:(NSIndexPath *)indexPath {
+    self.cellStates[indexPath] = nil;
+    self.cellFullscreenImages[indexPath] = nil;
+    self.cellCroppedImages[indexPath] = nil;
 }
 
 @end

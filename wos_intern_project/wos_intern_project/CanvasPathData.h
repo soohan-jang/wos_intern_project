@@ -1,5 +1,5 @@
 //
-//  CanvasPathObject.h
+//  CanvasPathData.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 8..
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CanvasPathObject : NSObject
+@interface CanvasPathData : NSObject
 
 @property (nonatomic, strong) UIBezierPath *path;
 @property (nonatomic, strong) UIColor *color;

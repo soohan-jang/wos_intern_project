@@ -7,9 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
 #import "ConnectionManager.h"
-#import "MessageSyncManager.h"
 #import "ImageUtility.h"
 
 @interface AppDelegate ()
@@ -54,10 +52,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionConnectDelegate = nil;
     connectionManager.photoEditorDelegate = nil;
+    connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
     [connectionManager clear];
-    
-    [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
     
     //사용된 임시 파일을 정리한다.
     [ImageUtility removeAllTemporaryImages];
@@ -68,10 +65,9 @@ void uncaughtExceptionHandler(NSException *exception) {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionConnectDelegate = nil;
     connectionManager.photoEditorDelegate = nil;
+    connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
     [connectionManager clear];
-    
-    [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
     
     //사용된 임시 파일을 정리한다.
     [ImageUtility removeAllTemporaryImages];

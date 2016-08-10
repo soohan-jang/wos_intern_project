@@ -1,34 +1,19 @@
 //
-//  WMPhotoDecorateTextObject.m
+//  PhotoDecorateTextData.m
 //  wos_intern_project
 //
 //  Created by 장수한 on 2016. 7. 16..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "WMPhotoDecorateTextObject.h"
+#import "PhotoDecorateTextData.h"
 
-@interface WMPhotoDecorateTextObject ()
-
-@end
-
-@implementation WMPhotoDecorateTextObject
+@implementation PhotoDecorateTextData
 
 - (instancetype)initWithText:(NSString *)text {
     self = [super init];
     
     if (self) {
-        self.data = text;
-    }
-    
-    return self;
-}
-
-- (instancetype)initWithText:(NSString *)text identifier:(NSString *)identifier {
-    self = [super init];
-    
-    if (self) {
-        self.id_hashed_timestamp = [self createObjectId:identifier];
         self.data = text;
     }
     

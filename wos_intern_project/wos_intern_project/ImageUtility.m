@@ -20,20 +20,23 @@
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
         if (asset == nil) {
             [assetslibrary enumerateGroupsWithTypes:ALAssetsGroupPhotoStream
-                                   usingBlock:^(ALAssetsGroup *group, BOOL *stop)
-             {
-                 [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-                     if ([result.defaultRepresentation.url isEqual:url]) {
-                         resultBlock([UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage]);
-                         *stop = YES;
-                     }
-                 }];
-             }
-            failureBlock:^(NSError *error)
-             {
-                 NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
-                 resultBlock(nil);
-             }];
+                                   usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                       if (!group)
+                                           return;
+                                       
+                                       [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+                                           if (result && [result.defaultRepresentation.url isEqual:url]) {
+                                               resultBlock([UIImage imageWithCGImage:result.defaultRepresentation.fullScreenImage]);
+                                               *stop = YES;
+                                           }
+                                       }];
+                                   }
+                                 failureBlock:^(NSError *error) {
+                                     if (error)
+                                         NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
+                                     
+                                     resultBlock(nil);
+                                 }];
         } else {
             ALAssetRepresentation *representation = [asset defaultRepresentation];
             CGImageRef imageRef = representation.fullScreenImage;
@@ -51,7 +54,9 @@
             }
         }
     } failureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
+        if (error)
+            NSLog(@"%@", [error localizedDescription]);
+        
         resultBlock(nil);
     }];
 }

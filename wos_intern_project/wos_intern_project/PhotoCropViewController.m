@@ -51,17 +51,20 @@
     } else {
         self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_loadding"];
         
-        [ImageUtility getFullscreenUIImageAthURL:self.imageUrl resultBlock:^(UIImage *image) {
-            if (image == nil) {
-                //error
-            } else {
-                self.fullscreenImage = image;
-                [self.cropView setImage:image];
-                self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
-            }
-            
-            [ProgressHelper dismissProgress:self.progressView];
-        }];
+        __weak typeof(self) weakSelf = self;
+        [ImageUtility getFullscreenUIImageAthURL:self.imageUrl
+                                     resultBlock:^(UIImage *image) {
+                                         __strong typeof(weakSelf) self = weakSelf;
+                                         if (image == nil) {
+                                             //error
+                                         } else {
+                                             self.fullscreenImage = image;
+                                             [self.cropView setImage:image];
+                                             self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
+                                         }
+                                         
+                                         [ProgressHelper dismissProgress:self.progressView];
+                                     }];
     }
 }
 
@@ -80,7 +83,10 @@
         self.croppedImage = [self.cropView croppedImage];
         
         if (self.fullscreenImage != nil && self.croppedImage != nil) {
-            [self.delegate cropViewControllerDidFinished:self withFullscreenImage:self.fullscreenImage withCroppedImage:self.croppedImage];
+            [self.delegate cropViewControllerDidFinished:self
+                                     withFullscreenImage:self.fullscreenImage
+                                        withCroppedImage:self.croppedImage];
+            
             [self.navigationController popViewControllerAnimated:YES];
         }
     }

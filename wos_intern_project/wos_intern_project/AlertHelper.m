@@ -10,31 +10,41 @@
 
 @implementation AlertHelper
 
-+ (UIAlertController *)createAlertControllerWithTitle:(NSString *)title message:(NSString *)message {
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                      title:(NSString * __nullable)title
+                                    message:(NSString * __nullable)message
+                                firstButton:(UIAlertAction * __nullable)firstButton
+                               secondButton:(UIAlertAction * __nullable)secondButton {
+    
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
                                                                              message:message
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    return alertController;
-}
-
-+ (UIAlertController *)createAlertControllerWithTitleKey:(NSString *)titleKey messageKey:(NSString *)messageKey {
-    return [AlertHelper createAlertControllerWithTitle:NSLocalizedString(titleKey, nil) message:NSLocalizedString(messageKey, nil)];
-}
-
-+ (void)addButtonOnAlertController:(UIAlertController *)alertController titleKey:(NSString *)titleKey handler:(void (^)(UIAlertAction *action))handler {
-    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString(titleKey, nil)
-                                                     style:UIAlertActionStyleDefault
-                                                   handler:handler];
     
-    [alertController addAction:action];
-}
-
-+ (void)showAlertControllerOnViewController:(UIViewController *)viewController alertController:(UIAlertController *)alertController {
+    
+    if (firstButton)
+        [alertController addAction:firstButton];
+    
+    if (secondButton)
+        [alertController addAction:secondButton];
+    
     [viewController presentViewController:alertController animated:YES completion:nil];
 }
 
-+ (void)dismissAlertController:(UIAlertController *)alertController {
-    [alertController dismissViewControllerAnimated:YES completion:nil];
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                      titleKey:(NSString * __nullable)titleKey
+                    messageKey:(NSString * __nullable)messageKey
+                firstButton:(UIAlertAction * __nullable)firstButton
+               secondButton:(UIAlertAction * __nullable)secondButton {
+    
+    [self showAlertControllerOnViewController:viewController
+                                        title:NSLocalizedString(titleKey, nil)
+                                      message:NSLocalizedString(messageKey, nil)
+                                  firstButton:firstButton
+                                 secondButton:secondButton];
+}
+
++ (UIAlertAction * _Nonnull)createActionWithTitleKey:(NSString * _Nonnull)titleKey handler:(void (^ __nullable)(UIAlertAction  * _Nonnull action))handler {
+    return [UIAlertAction actionWithTitle:NSLocalizedString(titleKey, nil) style:UIAlertActionStyleDefault handler:handler];
 }
 
 @end

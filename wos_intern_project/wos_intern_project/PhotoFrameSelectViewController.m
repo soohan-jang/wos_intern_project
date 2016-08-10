@@ -9,16 +9,15 @@
 #import "PhotoFrameSelectViewController.h"
 
 #import "CommonConstants.h"
-#import "ConnectionManagerConstants.h"
-
 #import "ConnectionManager.h"
-#import "MessageSyncManager.h"
 
 #import "PhotoFrameSelectViewCell.h"
 #import "PhotoEditorViewController.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
+#import "DispatchAsyncHelper.h"
+#import "MessageFactory.h"
 
 @interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoFrameSelectDelegate>
 
@@ -82,15 +81,15 @@
 
 - (void)startMessageSynchronize {
     //동기화 큐를 사용하지 않음으로 변경하고, 동기화 작업을 수행한다.
-    MessageSyncManager *messageSyncManager = [MessageSyncManager sharedInstance];
-    [messageSyncManager setMessageQueueEnabled:NO];
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    [connectionManager setMessageQueueEnabled:NO];
     
     //메시지 큐에 메시지가 있다면, 동기화 작업을 수행한다.
-    if ([messageSyncManager isMessageQueueEmpty])
+    if ([connectionManager isMessageQueueEmpty])
         return;
     
     //지금 단계에서는 메시지큐에 메시지가 하나만 존재한다.
-    NSDictionary *message = [messageSyncManager getMessage];
+    NSDictionary *message = [connectionManager getMessage];
     [self changeCurrentSelectedFrameCellAtIndexPath:message[kPhotoFrameSelected]];
 }
 
@@ -110,42 +109,52 @@
 #pragma mark - EventHandle Methods
 
 - (IBAction)backButtonTapped:(id)sender {
-    UIAlertController *askDisconnectAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnect_ask"
-                                                                                messageKey:@"alert_content_session_disconnect_ask"];
-    
-    [AlertHelper addButtonOnAlertController:askDisconnectAlert titleKey:@"alert_button_text_no" handler:^(UIAlertAction * _Nonnull action) {
-        [AlertHelper dismissAlertController:askDisconnectAlert];
-    }];
-    
     __weak typeof(self) weakSelf = self;
-    [AlertHelper addButtonOnAlertController:askDisconnectAlert titleKey:@"alert_button_text_yes" handler:^(UIAlertAction * _Nonnull action) {
-        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-        connectionManager.sessionConnectDelegate = nil;
-        connectionManager.photoFrameSelectDelegate = nil;
-        [connectionManager disconnectSession];
-        
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-        
-        [weakSelf loadMainViewController];
-    }];
-    
-    [AlertHelper showAlertControllerOnViewController:weakSelf alertController:askDisconnectAlert];
+    UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
+    UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
+                                                                   handler:^(UIAlertAction * _Nonnull action) {
+                                                                       __strong typeof(weakSelf) self = weakSelf;
+                                                                       //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+                                                                       ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+                                                                       connectionManager.sessionConnectDelegate = nil;
+                                                                       connectionManager.photoFrameSelectDelegate = nil;
+                                                                       [connectionManager disconnectSession];
+                                                                       
+                                                                       [self loadMainViewController];
+                                                                   }];
+                                             
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_session_disconnect_ask"
+                                          messageKey:@"alert_content_session_disconnect_ask"
+                                         firstButton:noActionButton
+                                        secondButton:yesActionButton];
 }
 
 - (IBAction)doneButtonTapped:(id)sender {
     self.doneButton.enabled = NO;
     
-    NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirm)};
-    [[ConnectionManager sharedInstance] sendData:sendData];
+    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameRequestConfirm:self.ownSelectedFrameIndex];
+    [[ConnectionManager sharedInstance] sendMessage:message];
+    
+    if (!self.progressView.isHidden)
+        [ProgressHelper dismissProgress:self.progressView];
+    
+    if (self.progressView)
+        self.progressView = nil;
     
     self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_confirming"];
-}
-
-- (void)sendSelectFrameChanged {
-    NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameSelected),
-                               kPhotoFrameSelected: self.ownSelectedFrameIndex};
-    [[ConnectionManager sharedInstance] sendData:sendData];
+    
+    if (self.ownSelectedFrameIndex.item != self.connectedPeerSelectedFrameIndex.item) {
+        PhotoFrameSelectViewCell *selectedCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.ownSelectedFrameIndex];
+        PhotoFrameSelectViewCell *confirmCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.connectedPeerSelectedFrameIndex];
+        
+        selectedCell.isConnectedPeerSelected = YES;
+        confirmCell.isConnectedPeerSelected = NO;
+        
+        self.connectedPeerSelectedFrameIndex = self.ownSelectedFrameIndex;
+        [self updateFrameCells:selectedCell currentCell:confirmCell];
+        self.doneButton.enabled = NO;
+    }
 }
 
 - (void)updateFrameCells:(PhotoFrameSelectViewCell *)prevCell currentCell:(PhotoFrameSelectViewCell *)currentCell {
@@ -215,17 +224,8 @@
     [prevSelectedFrameCell changeFrameImage];
     [currentSelectedFrameCell changeFrameImage];
     
-    NSDictionary *sendData;
-    
-    if (self.ownSelectedFrameIndex == nil) {
-        sendData = @{kDataType: @(vDataTypePhotoFrameSelected),
-                     kPhotoFrameSelected: [NSNull null]};
-    } else {
-        sendData = @{kDataType: @(vDataTypePhotoFrameSelected),
-                     kPhotoFrameSelected: self.ownSelectedFrameIndex};
-    }
-    
-    [[ConnectionManager sharedInstance] sendData:sendData];
+    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameSelected:self.ownSelectedFrameIndex];
+    [[ConnectionManager sharedInstance] sendMessage:message];
     
     if (self.ownSelectedFrameIndex != nil && self.connectedPeerSelectedFrameIndex != nil && self.ownSelectedFrameIndex.item == self.connectedPeerSelectedFrameIndex.item) {
         self.doneButton.enabled = YES;
@@ -264,32 +264,37 @@
 }
 
 - (void)receivedPeerDisconnected {
-    UIAlertController *disconnectedAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_session_disconnected"
-                                                                               messageKey:@"alert_content_session_disconnected"];
     __weak typeof(self) weakSelf = self;
-    [AlertHelper addButtonOnAlertController:disconnectedAlert titleKey:@"alert_button_text_ok" handler:^(UIAlertAction * _Nonnull action) {
-        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-        connectionManager.sessionConnectDelegate = nil;
-        connectionManager.photoFrameSelectDelegate = nil;
-        [connectionManager disconnectSession];
-        
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:NO];
-        
-        [weakSelf loadMainViewController];
-    }];
+    UIAlertAction *okActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_ok"
+                                                                  handler:^(UIAlertAction * _Nonnull action) {
+                                                                      __strong typeof(weakSelf) self = weakSelf;
+                                                                      //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+                                                                      ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+                                                                      connectionManager.sessionConnectDelegate = nil;
+                                                                      connectionManager.photoFrameSelectDelegate = nil;
+                                                                      [connectionManager disconnectSession];
+                                                                      
+                                                                      [self loadMainViewController];
+                                                                  }];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [AlertHelper showAlertControllerOnViewController:weakSelf alertController:disconnectedAlert];
-    });
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self)
+            return;
+        
+        [AlertHelper showAlertControllerOnViewController:self
+                                                titleKey:@"alert_title_session_disconnected"
+                                              messageKey:@"alert_content_session_disconnected"
+                                             firstButton:okActionButton secondButton:nil];
+    }];
 }
 
 
 #pragma mark - ConnectionManager Photo Frame Select Delegate Methods
 
-- (void)receivedPhotoFrameSelected:(NSIndexPath *)selectedIndexPath {
+- (void)receivedPhotoFrameSelected:(NSIndexPath *)indexPath {
     NSIndexPath *prevSelectedFrameIndex = self.connectedPeerSelectedFrameIndex;
-    self.connectedPeerSelectedFrameIndex = selectedIndexPath;
+    self.connectedPeerSelectedFrameIndex = indexPath;
     
     PhotoFrameSelectViewCell *prevSelectedFrameCell;
     PhotoFrameSelectViewCell *currentSelectedFrameCell;
@@ -316,60 +321,117 @@
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [weakSelf updateFrameCells:prevSelectedFrameCell currentCell:currentSelectedFrameCell];
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self)
+            return;
+        
+        [self updateFrameCells:prevSelectedFrameCell currentCell:currentSelectedFrameCell];
     });
 }
 
-- (void)receivedPhotoFrameRequestConfirm {
-    UIAlertController *frameConfirmAlert = [AlertHelper createAlertControllerWithTitleKey:@"alert_title_frame_select_confirm"
-                                                                               messageKey:@"alert_content_frame_select_confirm"];
-    
-    [AlertHelper addButtonOnAlertController:frameConfirmAlert titleKey:@"alert_button_text_decline" handler:^(UIAlertAction * _Nonnull action) {
-        NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirmAck),
-                                   kPhotoFrameSelectedConfirmAck: @NO};
-        [[ConnectionManager sharedInstance] sendData:sendData];
-        
-        [AlertHelper dismissAlertController:frameConfirmAlert];
-    }];
-    
+- (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath {
     __weak typeof(self) weakSelf = self;
-    [AlertHelper addButtonOnAlertController:frameConfirmAlert titleKey:@"alert_button_text_accept" handler:^(UIAlertAction * _Nonnull action) {
-        //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-        NSDictionary *sendData = @{kDataType: @(vDataTypePhotoFrameConfirmAck),
-                                   kPhotoFrameSelectedConfirmAck: @YES};
-        [[ConnectionManager sharedInstance] sendData:sendData];
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:YES];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf loadPhotoEditorViewController];
-        });
-    }];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [AlertHelper showAlertControllerOnViewController:weakSelf alertController:frameConfirmAlert];
-    });
+    UIAlertAction *declineActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_decline"
+                                                                       handler:^(UIAlertAction * _Nonnull action) {
+                                                                           __strong typeof(weakSelf) self = weakSelf;
+                                                                           if (!self || !self.doneButton)
+                                                                               return;
+                                                                           
+                                                                           NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
+                                                                           [[ConnectionManager sharedInstance] sendMessage:message];
+                                                                           self.doneButton.enabled = YES;
+                                                                       }];
+    
+    UIAlertAction *acceptActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_accept"
+                                                                      handler:^(UIAlertAction * _Nonnull action) {
+                                                                          //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
+                                                                          ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+                                                                          NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:YES];
+                                                                          
+                                                                          [connectionManager sendMessage:message];
+                                                                          [connectionManager clearMessageQueue];
+                                                                          [connectionManager setMessageQueueEnabled:YES];
+                                                                          
+                                                                          [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+                                                                              __strong typeof(weakSelf) self = weakSelf;
+                                                                              if (!self)
+                                                                                  return;
+                                                                              
+                                                                              [self loadPhotoEditorViewController];
+                                                                          } delay:DelayTime];
+                                                                      }];
+    
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self)
+            return;
+        
+        [AlertHelper showAlertControllerOnViewController:self
+                                                titleKey:@"alert_title_frame_select_confirm"
+                                              messageKey:@"alert_content_frame_select_confirm"
+                                             firstButton:declineActionButton secondButton:acceptActionButton];
+        
+        //액자 선택 Alert이 표시된 이후에 액자 변경이 일어났는지를 확인하고, 일어났다면 복원한다.
+        if (self.ownSelectedFrameIndex != confirmIndexPath) {
+            PhotoFrameSelectViewCell *selectedCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:self.ownSelectedFrameIndex];
+            PhotoFrameSelectViewCell *confirmCell = (PhotoFrameSelectViewCell *)[self.collectionView cellForItemAtIndexPath:confirmIndexPath];
+            
+            selectedCell.isOwnSelected = NO;
+            confirmCell.isOwnSelected = YES;
+            
+            self.ownSelectedFrameIndex = confirmIndexPath;
+            [self updateFrameCells:selectedCell currentCell:confirmCell];
+            self.doneButton.enabled = NO;
+        }
+    }];
 }
 
 - (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck {
+    __weak typeof(self) weakSelf = self;
+    
     if (confirmAck) {
         //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-        [[MessageSyncManager sharedInstance] initializeMessageSyncManagerWithEnabled:YES];
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        [connectionManager clearMessageQueue];
+        [connectionManager setMessageQueueEnabled:YES];
         
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+            __strong typeof(weakSelf) self = weakSelf;
+            if (!self || !self.progressView)
+                return;
+            
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_confirmed" dismissType:DismissWithDone];
-        });
+        }];
         
-        __weak typeof(self) weakSelf = self;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(DelayTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [weakSelf loadPhotoEditorViewController];
-        });
+        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+            __strong typeof(weakSelf) self = weakSelf;
+            if (!self)
+                return;
+            
+            [self loadPhotoEditorViewController];
+        } delay:DelayTime];
     } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+            __strong typeof(weakSelf) self = weakSelf;
+            if (!self || !self.doneButton || !self.progressView)
+                return;
+            
             self.doneButton.enabled = YES;
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithCancel];
-        });
+        }];
     }
+}
 
+- (void)interruptedPhotoFrameConfirmProgress {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.progressView)
+            return;
+        
+        [ProgressHelper dismissProgress:self.progressView];
+    }];
 }
 
 @end

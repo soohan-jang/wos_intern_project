@@ -236,7 +236,7 @@
                                             <outlet property="delegate" destination="dKW-hc-NhL" id="6xO-NV-iAa"/>
                                         </connections>
                                     </collectionView>
-                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDrawObjectDisplayView">
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="PhotoDecorateDataDisplayView">
                                         <rect key="frame" x="20" y="-12" width="560" height="560"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -486,8 +486,8 @@
                     <connections>
                         <outlet property="collectionContainerView" destination="kfz-pT-T9E" id="uYn-cB-lt8"/>
                         <outlet property="collectionView" destination="7vD-hf-90M" id="vgX-qa-46y"/>
-                        <outlet property="decoObjectVisibleToggleButton" destination="uJv-y5-Fa3" id="dR0-e9-pjD"/>
-                        <outlet property="drawObjectDisplayView" destination="lUZ-73-XTC" id="VrJ-dR-mBU"/>
+                        <outlet property="decoDataVisibleToggleButton" destination="uJv-y5-Fa3" id="fUw-ck-rQa"/>
+                        <outlet property="decorateDataDisplayView" destination="lUZ-73-XTC" id="lHd-UN-e3c"/>
                         <outlet property="drawPenMenuView" destination="Zh5-Kc-cgB" id="0qR-xq-fGh"/>
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>

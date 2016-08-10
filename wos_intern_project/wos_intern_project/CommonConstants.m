@@ -8,17 +8,21 @@
 
 #import "CommonConstants.h"
 
-NSString *const PrefixImagePhotoFrame   = @"PhotoFrame";
-NSString *const PostfixImageFullscreen  = @"_fullscreen";
-NSString *const PostfixImageCropped     = @"_cropped";
-NSString *const SperatorImageName       = @"+";
+/** MCSession Service Type **/
+/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
+NSString *const ApplicationBluetoothServiceType         = @"Co-PhotoEditor";
 
-NSString *const SegueMoveToAlbum        = @"moveToPhotoAlbum";
-NSString *const SegueMoveToFrameSelect  = @"moveToPhotoFrameSelect";
-NSString *const SegueMoveToEditor       = @"moveToPhotoEditor";
-NSString *const SegueMoveToCropper      = @"moveToPhotoCrop";
+NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
+NSString *const PostfixImageFullscreen                  = @"_fullscreen";
+NSString *const PostfixImageCropped                     = @"_cropped";
+NSString *const SperatorImageName                       = @"+";
 
-NSString *const ReuseCellFrameSlt       = @"frameSelectCell";
-NSString *const ReuseCellEditor         = @"photoFrameCell";
+NSString *const SegueMoveToAlbum                        = @"moveToPhotoAlbum";
+NSString *const SegueMoveToFrameSelect                  = @"moveToPhotoFrameSelect";
+NSString *const SegueMoveToEditor                       = @"moveToPhotoEditor";
+NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
 
-NSInteger const DelayTime               = 1;
+NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
+NSString *const ReuseCellEditor                         = @"photoFrameCell";
+
+NSInteger const DelayTime                               = 1;

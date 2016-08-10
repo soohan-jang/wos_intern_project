@@ -10,8 +10,7 @@
 
 extern NSString *const NOTIFICATION_SELECTED_CELL;
 extern NSString *const KEY_SELECTED_CELL_INDEXPATH;
-extern NSString *const KEY_SELECTED_CELL_CENTER_X;
-extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
+extern NSString *const KEY_SELECTED_CELL_CENTER;
 
 @interface PhotoEditorFrameViewCell : UICollectionViewCell
 
@@ -20,6 +19,8 @@ extern NSString *const KEY_SELECTED_CELL_CENTER_Y;
 @property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
 
 @property (strong, nonatomic) NSIndexPath *indexPath;
+
+- (void)initializeCell;
 
 /**
  사진 액자에 스트로크 처리된 테두리를 표시한다.

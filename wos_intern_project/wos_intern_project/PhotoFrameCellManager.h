@@ -35,42 +35,42 @@ typedef NS_ENUM(NSInteger, CellState) {
 /**
  인덱스에 위치한 사진 액자의 크기를 반환한다.
  */
-- (CGSize)getCellSizeWithIndex:(NSInteger)cellIndex withCollectionViewSize:(CGSize)collectionViewSize;
+- (CGSize)getCellSizeAtIndexPath:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize;
 
 /**
  인덱스에 위치한 사진 액자의 상태를 변경한다. 상태값은 None, Uploading, Downloading, Editing이 있다.
  */
-- (void)setCellStateAtIndex:(NSInteger)index withState:(NSInteger)state;
+- (void)setCellStateAtIndexPath:(NSIndexPath *)indexPath state:(NSInteger)state;
 
 /**
  인덱스에 위치한 사진 액자와 Fullscreen Image를 연결한다. 실제로 View에 표시하지는 않고, 연결만 지어놓는다.
  연결된 Fullscreen Image는 사진 편집 메뉴를 탭하여 진입했을 때 표시된다.
  */
-- (void)setCellFullscreenImageAtIndex:(NSInteger)index withFullscreenImage:(UIImage *)fullscreenImage;
+- (void)setCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath fullscreenImage:(UIImage *)fullscreenImage;
 
 /**
  인덱스에 위치한 사진 액자와 Cropped Image를 연결한다. 실제로 View에 표시된다.
  */
-- (void)setCellCroppedImageAtIndex:(NSInteger)index withCroppedImage:(UIImage *)croppedImage;
+- (void)setCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath croppedImage:(UIImage *)croppedImage;
 
 /**
  인덱스에 위치한 사진 액자의 상태 정보를 가져온다. 상태값은 None, Uploading, Downloading, Editing이 있다.
  */
-- (NSInteger)getCellStateAtIndex:(NSInteger)index;
+- (NSInteger)getCellStateAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  인덱스에 해당하는 사진 액자와 연결된 Fullscreen Image를 가져온다.
  */
-- (UIImage *)getCellFullscreenImageAtIndex:(NSInteger)index;
+- (UIImage *)getCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  인덱스에 해당하는 사진 액자와 연결된 Cropped Image를 가져온다.
  */
-- (UIImage *)getCellCroppedImageAtIndex:(NSInteger)index;
+- (UIImage *)getCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath;
 
 /**
  해당 인덱스의 사진 액자 정보를 삭제한다.
  */
-- (void)clearCellDataAtIndex:(NSInteger)index;
+- (void)clearCellDataAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

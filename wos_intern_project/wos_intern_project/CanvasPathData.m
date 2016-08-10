@@ -1,14 +1,14 @@
 //
-//  CanvasPathObject.m
+//  CanvasPathData.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 8..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "CanvasPathObject.h"
+#import "CanvasPathData.h"
 
-@implementation CanvasPathObject
+@implementation CanvasPathData
 
 - (instancetype)initWithPath:(UIBezierPath *)path color:(UIColor *)color width:(NSInteger)width {
     self = [super init];

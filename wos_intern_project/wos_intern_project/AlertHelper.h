@@ -16,10 +16,19 @@ typedef NS_ENUM(NSInteger, AlertStyle) {
 
 @interface AlertHelper : NSObject
 
-+ (UIAlertController * _Nonnull)createAlertControllerWithTitle:(NSString * __nullable)title message:(NSString * __nullable)message;
-+ (UIAlertController * _Nonnull)createAlertControllerWithTitleKey:(NSString * __nullable)titleKey messageKey:(NSString * __nullable)messageKey;
-+ (void)addButtonOnAlertController:(UIAlertController * _Nonnull)alertController titleKey:(NSString  * __nullable)titleKey handler:(void (^ __nullable)(UIAlertAction * _Nonnull action))handler;
-+ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController alertController:(UIAlertController * _Nonnull)alertController;
-+ (void)dismissAlertController:(UIAlertController * _Nonnull)alertController;
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                      title:(NSString * __nullable)title
+                                    message:(NSString * __nullable)message
+                                firstButton:(UIAlertAction * __nullable)firstButton
+                               secondButton:(UIAlertAction * __nullable)secondButton;
+
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                   titleKey:(NSString * __nullable)titleKey
+                                 messageKey:(NSString * __nullable)messageKey
+                                firstButton:(UIAlertAction * __nullable)firstButton
+                               secondButton:(UIAlertAction * __nullable)secondButton;
+
++ (UIAlertAction * _Nonnull)createActionWithTitleKey:(NSString * _Nonnull)titleKey
+                                             handler:(void (^ __nullable)(UIAlertAction  * _Nonnull action))handler;
 
 @end

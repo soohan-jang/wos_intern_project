@@ -19,9 +19,11 @@
 @property (nonatomic, weak) id<ConnectionManagerPhotoFrameSelectDelegate> photoFrameSelectDelegate;
 @property (nonatomic, weak) id<ConnectionManagerPhotoEditorDelegate> photoEditorDelegate;
 
+@property (nonatomic, assign) BOOL messageQueueEnabled;
+
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
-@property (nonatomic, assign, readonly) CGFloat ownScreenWidth, ownScreenHeight;
+@property (nonatomic, assign, readonly) CGRect ownScreenSize, connectedPeerScreenSize;
 
 /**
  @breif
@@ -38,7 +40,7 @@
 /**
  ConnectionManager가 관리하는 MCSession 객체를 이용하여 메시지를 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.
  */
-- (void)sendData:(NSDictionary *)data;
+- (void)sendMessage:(NSDictionary *)message;
 
 /**
  ConnectionManager가 관리하는 MCSession 객체를 이용하여 전달받은 이미지 파일을 보낸다. 메시지의 범위는 연결된 모든 피어를 대상으로 전파된다.
@@ -54,6 +56,26 @@
  ConnectionManager의 모든 값을 삭제한다.
  */
 - (void)clear;
+
+/**
+ Message Queue에 메시지를 저장한다. 메시지는 MessageQueue의 맨 끝에 저장된다.
+ */
+- (void)putMessage:(NSDictionary *)message;
+
+/**
+ Message Queue에서 메시지를 가져온다. 맨 앞의 정보(index 0)를 가져오며, 가져온 정보는 Message Queue에서 제거한다.
+ */
+- (NSDictionary *)getMessage;
+
+/**
+ Message Queue에 저장된 메시지를 비운다.
+ */
+- (void)clearMessageQueue;
+
+/**
+ Message Queue가 비어있는지 여부를 반환한다.
+ */
+- (BOOL)isMessageQueueEmpty;
 
 @end
 
@@ -86,17 +108,19 @@
 /**
  선택된 사진 액자의 종류를 받았을 때 호출된다. 여기서의 사진 액자는 전체 사진 액자의 틀을 의미한다.
  */
-- (void)receivedPhotoFrameSelected:(NSIndexPath *)selectedIndexPath;
+- (void)receivedPhotoFrameSelected:(NSIndexPath *)indexPath;
 
 /**
- 상대방이 현재 선택한 사진 액자를 최종적으로 선택할 때, 동의를 여부를 물었을 때 호출된다.
+ 상대방이 현재 선택한 사진 액자를 최종적하기 위해 동의 여부를 물어볼 때 호출된다.
  */
-- (void)receivedPhotoFrameRequestConfirm;
+- (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath;
 
 /**
  상대방이 사진 액자를 최종적으로 선택한 것에 대한 동의 여부에 응답했을 때 호출된다.
  */
 - (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck;
+
+- (void)interruptedPhotoFrameConfirmProgress;
 
 @end
 
@@ -108,68 +132,76 @@
 /**
  상대방이 특정 사진 액자 영역을 선택했을 때 호출된다.
  */
-- (void)receivedEditorPhotoEditing:(NSInteger)targetFrameIndex;
+- (void)receivedEditorPhotoEditing:(NSIndexPath *)indexPath;
 
 /**
  상대방이 특정 사진 액자 영역을 선택 해제했을 때 호출된다.
  */
-- (void)receivedEditorPhotoEditingCancelled:(NSInteger)targetFrameIndex;
+- (void)receivedEditorPhotoEditingCancelled:(NSIndexPath *)indexPath;
+
+- (void)receivedEditorPhotoEditingInterrupt:(NSIndexPath *)indexPath;
 
 /**
  상대방이 특정 사진 액자 영역에 사진을 삽입했을 때 호출된다.
  사진이 삽입되었을 때 내부적으로 sendResourceAtURL을 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
  우선적으로 CroppedImage를 먼저 보내고, CroppedImage 전송이 종료되면 FullscreenImage를 전송한다.
  */
-- (void)receivedEditorPhotoInsert:(NSInteger)targetFrameIndex type:(NSString *)type url:(NSURL *)url;
+- (void)receivedEditorPhotoInsert:(NSIndexPath *)indexPath type:(NSString *)type url:(NSURL *)url;
 
 /**
  상대방이 사진 정보를 모두 수신한 뒤에 이 여부를 전달했을 때 호출된다.
  */
-- (void)receivedEditorPhotoInsertAck:(NSInteger)targetFrameIndex ack:(BOOL)insertAck;
+- (void)receivedEditorPhotoInsertAck:(NSIndexPath *)indexPath ack:(BOOL)insertAck;
 
 /**
  상대방이 사진 정보를 삭제했을 때 호출된다.
  */
-- (void)receivedEditorPhotoDelete:(NSInteger)targetFrameIndex;
+- (void)receivedEditorPhotoDeleted:(NSIndexPath *)indexPath;
+
+- (void)interruptedEditorPhotoEditing:(NSIndexPath *)indexPath;
 
 /**
  상대방에 특정 그림 객체를 선택했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectEditing:(NSString *)identifier;
+- (void)receivedEditorDecorateDataEditing:(NSInteger)index;
 
 /**
  상대방이 특정 그림 객체를 선택해제했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectEditCancelled:(NSString *)identifier;
+- (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index;
+
+- (void)receivedEditorDecorateDataEditingInterrupt:(NSInteger)index;
 
 /**
  상대방이 그림 객체를 삽입했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectInsert:(id)insertData timestamp:(NSNumber *)timestamp;
+- (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp;
 
 /**
  상대방이 그림 객체의 위치를 이동시켰을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectMoved:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY;
+- (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point;
 
 /**
  상대방이 그림 객체의 크기를 변경했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectResized:(NSString *)identifier originX:(CGFloat)originX originY:(CGFloat)originY width:(CGFloat)width height:(CGFloat)height;
+- (void)receivedEditorDecorateDataResized:(NSInteger)index resizedRect:(CGRect)rect;
 
 /**
  상대방이 그림 객체를 회전시켰을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectRotated:(NSString *)identifier angle:(CGFloat)angle;
+- (void)receivedEditorDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)angle;
 
 /**
  상대방이 그림 객체의 Z-order를 변경했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectZOrderChanged:(NSString *)identifier;
+- (void)receivedEditorDecorateDataZOrderChanged:(NSInteger)index;
 
 /**
  상대방이 그림 객체를 삭제했을 때 호출된다.
  */
-- (void)receivedEditorDecorateObjectDelete:(NSString *)identifier;
+- (void)receivedEditorDecorateDataDeleted:(NSInteger)index;
+
+- (void)interruptedEditorDecorateDataEditing:(NSInteger)index;
 
 @end
