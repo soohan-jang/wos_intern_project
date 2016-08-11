@@ -284,10 +284,12 @@ NSInteger const SubMenuHeight          = 30;
  객체의 이동은 객체의 Center 값을 이벤트의 좌표로 할당함으로 수행한다.
  */
 - (void)pannedDecorateView:(UIPanGestureRecognizer *)recognizer {
+    //당장 해결방법이 생각이 안나서, 우선적으로 탭을 한 뒤에 팬을 해야 이벤트를 받을 수 있도록 처리함.
+    if (self.selectedDecoViewIndex == -1)
+        return;
+    
     UIView *view = recognizer.view;
     NSInteger index = [self getDecoViewIndex:recognizer.view];
-    
-    [self changeSelectedDecoViewIndex:index];
     
     //이동거리 제한을 둬야함.
     CGFloat x1 = self.bounds.origin.x;

@@ -543,10 +543,6 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     [[ConnectionManager sharedInstance] sendMessage:message];
 }
 
-- (void)interuptedDecorateDataEdit:(NSInteger)index {
-    
-}
-
 
 #pragma mark - PhotoDrawPenMenuView Delegate Methods
 
