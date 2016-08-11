@@ -17,7 +17,7 @@
 #import "SphereMenu.h"
 #import "XXXRoundMenuButton.h"
 
-#import "PhotoFrameCellManager.h"
+#import "PhotoEditorFrameCellManager.h"
 #import "PhotoEditorFrameViewCell.h"
 #import "PhotoCropViewController.h"
 #import "PhotoDecorateDataDisplayView.h"
@@ -34,7 +34,7 @@
 
 @interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
 
-@property (nonatomic, strong) PhotoFrameCellManager *cellManager;
+@property (nonatomic, strong) PhotoEditorFrameCellManager *cellManager;
 @property (atomic, strong) DecorateDataController *decoDataController;
 
 @property (atomic, assign) NSIndexPath *selectedIndexPath;
@@ -100,15 +100,13 @@
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    if (!self.editMenuButton)
-        return;
-    
-    if (!self.editMenuButton.isOpened)
+    if (self.editMenuButton.isOpened) {
         [self.editMenuButton dismissMenuButton];
+    }
 }
 
 - (void)setPhotoFrameNumber:(NSInteger)frameNumber {
-    self.cellManager = [[PhotoFrameCellManager alloc] initWithFrameNumber:frameNumber];
+    self.cellManager = [[PhotoEditorFrameCellManager alloc] initWithFrameNumber:frameNumber];
 }
 
 - (void)reloadDataAtIndexPath:(NSIndexPath *)indexPath {
@@ -253,10 +251,6 @@
 
 
 #pragma mark - CollectionViewController DataSource Methods
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
-    return [self.cellManager getSectionNumber];
-}
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return [self.cellManager getItemNumber];

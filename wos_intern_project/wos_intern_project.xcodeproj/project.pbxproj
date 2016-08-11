@@ -44,7 +44,7 @@
 		4A5448C01D51E69E00883E08 /* PhotoDecorateTextData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B44909D1D3A608A00E5972F /* PhotoDecorateTextData.m */; };
 		4A5448C11D51E69E00883E08 /* ConnectionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */; };
 		4A5448C31D51E69E00883E08 /* ImageUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490AA1D426E2800E5972F /* ImageUtility.m */; };
-		4A5448C41D51E69E00883E08 /* PhotoFrameCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */; };
+		4A5448C41D51E69E00883E08 /* PhotoEditorFrameCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0917E61D49CD310028899A /* PhotoEditorFrameCellManager.m */; };
 		4A5448C51D51E69E00883E08 /* DecorateDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B4490A01D3A609800E5972F /* DecorateDataController.m */; };
 		4A5448C61D51E69E00883E08 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */; };
 		4A5448C71D51E69E00883E08 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */; };
@@ -76,8 +76,8 @@
 		0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawCanvasView.m; sourceTree = "<group>"; };
 		0A9409231D40B7C5007B5C3D /* SphereMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereMenu.h; sourceTree = "<group>"; };
 		0A9409241D40B7C5007B5C3D /* SphereMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereMenu.m; sourceTree = "<group>"; };
-		4A0917E51D49CD310028899A /* PhotoFrameCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameCellManager.h; sourceTree = "<group>"; };
-		4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameCellManager.m; sourceTree = "<group>"; };
+		4A0917E51D49CD310028899A /* PhotoEditorFrameCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoEditorFrameCellManager.h; sourceTree = "<group>"; };
+		4A0917E61D49CD310028899A /* PhotoEditorFrameCellManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoEditorFrameCellManager.m; sourceTree = "<group>"; };
 		4A0C92DC1D374D460080E9A6 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		4A0C92DD1D374D460080E9A6 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		4A0C92E11D3754C80080E9A6 /* WMProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMProgressHUD.h; sourceTree = "<group>"; };
@@ -248,8 +248,6 @@
 				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
 				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
 				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
-				4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */,
-				4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */,
 			);
 			name = FrameSelectView;
 			sourceTree = "<group>";
@@ -388,8 +386,10 @@
 			children = (
 				4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */,
 				4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */,
-				4A0917E51D49CD310028899A /* PhotoFrameCellManager.h */,
-				4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */,
+				4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */,
+				4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */,
+				4A0917E51D49CD310028899A /* PhotoEditorFrameCellManager.h */,
+				4A0917E61D49CD310028899A /* PhotoEditorFrameCellManager.m */,
 				4B44909F1D3A609800E5972F /* DecorateDataController.h */,
 				4B4490A01D3A609800E5972F /* DecorateDataController.m */,
 			);
@@ -622,7 +622,7 @@
 				4AE5AD8E1D53489E00762EE0 /* AlertHelper.m in Sources */,
 				4A5448C31D51E69E00883E08 /* ImageUtility.m in Sources */,
 				4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */,
-				4A5448C41D51E69E00883E08 /* PhotoFrameCellManager.m in Sources */,
+				4A5448C41D51E69E00883E08 /* PhotoEditorFrameCellManager.m in Sources */,
 				4A5448C51D51E69E00883E08 /* DecorateDataController.m in Sources */,
 				4A5448C61D51E69E00883E08 /* AppDelegate.m in Sources */,
 				4A5448C71D51E69E00883E08 /* main.m in Sources */,

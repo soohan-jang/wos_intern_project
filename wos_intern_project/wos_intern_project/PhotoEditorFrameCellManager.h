@@ -1,5 +1,5 @@
 //
-//  PhotoFrameCellManager.h
+//  PhotoEditorFrameCellManager.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 7. 28..
@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, CellState) {
     CellStateEditing        = 3
 };
 
-@interface PhotoFrameCellManager : NSObject
+@interface PhotoEditorFrameCellManager : NSObject
 
 /**
  Framenumber를 토대로 CellManager를 초기화한 뒤 반환한다.

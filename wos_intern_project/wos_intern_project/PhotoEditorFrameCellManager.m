@@ -1,18 +1,18 @@
 //
-//  PhotoFrameCellManager.m
+//  PhotoEditorFrameCellManager.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 7. 28..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoFrameCellManager.h"
+#import "PhotoEditorFrameCellManager.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 
 NSInteger const DefaultMargin = 5;
 
-@interface PhotoFrameCellManager ()
+@interface PhotoEditorFrameCellManager ()
 
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
@@ -24,7 +24,7 @@ NSInteger const DefaultMargin = 5;
 
 @end
 
-@implementation PhotoFrameCellManager
+@implementation PhotoEditorFrameCellManager
 
 - (instancetype)initWithFrameNumber:(NSInteger)frameNumber {
     self = [super init];
