@@ -46,8 +46,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 @implementation MessageFactory
 
 + (NSDictionary *)MessageGenerateScreenRect:(CGRect)screenRect {
-    if (CGRectIsNull(screenRect) || CGRectIsEmpty(screenRect))
+    if (CGRectIsNull(screenRect) || CGRectIsEmpty(screenRect)) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeScreenSize),
                               kScreenSize: [NSValue valueWithCGRect:screenRect]};
@@ -72,8 +73,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGeneratePhotoFrameRequestConfirm:(NSIndexPath *)selectedIndexPath {
-    if (selectedIndexPath == nil)
+    if (selectedIndexPath == nil) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypePhotoFrameRequestConfirm),
                               kPhotoFrameIndex: selectedIndexPath,
@@ -91,8 +93,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGeneratePhotoEdit:(NSIndexPath *)editIndexPath {
-    if (editIndexPath == nil)
+    if (editIndexPath == nil) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorPhotoEdit),
                               kEditorPhotoIndexPath: editIndexPath,
@@ -102,8 +105,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGeneratePhotoEditCanceled:(NSIndexPath *)editIndexPath {
-    if (editIndexPath == nil)
+    if (editIndexPath == nil) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorPhotoEditCanceled),
                               kEditorPhotoIndexPath: editIndexPath};
@@ -120,8 +124,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGeneratePhotoDeleted:(NSIndexPath *)deleteIndexPath {
-    if (deleteIndexPath == nil)
+    if (deleteIndexPath == nil) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorPhotoDeleted),
                               kEditorPhotoIndexPath:deleteIndexPath};
@@ -145,8 +150,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGenerateDecorateDataInserted:(id)data timestamp:(NSNumber *)timestamp {
-    if (data == nil)
+    if (data == nil) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateInserted),
                               kEditorDecorateInsertedData: data,
@@ -156,8 +162,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGenerateDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)movedPoint {
-    if (CGPointEqualToPoint(movedPoint, CGPointZero))
+    if (CGPointEqualToPoint(movedPoint, CGPointZero)) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateUpdateMoved),
                               kEditorDecorateIndex: @(index),
@@ -167,8 +174,9 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect {
-    if (CGRectIsNull(resizedRect) || CGRectIsEmpty(resizedRect))
+    if (CGRectIsNull(resizedRect) || CGRectIsEmpty(resizedRect)) {
         return nil;
+    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateUpdateResized),
                               kEditorDecorateIndex: @(index),

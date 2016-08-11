@@ -645,8 +645,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self)
+        if (!self) {
             return;
+        }
         
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_session_disconnected"
@@ -703,14 +704,16 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 - (void)interruptedEditorPhotoEditing:(NSIndexPath *)indexPath {
-    if (!self.photoMenu && !self.photoMenu.isHidden)
+    if (!self.photoMenu && !self.photoMenu.isHidden) {
         return;
+    }
     
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self)
+        if (!self) {
             return;
+        }
         
         [self.photoMenu dismissMenu];
     }];
@@ -723,8 +726,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
         
         [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:NO];
     }];
@@ -734,8 +738,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
         
         [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:YES];
     }];
@@ -757,8 +762,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
         
         UIView *decoView = [decorateData getView];
         
@@ -772,8 +778,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
         //하나 이상있을 때는, 방금 추가된 객체의 동기화된 인덱스를 확인한 뒤 결정한다.
         NSUInteger index = [self.decoDataController getIndexOfDecorateData:decorateData];
         //에외처리.
-        if (index == NSNotFound)
+        if (index == NSNotFound) {
             return;
+        }
         
         if (index == [self.decoDataController getCount] - 1) {
             //정렬된 배열에서의 위치가 맨 마지막일 경우, 일반적인 추가 절차를 따른다.
@@ -792,8 +799,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
         
         [self.decorateDataDisplayView updateDecoViewAtIndex:index point:point];
     }];
@@ -805,8 +813,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
 
         [self.decorateDataDisplayView updateDecoViewAtIndex:index rect:rect];
     }];
@@ -818,8 +827,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
 
         [self.decorateDataDisplayView updateDecoViewAtIndex:index angle:angle];
     }];
@@ -831,8 +841,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
 
         [self.decorateDataDisplayView updateDecoViewZOrderAtIndex:index];
     }];
@@ -841,16 +852,18 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 - (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp {
     NSUInteger index = [self.decoDataController getIndexOfTimestamp:timestamp];
     
-    if (index == NSNotFound)
+    if (index == NSNotFound) {
         return;
+    }
     
     [self.decoDataController deleteDecorateDataAtIndex:index];
     
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
 
         [self.decorateDataDisplayView deleteDecoViewAtIndex:index];
     }];
@@ -861,8 +874,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView)
+        if (!self || !self.decorateDataDisplayView) {
             return;
+        }
         
         [self.decorateDataDisplayView deselectDecoView];
     }];

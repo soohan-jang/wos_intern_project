@@ -20,8 +20,9 @@
 + (BOOL)checkPhotoAlbumAccessAuthority {
     ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
     
-    if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized)
+    if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized) {
         return YES;
+    }
     
     return NO;
 }

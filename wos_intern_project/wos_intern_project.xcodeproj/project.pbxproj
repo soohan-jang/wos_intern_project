@@ -13,6 +13,7 @@
 		4A14A5401D5AB69F000C2079 /* MessageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A53F1D5AB69F000C2079 /* MessageFactory.m */; };
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
 		4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */; };
+		4A41052B1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
@@ -98,6 +99,8 @@
 		4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchAsyncHelper.m; sourceTree = "<group>"; };
 		4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoInputTextMenuView.h; sourceTree = "<group>"; };
 		4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInputTextMenuView.m; sourceTree = "<group>"; };
+		4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectCellManager.h; sourceTree = "<group>"; };
+		4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectCellManager.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -229,10 +232,7 @@
 				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
 				4A4E28BE1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.h */,
 				4A4E28BF1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.m */,
-				4A4E28BB1D4ED8FA0014F162 /* PhotoDrawPenMenuView.h */,
-				4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenMenuView.m */,
-				0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */,
-				0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */,
+				4A41052C1D5C804B00FEEFE9 /* DrawMenu */,
 				4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */,
 				4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */,
 				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
@@ -248,6 +248,8 @@
 				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
 				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
 				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
+				4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */,
+				4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */,
 			);
 			name = FrameSelectView;
 			sourceTree = "<group>";
@@ -276,6 +278,17 @@
 				4AE5AD8D1D53489E00762EE0 /* AlertHelper.m */,
 			);
 			name = Helper;
+			sourceTree = "<group>";
+		};
+		4A41052C1D5C804B00FEEFE9 /* DrawMenu */ = {
+			isa = PBXGroup;
+			children = (
+				4A4E28BB1D4ED8FA0014F162 /* PhotoDrawPenMenuView.h */,
+				4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenMenuView.m */,
+				0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */,
+				0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */,
+			);
+			name = DrawMenu;
 			sourceTree = "<group>";
 		};
 		4A4ACF1F1D2B6D2C00BC2FC4 = {
@@ -603,6 +616,7 @@
 				4A5448BF1D51E69E00883E08 /* PhotoDecorateImageData.m in Sources */,
 				4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */,
 				4A5448C01D51E69E00883E08 /* PhotoDecorateTextData.m in Sources */,
+				4A41052B1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m in Sources */,
 				4AC91E621D581E8D00DB9E50 /* ProgressHelper.m in Sources */,
 				4A5448C11D51E69E00883E08 /* ConnectionManager.m in Sources */,
 				4AE5AD8E1D53489E00762EE0 /* AlertHelper.m in Sources */,

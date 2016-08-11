@@ -28,6 +28,16 @@ typedef NS_ENUM(NSInteger, AlertStyle) {
                                 firstButton:(UIAlertAction * __nullable)firstButton
                                secondButton:(UIAlertAction * __nullable)secondButton;
 
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                      title:(NSString * __nullable)title
+                                    message:(NSString * __nullable)message
+                                     button:(UIAlertAction * __nullable)button;
+
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                   titleKey:(NSString * __nullable)titleKey
+                                 messageKey:(NSString * __nullable)messageKey
+                                     button:(UIAlertAction * __nullable)button;
+
 + (UIAlertAction * _Nonnull)createActionWithTitleKey:(NSString * _Nonnull)titleKey
                                              handler:(void (^ __nullable)(UIAlertAction  * _Nonnull action))handler;
 

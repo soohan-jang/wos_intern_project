@@ -65,8 +65,9 @@
 }
 
 - (void)sendMessage:(NSDictionary *)message {
-    if (message[kDataType] == nil)
+    if (message[kDataType] == nil) {
         return;
+    }
     
     switch ([message[kDataType] integerValue]) {
         case vDataTypePhotoFrameRequestConfirm:
@@ -205,8 +206,9 @@
                 break;
             case vDataTypePhotoFrameSelected:
                 NSLog(@"Received Selected Frame Index");
-                if (self.lastSendMsgTimestamp)
+                if (self.lastSendMsgTimestamp) {
                     break;
+                }
                 
                 if (self.messageQueueEnabled) {
                     //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
@@ -341,8 +343,9 @@
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
     NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
-    if (array == nil || array.count != 2)
+    if (array == nil || array.count != 2) {
         return;
+    }
     
     NSInteger photoFrameIndex = [array[0] integerValue];
     NSString *fileType = array[1];
@@ -357,8 +360,9 @@
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
     NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
-    if (array == nil || array.count != 2)
+    if (array == nil || array.count != 2) {
         return;
+    }
     
     NSInteger photoFrameIndex = [array[0] integerValue];
     NSString *fileType = array[1];

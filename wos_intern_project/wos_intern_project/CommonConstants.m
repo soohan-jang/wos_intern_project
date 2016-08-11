@@ -25,4 +25,4 @@ NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
 NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
 NSString *const ReuseCellEditor                         = @"photoFrameCell";
 
-NSInteger const DelayTime                               = 1;
+NSTimeInterval const DelayTime                          = 1.0f;

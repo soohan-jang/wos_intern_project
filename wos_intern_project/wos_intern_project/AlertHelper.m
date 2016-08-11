@@ -21,11 +21,13 @@
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
     
-    if (firstButton)
+    if (firstButton) {
         [alertController addAction:firstButton];
+    }
     
-    if (secondButton)
+    if (secondButton) {
         [alertController addAction:secondButton];
+    }
     
     [viewController presentViewController:alertController animated:YES completion:nil];
 }
@@ -41,6 +43,34 @@
                                       message:NSLocalizedString(messageKey, nil)
                                   firstButton:firstButton
                                  secondButton:secondButton];
+}
+
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                      title:(NSString * __nullable)title
+                                    message:(NSString * __nullable)message
+                                     button:(UIAlertAction * __nullable)button {
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:title
+                                                                             message:message
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    
+    if (button) {
+        [alertController addAction:button];
+    }
+    
+    [viewController presentViewController:alertController animated:YES completion:nil];
+}
+
++ (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
+                                   titleKey:(NSString * __nullable)titleKey
+                                 messageKey:(NSString * __nullable)messageKey
+                                     button:(UIAlertAction * __nullable)button {
+    
+    [self showAlertControllerOnViewController:viewController
+                                        title:NSLocalizedString(titleKey, nil)
+                                      message:NSLocalizedString(messageKey, nil)
+                                  button:button];
 }
 
 + (UIAlertAction * _Nonnull)createActionWithTitleKey:(NSString * _Nonnull)titleKey handler:(void (^ __nullable)(UIAlertAction  * _Nonnull action))handler {

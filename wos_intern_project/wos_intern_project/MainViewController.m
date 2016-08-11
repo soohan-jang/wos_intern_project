@@ -141,13 +141,14 @@
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_album_not_authorized"
                                               messageKey:@"alert_content_album_not_authorized"
-                                             firstButton:noActionButton secondButton:yesActionButton];
+                                             firstButton:noActionButton
+                                            secondButton:yesActionButton];
     } else {
         UIAlertAction *okActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_ok" handler:nil];
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_bluetooth_off"
                                               messageKey:@"alert_content_bluetooth_off"
-                                             firstButton:okActionButton secondButton:nil];
+                                                  button:okActionButton];
     }
 }
 
@@ -190,11 +191,13 @@
 #pragma mark - MCNearbyServiceAdvertiserDelegate Methods
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
-    if (self.invitationHandlers == nil)
+    if (self.invitationHandlers == nil) {
         self.invitationHandlers = [[NSMutableDictionary alloc] init];
+    }
     
-    if (peerID == nil || invitationHandler == nil)
+    if (peerID == nil || invitationHandler == nil) {
         return;
+    }
     
     self.invitationHandlers[peerID] = invitationHandler;
     
@@ -205,8 +208,9 @@
                                                                            __strong typeof(self) self = weakSelf;
                                                                            void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
                                                                            
-                                                                           if (!self || !invitationHandler)
+                                                                           if (!self || !invitationHandler) {
                                                                                return;
+                                                                           }
                                                                            
                                                                            invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
                                                                            [self.invitationHandlers removeObjectForKey:peerID];
@@ -217,8 +221,9 @@
                                                                           __strong typeof(self) self = weakSelf;
                                                                           void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
                                                                           
-                                                                          if (!self || !invitationHandler)
+                                                                          if (!self || !invitationHandler) {
                                                                               return;
+                                                                          }
                                                                           
                                                                           invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
                                                                           [self.invitationHandlers removeObjectForKey:peerID];
@@ -250,12 +255,14 @@
     if ([self.navigationController presentedViewController] == self.browserViewController) {
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.browserViewController)
+            if (!self || !self.browserViewController) {
                 return;
+            }
             
             [self.browserViewController dismissViewControllerAnimated:YES completion:^{
-                if (!self)
+                if (!self) {
                     return;
+                }
                 
                 [self loadPhotoFrameViewController];
             }];
@@ -263,8 +270,9 @@
     } else {
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.progressView)
+            if (!self || !self.progressView) {
                 return;
+            }
             
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_connected" dismissType:DismissWithDone];
         }];
@@ -272,8 +280,9 @@
         //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self)
+            if (!self) {
                 return;
+            }
             
             [self loadPhotoFrameViewController];
         } delay:DelayTime];
@@ -286,8 +295,9 @@
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.progressView)
+        if (!self || !self.progressView) {
             return;
+        }
         
         if (!self.progressView.isHidden) {
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithDone];

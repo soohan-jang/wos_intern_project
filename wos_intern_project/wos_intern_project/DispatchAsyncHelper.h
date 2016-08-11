@@ -14,6 +14,6 @@ typedef void (^dispatch_block_t)(void);
 
 + (void)dispatchAsyncWithBlock:dispatch_block_t;
 
-+ (void)dispatchAsyncWithBlock:dispatch_block_t delay:(float)delay;
++ (void)dispatchAsyncWithBlock:dispatch_block_t delay:(NSTimeInterval)delay;
 
 @end

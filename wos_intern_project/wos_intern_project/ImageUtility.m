@@ -21,8 +21,9 @@
         if (asset == nil) {
             [assetslibrary enumerateGroupsWithTypes:ALAssetsGroupPhotoStream
                                    usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                       if (!group)
+                                       if (!group) {
                                            return;
+                                       }
                                        
                                        [group enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
                                            if (result && [result.defaultRepresentation.url isEqual:url]) {
@@ -32,8 +33,9 @@
                                        }];
                                    }
                                  failureBlock:^(NSError *error) {
-                                     if (error)
+                                     if (error) {
                                          NSLog(@"Error: Cannot load asset from photo stream - %@", [error localizedDescription]);
+                                     }
                                      
                                      resultBlock(nil);
                                  }];
@@ -54,8 +56,9 @@
             }
         }
     } failureBlock:^(NSError *error) {
-        if (error)
+        if (error) {
             NSLog(@"%@", [error localizedDescription]);
+        }
         
         resultBlock(nil);
     }];

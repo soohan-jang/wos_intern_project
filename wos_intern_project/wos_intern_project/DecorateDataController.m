@@ -17,8 +17,9 @@
 @implementation DecorateDataController
 
 - (void)addDecorateData:(PhotoDecorateData *)decoData {
-    if (!decoData)
+    if (!decoData) {
         return;
+    }
     
     if (self.decorateDataArray == nil) {
         self.decorateDataArray = [@[decoData] mutableCopy];
@@ -29,43 +30,49 @@
 }
 
 - (void)updateDecorateDataAtIndex:(NSInteger)index point:(CGPoint)point {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return;
+    }
     
     [self.decorateDataArray[index] move:point];
 }
 
 - (void)updateDecorateDataAtIndex:(NSInteger)index rect:(CGRect)rect {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return;
+    }
     
     [self.decorateDataArray[index] resize:rect];
 }
 
 - (void)updateDecorateDataAtIndex:(NSInteger)index angle:(CGFloat)angle {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return;
+    }
     
     [self.decorateDataArray[index] rotate:angle];
 }
 
 - (void)updateDecorateDataZOrderAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return;
+    }
     
     [self.decorateDataArray[index] changeZOrder];
 }
 
 - (void)deleteDecorateDataAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return;
+    }
     
     [self.decorateDataArray removeObjectAtIndex:index];
 }
 
 - (NSUInteger)getIndexOfTimestamp:(NSNumber *)timestamp {
-    if (!timestamp || [self isEmpty])
+    if (!timestamp || [self isEmpty]) {
         return NSNotFound;
+    }
     
     NSInteger index = 0;
     for (PhotoDecorateData *decoData in self.decorateDataArray) {
@@ -79,15 +86,17 @@
 }
 
 - (NSUInteger)getIndexOfDecorateData:(PhotoDecorateData *)data {
-    if (!data || [self isEmpty])
+    if (!data || [self isEmpty]) {
         return NSNotFound;
+    }
     
     return [self.decorateDataArray indexOfObject:data];
 }
 
 - (PhotoDecorateData *)getDecorateDataAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index])
+    if ([self isOutBoundIndex:index]) {
         return nil;
+    }
     
     return self.decorateDataArray[index];
 }
@@ -117,8 +126,9 @@
 }
 
 - (BOOL)isEmpty {
-    if (self.decorateDataArray != nil && self.decorateDataArray.count > 0)
+    if (self.decorateDataArray != nil && self.decorateDataArray.count > 0) {
         return NO;
+    }
     
     return YES;
 }
@@ -132,11 +142,13 @@
 }
 
 - (BOOL)isOutBoundIndex:(NSInteger)index {
-    if ([self isEmpty])
+    if ([self isEmpty]) {
         return YES;
-        
-    if (index < [self getCount])
+    }
+    
+    if (index < [self getCount]) {
         return NO;
+    }
     
     return YES;
 }

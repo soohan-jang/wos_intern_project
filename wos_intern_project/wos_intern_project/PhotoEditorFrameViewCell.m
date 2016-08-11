@@ -64,8 +64,9 @@ NSString *const KEY_SELECTED_CELL_CENTER  = @"selected_cell_center";
 }
 
 - (void)removeStrokeBorder {
-    if (self.photoFrameView == nil || self.photoFrameView.layer.sublayers.count == 0)
+    if (self.photoFrameView == nil || self.photoFrameView.layer.sublayers.count == 0) {
         return;
+    }
     
     for (CALayer *layer in self.photoFrameView.layer.sublayers) {
         [layer removeFromSuperlayer];

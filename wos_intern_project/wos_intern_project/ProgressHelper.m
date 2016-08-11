@@ -7,8 +7,7 @@
 //
 
 #import "ProgressHelper.h"
-
-float const ProgressDefaultDelayTime = 1.0f;
+#import "CommonConstants.h"
 
 @implementation ProgressHelper
 
@@ -17,8 +16,9 @@ float const ProgressDefaultDelayTime = 1.0f;
 }
 
 + (void)dismissProgress:(WMProgressHUD *)progress dismissTitleKey:(NSString *)dismissTitleKey dismissType:(NSInteger)type {
-    if (!progress || progress.isHidden)
+    if (!progress || progress.isHidden) {
         return;
+    }
     
     UIImage *image;
     
@@ -31,7 +31,7 @@ float const ProgressDefaultDelayTime = 1.0f;
             break;
     }
     
-    [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:ProgressDefaultDelayTime];
+    [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:DelayTime];
 }
 
 + (void)dismissProgress:(WMProgressHUD *)progress {

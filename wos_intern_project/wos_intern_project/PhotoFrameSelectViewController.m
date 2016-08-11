@@ -136,11 +136,13 @@
     NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameRequestConfirm:self.ownSelectedFrameIndex];
     [[ConnectionManager sharedInstance] sendMessage:message];
     
-    if (!self.progressView.isHidden)
+    if (!self.progressView.isHidden) {
         [ProgressHelper dismissProgress:self.progressView];
+    }
     
-    if (self.progressView)
+    if (self.progressView) {
         self.progressView = nil;
+    }
     
     self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_confirming"];
     
@@ -281,13 +283,14 @@
     
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self)
+        if (!self) {
             return;
+        }
         
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_session_disconnected"
                                               messageKey:@"alert_content_session_disconnected"
-                                             firstButton:okActionButton secondButton:nil];
+                                                  button:okActionButton];
     }];
 }
 
@@ -322,13 +325,14 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self)
+        if (!self) {
             return;
+        }
         
         [self updateFrameCells:prevSelectedFrameCell currentCell:currentSelectedFrameCell];
-    });
+    }];
 }
 
 - (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath {
@@ -337,8 +341,9 @@
     UIAlertAction *declineActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_decline"
                                                                        handler:^(UIAlertAction * _Nonnull action) {
                                                                            __strong typeof(weakSelf) self = weakSelf;
-                                                                           if (!self || !self.doneButton)
+                                                                           if (!self || !self.doneButton) {
                                                                                return;
+                                                                           }
                                                                            
                                                                            NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
                                                                            [[ConnectionManager sharedInstance] sendMessage:message];
@@ -357,8 +362,9 @@
                                                                           
                                                                           [DispatchAsyncHelper dispatchAsyncWithBlock:^{
                                                                               __strong typeof(weakSelf) self = weakSelf;
-                                                                              if (!self)
+                                                                              if (!self) {
                                                                                   return;
+                                                                              }
                                                                               
                                                                               [self loadPhotoEditorViewController];
                                                                           } delay:DelayTime];
@@ -366,13 +372,15 @@
     
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self)
+        if (!self) {
             return;
+        }
         
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_frame_select_confirm"
                                               messageKey:@"alert_content_frame_select_confirm"
-                                             firstButton:declineActionButton secondButton:acceptActionButton];
+                                             firstButton:declineActionButton
+                                            secondButton:acceptActionButton];
         
         //액자 선택 Alert이 표시된 이후에 액자 변경이 일어났는지를 확인하고, 일어났다면 복원한다.
         if (self.ownSelectedFrameIndex != confirmIndexPath) {
@@ -400,24 +408,27 @@
         
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.progressView)
+            if (!self || !self.progressView) {
                 return;
+            }
             
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_confirmed" dismissType:DismissWithDone];
         }];
         
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self)
+            if (!self) {
                 return;
+            }
             
             [self loadPhotoEditorViewController];
         } delay:DelayTime];
     } else {
         [DispatchAsyncHelper dispatchAsyncWithBlock:^{
             __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.doneButton || !self.progressView)
+            if (!self || !self.doneButton || !self.progressView) {
                 return;
+            }
             
             self.doneButton.enabled = YES;
             [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithCancel];
@@ -429,8 +440,9 @@
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.progressView)
+        if (!self || !self.progressView) {
             return;
+        }
         
         [ProgressHelper dismissProgress:self.progressView];
     }];
