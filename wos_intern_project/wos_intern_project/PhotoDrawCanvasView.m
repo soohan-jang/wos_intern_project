@@ -143,32 +143,34 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     if (self.pathDatas == nil || self.pathDatas.count == 0)
         return;
     
-    NSArray *reversedArray = [[self.pathDatas reverseObjectEnumerator] allObjects];
-    
-    for (CanvasPathData *pathData in reversedArray) {
-        CGPathRef pathRef = [pathData.path CGPath];
-        BOOL isContained = NO;
-        for (CGFloat x = point.x - EraserRecognizeDistance; x <= point.x + EraserRecognizeDistance; x = x + EraserDistanceIncrement) {
-            for (CGFloat y = point.y - EraserRecognizeDistance; y <= point.y + EraserRecognizeDistance; y = y + EraserDistanceIncrement) {
-                if (!CGPathContainsPoint(pathRef, NULL, CGPointMake(x, y), true))
-                    continue;
-                
-                isContained = YES;
-                break;
+    @autoreleasepool {
+        NSArray *reversedArray = [[self.pathDatas reverseObjectEnumerator] allObjects];
+        
+        for (CanvasPathData *pathData in reversedArray) {
+            CGPathRef pathRef = [pathData.path CGPath];
+            BOOL isContained = NO;
+            for (CGFloat x = point.x - EraserRecognizeDistance; x <= point.x + EraserRecognizeDistance; x = x + EraserDistanceIncrement) {
+                for (CGFloat y = point.y - EraserRecognizeDistance; y <= point.y + EraserRecognizeDistance; y = y + EraserDistanceIncrement) {
+                    if (!CGPathContainsPoint(pathRef, NULL, CGPointMake(x, y), true))
+                        continue;
+                    
+                    isContained = YES;
+                    break;
+                }
+                if (isContained)
+                    break;
             }
-            if (isContained)
-                break;
+            
+            if (!isContained)
+                continue;
+            
+            [self.pathDatas removeObject:pathData];
+            [self setNeedsDisplay];
+            break;
         }
         
-        if (!isContained)
-            continue;
-            
-        [self.pathDatas removeObject:pathData];
-        [self setNeedsDisplay];
-        break;
+        reversedArray = nil;
     }
-    
-    reversedArray = nil;
 }
 
 
@@ -217,6 +219,8 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     
     //이미지 캡쳐가 종료되었으므로, 배경색을 다시 원상 복구한다.
     self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    //또한 사용하였던 CGImageRef를 해제한다.
+    CGImageRelease(pathImageRef);
     
     return pathImage;
 }
