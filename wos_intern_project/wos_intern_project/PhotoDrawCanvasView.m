@@ -23,7 +23,7 @@ CGFloat const DefaultLineWidth = 4;
     uint ctr;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder {
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
     self = [super initWithCoder:aDecoder];
     
     if (self) {
@@ -35,20 +35,6 @@ CGFloat const DefaultLineWidth = 4;
         
         path = [UIBezierPath bezierPath];
         path.lineWidth = self.lineWidth;
-    }
-    
-    return self;
-}
-
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    
-    if (self) {
-        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
-        self.pathDatas = [[NSMutableArray alloc] init];
-        
-        path = [UIBezierPath bezierPath];
-        path.lineWidth = DefaultLineWidth;
     }
     
     return self;

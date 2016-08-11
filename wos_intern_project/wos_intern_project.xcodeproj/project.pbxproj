@@ -12,6 +12,7 @@
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A14A5401D5AB69F000C2079 /* MessageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A53F1D5AB69F000C2079 /* MessageFactory.m */; };
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
+		4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
@@ -95,6 +96,8 @@
 		4A14A53F1D5AB69F000C2079 /* MessageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageFactory.m; sourceTree = "<group>"; };
 		4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchAsyncHelper.h; sourceTree = "<group>"; };
 		4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchAsyncHelper.m; sourceTree = "<group>"; };
+		4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoInputTextMenuView.h; sourceTree = "<group>"; };
+		4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInputTextMenuView.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -217,6 +220,64 @@
 			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
+		4A4105221D5C151A00FEEFE9 /* PhotoEditorView */ = {
+			isa = PBXGroup;
+			children = (
+				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
+				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
+				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
+				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
+				4A4E28BE1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.h */,
+				4A4E28BF1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.m */,
+				4A4E28BB1D4ED8FA0014F162 /* PhotoDrawPenMenuView.h */,
+				4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenMenuView.m */,
+				0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */,
+				0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */,
+				4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */,
+				4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */,
+				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
+				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
+			);
+			name = PhotoEditorView;
+			sourceTree = "<group>";
+		};
+		4A4105231D5C154900FEEFE9 /* FrameSelectView */ = {
+			isa = PBXGroup;
+			children = (
+				4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */,
+				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
+				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
+				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
+			);
+			name = FrameSelectView;
+			sourceTree = "<group>";
+		};
+		4A4105241D5C158A00FEEFE9 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				4A14A53E1D5AB69F000C2079 /* MessageFactory.h */,
+				4A14A53F1D5AB69F000C2079 /* MessageFactory.m */,
+				4B4490A91D426E2800E5972F /* ImageUtility.h */,
+				4B4490AA1D426E2800E5972F /* ImageUtility.m */,
+				4A525B421D581461006183C7 /* ValidateCheckUtility.h */,
+				4A525B431D581461006183C7 /* ValidateCheckUtility.m */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		4A4105251D5C15DD00FEEFE9 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */,
+				4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */,
+				4AC91E601D581E8D00DB9E50 /* ProgressHelper.h */,
+				4AC91E611D581E8D00DB9E50 /* ProgressHelper.m */,
+				4AE5AD8C1D53489E00762EE0 /* AlertHelper.h */,
+				4AE5AD8D1D53489E00762EE0 /* AlertHelper.m */,
+			);
+			name = Helper;
+			sourceTree = "<group>";
+		};
 		4A4ACF1F1D2B6D2C00BC2FC4 = {
 			isa = PBXGroup;
 			children = (
@@ -244,12 +305,14 @@
 				4A5448A01D51CFD900883E08 /* Constants */,
 				4A97B60A1D336514003899F7 /* View */,
 				4A97B60B1D336520003899F7 /* Manager */,
+				4A4105241D5C158A00FEEFE9 /* Utility */,
+				4A4105251D5C15DD00FEEFE9 /* Helper */,
 				4A97B60C1D336540003899F7 /* Data */,
 				4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */,
 				4A4ACF2F1D2B6D2C00BC2FC4 /* AppDelegate.m */,
-				4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */,
 				4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */,
 				4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */,
+				4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */,
 				4A4ACF3C1D2B6D2C00BC2FC4 /* Info.plist */,
 				4A4ACF2B1D2B6D2C00BC2FC4 /* Supporting Files */,
 			);
@@ -295,21 +358,10 @@
 		4A97B60A1D336514003899F7 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4B4490921D3A5D4D00E5972F /* CollectionViewCell */,
 				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
 				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
-				4A97B5FE1D336486003899F7 /* PhotoFrameSelectViewController.h */,
-				4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */,
-				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
-				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
-				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
-				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
-				4A4E28BE1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.h */,
-				4A4E28BF1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.m */,
-				4A4E28BB1D4ED8FA0014F162 /* PhotoDrawPenMenuView.h */,
-				4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenMenuView.m */,
-				0A23C6FB1D54EA30007A7996 /* PhotoDrawCanvasView.h */,
-				0A23C6FC1D54EA30007A7996 /* PhotoDrawCanvasView.m */,
+				4A4105231D5C154900FEEFE9 /* FrameSelectView */,
+				4A4105221D5C151A00FEEFE9 /* PhotoEditorView */,
 				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
 				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
 				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
@@ -327,18 +379,6 @@
 				4A0917E61D49CD310028899A /* PhotoFrameCellManager.m */,
 				4B44909F1D3A609800E5972F /* DecorateDataController.h */,
 				4B4490A01D3A609800E5972F /* DecorateDataController.m */,
-				4B4490A91D426E2800E5972F /* ImageUtility.h */,
-				4B4490AA1D426E2800E5972F /* ImageUtility.m */,
-				4A525B421D581461006183C7 /* ValidateCheckUtility.h */,
-				4A525B431D581461006183C7 /* ValidateCheckUtility.m */,
-				4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */,
-				4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */,
-				4AC91E601D581E8D00DB9E50 /* ProgressHelper.h */,
-				4AC91E611D581E8D00DB9E50 /* ProgressHelper.m */,
-				4AE5AD8C1D53489E00762EE0 /* AlertHelper.h */,
-				4AE5AD8D1D53489E00762EE0 /* AlertHelper.m */,
-				4A14A53E1D5AB69F000C2079 /* MessageFactory.h */,
-				4A14A53F1D5AB69F000C2079 /* MessageFactory.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -356,17 +396,6 @@
 				4B44909D1D3A608A00E5972F /* PhotoDecorateTextData.m */,
 			);
 			name = Data;
-			sourceTree = "<group>";
-		};
-		4B4490921D3A5D4D00E5972F /* CollectionViewCell */ = {
-			isa = PBXGroup;
-			children = (
-				4A0C93511D38E9EF0080E9A6 /* PhotoFrameSelectViewCell.h */,
-				4A0C93541D38EE8C0080E9A6 /* PhotoFrameSelectViewCell.m */,
-				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
-				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
-			);
-			name = CollectionViewCell;
 			sourceTree = "<group>";
 		};
 		4B4490B01D46661F00E5972F /* PEPhotoCropEditor */ = {
@@ -572,6 +601,7 @@
 				4A5448BD1D51E69E00883E08 /* PhotoViewerViewController.m in Sources */,
 				4A5448BE1D51E69E00883E08 /* PhotoDecorateData.m in Sources */,
 				4A5448BF1D51E69E00883E08 /* PhotoDecorateImageData.m in Sources */,
+				4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */,
 				4A5448C01D51E69E00883E08 /* PhotoDecorateTextData.m in Sources */,
 				4AC91E621D581E8D00DB9E50 /* ProgressHelper.m in Sources */,
 				4A5448C11D51E69E00883E08 /* ConnectionManager.m in Sources */,

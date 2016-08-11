@@ -16,6 +16,10 @@ NSString *const KEY_SELECTED_CELL_CENTER  = @"selected_cell_center";
 
 @interface PhotoEditorFrameViewCell ()
 
+@property (weak, nonatomic) IBOutlet UIView *photoFrameView;
+@property (weak, nonatomic) IBOutlet UIImageView *photoLoadingView;
+@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
+
 /**
  셀에서 탭 이벤트가 발생했을 때, 이를 처리하기 위한 함수이다.
  */

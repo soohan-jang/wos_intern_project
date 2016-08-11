@@ -14,10 +14,6 @@ extern NSString *const KEY_SELECTED_CELL_CENTER;
 
 @interface PhotoEditorFrameViewCell : UICollectionViewCell
 
-@property (weak, nonatomic) IBOutlet UIView *photoFrameView;
-@property (weak, nonatomic) IBOutlet UIImageView *photoLoadingView;
-@property (weak, nonatomic) IBOutlet UIImageView *photoImageView;
-
 @property (strong, nonatomic) NSIndexPath *indexPath;
 
 - (void)initializeCell;

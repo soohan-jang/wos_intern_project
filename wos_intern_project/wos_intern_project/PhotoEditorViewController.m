@@ -22,6 +22,7 @@
 #import "PhotoCropViewController.h"
 #import "PhotoDecorateDataDisplayView.h"
 #import "PhotoDrawPenMenuView.h"
+#import "PhotoInputTextMenuView.h"
 
 #import "PhotoDecorateImageData.h"
 #import "PhotoDecorateTextData.h"
@@ -31,14 +32,13 @@
 #import "ImageUtility.h"
 #import "MessageFactory.h"
 
-@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
 
 @property (nonatomic, strong) PhotoFrameCellManager *cellManager;
 @property (atomic, strong) DecorateDataController *decoDataController;
 
 @property (atomic, assign) NSIndexPath *selectedIndexPath;
 @property (atomic, strong) NSURL *selectedImageURL;
-//@property (nonatomic, assign) BOOL isMenuAppear;
 
 @property (weak, nonatomic) IBOutlet UIView *collectionContainerView;
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
@@ -50,6 +50,8 @@
 @property (weak, nonatomic) IBOutlet PhotoDecorateDataDisplayView *decorateDataDisplayView;
 //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
 @property (weak, nonatomic) IBOutlet PhotoDrawPenMenuView *drawPenMenuView;
+//텍스트를 작성할 수 있는 뷰
+@property (weak, nonatomic) IBOutlet PhotoInputTextMenuView *inputTextMenuView;
 
 @end
 
@@ -59,17 +61,20 @@
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    [self setupConnectionManager];
+    [self setupDelegates];
     [self setupMenu];
     [self setupDrawController];
     
     [self addObservers];
 }
 
-- (void)setupConnectionManager {
+- (void)setupDelegates {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionConnectDelegate = self;
     connectionManager.photoEditorDelegate = self;
+    
+    self.drawPenMenuView.delegate = self;
+    self.inputTextMenuView.delegate = self;
 }
 
 - (void)setupMenu {
@@ -92,7 +97,6 @@
 - (void)setupDrawController {
     self.decoDataController = [[DecorateDataController alloc] init];
     self.decorateDataDisplayView.delegate = self;
-    self.drawPenMenuView.delegate = self;
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
@@ -554,6 +558,16 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     [self setVisibleDrawPenMenuView:NO];
 }
 
+
+#pragma mark - PhotoInputPenMenuView Delegate Methods
+
+- (void)inputTextMenuViewDidFinished:(PhotoInputTextMenuView *)inputTextMenu WithImage:(UIImage *)image {
+    
+}
+
+- (void)inputTextMenuViewDidCancelled:(PhotoInputTextMenuView *)inputTextMenu {
+    
+}
 
 #pragma mark - CollectionViewCell Selected Method
 

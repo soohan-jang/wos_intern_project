@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self.delegate drawPenMenuViewDidCancelled:self];
 }
 
-- (IBAction)tappedPaletteButton:(id)sender {
+- (IBAction)tappedLineColorButton:(id)sender {
     [self closeLineWidthSubMenu];
     [self closeEraseSubMenu];
     

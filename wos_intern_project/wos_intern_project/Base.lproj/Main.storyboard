@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dKW-hc-NhL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -401,7 +401,7 @@
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="tRB-jI-5MS"/>
                                             <barButtonItem image="Palette" id="Rlp-5t-BZe">
                                                 <connections>
-                                                    <action selector="tappedPaletteButton:" destination="Zh5-Kc-cgB" id="xdY-uQ-CHY"/>
+                                                    <action selector="tappedLineColorButton:" destination="Zh5-Kc-cgB" id="ORJ-KQ-Eas"/>
                                                 </connections>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="ngB-g6-6PH"/>
@@ -447,18 +447,92 @@
                                     <outlet property="lineWidthSubMenu" destination="Dgt-wX-GiS" id="Cmo-Af-pPG"/>
                                 </connections>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QXE-r0-ypx" customClass="PhotoInputTextMenuView">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X8h-ik-pql">
+                                        <rect key="frame" x="0.0" y="466" width="600" height="70"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="70" id="GNl-V2-9BV"/>
+                                        </constraints>
+                                        <items>
+                                            <barButtonItem image="Close" id="ZMA-Fg-bMT">
+                                                <connections>
+                                                    <action selector="tappedCancelButton:" destination="QXE-r0-ypx" id="0DA-oH-fN9"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="rhB-h2-eiv"/>
+                                            <barButtonItem image="Palette" id="xPd-2x-5AI">
+                                                <connections>
+                                                    <action selector="tappedTextColorButton:" destination="QXE-r0-ypx" id="qOB-ch-yOD"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="co5-1I-678"/>
+                                            <barButtonItem image="FontSize" id="fKO-3o-e3A">
+                                                <connections>
+                                                    <action selector="tappedTextSizeButton:" destination="QXE-r0-ypx" id="eMq-y7-NlK"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="5An-Cf-c5U"/>
+                                            <barButtonItem image="FontStyle" id="LXg-fy-JQw">
+                                                <connections>
+                                                    <action selector="tappedTextStyleButton:" destination="QXE-r0-ypx" id="DXb-fR-K6q"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="2Pz-Tb-XLm"/>
+                                            <barButtonItem image="Done" id="irv-Y4-6Jn">
+                                                <connections>
+                                                    <action selector="tappedDoneButton:" destination="QXE-r0-ypx" id="45C-Km-eAG"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </items>
+                                    </toolbar>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="An9-G9-3Qt">
+                                        <rect key="frame" x="200" y="253" width="200" height="30"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="0Qm-fn-22O"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="AXw-bC-Xm8"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="vMs-aB-Bvd"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="0Qm-fn-22O"/>
+                                            </mask>
+                                        </variation>
+                                    </textField>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="X8h-ik-pql" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="2bC-Cd-wGI"/>
+                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="C9Q-gx-Pyk"/>
+                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="centerY" secondItem="QXE-r0-ypx" secondAttribute="centerY" id="KBx-0A-7wj"/>
+                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QXE-r0-ypx" secondAttribute="leading" constant="20" id="LaN-eF-SVB"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="An9-G9-3Qt" secondAttribute="trailing" constant="20" id="NgV-hC-AGk"/>
+                                    <constraint firstItem="X8h-ik-pql" firstAttribute="width" secondItem="QXE-r0-ypx" secondAttribute="width" id="pO4-Rc-SAE"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="textField" destination="An9-G9-3Qt" id="hWE-G8-i6V"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="QXE-r0-ypx" secondAttribute="bottom" id="08m-CS-Mqh"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-60" id="2hq-Sv-zz0"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2iG-aV-pcf"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="7AR-Mg-o4A"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="X8h-ik-pql" secondAttribute="bottom" id="Adh-Xc-xZL"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Qdr-Ub-FbH" secondAttribute="bottom" constant="75" id="LYG-Ni-tnI"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="OH2-Kx-Zes"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-80" id="OPN-Hz-Lry"/>
                             <constraint firstAttribute="trailing" secondItem="Zh5-Kc-cgB" secondAttribute="trailing" id="P0g-LX-KCz"/>
+                            <constraint firstItem="QXE-r0-ypx" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="R09-w7-oV6"/>
+                            <constraint firstItem="QXE-r0-ypx" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="XRL-1h-7xN"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="QzL-H7-SyN" secondAttribute="bottom" id="aV6-iy-jsR"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Zh5-Kc-cgB" secondAttribute="bottom" id="ioP-Aa-f3A"/>
+                            <constraint firstAttribute="trailing" secondItem="QXE-r0-ypx" secondAttribute="trailing" id="jzR-FX-NAp"/>
                             <constraint firstAttribute="trailing" secondItem="kfz-pT-T9E" secondAttribute="trailing" id="pxH-kK-tJg"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="kfz-pT-T9E" secondAttribute="bottom" id="uJF-q3-FeH"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="vDl-zL-NFc"/>
@@ -490,6 +564,7 @@
                         <outlet property="decorateDataDisplayView" destination="lUZ-73-XTC" id="lHd-UN-e3c"/>
                         <outlet property="drawPenMenuView" destination="Zh5-Kc-cgB" id="0qR-xq-fGh"/>
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>
+                        <outlet property="inputTextMenuView" destination="QXE-r0-ypx" id="eKl-kS-pqN"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
                     </connections>
                 </viewController>
@@ -759,6 +834,8 @@
         <image name="Done" width="50" height="50"/>
         <image name="Downloading" width="50" height="50"/>
         <image name="Eraser" width="50" height="50"/>
+        <image name="FontSize" width="50" height="50"/>
+        <image name="FontStyle" width="50" height="50"/>
         <image name="LineWidth" width="50" height="50"/>
         <image name="Modify" width="50" height="50"/>
         <image name="Palette" width="50" height="50"/>
