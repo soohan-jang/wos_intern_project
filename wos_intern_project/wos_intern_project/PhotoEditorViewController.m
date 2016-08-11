@@ -205,6 +205,17 @@
 #pragma mark - EventHandle Methods
 
 - (IBAction)backButtonTapped:(id)sender {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    
+    if (connectionManager.sessionState == MCSessionStateNotConnected) {
+        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.photoEditorDelegate = nil;
+        [connectionManager disconnectSession];
+        
+        [self loadMainViewController];
+        return;
+    }
+    
     __weak typeof(self) weakSelf = self;
     
     UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
@@ -569,6 +580,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     
 }
 
+
 #pragma mark - CollectionViewCell Selected Method
 
 - (void)selectedCellAction:(NSNotification *)notification {
@@ -600,10 +612,12 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 #pragma mark - ConnectionManager Session Connect Delegate Methods
 
 - (void)receivedPeerConnected {
-    
+    [ConnectionManager sharedInstance].sessionState = MCSessionStateConnected;
 }
 
 - (void)receivedPeerDisconnected {
+    [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
+    
     __weak typeof(self) weakSelf = self;
     
     UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no"
@@ -656,10 +670,6 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 - (void)receivedEditorPhotoEditingCancelled:(NSIndexPath *)indexPath {
     [self.cellManager setCellStateAtIndexPath:indexPath state:CellStateNone];
     [self reloadDataAtIndexPath:indexPath];
-}
-
-- (void)receivedEditorPhotoEditingInterrupt:(NSIndexPath *)indexPath {
-    
 }
 
 - (void)receivedEditorPhotoInsert:(NSIndexPath *)indexPath type:(NSString *)type url:(NSURL *)url {
@@ -734,10 +744,6 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     }];
 }
 
-- (void)receivedEditorDecorateDataEditingInterrupt:(NSInteger)index {
-    
-}
-
 - (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp {
     PhotoDecorateData *decorateData;
     
@@ -758,7 +764,28 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
             return;
         
         UIView *decoView = [decorateData getView];
-        [self.decorateDataDisplayView addDecoView:decoView];
+        
+        //위에서 하나 추가했으니까, 무조건 하나는 있다.
+        if ([self.decoDataController getCount] == 1) {
+            //하나만 있을 때는 일반적인 추가 절차를 따른다.
+            [self.decorateDataDisplayView addDecoView:decoView];
+            return;
+        }
+        
+        //하나 이상있을 때는, 방금 추가된 객체의 동기화된 인덱스를 확인한 뒤 결정한다.
+        NSUInteger index = [self.decoDataController getIndexOfDecorateData:decorateData];
+        //에외처리.
+        if (index == NSNotFound)
+            return;
+        
+        if (index == [self.decoDataController getCount] - 1) {
+            //정렬된 배열에서의 위치가 맨 마지막일 경우, 일반적인 추가 절차를 따른다.
+            [self.decorateDataDisplayView addDecoView:decoView];
+        } else {
+            //정렬된 배열에서의 위치가 맨 마지막이 아닐 경우, 하나 이상의 객체가 이미 추가되어 있음을 의미한다.
+            //들어갈 인덱스의 값을 지정하여 보내준다.
+            [self.decorateDataDisplayView addDecoView:decoView index:index];
+        }
     }];
 }
 

@@ -10,17 +10,21 @@
 
 @interface DecorateDataController ()
 
-@property (nonatomic, strong) NSMutableArray<PhotoDecorateData *> *decorateDataArray;
+@property (atomic, strong) NSMutableArray<PhotoDecorateData *> *decorateDataArray;
 
 @end
 
 @implementation DecorateDataController
 
 - (void)addDecorateData:(PhotoDecorateData *)decoData {
+    if (!decoData)
+        return;
+    
     if (self.decorateDataArray == nil) {
         self.decorateDataArray = [@[decoData] mutableCopy];
     } else {
         [self.decorateDataArray addObject:decoData];
+        [self sortDecorateDatas];
     }
 }
 
@@ -59,6 +63,13 @@
     [self.decorateDataArray removeObjectAtIndex:index];
 }
 
+- (NSUInteger)getIndexOfDecorateData:(PhotoDecorateData *)data {
+    if (!data || [self isEmpty])
+        return NSNotFound;
+    
+    return [self.decorateDataArray indexOfObject:data];
+}
+
 - (PhotoDecorateData *)getDecorateDataAtIndex:(NSInteger)index {
     if ([self isOutBoundIndex:index])
         return nil;
@@ -81,23 +92,18 @@
     return nil;
 }
 
+//동기식 정렬을 수행한다. 따라서 이 메소드를 호출한 뒤에 작업을 진행한다고 비동기성으로 문제가 발생하지 않는다.
 - (void)sortDecorateDatas {
     if (![self isEmpty]) {
-//        [self.decorateDataArray sortUsingComparator:^NSComparisonResult(PhotoDecorateData  *_Nonnull obj1, PhotoDecorateData  *_Nonnull obj2) {
-//            //뭐가 오름차순인지 모르겠네? 일단 구현해놓고 나중에 수정하자.
-//            if ([obj1 getZOrder] < [obj2 getZOrder]) {
-//                return YES;
-//            } else {
-//                return NO;
-//            }
-//        }];
+        [self.decorateDataArray sortUsingComparator:^NSComparisonResult(PhotoDecorateData  *_Nonnull obj1, PhotoDecorateData  *_Nonnull obj2) {
+            return [obj1.timestamp compare:obj2.timestamp];
+        }];
     }
 }
 
 - (BOOL)isEmpty {
-    if (self.decorateDataArray != nil && self.decorateDataArray.count > 0) {
+    if (self.decorateDataArray != nil && self.decorateDataArray.count > 0)
         return NO;
-    }
     
     return YES;
 }
@@ -111,6 +117,9 @@
 }
 
 - (BOOL)isOutBoundIndex:(NSInteger)index {
+    if ([self isEmpty])
+        return YES;
+        
     if (index < [self getCount])
         return NO;
     

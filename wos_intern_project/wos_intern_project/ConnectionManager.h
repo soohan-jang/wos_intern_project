@@ -21,6 +21,7 @@
 
 @property (nonatomic, assign) BOOL messageQueueEnabled;
 
+@property (nonatomic, assign) NSInteger sessionState;
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
 @property (nonatomic, assign, readonly) CGRect ownScreenSize, connectedPeerScreenSize;
@@ -139,8 +140,6 @@
  */
 - (void)receivedEditorPhotoEditingCancelled:(NSIndexPath *)indexPath;
 
-- (void)receivedEditorPhotoEditingInterrupt:(NSIndexPath *)indexPath;
-
 /**
  상대방이 특정 사진 액자 영역에 사진을 삽입했을 때 호출된다.
  사진이 삽입되었을 때 내부적으로 sendResourceAtURL을 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
@@ -169,8 +168,6 @@
  상대방이 특정 그림 객체를 선택해제했을 때 호출된다.
  */
 - (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index;
-
-- (void)receivedEditorDecorateDataEditingInterrupt:(NSInteger)index;
 
 /**
  상대방이 그림 객체를 삽입했을 때 호출된다.

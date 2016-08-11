@@ -34,5 +34,4 @@
  */
 - (void)inputTextMenuViewDidCancelled:(PhotoInputTextMenuView *)inputTextMenu;
 
-
 @end

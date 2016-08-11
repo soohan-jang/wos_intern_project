@@ -41,36 +41,61 @@ NSInteger const SubMenuHeight          = 30;
 - (void)setupSubMenuButtons {
     self.resizeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SubMenuWidth, SubMenuHeight)];
     [self.resizeButton setImage:[UIImage imageNamed:@"SubMenuResize"] forState:UIControlStateNormal];
-//    [self.resizeButton setHidden:YES];
     [self.resizeButton setUserInteractionEnabled:YES];
     [self.resizeButton addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(pannedResizeButton:)]];
     
     self.deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, SubMenuWidth, SubMenuHeight)];
     [self.deleteButton setImage:[UIImage imageNamed:@"SubMenuDelete"] forState:UIControlStateNormal];
-//    [self.deleteButton setHidden:YES];
     [self.deleteButton setUserInteractionEnabled:YES];
     [self.deleteButton addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                     action:@selector(tappedDeleteButton:)]];
-    
-//    [self addSubview:self.resizeButton];
-//    [self addSubview:self.deleteButton];
 }
 
 - (void)addDecoView:(UIView *)decoView {
     if (!decoView)
         return;
     
-    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                           action:@selector(tappedDrawObjectView:)];
-    [tapGestureRecognizer setNumberOfTouchesRequired:1];
+    NSInteger count = self.subviews.count;
+    if (self.selectedDecoViewIndex != -1)
+        count = count - 2;
     
-    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                           action:@selector(pannedDrawObjectView:)];
+    [self addGestureRecognizersOnDecorateView:decoView];
     
-    [decoView setUserInteractionEnabled:YES];
-    [decoView setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
-    [self addSubview:decoView];
+    if (count == 0) {
+        //추가된 객체가 없을 때는 그냥 추가한다.
+        [self addSubview:decoView];
+    } else {
+        //추가된 객체가 있을 때는 맨 마지막에 위치한 객체의 위에 전달받은 객체를 추가한다.
+        UIView *belowView = self.subviews[count - 1];
+        [self insertSubview:decoView aboveSubview:belowView];
+    }
+}
+
+- (void)addDecoView:(UIView *)decoView index:(NSInteger)index {
+    if (!decoView)
+        return;
+    
+    NSInteger count = self.subviews.count;
+    
+    if (self.selectedDecoViewIndex != -1)
+        count = count - 2;  //선택된 객체가 있을 경우, 버튼이 추가되므로 count에서 2를 빼야한다.
+    
+    //추가된 객체가 없다. 이런 경우, 함수는 동작하지 않는다.
+    if (count == 0)
+        return;
+    
+    [self addGestureRecognizersOnDecorateView:decoView];
+    
+    if (index == 0) {
+        UIView *aboveView = self.subviews[0];
+        //0번 인덱스에 위치한 객체 아래에 전달받은 객체를 추가한다.
+        [self insertSubview:decoView belowSubview:aboveView];
+    } else {
+        //0번이 아니고, 기존에 추가된 객체가 있다면 - 무조건 앞에 추가될 객체의 인덱스 앞에 위치한 객체가 있다.
+        UIView *belowView = self.subviews[index - 1];
+        [self insertSubview:decoView aboveSubview:belowView];
+    }
 }
 
 - (void)addDecoViews:(NSArray<UIView *> *)decoViews {
@@ -194,6 +219,19 @@ NSInteger const SubMenuHeight          = 30;
         self.selectedDecoViewIndex = -1;
     }
 }
+
+
+#pragma mark - add & remove gesture recognizer methods
+
+- (void)addGestureRecognizersOnDecorateView:(UIView *)view {
+    UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(tappedDecorateView:)];
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(pannedDecorateView:)];
+    
+    [view setUserInteractionEnabled:YES];
+    [view setGestureRecognizers:@[tapGestureRecognizer, panGestureRecognizer]];
+}
          
 - (void)removeRecognizerOfView:(UIView *)view {
     NSArray<UIGestureRecognizer *> *recognizers = view.gestureRecognizers;
@@ -237,7 +275,7 @@ NSInteger const SubMenuHeight          = 30;
 /**
  그려진 객체에 Tap 이벤트가 발생했을 때 수행되는 메소드이다. 경계를 그리고, 수정에 필요한 버튼(크기조절, 회전, 삭제, Z-order 변경)을 표시한다.
  */
-- (void)tappedDrawObjectView:(UITapGestureRecognizer *)recognizer {
+- (void)tappedDecorateView:(UITapGestureRecognizer *)recognizer {
     [self changeSelectedDecoViewIndex:[self getDecoViewIndex:recognizer.view]];
 }
 
@@ -245,7 +283,7 @@ NSInteger const SubMenuHeight          = 30;
  그려진 객체에 Pan 이벤트가 발생했을 때 수행되는 메소드이다. 이벤트의 좌표값에 따라 객체의 위치를 변경한다.
  객체의 이동은 객체의 Center 값을 이벤트의 좌표로 할당함으로 수행한다.
  */
-- (void)pannedDrawObjectView:(UIPanGestureRecognizer *)recognizer {
+- (void)pannedDecorateView:(UIPanGestureRecognizer *)recognizer {
     UIView *view = recognizer.view;
     NSInteger index = [self getDecoViewIndex:recognizer.view];
     

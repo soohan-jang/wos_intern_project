@@ -237,6 +237,7 @@
 
 - (void)receivedPeerConnected {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.sessionState = MCSessionStateConnected;
     
     //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
     NSDictionary *message = [MessageFactory MessageGenerateScreenRect:connectionManager.ownScreenSize];
@@ -280,6 +281,8 @@
 }
 
 - (void)receivedPeerDisconnected {
+    [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
+    
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;

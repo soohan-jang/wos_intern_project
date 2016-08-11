@@ -19,6 +19,12 @@
  */
 - (void)addDecoView:(UIView *)decoView;
 /**
+ 그려진 객체를 지정된 인덱스에 추가한다. 추가된 객체는 DisplayView에 addSubView되어 화면에 표시된다. GestureRecognizer도 함께 추가한다.
+ 내부적으로 동작은 지정된 인덱스의 바로 앞에 존재하는 View를 가져와, insertSubview:below 혹은 insertSubview:above를 사용하여 추가한다.
+ 따라서 이 메소드는 반드시 기존에 추가된 뷰가 있을 때만 제한적으로 사용해야한다. 그렇지 않다면 이 함수는 작동하지 않는다.
+ */
+- (void)addDecoView:(UIView *)decoView index:(NSInteger)index;
+/**
  그려진 객체의 배열을 받아 다수의 객체를 추가하고, DisplayView에 addSubView한다. GestureRecognizer도 함께 추가한다.
  */
 - (void)addDecoViews:(NSArray<UIView *> *)decoViews;

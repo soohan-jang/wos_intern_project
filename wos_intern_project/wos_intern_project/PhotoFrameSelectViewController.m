@@ -260,10 +260,12 @@
 #pragma mark - ConnectionManager Session Connect Delegate Methods
 
 - (void)receivedPeerConnected {
-    
+    [ConnectionManager sharedInstance].sessionState = MCSessionStateConnected;
 }
 
 - (void)receivedPeerDisconnected {
+    [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
+    
     __weak typeof(self) weakSelf = self;
     UIAlertAction *okActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_ok"
                                                                   handler:^(UIAlertAction * _Nonnull action) {

@@ -42,6 +42,11 @@
 - (void)deleteDecorateDataAtIndex:(NSInteger)index;
 
 /**
+ 전달된 객체의 인덱스를 가져온다. 매니저 내부에 저장된 객체가 없을 시 NSNotFound를 반환한다.
+ */
+- (NSUInteger)getIndexOfDecorateData:(PhotoDecorateData *)data;
+
+/**
  저장된 그림 객체의 정보를 가져온다. 매니저 내부에 저장된 객체가 없을 시 nil을 반환한다.
  */
 - (PhotoDecorateData *)getDecorateDataAtIndex:(NSInteger)index;
