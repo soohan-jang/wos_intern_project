@@ -20,19 +20,17 @@ typedef NS_ENUM(NSInteger, ValueDataType) {
     
     vDataTypeEditorPhotoEdit              = 300,
     vDataTypeEditorPhotoEditCanceled      = 301,
-    vDataTypeEditorPhotoEditInterrupt     = 302,
-    vDataTypeEditorPhotoInsertedAck       = 303,
-    vDataTypeEditorPhotoDeleted           = 304,
+    vDataTypeEditorPhotoInsertedAck       = 302,
+    vDataTypeEditorPhotoDeleted           = 303,
     
     vDataTypeEditorDecorateEdit           = 400,
     vDataTypeEditorDecorateEditCanceled   = 401,
-    vDataTypeEditorDecorateEditInterrupt  = 402,
-    vDataTypeEditorDecorateInserted       = 403,
-    vDataTypeEditorDecorateUpdateMoved    = 404,
-    vDataTypeEditorDecorateUpdateResized  = 405,
-    vDataTypeEditorDecorateUpdateRotated  = 406,
-    vDataTypeEditorDecorateUpdateZOrder   = 407,
-    vDataTypeEditorDecorateDeleted        = 408
+    vDataTypeEditorDecorateInserted       = 402,
+    vDataTypeEditorDecorateUpdateMoved    = 403,
+    vDataTypeEditorDecorateUpdateResized  = 404,
+    vDataTypeEditorDecorateUpdateRotated  = 405,
+    vDataTypeEditorDecorateUpdateZOrder   = 406,
+    vDataTypeEditorDecorateDeleted        = 407
 };
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
@@ -41,9 +39,7 @@ extern NSString *const kScreenSize;
 
 /** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
 /** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-extern NSString *const kPhotoFrameSelected;
-
-extern NSString *const kPhotoFrameConfirmIndex;
+extern NSString *const kPhotoFrameIndex;
 extern NSString *const kPhotoFrameConfirmTimestamp;
 
 /** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
@@ -51,30 +47,22 @@ extern NSString *const kPhotoFrameConfirmTimestamp;
 extern NSString *const kPhotoFrameConfirmedAck;
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
-extern NSString *const kEditorPhotoEditIndexPath;
-extern NSString *const kEditorPhotoEditTimestamp;
-extern NSString *const kEditorPhotoEditCanceledIndexPath;
-extern NSString *const kEditorPhotoEditInterruptIndexPath;
+extern NSString *const kEditorPhotoIndexPath;
 
-extern NSString *const kEditorPhotoInsertedIndexPath;
+extern NSString *const kEditorPhotoEditTimestamp;
 extern NSString *const kEditorPhotoInsertedDataType;
 extern NSString *const kEditorPhotoInsertedData;
 extern NSString *const kEditorPhotoInsertedAck;
-extern NSString *const kEditorPhotoDeletedIndexPath;
 
-extern NSString *const kEditorDecorateEditIndex;
+extern NSString *const kEditorDecorateIndex;
+
 extern NSString *const kEditorDecorateEditTimestamp;
-extern NSString *const kEditorDecorateEditCanceledIndex;
-extern NSString *const kEditorDecorateEditInterruptIndex;
-
 extern NSString *const kEditorDecorateInsertedData;
 extern NSString *const kEditorDecorateInsertedTimestamp;
-extern NSString *const kEditorDecorateUpdateIndex;
 extern NSString *const kEditorDecorateUpdateMovedPoint;
 extern NSString *const kEditorDecorateUpdateResizedRect;
 extern NSString *const kEditorDecorateUpdateRotatedAngle;
 extern NSString *const kEditorDecorateUpdateZOrder;
-extern NSString *const kEditorDecorateDeletedIndex;
 
 @interface MessageFactory : NSObject
 
@@ -86,13 +74,11 @@ extern NSString *const kEditorDecorateDeletedIndex;
 
 + (NSDictionary *)MessageGeneratePhotoEdit:(NSIndexPath *)editIndexPath;
 + (NSDictionary *)MessageGeneratePhotoEditCanceled:(NSIndexPath *)editIndexPath;
-+ (NSDictionary *)MessageGeneratePhotoEditInterrupt:(NSIndexPath *)interruptIndexPath;
 + (NSDictionary *)MessageGeneratePhotoInsertCompleted:(NSIndexPath *)insertIndexPathItem success:(BOOL)success;
 + (NSDictionary *)MessageGeneratePhotoDeleted:(NSIndexPath *)deleteIndexPath;
 
 + (NSDictionary *)MessageGenerateDecorateDataEdit:(NSInteger)index;
 + (NSDictionary *)MessageGenerateDecorateDataEditCanceled:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataEditInterrupt:(NSInteger)index;
 + (NSDictionary *)MessageGenerateDecorateDataInserted:(id)data timestamp:(NSNumber *)timestamp;
 + (NSDictionary *)MessageGenerateDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)movedPoint;
 + (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect;

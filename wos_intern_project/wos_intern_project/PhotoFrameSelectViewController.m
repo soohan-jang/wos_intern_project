@@ -90,7 +90,7 @@
     
     //지금 단계에서는 메시지큐에 메시지가 하나만 존재한다.
     NSDictionary *message = [connectionManager getMessage];
-    [self changeCurrentSelectedFrameCellAtIndexPath:message[kPhotoFrameSelected]];
+    [self changeCurrentSelectedFrameCellAtIndexPath:message[kPhotoFrameIndex]];
 }
 
 
