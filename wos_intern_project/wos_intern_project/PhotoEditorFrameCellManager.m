@@ -10,7 +10,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 
-NSInteger const SectionNumber = 1;
 NSInteger const DefaultMargin = 5;
 
 @interface PhotoFrameCellManager ()
@@ -112,10 +111,6 @@ NSInteger const DefaultMargin = 5;
     }
     
     return CGSizeMake(cellWidth, cellHeight);
-}
-
-- (NSInteger)getSectionNumber {
-    return SectionNumber;
 }
 
 - (NSInteger)getItemNumber {

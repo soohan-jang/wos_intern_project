@@ -23,11 +23,6 @@ typedef NS_ENUM(NSInteger, CellState) {
 - (instancetype)initWithFrameNumber:(NSInteger)frameNumber;
 
 /**
- 섹션의 수를 반환한다. 섹션의 수는 1이다.
- */
-- (NSInteger)getSectionNumber;
-
-/**
  액자종류에 따라 표시될 사진 액자의 수를 반환한다.
  */
 - (NSInteger)getItemNumber;
