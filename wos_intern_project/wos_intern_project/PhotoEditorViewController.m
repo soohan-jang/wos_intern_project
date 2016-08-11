@@ -536,9 +536,10 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 - (void)decoViewDidDeletedAtIndex:(NSInteger)index {
+    NSNumber *timestamp = [[self.decoDataController getDecorateDataAtIndex:index].timestamp copy];
     [self.decoDataController deleteDecorateDataAtIndex:index];
     
-    NSDictionary *message = [MessageFactory MessageGenerateDecorateDataDeleted:index];
+    NSDictionary *message = [MessageFactory MessageGenerateDecorateDataDeleted:timestamp];
     [[ConnectionManager sharedInstance] sendMessage:message];
 }
 
@@ -841,7 +842,12 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     }];
 }
 
-- (void)receivedEditorDecorateDataDeleted:(NSInteger)index {
+- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp {
+    NSUInteger index = [self.decoDataController getIndexOfTimestamp:timestamp];
+    
+    if (index == NSNotFound)
+        return;
+    
     [self.decoDataController deleteDecorateDataAtIndex:index];
     
     __weak typeof(self) weakSelf = self;

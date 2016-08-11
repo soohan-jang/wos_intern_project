@@ -197,7 +197,7 @@
 /**
  상대방이 그림 객체를 삭제했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataDeleted:(NSInteger)index;
+- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp;
 
 - (void)interruptedEditorDecorateDataEditing:(NSInteger)index;
 

@@ -63,6 +63,7 @@ extern NSString *const kEditorDecorateUpdateMovedPoint;
 extern NSString *const kEditorDecorateUpdateResizedRect;
 extern NSString *const kEditorDecorateUpdateRotatedAngle;
 extern NSString *const kEditorDecorateUpdateZOrder;
+extern NSString *const kEditorDecorateDeleteTimestamp;
 
 @interface MessageFactory : NSObject
 
@@ -84,6 +85,6 @@ extern NSString *const kEditorDecorateUpdateZOrder;
 + (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect;
 + (NSDictionary *)MessageGenerateDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)rotatedAngle;
 + (NSDictionary *)MessageGenerateDecorateDataChangZOrder:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataDeleted:(NSInteger)index;
++ (NSDictionary *)MessageGenerateDecorateDataDeleted:(NSNumber *)timestamp;
 
 @end

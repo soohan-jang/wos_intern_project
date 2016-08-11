@@ -41,6 +41,7 @@ NSString *const kEditorDecorateUpdateMovedPoint        = @"decorate_update_moved
 NSString *const kEditorDecorateUpdateResizedRect       = @"decorate_update_resized_rect";
 NSString *const kEditorDecorateUpdateRotatedAngle      = @"decorate_update_rotated_angle";
 NSString *const kEditorDecorateUpdateZOrder            = @"decorate_update_z_order";
+NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_timestamp";
 
 @implementation MessageFactory
 
@@ -191,9 +192,9 @@ NSString *const kEditorDecorateUpdateZOrder            = @"decorate_update_z_ord
     return message;
 }
 
-+ (NSDictionary *)MessageGenerateDecorateDataDeleted:(NSInteger)index {
++ (NSDictionary *)MessageGenerateDecorateDataDeleted:(NSNumber *)timestamp {
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateDeleted),
-                              kEditorDecorateIndex: @(index)};
+                              kEditorDecorateDeleteTimestamp: timestamp};
     
     return message;
 }

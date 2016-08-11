@@ -63,6 +63,21 @@
     [self.decorateDataArray removeObjectAtIndex:index];
 }
 
+- (NSUInteger)getIndexOfTimestamp:(NSNumber *)timestamp {
+    if (!timestamp || [self isEmpty])
+        return NSNotFound;
+    
+    NSInteger index = 0;
+    for (PhotoDecorateData *decoData in self.decorateDataArray) {
+        if ([decoData.timestamp isEqualToNumber:timestamp]) {
+            return index;
+        }
+        index++;
+    }
+    
+    return NSNotFound;
+}
+
 - (NSUInteger)getIndexOfDecorateData:(PhotoDecorateData *)data {
     if (!data || [self isEmpty])
         return NSNotFound;

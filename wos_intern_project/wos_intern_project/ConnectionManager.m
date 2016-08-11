@@ -332,7 +332,7 @@
                 break;
             case vDataTypeEditorDecorateDeleted:
                 NSLog(@"Received Delete Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataDeleted:[message[kEditorDecorateIndex] integerValue]];
+                [self.photoEditorDelegate receivedEditorDecorateDataDeleted:message[kEditorDecorateDeleteTimestamp]];
                 break;
         }
     }
