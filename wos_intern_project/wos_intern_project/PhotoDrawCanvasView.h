@@ -13,6 +13,8 @@ typedef NS_ENUM(NSInteger, Mode) {
     ModeErase   = 1
 };
 
+extern CGFloat const DefaultLineWidth;
+
 @interface PhotoDrawCanvasView : UIView
 
 @property (nonatomic, strong) UIColor *lineColor;

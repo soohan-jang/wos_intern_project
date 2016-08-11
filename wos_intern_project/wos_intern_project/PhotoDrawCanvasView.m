@@ -9,7 +9,7 @@
 #import "PhotoDrawCanvasView.h"
 #import "CanvasPathData.h"
 
-int const DefaultLineWidth = 4;
+CGFloat const DefaultLineWidth = 4;
 
 @interface PhotoDrawCanvasView ()
 
@@ -134,7 +134,11 @@ int const DefaultLineWidth = 4;
     [self setNeedsDisplay];
 }
 
-//지우개 기능 초기버전. 개선의 여지가 많다.
+//지우개 1차 개선버전 - 오버헤드가 심할 것 같은데? 성능적으로 너무 저하되면 사용할 수 없다.
+//성능에 대해서 파악한 이후에 기존에 논의하였던 Undo/Redo 방식의 적용을 검토해볼 필요성이 있다.
+CGFloat const EraserRecognizeDistance = 1.0f;
+CGFloat const EraserDistanceIncrement = 0.1f;
+
 - (void)removePathLocatedAtPoint:(CGPoint)point {
     if (self.pathDatas == nil || self.pathDatas.count == 0)
         return;
@@ -143,9 +147,22 @@ int const DefaultLineWidth = 4;
     
     for (CanvasPathData *pathData in reversedArray) {
         CGPathRef pathRef = [pathData.path CGPath];
-        if (!CGPathContainsPoint(pathRef, NULL, point, true))
-            continue;
+        BOOL isContained = NO;
+        for (CGFloat x = point.x - EraserRecognizeDistance; x <= point.x + EraserRecognizeDistance; x = x + EraserDistanceIncrement) {
+            for (CGFloat y = point.y - EraserRecognizeDistance; y <= point.y + EraserRecognizeDistance; y = y + EraserDistanceIncrement) {
+                if (!CGPathContainsPoint(pathRef, NULL, CGPointMake(x, y), true))
+                    continue;
+                
+                isContained = YES;
+                break;
+            }
+            if (isContained)
+                break;
+        }
         
+        if (!isContained)
+            continue;
+            
         [self.pathDatas removeObject:pathData];
         [self setNeedsDisplay];
         break;

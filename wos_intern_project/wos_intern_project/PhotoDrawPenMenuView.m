@@ -43,13 +43,13 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     if (self.eraseButton.tag == Selected)
         [self toggleEraseButton];
     
-    [self.lineWidthSlider setValue:10];
-    [self.lineWidthLabel setText:@"10"];
+    [self.lineWidthSlider setValue:DefaultLineWidth];
+    [self.lineWidthLabel setText:@(DefaultLineWidth).stringValue];
     
     //CanvasView를 초기화한다.
     [self.canvasView clear];
     [self.canvasView setLineColor:[UIColor blackColor]];
-    [self.canvasView setLineWidth:10];
+    [self.canvasView setLineWidth:DefaultLineWidth];
 }
 
 

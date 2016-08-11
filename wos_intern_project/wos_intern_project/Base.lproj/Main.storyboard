@@ -346,7 +346,7 @@
                                     <view hidden="YES" alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dgt-wX-GiS">
                                         <rect key="frame" x="0.0" y="411" width="600" height="50"/>
                                         <subviews>
-                                            <slider opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="470" placeholderIntrinsicHeight="30" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="1" maxValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="j9s-Zo-Zg6">
+                                            <slider opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="470" placeholderIntrinsicHeight="30" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="4" minValue="1" maxValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="j9s-Zo-Zg6">
                                                 <rect key="frame" x="8" y="10" width="459" height="31"/>
                                                 <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                                                 <connections>
@@ -371,7 +371,7 @@
                                                     <constraint firstAttribute="height" constant="50" id="Wdo-aJ-AS5"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
