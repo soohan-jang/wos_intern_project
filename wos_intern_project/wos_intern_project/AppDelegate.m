@@ -55,7 +55,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     connectionManager.photoFrameControlDelegate = nil;
     connectionManager.photoFrameDataDelegate = nil;
     
-    connectionManager.photoEditorDelegate = nil;
+    connectionManager.photoDataDelegate = nil;
+    connectionManager.decorateDataDelegate = nil;
     
     connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
@@ -73,7 +74,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     connectionManager.photoFrameControlDelegate = nil;
     connectionManager.photoFrameDataDelegate = nil;
     
-    connectionManager.photoEditorDelegate = nil;
+    connectionManager.photoDataDelegate = nil;
+    connectionManager.decorateDataDelegate = nil;
     
     connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];

@@ -32,7 +32,7 @@
 #import "ImageUtility.h"
 #import "MessageFactory.h"
 
-@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoEditorDelegate>
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoDataDelegate>
 
 @property (nonatomic, strong) PhotoEditorFrameCellManager *cellManager;
 @property (atomic, strong) DecorateDataController *decoDataController;
@@ -61,9 +61,10 @@
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    
     [self setupDelegates];
-    [self setupMenu];
     [self setupDrawController];
+    [self setupMenu];
     
     [self addObservers];
 }
@@ -71,7 +72,7 @@
 - (void)setupDelegates {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionDelegate = self;
-    connectionManager.photoEditorDelegate = self;
+    connectionManager.photoDataDelegate = self;
     
     self.drawPenMenuView.delegate = self;
     self.inputTextMenuView.delegate = self;
@@ -96,6 +97,7 @@
 
 - (void)setupDrawController {
     self.decoDataController = [[DecorateDataController alloc] init];
+    self.decoDataController.delegate = self;
     self.decorateDataDisplayView.delegate = self;
 }
 
@@ -137,7 +139,10 @@
 }
 
 - (void)dealloc {
-    [ConnectionManager sharedInstance].photoEditorDelegate = nil;
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.photoDataDelegate = nil;
+    connectionManager.decorateDataDelegate = nil;
+    
     [ImageUtility removeAllTemporaryImages];
     [self removeObservers];
 }
@@ -175,11 +180,20 @@
 
 #pragma mark - Load Other ViewController Methods
 
-- (void)loadPhotoCropViewController {
+- (void)presentPhotoCropViewController {
     [self performSegueWithIdentifier:SegueMoveToCropper sender:self];
 }
 
-- (void)loadMainViewController {
+- (void)presentMainViewController {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    [connectionManager setSessionDelegate:nil];
+    [connectionManager setPhotoDataDelegate:nil];
+    [connectionManager setDecorateDataDelegate:nil];
+    [connectionManager setMessageQueueEnabled:NO];
+    [connectionManager clearMessageQueue];
+    [connectionManager disconnectSession];
+    
+    [self.decoDataController setDelegate:nil];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -206,11 +220,7 @@
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     
     if (connectionManager.sessionState == MCSessionStateNotConnected) {
-        connectionManager.sessionDelegate = nil;
-        connectionManager.photoEditorDelegate = nil;
-        [connectionManager disconnectSession];
-        
-        [self loadMainViewController];
+        [self presentMainViewController];
         return;
     }
     
@@ -220,14 +230,7 @@
     UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
                                                                    handler:^(UIAlertAction * _Nonnull action) {
                                                                        __strong typeof(weakSelf) self = weakSelf;
-                                                                       
-                                                                       //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-                                                                       ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                       connectionManager.sessionDelegate = nil;
-                                                                       connectionManager.photoEditorDelegate = nil;
-                                                                       [connectionManager disconnectSession];
-                                                                       
-                                                                       [self loadMainViewController];
+                                                                       [self presentMainViewController];
                                                                    }];
     
     [AlertHelper showAlertControllerOnViewController:self
@@ -359,7 +362,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (BOOL)photoMenuPhotoEdit {
     self.selectedImageURL = nil;
-    [self loadPhotoCropViewController];
+    [self presentPhotoCropViewController];
     
     return NO;
 }
@@ -438,7 +441,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
             NSDictionary *message = [MessageFactory MessageGeneratePhotoEditCanceled:self.selectedIndexPath];
             [[ConnectionManager sharedInstance] sendMessage:message];
         } else {
-            [self loadPhotoCropViewController];
+            [self presentPhotoCropViewController];
         }
     }];
 }
@@ -486,6 +489,145 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 - (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
     NSDictionary *message = [MessageFactory MessageGeneratePhotoEditCanceled:self.selectedIndexPath];
     [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+
+#pragma mark - Decorate Data Controller Delegate Methods
+
+- (void)didSelectDecorateData:(NSInteger)index {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:NO];
+    }];
+}
+
+- (void)didDeselectDecorateData:(NSInteger)index {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:YES];
+    }];
+}
+
+- (void)didInsertDecorateData:(NSInteger)index {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        
+        UIView *decoView = [[self.decoDataController getDecorateDataAtIndex:index] getView];
+        
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        if ([self.decoDataController getCount] == 1) {
+            //하나만 있을 때는 일반적인 추가 절차를 따른다.
+            [self.decorateDataDisplayView addDecoView:decoView];
+            return;
+        }
+        
+        //에외처리.
+        if (index == NSNotFound) {
+            return;
+        }
+        
+        if (index == [self.decoDataController getCount] - 1) {
+            //정렬된 배열에서의 위치가 맨 마지막일 경우, 일반적인 추가 절차를 따른다.
+            [self.decorateDataDisplayView addDecoView:decoView];
+        } else {
+            //정렬된 배열에서의 위치가 맨 마지막이 아닐 경우, 하나 이상의 객체가 이미 추가되어 있음을 의미한다.
+            //들어갈 인덱스의 값을 지정하여 보내준다.
+            [self.decorateDataDisplayView addDecoView:decoView index:index];
+        }
+    }];
+}
+
+- (void)didUpdateDecorateData:(NSInteger)index point:(CGPoint)point {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView updateDecoViewAtIndex:index point:point];
+    }];
+}
+
+- (void)didUpdateDecorateData:(NSInteger)index rect:(CGRect)rect {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView updateDecoViewAtIndex:index rect:rect];
+    }];
+}
+
+- (void)didUpdateDecorateData:(NSInteger)index angle:(CGFloat)angle {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView updateDecoViewAtIndex:index angle:angle];
+    }];
+}
+
+- (void)didUpdateDecorateDataZOrder:(NSInteger)index {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView updateDecoViewZOrderAtIndex:index];
+    }];
+}
+
+- (void)didDeleteDecorateData:(NSInteger)index {
+    if (index == NSNotFound) {
+        return;
+    }
+    
+    [self.decoDataController deleteDecorateDataAtIndex:index];
+    
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView deleteDecoViewAtIndex:index];
+    }];
+}
+
+- (void)didInterruptDecorateData {
+    __weak typeof(self) weakSelf = self;
+    
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self || !self.decorateDataDisplayView) {
+            return;
+        }
+        
+        [self.decorateDataDisplayView deselectDecoView];
+    }];
 }
 
 
@@ -615,9 +757,14 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
                                                                 handler:^(UIAlertAction * _Nonnull action) {
                                                                     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
                                                                     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                    connectionManager.sessionDelegate = nil;
-                                                                    connectionManager.photoEditorDelegate = nil;
-                                                                    connectionManager.messageQueueEnabled = NO;
+                                                                    [connectionManager setSessionDelegate:nil];
+                                                                    [connectionManager setPhotoDataDelegate:nil];
+                                                                    [connectionManager setDecorateDataDelegate:nil];
+                                                                    [connectionManager setMessageQueueEnabled:NO];
+                                                                    [connectionManager clearMessageQueue];
+                                                                    
+                                                                    [self.decoDataController setDelegate:nil];
+                                                                    
                                                                     [connectionManager disconnectSession];
                                                                 }];
     
@@ -627,14 +774,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
                                                                      if (!self)
                                                                          return;
                                                                      
-                                                                     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-                                                                     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                     connectionManager.sessionDelegate = nil;
-                                                                     connectionManager.photoEditorDelegate = nil;
-                                                                     connectionManager.messageQueueEnabled = NO;
-                                                                     [connectionManager disconnectSession];
-                                                                     
-                                                                     [self loadMainViewController];
+                                                                     [self presentMainViewController];
                                                                  }];
     
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
@@ -652,7 +792,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 
-#pragma mark - ConnectionManager Photo Editor Delegate Methods - Photo Part
+#pragma mark - ConnectionManager Photo Delegate Methods
 
 - (void)receivedEditorPhotoEditing:(NSIndexPath *)indexPath {
     [self.cellManager setCellStateAtIndexPath:indexPath state:CellStateEditing];
@@ -710,169 +850,6 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
         }
         
         [self.photoMenu dismissMenu];
-    }];
-}
-
-
-#pragma mark - ConnectionManager Photo Editor Delegate Methods - DecorateData Part
-
-- (void)receivedEditorDecorateDataEditing:(NSInteger)index {
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-        
-        [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:NO];
-    }];
-}
-
-- (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index {
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-        
-        [self.decorateDataDisplayView setDecoViewEditableAtIndex:index enable:YES];
-    }];
-}
-
-- (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp {
-    PhotoDecorateData *decorateData;
-    
-    if ([insertData isKindOfClass:[UIImage class]]) {
-        NSLog(@"I'm Image.");
-        decorateData = [[PhotoDecorateImageData alloc] initWithImage:insertData timestamp:timestamp];
-    } else if ([insertData isKindOfClass:[NSString class]]) {
-        NSLog(@"I'm Text.");
-        decorateData = [[PhotoDecorateTextData alloc] initWithText:insertData timestamp:timestamp];
-    }
-    
-    [self.decoDataController addDecorateData:decorateData];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-        
-        UIView *decoView = [decorateData getView];
-        
-        //위에서 하나 추가했으니까, 무조건 하나는 있다.
-        if ([self.decoDataController getCount] == 1) {
-            //하나만 있을 때는 일반적인 추가 절차를 따른다.
-            [self.decorateDataDisplayView addDecoView:decoView];
-            return;
-        }
-        
-        //하나 이상있을 때는, 방금 추가된 객체의 동기화된 인덱스를 확인한 뒤 결정한다.
-        NSUInteger index = [self.decoDataController getIndexOfDecorateData:decorateData];
-        //에외처리.
-        if (index == NSNotFound) {
-            return;
-        }
-        
-        if (index == [self.decoDataController getCount] - 1) {
-            //정렬된 배열에서의 위치가 맨 마지막일 경우, 일반적인 추가 절차를 따른다.
-            [self.decorateDataDisplayView addDecoView:decoView];
-        } else {
-            //정렬된 배열에서의 위치가 맨 마지막이 아닐 경우, 하나 이상의 객체가 이미 추가되어 있음을 의미한다.
-            //들어갈 인덱스의 값을 지정하여 보내준다.
-            [self.decorateDataDisplayView addDecoView:decoView index:index];
-        }
-    }];
-}
-
-- (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point {
-    [self.decoDataController updateDecorateDataAtIndex:index point:point];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-        
-        [self.decorateDataDisplayView updateDecoViewAtIndex:index point:point];
-    }];
-}
-
-- (void)receivedEditorDecorateDataResized:(NSInteger)index resizedRect:(CGRect)rect {
-    [self.decoDataController updateDecorateDataAtIndex:index rect:rect];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-
-        [self.decorateDataDisplayView updateDecoViewAtIndex:index rect:rect];
-    }];
-}
-
-- (void)receivedEditorDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)angle {
-    [self.decoDataController updateDecorateDataAtIndex:index angle:angle];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-
-        [self.decorateDataDisplayView updateDecoViewAtIndex:index angle:angle];
-    }];
-}
-
-- (void)receivedEditorDecorateDataZOrderChanged:(NSInteger)index {
-    [self.decoDataController updateDecorateDataZOrderAtIndex:index];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-
-        [self.decorateDataDisplayView updateDecoViewZOrderAtIndex:index];
-    }];
-}
-
-- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp {
-    NSUInteger index = [self.decoDataController getIndexOfTimestamp:timestamp];
-    
-    if (index == NSNotFound) {
-        return;
-    }
-    
-    [self.decoDataController deleteDecorateDataAtIndex:index];
-    
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-
-        [self.decorateDataDisplayView deleteDecoViewAtIndex:index];
-    }];
-}
-
-- (void)interruptedEditorDecorateDataEditing:(NSInteger)index {
-    __weak typeof(self) weakSelf = self;
-    
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.decorateDataDisplayView) {
-            return;
-        }
-        
-        [self.decorateDataDisplayView deselectDecoView];
     }];
 }
 

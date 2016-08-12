@@ -9,7 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "PhotoDecorateData.h"
 
+@protocol DecorateDataControllerDelegate;
+
 @interface DecorateDataController : NSObject
+
+@property (weak, nonatomic) id<DecorateDataControllerDelegate> delegate;
 
 /**
  그림 객체를 매니저에 저장한다.
@@ -75,5 +79,20 @@
  내부에 저장된 값의 개수를 반환한다. 매니저 내부에 객체를 저장하는 변수가 nil이거나, 저장된 객체가 없을 시 0을 반환한다.
  */
 - (NSInteger)getCount;
+
+@end
+
+@protocol DecorateDataControllerDelegate <NSObject>
+@required
+
+- (void)didSelectDecorateData:(NSInteger)index;
+- (void)didDeselectDecorateData:(NSInteger)index;
+- (void)didInsertDecorateData:(NSInteger)index;
+- (void)didUpdateDecorateData:(NSInteger)index point:(CGPoint)point;
+- (void)didUpdateDecorateData:(NSInteger)index rect:(CGRect)rect;
+- (void)didUpdateDecorateData:(NSInteger)index angle:(CGFloat)angle;
+- (void)didUpdateDecorateDataZOrder:(NSInteger)index;
+- (void)didDeleteDecorateData:(NSInteger)index;
+- (void)didInterruptDecorateData;
 
 @end

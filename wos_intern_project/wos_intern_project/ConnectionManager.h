@@ -17,8 +17,6 @@
 @protocol ConnectionManagerPhotoDataDelegate;
 @protocol ConnectionManagerDecorateDataDelegate;
 
-@protocol ConnectionManagerPhotoEditorDelegate;
-
 @interface ConnectionManager : NSObject <MCSessionDelegate, CBCentralManagerDelegate>
 
 @property (nonatomic, weak) id<ConnectionManagerSessionDelegate> sessionDelegate;
@@ -28,8 +26,6 @@
 
 @property (nonatomic, weak) id<ConnectionManagerPhotoDataDelegate> photoDataDelegate;
 @property (nonatomic, weak) id<ConnectionManagerDecorateDataDelegate> decorateDataDelegate;
-
-@property (nonatomic, weak) id<ConnectionManagerPhotoEditorDelegate> photoEditorDelegate;
 
 @property (nonatomic, assign) BOOL messageQueueEnabled;
 
@@ -148,10 +144,10 @@
 @end
 
 
-#pragma mark - ConnectionManagerPhotoEditorDelegate
+#pragma mark - ConnectionManagerPhotoDataDelegate
 
-@protocol ConnectionManagerPhotoEditorDelegate <NSObject>
-
+@protocol ConnectionManagerPhotoDataDelegate <NSObject>
+@required
 /**
  상대방이 특정 사진 액자 영역을 선택했을 때 호출된다.
  */
@@ -184,6 +180,13 @@
  */
 - (void)interruptedEditorPhotoEditing:(NSIndexPath *)indexPath;
 
+@end
+
+
+#pragma mark - ConnectionManagerDecorateDataDelegate
+
+@protocol ConnectionManagerDecorateDataDelegate <NSObject>
+@required
 /**
  상대방에 특정 그림 객체를 선택했을 때 호출된다.
  */
@@ -227,6 +230,6 @@
 /**
  현재 사용자의 작업을 취소하기 위해 호출된다.
  */
-- (void)interruptedEditorDecorateDataEditing:(NSInteger)index;
+- (void)interruptedEditorDecorateDataEditing;
 
 @end

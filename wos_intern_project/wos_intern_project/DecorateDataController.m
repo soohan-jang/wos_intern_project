@@ -7,14 +7,28 @@
 //
 
 #import "DecorateDataController.h"
+#import "ConnectionManager.h"
 
-@interface DecorateDataController ()
+#import "PhotoDecorateImageData.h"
+#import "PhotoDecorateTextData.h"
+
+@interface DecorateDataController () <ConnectionManagerDecorateDataDelegate>
 
 @property (atomic, strong) NSMutableArray<PhotoDecorateData *> *decorateDataArray;
 
 @end
 
 @implementation DecorateDataController
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        [ConnectionManager sharedInstance].decorateDataDelegate = self;
+    }
+    
+    return self;
+}
 
 - (void)addDecorateData:(PhotoDecorateData *)decoData {
     if (!decoData) {
@@ -151,6 +165,67 @@
     }
     
     return YES;
+}
+
+
+#pragma mark - ConnectionManager Decorate Data Delegate Methods
+
+- (void)receivedEditorDecorateDataEditing:(NSInteger)index {
+    [self.delegate didSelectDecorateData:index];
+}
+
+- (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index {
+    [self.delegate didDeselectDecorateData:index];
+}
+
+- (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp {
+    PhotoDecorateData *decorateData;
+    
+    if ([insertData isKindOfClass:[UIImage class]]) {
+        NSLog(@"I'm Image.");
+        decorateData = [[PhotoDecorateImageData alloc] initWithImage:insertData timestamp:timestamp];
+    } else if ([insertData isKindOfClass:[NSString class]]) {
+        NSLog(@"I'm Text.");
+        decorateData = [[PhotoDecorateTextData alloc] initWithText:insertData timestamp:timestamp];
+    }
+    
+    [self addDecorateData:decorateData];
+    [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData]];
+}
+
+- (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point {
+    [self updateDecorateDataAtIndex:index point:point];
+    [self.delegate didUpdateDecorateData:index point:point];
+}
+
+- (void)receivedEditorDecorateDataResized:(NSInteger)index resizedRect:(CGRect)rect {
+    [self updateDecorateDataAtIndex:index rect:rect];
+    [self.delegate didUpdateDecorateData:index rect:rect];
+}
+
+- (void)receivedEditorDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)angle {
+    [self updateDecorateDataAtIndex:index angle:angle];
+    [self.delegate didUpdateDecorateData:index angle:angle];
+}
+
+- (void)receivedEditorDecorateDataZOrderChanged:(NSInteger)index {
+    [self updateDecorateDataZOrderAtIndex:index];
+    [self.delegate didUpdateDecorateDataZOrder:index];
+}
+
+- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp {
+    NSUInteger index = [self getIndexOfTimestamp:timestamp];
+    
+    if (index == NSNotFound) {
+        return;
+    }
+    
+    [self deleteDecorateDataAtIndex:index];
+    [self.delegate didDeleteDecorateData:index];
+}
+
+- (void)interruptedEditorDecorateDataEditing {
+    [self.delegate didInterruptDecorateData];
 }
 
 @end

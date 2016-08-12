@@ -241,92 +241,97 @@
         }
     }
     
-    if (self.photoEditorDelegate) {
+    if (self.photoDataDelegate) {
         switch (dataType) {
             case vDataTypeEditorPhotoEdit:
                 NSLog(@"Received Edit Photo");
                 if (self.lastSendMsgTimestamp == nil) {
-                    [self.photoEditorDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                    [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
                     break;
                 }
                 
                 if (self.selectedPhotoFrameIndex.item == ((NSIndexPath *)message[kEditorPhotoIndexPath]).item) {
                     if ([message[kEditorPhotoEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                        [self.photoEditorDelegate interruptedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
-                        [self.photoEditorDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                        [self.photoDataDelegate interruptedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                        [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
                         
                         self.lastSendMsgTimestamp = nil;
                         self.selectedPhotoFrameIndex = nil;
                     }
                 } else {
-                    [self.photoEditorDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                    [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
                 }
                 
                 break;
             case vDataTypeEditorPhotoEditCanceled:
                 NSLog(@"Received Edit Photo Canceled");
-                [self.photoEditorDelegate receivedEditorPhotoEditingCancelled:message[kEditorPhotoIndexPath]];
+                [self.photoDataDelegate receivedEditorPhotoEditingCancelled:message[kEditorPhotoIndexPath]];
                 break;
             case vDataTypeEditorPhotoInsertedAck:
                 NSLog(@"Received Insert Photo Ack");
-                [self.photoEditorDelegate receivedEditorPhotoInsertAck:message[kEditorPhotoIndexPath]
+                [self.photoDataDelegate receivedEditorPhotoInsertAck:message[kEditorPhotoIndexPath]
                                                                    ack:[message[kEditorPhotoInsertedAck] boolValue]];
                 break;
             case vDataTypeEditorPhotoDeleted:
                 NSLog(@"Received Delete Photo");
-                [self.photoEditorDelegate receivedEditorPhotoDeleted:message[kEditorPhotoIndexPath]];
+                [self.photoDataDelegate receivedEditorPhotoDeleted:message[kEditorPhotoIndexPath]];
                 break;
+        }
+    }
+    
+    if (self.decorateDataDelegate) {
+        switch (dataType) {
             case vDataTypeEditorDecorateEdit:
                 NSLog(@"Received Edit Decorate Data");
                 if (self.lastSendMsgTimestamp == nil) {
-                    [self.photoEditorDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                    [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
                     break;
                 }
                 
                 if ([self.selectedDecorateDataIndex integerValue] == [message[kEditorDecorateIndex] integerValue]) {
                     if ([message[kEditorDecorateEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                        [self.photoEditorDelegate interruptedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
-                        [self.photoEditorDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                        [self.decorateDataDelegate interruptedEditorDecorateDataEditing];
+                        [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
                         
                         self.lastSendMsgTimestamp = nil;
                         self.selectedDecorateDataIndex = nil;
                     }
                 } else {
-                    [self.photoEditorDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                    [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
                 }
                 
                 break;
             case vDataTypeEditorDecorateEditCanceled:
                 NSLog(@"Received Edit Cancel Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataEditCancelled:[message[kEditorDecorateIndex] integerValue]];
+                [self.decorateDataDelegate receivedEditorDecorateDataEditCancelled:[message[kEditorDecorateIndex] integerValue]];
                 break;
             case vDataTypeEditorDecorateInserted:
                 NSLog(@"Received Insert Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataInsert:message[kEditorDecorateInsertedData]
-                                                                   timestamp:message[kEditorDecorateInsertedTimestamp]];
+                [self.decorateDataDelegate receivedEditorDecorateDataInsert:message[kEditorDecorateInsertedData]
+                                                                 timestamp:message[kEditorDecorateInsertedTimestamp]];
                 break;
             case vDataTypeEditorDecorateUpdateMoved:
                 NSLog(@"Received Update Moved Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataMoved:[message[kEditorDecorateIndex] integerValue]
+                [self.decorateDataDelegate receivedEditorDecorateDataMoved:[message[kEditorDecorateIndex] integerValue]
                                                                movedPoint:[message[kEditorDecorateUpdateMovedPoint] CGPointValue]];
                 break;
             case vDataTypeEditorDecorateUpdateResized:
                 NSLog(@"Received Update Resized Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataResized:[message[kEditorDecorateIndex] integerValue]
+                [self.decorateDataDelegate receivedEditorDecorateDataResized:[message[kEditorDecorateIndex] integerValue]
                                                                 resizedRect:[message[kEditorDecorateUpdateResizedRect] CGRectValue]];
                 break;
             case vDataTypeEditorDecorateUpdateRotated:
                 NSLog(@"Received Update Rotated Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataRotated:[message[kEditorDecorateIndex] integerValue]
+                [self.decorateDataDelegate receivedEditorDecorateDataRotated:[message[kEditorDecorateIndex] integerValue]
                                                                rotatedAngle:[message[kEditorDecorateUpdateRotatedAngle] floatValue]];
                 break;
             case vDataTypeEditorDecorateUpdateZOrder:
                 NSLog(@"Received Update Z Order Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataZOrderChanged:[message[kEditorDecorateIndex] integerValue]];
+                [self.decorateDataDelegate receivedEditorDecorateDataZOrderChanged:[message[kEditorDecorateIndex] integerValue]];
                 break;
             case vDataTypeEditorDecorateDeleted:
                 NSLog(@"Received Delete Decorate Data");
-                [self.photoEditorDelegate receivedEditorDecorateDataDeleted:message[kEditorDecorateDeleteTimestamp]];
+                [self.decorateDataDelegate receivedEditorDecorateDataDeleted:message[kEditorDecorateDeleteTimestamp]];
                 break;
         }
     }
@@ -345,7 +350,7 @@
     if ([fileType isEqualToString:PostfixImageCropped]) {
         NSLog(@"Receive Start Insert Photo");
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
-        [self.photoEditorDelegate receivedEditorPhotoInsert:indexPath type:fileType url:nil];
+        [self.photoDataDelegate receivedEditorPhotoInsert:indexPath type:fileType url:nil];
     }
 }
 
@@ -360,7 +365,7 @@
     NSString *fileType = array[1];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
-    [self.photoEditorDelegate receivedEditorPhotoInsert:indexPath type:fileType url:localURL];
+    [self.photoDataDelegate receivedEditorPhotoInsert:indexPath type:fileType url:localURL];
     
     if ([fileType isEqualToString:PostfixImageFullscreen]) {
         NSLog(@"Receive Finish Insert Photo");
