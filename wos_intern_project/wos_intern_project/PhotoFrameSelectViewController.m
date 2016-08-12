@@ -237,6 +237,10 @@
     UIAlertAction *acceptActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_accept"
                                                                       handler:^(UIAlertAction * _Nonnull action) {
                                                                           __strong typeof(weakSelf) self = weakSelf;
+                                                                          if (!self) {
+                                                                              return;
+                                                                          }
+                                                                          
                                                                           //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
                                                                           ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
                                                                           
@@ -246,11 +250,18 @@
                                                                           [self presentPhotoEditorViewController];
                                                                       }];
     
-    [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_frame_select_confirm"
-                                          messageKey:@"alert_content_frame_select_confirm"
-                                         firstButton:declineActionButton
-                                        secondButton:acceptActionButton];
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
+            return;
+        }
+        
+        [AlertHelper showAlertControllerOnViewController:self
+                                                titleKey:@"alert_title_frame_select_confirm"
+                                              messageKey:@"alert_content_frame_select_confirm"
+                                             firstButton:declineActionButton
+                                            secondButton:acceptActionButton];
+    }];
 }
 
 

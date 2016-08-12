@@ -24,8 +24,7 @@
 #import "PhotoDrawPenMenuView.h"
 #import "PhotoInputTextMenuView.h"
 
-#import "PhotoDecorateImageData.h"
-#import "PhotoDecorateTextData.h"
+#import "PhotoDecorateData.h"
 
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
@@ -163,6 +162,18 @@
         [self.decoDataVisibleToggleButton setHidden:NO];
         [self.editMenuButton setHidden:NO];
         [self.drawPenMenuView setHidden:YES];
+    }
+}
+
+- (void)setVisibleInputTextMenuView:(BOOL)visible {
+    if (visible) {
+        [self.decoDataVisibleToggleButton setHidden:YES];
+        [self.editMenuButton setHidden:YES];
+        [self.inputTextMenuView setHidden:NO];
+    } else {
+        [self.decoDataVisibleToggleButton setHidden:NO];
+        [self.editMenuButton setHidden:NO];
+        [self.inputTextMenuView setHidden:YES];
     }
 }
 
@@ -417,7 +428,8 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 - (void)decorateMainMenuText {
-    
+    [self setVisibleInputTextMenuView:YES];
+    [self setVisibleDecorateDataDisplayView:YES];
 }
 
 - (void)decorateMainMenuSticker {
@@ -523,7 +535,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
         
-        UIView *decoView = [[self.decoDataController getDecorateDataAtIndex:index] getView];
+        UIImageView *decoView = [[self.decoDataController getDecorateDataAtIndex:index] getView];
         
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -680,22 +692,38 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 
-#pragma mark - PhotoDrawPenMenuView Delegate Methods
+#pragma mark - Create & Add & Send Decorate Image Method
 
-- (void)drawPenMenuViewDidFinished:(PhotoDrawPenMenuView *)drawPenMenuView WithImage:(UIImage *)image {
-    [self setVisibleDrawPenMenuView:NO];
-    
-    if (!image)
+- (void)addDecorateView:(UIImage *)image {
+    [self addDecorateView:image scale:1.0f];
+}
+
+- (void)addDecorateView:(UIImage *)image scale:(CGFloat)scale {
+    if (!image) {
         return;
+    }
     
-    PhotoDecorateImageData *imageData = [[PhotoDecorateImageData alloc] initWithImage:image];
+    PhotoDecorateData *imageData = [[PhotoDecorateData alloc] initWithImage:image];
     [self.decoDataController addDecorateData:imageData];
     
-    UIView *decoView = [imageData getView];
+    UIImageView *decoView = [imageData getView];
+    decoView.frame = CGRectMake(decoView.frame.origin.x,
+                                     decoView.frame.origin.y,
+                                     decoView.frame.size.width * scale,
+                                     decoView.frame.size.height * scale);
+    
     [self.decorateDataDisplayView addDecoView:decoView];
     
     NSDictionary *message = [MessageFactory MessageGenerateDecorateDataInserted:imageData.data timestamp:imageData.timestamp];
     [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+
+#pragma mark - PhotoDrawPenMenuView Delegate Methods
+
+- (void)drawPenMenuViewDidFinished:(PhotoDrawPenMenuView *)drawPenMenuView WithImage:(UIImage *)image {
+    [self setVisibleDrawPenMenuView:NO];
+    [self addDecorateView:image];
 }
 
 - (void)drawPenMenuViewDidCancelled:(PhotoDrawPenMenuView *)drawPenMenuView {
@@ -703,14 +731,15 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 
-#pragma mark - PhotoInputPenMenuView Delegate Methods
+#pragma mark - PhotoInputTextMenuView Delegate Methods
 
 - (void)inputTextMenuViewDidFinished:(PhotoInputTextMenuView *)inputTextMenu WithImage:(UIImage *)image {
-    
+    [self setVisibleInputTextMenuView:NO];
+    [self addDecorateView:image];
 }
 
 - (void)inputTextMenuViewDidCancelled:(PhotoInputTextMenuView *)inputTextMenu {
-    
+    [self setVisibleInputTextMenuView:NO];
 }
 
 

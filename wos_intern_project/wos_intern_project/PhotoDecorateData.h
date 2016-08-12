@@ -15,15 +15,13 @@
 @property (nonatomic, assign) CGRect frame;
 @property (nonatomic, assign) CGFloat angle;
 
-/**
- Timestamp를 받아 z-order를 설정하고, 객체의 identifier를 만들어 설정한다.
- */
-- (instancetype)initWithTimestamp:(NSNumber *)timestamp;
+- (instancetype)initWithImage:(UIImage *)image;
+- (instancetype)initWithImage:(UIImage *)image widthRadio:(CGFloat)widthRatio heightRatio:(CGFloat)heightRatio timestamp:(NSNumber *)timestamp;
 
 /**
- 설정된 정보로 UIView를 생성하여 반환한다.
+ 설정된 정보로 UIImageView를 생성하여 반환한다.
  */
-- (UIView *)getView;
+- (UIImageView *)getView;
 
 /**
  객체의 위치정보를 갱신한다.

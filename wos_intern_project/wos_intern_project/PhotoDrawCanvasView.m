@@ -171,25 +171,25 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     for (CanvasPathData *pathData in self.pathDatas)
         CGPathAddPath(mutalblePathRef, NULL, [pathData.path CGPath]);
     
-    CGRect bounds = CGPathGetBoundingBox(mutalblePathRef);
-    bounds = CGRectMake(bounds.origin.x - 10,
-                        bounds.origin.y - 10,
-                        bounds.size.width + 20,
-                        bounds.size.height + 20);
+    CGRect captureBounds = CGPathGetBoundingBox(mutalblePathRef);
+    captureBounds = CGRectMake(captureBounds.origin.x - 10,
+                               captureBounds.origin.y - 10,
+                               captureBounds.size.width + 20,
+                               captureBounds.size.height + 20);
     
     //각 Path의 Bounds 계산해서, 최소값 최대값 x, y 도출.
     //이후 x - 20, y - 20, w + 40, h + 40으로 bounds capture하여 UIImage Create, return.
     
     CGPathRelease(mutalblePathRef);
     
-    return bounds;
+    return captureBounds;
 }
 
 - (UIImage *)getPathImage {
-    CGRect bounds = [self calculatePathBounds];
+    CGRect captureBounds = [self calculatePathBounds];
     
     //Bounds가 null이면 nil을 반환한다.
-    if (CGRectIsNull(bounds))
+    if (CGRectIsNull(captureBounds))
         return nil;
     
     //이미지 캡쳐 전에, 배경을 투명하게 만든다.
@@ -200,7 +200,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     UIImage *canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    CGImageRef pathImageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], bounds);
+    CGImageRef pathImageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], captureBounds);
     UIImage *pathImage = [UIImage imageWithCGImage:pathImageRef];
     
     //이미지 캡쳐가 종료되었으므로, 배경색을 다시 원상 복구한다.

@@ -14,27 +14,36 @@
 
 @implementation PhotoDecorateData
 
-- (instancetype)init {
+- (instancetype)initWithImage:(UIImage *)image {
     self = [super init];
     
     if (self) {
-        _timestamp = @([[NSDate date] timeIntervalSince1970] * 1000);
+         self.timestamp = @([[NSDate date] timeIntervalSince1970] * 1000);
+        self.data = image;
+        self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
     }
     
     return self;
 }
 
-- (instancetype)initWithTimestamp:(NSNumber *)timestamp {
+- (instancetype)initWithImage:(UIImage *)image widthRadio:(CGFloat)widthRatio heightRatio:(CGFloat)heightRatio timestamp:(NSNumber *)timestamp {
     self = [super init];
     
     if (self) {
-        _timestamp = timestamp;
+        self.data = image;
+        self.frame = CGRectMake(0, 0, image.size.width / widthRatio, image.size.height / heightRatio);
+        self.timestamp = timestamp;
     }
     
     return self;
 }
 
-- (UIView *)getView { return nil; }
+- (UIImageView *)getView {
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:self.data];
+    imageView.frame = self.frame;
+    
+    return imageView;
+}
 
 - (void)move:(CGPoint)movePoint {
     _frame = CGRectMake(movePoint.x, movePoint.y, _frame.size.width, _frame.size.height);

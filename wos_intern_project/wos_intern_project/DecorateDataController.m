@@ -9,8 +9,7 @@
 #import "DecorateDataController.h"
 #import "ConnectionManager.h"
 
-#import "PhotoDecorateImageData.h"
-#import "PhotoDecorateTextData.h"
+#import "PhotoDecorateData.h"
 
 @interface DecorateDataController () <ConnectionManagerDecorateDataDelegate>
 
@@ -184,7 +183,7 @@
     }
     
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    PhotoDecorateImageData *decorateData = [[PhotoDecorateImageData alloc] initWithImage:insertData widthRadio:connectionManager.widthRatio heightRatio:connectionManager.heightRatio timestamp:timestamp];
+    PhotoDecorateData *decorateData = [[PhotoDecorateData alloc] initWithImage:insertData widthRadio:connectionManager.widthRatio heightRatio:connectionManager.heightRatio timestamp:timestamp];
     
     [self addDecorateData:decorateData];
     [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData]];

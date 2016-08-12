@@ -487,33 +487,46 @@
                                             </barButtonItem>
                                         </items>
                                     </toolbar>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" adjustsFontSizeToFit="NO" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="An9-G9-3Qt">
-                                        <rect key="frame" x="200" y="253" width="200" height="30"/>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxw-G8-WEe">
+                                        <rect key="frame" x="10" y="-22" width="580" height="580"/>
+                                        <subviews>
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hsO-6t-7AV">
+                                                <rect key="frame" x="20" y="20" width="540" height="540"/>
+                                                <subviews>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" keyboardDismissMode="interactive" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="AQv-mz-qID">
+                                                        <rect key="frame" x="265" y="250" width="10" height="40"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
+                                                    </textView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerY" secondItem="hsO-6t-7AV" secondAttribute="centerY" id="Kft-Zl-ryK"/>
+                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerX" secondItem="hsO-6t-7AV" secondAttribute="centerX" id="jD9-1W-8Is"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="0Qm-fn-22O"/>
-                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="AXw-bC-Xm8"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="vMs-aB-Bvd"/>
+                                            <constraint firstAttribute="width" secondItem="Uxw-G8-WEe" secondAttribute="height" multiplier="1:1" id="IKE-jq-xFf"/>
+                                            <constraint firstAttribute="trailing" secondItem="hsO-6t-7AV" secondAttribute="trailing" constant="20" id="Yar-O2-uXP"/>
+                                            <constraint firstAttribute="bottom" secondItem="hsO-6t-7AV" secondAttribute="bottom" constant="20" id="hSF-kN-Uhl"/>
+                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="top" secondItem="Uxw-G8-WEe" secondAttribute="top" constant="20" id="mo5-Ze-KTH"/>
+                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="leading" secondItem="Uxw-G8-WEe" secondAttribute="leading" constant="20" id="xNS-u4-3kC"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="0Qm-fn-22O"/>
-                                            </mask>
-                                        </variation>
-                                    </textField>
+                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="X8h-ik-pql" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="2bC-Cd-wGI"/>
-                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="C9Q-gx-Pyk"/>
-                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="centerY" secondItem="QXE-r0-ypx" secondAttribute="centerY" id="KBx-0A-7wj"/>
-                                    <constraint firstItem="An9-G9-3Qt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="QXE-r0-ypx" secondAttribute="leading" constant="20" id="LaN-eF-SVB"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="An9-G9-3Qt" secondAttribute="trailing" constant="20" id="NgV-hC-AGk"/>
+                                    <constraint firstItem="Uxw-G8-WEe" firstAttribute="leading" secondItem="QXE-r0-ypx" secondAttribute="leading" constant="10" id="HU2-Wn-xm5"/>
+                                    <constraint firstItem="Uxw-G8-WEe" firstAttribute="centerY" secondItem="QXE-r0-ypx" secondAttribute="centerY" id="QSj-bE-YxZ"/>
+                                    <constraint firstItem="Uxw-G8-WEe" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="SX0-wh-eJ6"/>
                                     <constraint firstItem="X8h-ik-pql" firstAttribute="width" secondItem="QXE-r0-ypx" secondAttribute="width" id="pO4-Rc-SAE"/>
+                                    <constraint firstAttribute="trailing" secondItem="Uxw-G8-WEe" secondAttribute="trailing" constant="10" id="s9N-Vj-fpt"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="textField" destination="An9-G9-3Qt" id="hWE-G8-i6V"/>
+                                    <outlet property="backgroundView" destination="Uxw-G8-WEe" id="Wjk-If-Wpq"/>
+                                    <outlet property="textView" destination="AQv-mz-qID" id="OFA-jp-xT3"/>
                                 </connections>
                             </view>
                         </subviews>
