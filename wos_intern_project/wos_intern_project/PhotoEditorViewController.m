@@ -252,8 +252,57 @@
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
-//    [self.connectionManager disconnectSession];
-//    [self.navigationController popToRootViewControllerAnimated:YES];
+    if (self.photoMenu && !self.photoMenu.isHidden) {
+        [self.photoMenu dismissMenu];
+    }
+    
+    //이미지 캡쳐 전에, 셀들의 경계선을 지운다.
+    for (PhotoEditorFrameViewCell *cell in self.collectionView.visibleCells) {
+        [cell removeStrokeBorder];
+    }
+    
+    [self.decorateDataDisplayView deselectDecoView];
+    
+    //사진이 위치한 CollectionView Capture.
+    CGRect bounds = self.collectionView.bounds;
+    
+    UIGraphicsBeginImageContext(bounds.size);
+    [self.collectionView drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
+    UIImage *canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CGImageRef imageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], bounds);
+    UIImage *photoCaptureImage = [UIImage imageWithCGImage:imageRef];
+    
+    CGImageRelease(imageRef);
+    //Capture End
+    
+    //꾸미기 요소가 위치한 DisplayView Capture
+    bounds = self.decorateDataDisplayView.bounds;
+    
+    UIGraphicsBeginImageContext(bounds.size);
+    [self.decorateDataDisplayView drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
+    canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    imageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], bounds);
+    UIImage *decorateCaptureImage = [UIImage imageWithCGImage:imageRef];
+    
+    CGImageRelease(imageRef);
+    //Capture End
+    
+    //Capture Image Merge Begin
+    UIGraphicsBeginImageContext(photoCaptureImage.size);
+    [photoCaptureImage drawInRect:bounds];
+    [decorateCaptureImage drawInRect:CGRectIntegral(bounds)];
+    UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    //Capture Image Merge End
+    
+    //이미지 캡쳐가 종료된 후에 다시 경계선을 그린다.
+    for (PhotoEditorFrameViewCell *cell in self.collectionView.visibleCells) {
+        [cell setStrokeBorder];
+    }
 }
 
 - (IBAction)decoreateVisibleToggled:(id)sender {
@@ -310,7 +359,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     } else {
         switch (index) {
             case PhotoMenuTakePhotoAtAlbum:
-                isSendEditCancelMsg = [self photoMenuCamera];
+                isSendEditCancelMsg = [self photoMenuPhotoAlbum];
                 break;
             case PhotoMenuTakePhotoAtCamera:
                 isSendEditCancelMsg = [self photoMenuCamera];
@@ -338,14 +387,6 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
         [self presentViewController:picker animated:YES completion:nil];
-//        __weak typeof(self) weakSelf = self;
-//        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-//            __strong typeof(weakSelf) self = weakSelf;
-//            if (!self)
-//                return;
-//            
-//            [self presentViewController:picker animated:YES completion:nil];
-//        }];
         
         return NO;
     }
@@ -443,8 +484,9 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     __weak typeof(self) weakSelf = self;
     [picker dismissViewControllerAnimated:YES completion:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.selectedImageURL)
+        if (!self) {
             return;
+        }
         
         self.selectedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
         
@@ -453,7 +495,11 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
             NSDictionary *message = [MessageFactory MessageGeneratePhotoEditCanceled:self.selectedIndexPath];
             [[ConnectionManager sharedInstance] sendMessage:message];
         } else {
-            [self presentPhotoCropViewController];
+            [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+                __strong typeof(weakSelf) self = weakSelf;
+                [self presentPhotoCropViewController];
+            }];
+            
         }
     }];
 }
@@ -530,12 +576,16 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     }];
 }
 
-- (void)didInsertDecorateData:(NSInteger)index {
+- (void)didInsertDecorateData:(NSInteger)index scale:(CGFloat)scale {
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
         
         UIImageView *decoView = [[self.decoDataController getDecorateDataAtIndex:index] getView];
+        decoView.frame = CGRectMake(decoView.frame.origin.x,
+                                    decoView.frame.origin.y,
+                                    decoView.frame.size.width * scale,
+                                    decoView.frame.size.height * scale);
         
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -714,7 +764,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     
     [self.decorateDataDisplayView addDecoView:decoView];
     
-    NSDictionary *message = [MessageFactory MessageGenerateDecorateDataInserted:imageData.data timestamp:imageData.timestamp];
+    NSDictionary *message = [MessageFactory MessageGenerateDecorateDataInserted:imageData.data scale:scale timestamp:imageData.timestamp];
     [[ConnectionManager sharedInstance] sendMessage:message];
 }
 
@@ -732,6 +782,8 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 
 #pragma mark - PhotoInputTextMenuView Delegate Methods
+
+CGFloat const TextDecorateViewScale = 0.25f;
 
 - (void)inputTextMenuViewDidFinished:(PhotoInputTextMenuView *)inputTextMenu WithImage:(UIImage *)image {
     [self setVisibleInputTextMenuView:NO];

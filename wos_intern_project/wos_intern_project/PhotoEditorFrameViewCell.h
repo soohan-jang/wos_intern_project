@@ -23,6 +23,8 @@ extern NSString *const KEY_SELECTED_CELL_CENTER;
  */
 - (void)setStrokeBorder;
 
+- (void)removeStrokeBorder;
+
 /**
  탭 이벤트를 인식하고, 처리할 이벤트핸들러를 설정한다.
  */

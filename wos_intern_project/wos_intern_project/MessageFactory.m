@@ -37,6 +37,7 @@ NSString *const kEditorDecorateIndex                   = @"decorate_index";
 
 NSString *const kEditorDecorateEditTimestamp           = @"decorate_edit_timestamp";
 NSString *const kEditorDecorateInsertedData            = @"decorate_insert_data";
+NSString *const kEditorDecorateInsertedScale           = @"decorate_insert_scale";
 NSString *const kEditorDecorateInsertedTimestamp       = @"decorate_insert_timestamp";
 NSString *const kEditorDecorateUpdateMovedPoint        = @"decorate_update_moved_point";
 NSString *const kEditorDecorateUpdateResizedRect       = @"decorate_update_resized_rect";
@@ -144,13 +145,14 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
     return message;
 }
 
-+ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data timestamp:(NSNumber *)timestamp {
++ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data scale:(CGFloat)scale timestamp:(NSNumber *)timestamp {
     if (data == nil) {
         return nil;
     }
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateInserted),
                               kEditorDecorateInsertedData: data,
+                              kEditorDecorateInsertedScale: @(scale),
                               kEditorDecorateInsertedTimestamp: timestamp};
     
     return message;

@@ -364,7 +364,7 @@
                                                     <action selector="tappedLineWidthMenuCloseButton:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="1T3-ma-CZA"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOc-15-G9H">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOc-15-G9H">
                                                 <rect key="frame" x="475" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="5vR-kd-Yi0"/>
@@ -559,7 +559,7 @@
                                 <action selector="backButtonTapped:" destination="dKW-hc-NhL" id="1eD-hr-HhO"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" image="Save" id="bxu-p5-Of3">
+                        <barButtonItem key="rightBarButtonItem" image="Save" id="bxu-p5-Of3">
                             <inset key="imageInsets" minX="16" minY="8" maxX="0.0" maxY="8"/>
                             <connections>
                                 <action selector="saveButtonTapped:" destination="dKW-hc-NhL" id="cRD-r6-Fh2"/>

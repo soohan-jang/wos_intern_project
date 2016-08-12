@@ -266,7 +266,7 @@ NSInteger const SubMenuHeight          = 30;
  self.view가 subView를 가지고 있는지를 확인한 후, 여부를 반환한다.
  */
 - (BOOL)hasSubViews {
-    if (self.subviews.count == 0) {
+    if (!self.subviews || self.subviews.count == 0) {
         return NO;
     }
     

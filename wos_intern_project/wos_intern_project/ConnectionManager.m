@@ -298,7 +298,8 @@
             case vDataTypeEditorDecorateInserted:
                 NSLog(@"Received Insert Decorate Data");
                 [self.decorateDataDelegate receivedEditorDecorateDataInsert:message[kEditorDecorateInsertedData]
-                                                                 timestamp:message[kEditorDecorateInsertedTimestamp]];
+                                                                      scale:[message[kEditorDecorateInsertedScale] floatValue]
+                                                                  timestamp:message[kEditorDecorateInsertedTimestamp]];
                 break;
             case vDataTypeEditorDecorateUpdateMoved:
                 NSLog(@"Received Update Moved Decorate Data");

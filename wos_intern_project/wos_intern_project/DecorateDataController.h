@@ -87,7 +87,7 @@
 
 - (void)didSelectDecorateData:(NSInteger)index;
 - (void)didDeselectDecorateData:(NSInteger)index;
-- (void)didInsertDecorateData:(NSInteger)index;
+- (void)didInsertDecorateData:(NSInteger)index scale:(CGFloat)scale;
 - (void)didUpdateDecorateData:(NSInteger)index point:(CGPoint)point;
 - (void)didUpdateDecorateData:(NSInteger)index rect:(CGRect)rect;
 - (void)didUpdateDecorateData:(NSInteger)index angle:(CGFloat)angle;

@@ -177,7 +177,7 @@
     [self.delegate didDeselectDecorateData:index];
 }
 
-- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData timestamp:(NSNumber *)timestamp {
+- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData scale:(CGFloat)scale timestamp:(NSNumber *)timestamp {
     if (!insertData) {
         return;
     }
@@ -186,7 +186,7 @@
     PhotoDecorateData *decorateData = [[PhotoDecorateData alloc] initWithImage:insertData widthRadio:connectionManager.widthRatio heightRatio:connectionManager.heightRatio timestamp:timestamp];
     
     [self addDecorateData:decorateData];
-    [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData]];
+    [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData] scale:scale];
 }
 
 - (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point {

@@ -58,6 +58,7 @@ extern NSString *const kEditorDecorateIndex;
 
 extern NSString *const kEditorDecorateEditTimestamp;
 extern NSString *const kEditorDecorateInsertedData;
+extern NSString *const kEditorDecorateInsertedScale;
 extern NSString *const kEditorDecorateInsertedTimestamp;
 extern NSString *const kEditorDecorateUpdateMovedPoint;
 extern NSString *const kEditorDecorateUpdateResizedRect;
@@ -80,7 +81,7 @@ extern NSString *const kEditorDecorateDeleteTimestamp;
 
 + (NSDictionary *)MessageGenerateDecorateDataEdit:(NSInteger)index;
 + (NSDictionary *)MessageGenerateDecorateDataEditCanceled:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data timestamp:(NSNumber *)timestamp;
++ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data scale:(CGFloat)scale timestamp:(NSNumber *)timestamp;
 + (NSDictionary *)MessageGenerateDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)movedPoint;
 + (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect;
 + (NSDictionary *)MessageGenerateDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)rotatedAngle;
