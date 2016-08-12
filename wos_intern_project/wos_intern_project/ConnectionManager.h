@@ -32,7 +32,8 @@
 @property (nonatomic, assign) NSInteger sessionState;
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
-@property (nonatomic, assign, readonly) CGRect ownScreenSize, connectedPeerScreenSize;
+
+@property (nonatomic, assign, readonly) CGFloat widthRatio, heightRatio;
 
 /**
  @breif
@@ -200,7 +201,7 @@
 /**
  상대방이 그림 객체를 삽입했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp;
+- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData timestamp:(NSNumber *)timestamp;
 
 /**
  상대방이 그림 객체의 위치를 이동시켰을 때 호출된다.

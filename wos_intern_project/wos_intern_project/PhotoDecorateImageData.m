@@ -21,12 +21,12 @@
     return self;
 }
 
-- (instancetype)initWithImage:(UIImage *)image timestamp:(NSNumber *)timestamp {
+- (instancetype)initWithImage:(UIImage *)image widthRadio:(CGFloat)widthRatio heightRatio:(CGFloat)heightRatio timestamp:(NSNumber *)timestamp {
     self = [super initWithTimestamp:timestamp];
     
     if (self) {
         self.data = image;
-        self.frame = CGRectMake(0, 0, image.size.width, image.size.height);
+        self.frame = CGRectMake(0, 0, image.size.width / widthRatio, image.size.height / heightRatio);
     }
     
     return self;

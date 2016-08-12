@@ -244,12 +244,8 @@
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionState = MCSessionStateConnected;
     
-    //연결이 완료되면 자신의 단말기 화면 사이즈를 상대방에게 전송한다.
-    NSDictionary *message = [MessageFactory MessageGenerateScreenRect:connectionManager.ownScreenSize];
-    
     //메시지 큐 사용을 활성화한다.
     [connectionManager setMessageQueueEnabled:YES];
-    [connectionManager sendMessage:message];
     
     __weak typeof(self) weakSelf = self;
     if ([self.navigationController presentedViewController] == self.browserViewController) {

@@ -67,7 +67,7 @@ extern NSString *const kEditorDecorateDeleteTimestamp;
 
 @interface MessageFactory : NSObject
 
-+ (NSDictionary *)MessageGenerateScreenRect:(CGRect)screenRect;
++ (NSDictionary *)MessageGenerateScreenSize:(CGSize)screenSize;
 
 + (NSDictionary *)MessageGeneratePhotoFrameSelected:(NSIndexPath *)selectedIndexPath;
 + (NSDictionary *)MessageGeneratePhotoFrameRequestConfirm:(NSIndexPath *)selectedIndexPath;
@@ -80,7 +80,7 @@ extern NSString *const kEditorDecorateDeleteTimestamp;
 
 + (NSDictionary *)MessageGenerateDecorateDataEdit:(NSInteger)index;
 + (NSDictionary *)MessageGenerateDecorateDataEditCanceled:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataInserted:(id)data timestamp:(NSNumber *)timestamp;
++ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data timestamp:(NSNumber *)timestamp;
 + (NSDictionary *)MessageGenerateDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)movedPoint;
 + (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect;
 + (NSDictionary *)MessageGenerateDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)rotatedAngle;

@@ -178,16 +178,13 @@
     [self.delegate didDeselectDecorateData:index];
 }
 
-- (void)receivedEditorDecorateDataInsert:(id)insertData timestamp:(NSNumber *)timestamp {
-    PhotoDecorateData *decorateData;
-    
-    if ([insertData isKindOfClass:[UIImage class]]) {
-        NSLog(@"I'm Image.");
-        decorateData = [[PhotoDecorateImageData alloc] initWithImage:insertData timestamp:timestamp];
-    } else if ([insertData isKindOfClass:[NSString class]]) {
-        NSLog(@"I'm Text.");
-        decorateData = [[PhotoDecorateTextData alloc] initWithText:insertData timestamp:timestamp];
+- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData timestamp:(NSNumber *)timestamp {
+    if (!insertData) {
+        return;
     }
+    
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    PhotoDecorateImageData *decorateData = [[PhotoDecorateImageData alloc] initWithImage:insertData widthRadio:connectionManager.widthRatio heightRatio:connectionManager.heightRatio timestamp:timestamp];
     
     [self addDecorateData:decorateData];
     [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData]];

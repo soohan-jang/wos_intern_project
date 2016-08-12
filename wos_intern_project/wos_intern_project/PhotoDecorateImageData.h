@@ -11,6 +11,6 @@
 @interface PhotoDecorateImageData : PhotoDecorateData
 
 - (instancetype)initWithImage:(UIImage *)image;
-- (instancetype)initWithImage:(UIImage *)image timestamp:(NSNumber *)timestamp;
+- (instancetype)initWithImage:(UIImage *)image widthRadio:(CGFloat)widthRatio heightRatio:(CGFloat)heightRatio timestamp:(NSNumber *)timestamp;
 
 @end

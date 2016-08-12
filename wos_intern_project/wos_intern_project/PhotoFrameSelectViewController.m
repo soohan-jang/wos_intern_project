@@ -44,7 +44,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    //View가 화면에 표시된 이후에 동기화하여, 동기화할 내용이 화면에 제대로 표시될 수 있도록 한다.
     [self startMessageSynchronize];
+    
+    //동기화 종료 이후, 스크린 정보를 상대방에게 보낸다.
+    NSDictionary *message = [MessageFactory MessageGenerateScreenSize:[UIScreen mainScreen].bounds.size];
+    [[ConnectionManager sharedInstance] sendMessage:message];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

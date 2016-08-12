@@ -7,6 +7,7 @@
 //
 
 #import "MessageFactory.h"
+#import "ConnectionManager.h"
 
 /** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
 NSString *const kDataType                              = @"data_type";
@@ -45,13 +46,12 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 
 @implementation MessageFactory
 
-+ (NSDictionary *)MessageGenerateScreenRect:(CGRect)screenRect {
-    if (CGRectIsNull(screenRect) || CGRectIsEmpty(screenRect)) {
++ (NSDictionary *)MessageGenerateScreenSize:(CGSize)screenSize {
+    if (CGSizeEqualToSize(screenSize, CGSizeZero))
         return nil;
-    }
     
     NSDictionary *message = @{kDataType: @(vDataTypeScreenSize),
-                              kScreenSize: [NSValue valueWithCGRect:screenRect]};
+                              kScreenSize: [NSValue valueWithCGSize:screenSize]};
     
     return message;
 }
@@ -144,7 +144,7 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
     return message;
 }
 
-+ (NSDictionary *)MessageGenerateDecorateDataInserted:(id)data timestamp:(NSNumber *)timestamp {
++ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data timestamp:(NSNumber *)timestamp {
     if (data == nil) {
         return nil;
     }
@@ -161,6 +161,10 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
         return nil;
     }
     
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    movedPoint.x *= connectionManager.widthRatio;
+    movedPoint.y *= connectionManager.heightRatio;
+    
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateUpdateMoved),
                               kEditorDecorateIndex: @(index),
                               kEditorDecorateUpdateMovedPoint: [NSValue valueWithCGPoint:movedPoint]};
@@ -172,6 +176,12 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
     if (CGRectIsNull(resizedRect) || CGRectIsEmpty(resizedRect)) {
         return nil;
     }
+    
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    resizedRect = CGRectMake(resizedRect.origin.x,
+                             resizedRect.origin.y * connectionManager.heightRatio,
+                             resizedRect.size.width * connectionManager.widthRatio,
+                             resizedRect.size.height * connectionManager.heightRatio);
     
     NSDictionary *message = @{kDataType: @(vDataTypeEditorDecorateUpdateResized),
                               kEditorDecorateIndex: @(index),

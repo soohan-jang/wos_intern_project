@@ -45,8 +45,6 @@
         _ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
         _ownSession.delegate = self;
         
-        _ownScreenSize = [[UIScreen mainScreen] bounds];
-        
         self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
         self.messageQueue = [[NSMutableArray alloc] init];
     }
@@ -124,13 +122,16 @@
     _ownSession.delegate = nil;
     _ownSession = nil;
     
-    _ownScreenSize = CGRectZero;
-    _connectedPeerScreenSize = CGRectZero;
-    
     self.bluetoothManager.delegate = nil;
     self.bluetoothManager = nil;
     
     self.messageQueue = nil;
+}
+
+- (void)calculateScreenRatio:(CGSize)otherScreenSize {
+    CGSize ownScreenSize = [UIScreen mainScreen].bounds.size;
+    _widthRatio = otherScreenSize.width / ownScreenSize.width;
+    _heightRatio = otherScreenSize.height / ownScreenSize.height;
 }
 
 
@@ -140,15 +141,6 @@
     if (self.messageQueue == nil) {
         self.messageQueue = [[NSMutableArray alloc] init];
     }
-    
-    //    if ([message[KEY_DATA_TYPE] integerValue] == VALUE_DATA_TYPE_EDITOR_DRAWING_DELETE) {
-    //        DrawingObject *deletedObject = (DrawingObject *)message[KEY_EDITOR_DRAWING_DELETE_DATA];
-    //        for (DrawingObject *object in _messageQueue) {
-    //            if ([deletedObject getID] == [object getID]) {
-    //                [_messageQueue removeObject:object];
-    //            }
-    //        }
-    //    }
     
     [self.messageQueue addObject:message];
 }
@@ -201,8 +193,8 @@
     if (self.photoFrameControlDelegate) {
         switch (dataType) {
             case vDataTypeScreenSize:
-                _connectedPeerScreenSize = [message[kScreenSize] CGRectValue];
-                NSLog(@"Received Screen Size : x(%f) y(%f) w(%f) h(%f)", _connectedPeerScreenSize.origin.x, _connectedPeerScreenSize.origin.y, _connectedPeerScreenSize.size.width, _connectedPeerScreenSize.size.height);
+                NSLog(@"Received Screen Size");
+                [self calculateScreenRatio:[message[kScreenSize] CGSizeValue]];
                 break;
             case vDataTypePhotoFrameConfirmedAck:
                 NSLog(@"Received Confirm Ack Frame Select");
@@ -228,8 +220,6 @@
                 break;
             case vDataTypePhotoFrameRequestConfirm:
                 NSLog(@"Received Confirm Frame Select");
-                //버그가 관측된 바 있다. 재현이 잘 안되서 그렇지...
-                //버그 상황에 대해서 재현을 더 시도해봐야 한다. 2016.08.10
                 if (self.lastSendMsgTimestamp == nil) {
                     [self.photoFrameDataDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndexPath]];
                 } else if ([message[kPhotoFrameConfirmTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
