@@ -9,14 +9,26 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@protocol ConnectionManagerSessionConnectDelegate;
-@protocol ConnectionManagerPhotoFrameSelectDelegate;
+@protocol ConnectionManagerSessionDelegate;
+
+@protocol ConnectionManagerPhotoFrameDataDelegate;
+@protocol ConnectionManagerPhotoFrameControlDelegate;
+
+@protocol ConnectionManagerPhotoDataDelegate;
+@protocol ConnectionManagerDecorateDataDelegate;
+
 @protocol ConnectionManagerPhotoEditorDelegate;
 
 @interface ConnectionManager : NSObject <MCSessionDelegate, CBCentralManagerDelegate>
 
-@property (nonatomic, weak) id<ConnectionManagerSessionConnectDelegate> sessionConnectDelegate;
-@property (nonatomic, weak) id<ConnectionManagerPhotoFrameSelectDelegate> photoFrameSelectDelegate;
+@property (nonatomic, weak) id<ConnectionManagerSessionDelegate> sessionDelegate;
+
+@property (nonatomic, weak) id<ConnectionManagerPhotoFrameDataDelegate> photoFrameDataDelegate;
+@property (nonatomic, weak) id<ConnectionManagerPhotoFrameControlDelegate> photoFrameControlDelegate;
+
+@property (nonatomic, weak) id<ConnectionManagerPhotoDataDelegate> photoDataDelegate;
+@property (nonatomic, weak) id<ConnectionManagerDecorateDataDelegate> decorateDataDelegate;
+
 @property (nonatomic, weak) id<ConnectionManagerPhotoEditorDelegate> photoEditorDelegate;
 
 @property (nonatomic, assign) BOOL messageQueueEnabled;
@@ -81,13 +93,13 @@
 @end
 
 
-#pragma mark - ConnectionManagerSessionConnectDelegate
+#pragma mark - ConnectionManagerSessionDelegate
 
 /**
  MCSessionDelegate를 전파하기 위한 ConnectionManager의 Delegate이다.
  MCSessionDelegate에 전달되는 값을 확인하여, 세분화한 뒤 그에 해당하는 Delegate로 메시지를 전달한다.
  */
-@protocol ConnectionManagerSessionConnectDelegate <NSObject>
+@protocol ConnectionManagerSessionDelegate <NSObject>
 @required
 /**
  Peer가 연결되었을 때  호출된다. didStateChanged에 의해 호출된다.
@@ -102,9 +114,26 @@
 @end
 
 
-#pragma mark - ConnectionManagerPhotoFrameSelectDelegate
+#pragma mark - ConnectionManagerFrameSelectDelegate
 
-@protocol ConnectionManagerPhotoFrameSelectDelegate <NSObject>
+@protocol ConnectionManagerPhotoFrameControlDelegate <NSObject>
+@required
+/**
+ 상대방이 사진 액자를 최종적으로 선택한 것에 대한 동의 여부에 응답했을 때 호출된다.
+ */
+- (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck;
+
+/**
+ 현재 사용자의 작업을 취소하기 위해 호출된다.
+ */
+- (void)interruptedPhotoFrameConfirmProgress;
+
+@end
+
+
+#pragma mark - ConnectionManagerFrameSelectDataDelegate
+
+@protocol ConnectionManagerPhotoFrameDataDelegate <NSObject>
 @required
 /**
  선택된 사진 액자의 종류를 받았을 때 호출된다. 여기서의 사진 액자는 전체 사진 액자의 틀을 의미한다.
@@ -115,13 +144,6 @@
  상대방이 현재 선택한 사진 액자를 최종적하기 위해 동의 여부를 물어볼 때 호출된다.
  */
 - (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath;
-
-/**
- 상대방이 사진 액자를 최종적으로 선택한 것에 대한 동의 여부에 응답했을 때 호출된다.
- */
-- (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck;
-
-- (void)interruptedPhotoFrameConfirmProgress;
 
 @end
 
@@ -157,6 +179,9 @@
  */
 - (void)receivedEditorPhotoDeleted:(NSIndexPath *)indexPath;
 
+/**
+ 현재 사용자의 작업을 취소하기 위해 호출된다.
+ */
 - (void)interruptedEditorPhotoEditing:(NSIndexPath *)indexPath;
 
 /**
@@ -199,6 +224,9 @@
  */
 - (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp;
 
+/**
+ 현재 사용자의 작업을 취소하기 위해 호출된다.
+ */
 - (void)interruptedEditorDecorateDataEditing:(NSInteger)index;
 
 @end

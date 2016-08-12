@@ -17,12 +17,12 @@ NSString *const kScreenSize                            = @"screen_size";
 
 /** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
 /** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-NSString *const kPhotoFrameIndex                       = @"photo_frame_index";
-NSString *const kPhotoFrameConfirmTimestamp            = @"photo_frame_confirm_timestamp";
+NSString *const kPhotoFrameIndexPath                   = @"frame_indexpath";
+NSString *const kPhotoFrameConfirmTimestamp            = @"frame_confirm_timestamp";
 
 /** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/
 /** NSNumber boolValue 값으로 매칭된다 **/
-NSString *const kPhotoFrameConfirmedAck                = @"photo_frame_confirmed_ack";
+NSString *const kPhotoFrameConfirmedAck                = @"frame_confirmed_ack";
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
 NSString *const kEditorPhotoIndexPath                  = @"photo_indexpath";
@@ -57,18 +57,13 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
 }
 
 + (NSDictionary *)MessageGeneratePhotoFrameSelected:(NSIndexPath *)selectedIndexPath {
-    NSDictionary *message;
-    
-    if (selectedIndexPath == nil) {
-        message = @{kDataType: @(vDataTypePhotoFrameSelected),
-                    kPhotoFrameIndex: [NSNull null]};
-        
-        return message;
+    if (!selectedIndexPath) {
+        return nil;
     }
-    
-    message = @{kDataType: @(vDataTypePhotoFrameSelected),
-                kPhotoFrameIndex: selectedIndexPath};
 
+    NSDictionary *message =  @{kDataType: @(vDataTypePhotoFrameSelected),
+                                        kPhotoFrameIndexPath: selectedIndexPath};
+    
     return message;
 }
 
@@ -78,7 +73,7 @@ NSString *const kEditorDecorateDeleteTimestamp         = @"decorate_delete_times
     }
     
     NSDictionary *message = @{kDataType: @(vDataTypePhotoFrameRequestConfirm),
-                              kPhotoFrameIndex: selectedIndexPath,
+                              kPhotoFrameIndexPath: selectedIndexPath,
                               kPhotoFrameConfirmTimestamp: @([[NSDate date] timeIntervalSince1970] * 1000)};
     
     return message;

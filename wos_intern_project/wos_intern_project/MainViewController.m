@@ -21,7 +21,7 @@
 #import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
 
-@interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, ConnectionManagerSessionConnectDelegate>
+@interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, ConnectionManagerSessionDelegate>
 
 @property (nonatomic, strong) MCBrowserViewController *browserViewController;
 @property (nonatomic, strong) MCNearbyServiceAdvertiser *advertiser;
@@ -54,7 +54,7 @@
 
 - (void)setupConnectionManager {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionConnectDelegate = self;
+    connectionManager.sessionDelegate = self;
 }
 
 - (void)setupBluetoothBrowser {
@@ -85,7 +85,7 @@
 }
 
 - (void)dealloc {
-    [ConnectionManager sharedInstance].sessionConnectDelegate = nil;
+    [ConnectionManager sharedInstance].sessionDelegate = nil;
     
     self.browserViewController.delegate = nil;
     self.browserViewController = nil;
@@ -178,12 +178,12 @@
 
 //Session Connecte Done.
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
-//    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 //Session Connect Cancel.
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
-//    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
     [[ConnectionManager sharedInstance] disconnectSession];
 }
 

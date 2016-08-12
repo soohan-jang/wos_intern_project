@@ -49,4 +49,7 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
  */
 + (NSURL *)generateCroppedImageURLWithFilename:(NSString *)filename;
 
++ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index;
++ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix;
+
 @end

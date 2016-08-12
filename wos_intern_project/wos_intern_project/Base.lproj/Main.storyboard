@@ -71,7 +71,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="DAS-Ns-Emb">
-                        <barButtonItem key="rightBarButtonItem" image="Album" id="FY3-cc-wpi">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" image="Album" id="FY3-cc-wpi">
                             <inset key="imageInsets" minX="16" minY="8" maxX="0.0" maxY="8"/>
                             <connections>
                                 <action selector="loadPhotoAlbumViewController:" destination="O8G-ct-xDM" id="pBZ-wz-u0R"/>

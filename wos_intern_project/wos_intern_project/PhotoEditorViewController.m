@@ -32,7 +32,7 @@
 #import "ImageUtility.h"
 #import "MessageFactory.h"
 
-@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionConnectDelegate, ConnectionManagerPhotoEditorDelegate>
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoEditorDelegate>
 
 @property (nonatomic, strong) PhotoEditorFrameCellManager *cellManager;
 @property (atomic, strong) DecorateDataController *decoDataController;
@@ -70,7 +70,7 @@
 
 - (void)setupDelegates {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionConnectDelegate = self;
+    connectionManager.sessionDelegate = self;
     connectionManager.photoEditorDelegate = self;
     
     self.drawPenMenuView.delegate = self;
@@ -206,7 +206,7 @@
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     
     if (connectionManager.sessionState == MCSessionStateNotConnected) {
-        connectionManager.sessionConnectDelegate = nil;
+        connectionManager.sessionDelegate = nil;
         connectionManager.photoEditorDelegate = nil;
         [connectionManager disconnectSession];
         
@@ -223,7 +223,7 @@
                                                                        
                                                                        //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
                                                                        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                       connectionManager.sessionConnectDelegate = nil;
+                                                                       connectionManager.sessionDelegate = nil;
                                                                        connectionManager.photoEditorDelegate = nil;
                                                                        [connectionManager disconnectSession];
                                                                        
@@ -615,7 +615,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
                                                                 handler:^(UIAlertAction * _Nonnull action) {
                                                                     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
                                                                     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                    connectionManager.sessionConnectDelegate = nil;
+                                                                    connectionManager.sessionDelegate = nil;
                                                                     connectionManager.photoEditorDelegate = nil;
                                                                     connectionManager.messageQueueEnabled = NO;
                                                                     [connectionManager disconnectSession];
@@ -629,7 +629,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
                                                                      
                                                                      //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
                                                                      ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                     connectionManager.sessionConnectDelegate = nil;
+                                                                     connectionManager.sessionDelegate = nil;
                                                                      connectionManager.photoEditorDelegate = nil;
                                                                      connectionManager.messageQueueEnabled = NO;
                                                                      [connectionManager disconnectSession];

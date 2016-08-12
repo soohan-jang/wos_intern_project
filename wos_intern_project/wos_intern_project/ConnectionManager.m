@@ -181,14 +181,14 @@
 #pragma mark - MCSessionDelegate Methods
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
-    if (self.sessionConnectDelegate) {
+    if (self.sessionDelegate) {
         if (state == MCSessionStateConnected) {
             NSLog(@"Session Connected");
-            [self.sessionConnectDelegate receivedPeerConnected];
+            [self.sessionDelegate receivedPeerConnected];
         } else if (state == MCSessionStateNotConnected) {
             NSLog(@"Session Disconnected");
             self.lastSendMsgTimestamp = nil;
-            [self.sessionConnectDelegate receivedPeerDisconnected];
+            [self.sessionDelegate receivedPeerDisconnected];
         }
     }
 }
@@ -198,12 +198,22 @@
     
     NSInteger dataType = [message[kDataType] integerValue];
     
-    if (self.photoFrameSelectDelegate) {
+    if (self.photoFrameControlDelegate) {
         switch (dataType) {
             case vDataTypeScreenSize:
                 _connectedPeerScreenSize = [message[kScreenSize] CGRectValue];
                 NSLog(@"Received Screen Size : x(%f) y(%f) w(%f) h(%f)", _connectedPeerScreenSize.origin.x, _connectedPeerScreenSize.origin.y, _connectedPeerScreenSize.size.width, _connectedPeerScreenSize.size.height);
                 break;
+            case vDataTypePhotoFrameConfirmedAck:
+                NSLog(@"Received Confirm Ack Frame Select");
+                self.lastSendMsgTimestamp = nil;
+                [self.photoFrameControlDelegate receivedPhotoFrameConfirmAck:[message[kPhotoFrameConfirmedAck] boolValue]];
+                break;
+        }
+    }
+    
+    if (self.photoFrameDataDelegate && self.photoFrameControlDelegate) {
+        switch (dataType) {
             case vDataTypePhotoFrameSelected:
                 NSLog(@"Received Selected Frame Index");
                 if (self.lastSendMsgTimestamp) {
@@ -211,22 +221,9 @@
                 }
                 
                 if (self.messageQueueEnabled) {
-                    //메시지 큐에 데이터를 저장하고, 노티피케이션으로 전파하지 않는다.
-                    //여기서는 "마지막 메시지"만 파악하면 되므로, 동기화 큐에 메시지가 하나만 있도록 유지한다. 차후에 1:n 통신을 하면, peer당 메시지 하나로 제한하는 방식으로 가면 될 것 같다.
-                    //마지막 메시지 하나만을 동기화 큐에 유지하기 위해, 매번 동기화 큐를 초기화하고 마지막 메시지를 저장한다.
-                    //어차피 상대방이 액자선택에 진입하는 시점과 본인이 액자선택에 진입하는 시점이 달라서 발생하는 동기화 오류는, 그 시간 폭이 매우 작다고 보기 때문에... 성능상 큰 문제가 있을 것 같지는 않다.
-                    [self clearMessageQueue];
-                    
-                    //전달받은 객체가 NSNull인지 확인하고, 아닐 경우에만 메시지큐에 메시지를 저장한다.
-                    if (![message[kPhotoFrameIndex] isKindOfClass:[NSNull class]]) {
-                        [self putMessage:message];
-                    }
+                    [self putMessage:message];
                 } else {
-                    if ([message[kPhotoFrameIndex] isKindOfClass:[NSNull class]]) {
-                        [self.photoFrameSelectDelegate receivedPhotoFrameSelected:nil];
-                    } else {
-                        [self.photoFrameSelectDelegate receivedPhotoFrameSelected:message[kPhotoFrameIndex]];
-                    }
+                    [self.photoFrameDataDelegate receivedPhotoFrameSelected:message[kPhotoFrameIndexPath]];
                 }
                 break;
             case vDataTypePhotoFrameRequestConfirm:
@@ -234,17 +231,12 @@
                 //버그가 관측된 바 있다. 재현이 잘 안되서 그렇지...
                 //버그 상황에 대해서 재현을 더 시도해봐야 한다. 2016.08.10
                 if (self.lastSendMsgTimestamp == nil) {
-                    [self.photoFrameSelectDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndex]];
+                    [self.photoFrameDataDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndexPath]];
                 } else if ([message[kPhotoFrameConfirmTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                    [self.photoFrameSelectDelegate interruptedPhotoFrameConfirmProgress];
-                    [self.photoFrameSelectDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndex]];
+                    [self.photoFrameControlDelegate interruptedPhotoFrameConfirmProgress];
+                    [self.photoFrameDataDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndexPath]];
                 }
                 
-                break;
-            case vDataTypePhotoFrameConfirmedAck:
-                NSLog(@"Received Confirm Ack Frame Select");
-                self.lastSendMsgTimestamp = nil;
-                [self.photoFrameSelectDelegate receivedPhotoFrameConfirmAck:[message[kPhotoFrameConfirmedAck] boolValue]];
                 break;
         }
     }

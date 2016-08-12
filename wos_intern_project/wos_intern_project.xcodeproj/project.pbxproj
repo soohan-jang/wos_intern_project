@@ -14,6 +14,7 @@
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
 		4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */; };
 		4A41052B1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */; };
+		4A41052F1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052E1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
@@ -101,6 +102,8 @@
 		4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInputTextMenuView.m; sourceTree = "<group>"; };
 		4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectCellManager.h; sourceTree = "<group>"; };
 		4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectCellManager.m; sourceTree = "<group>"; };
+		4A41052D1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectCellData.h; sourceTree = "<group>"; };
+		4A41052E1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFrameSelectCellData.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -407,6 +410,8 @@
 				4B44909A1D3A607F00E5972F /* PhotoDecorateImageData.m */,
 				4B44909C1D3A608A00E5972F /* PhotoDecorateTextData.h */,
 				4B44909D1D3A608A00E5972F /* PhotoDecorateTextData.m */,
+				4A41052D1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.h */,
+				4A41052E1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -595,6 +600,7 @@
 				4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */,
 				4A525B441D581461006183C7 /* ValidateCheckUtility.m in Sources */,
 				0A23C6FD1D54EA30007A7996 /* PhotoDrawCanvasView.m in Sources */,
+				4A41052F1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m in Sources */,
 				4A5448AC1D51E69E00883E08 /* PECropViewController.m in Sources */,
 				4A5448AD1D51E69E00883E08 /* PEResizeControl.m in Sources */,
 				4A5448AE1D51E69E00883E08 /* UIImage+PECrop.m in Sources */,

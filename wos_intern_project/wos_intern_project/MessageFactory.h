@@ -39,7 +39,7 @@ extern NSString *const kScreenSize;
 
 /** 선택된 사진 액자 인덱스 값에 대한 키 값 **/
 /** 인덱스값이 NSIndexPath 값으로 매칭된다 **/
-extern NSString *const kPhotoFrameIndex;
+extern NSString *const kPhotoFrameIndexPath;
 extern NSString *const kPhotoFrameConfirmTimestamp;
 
 /** 사진 선택 완료 요청에 대한 응답값에 대한 키 값 **/

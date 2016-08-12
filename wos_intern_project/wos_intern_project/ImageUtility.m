@@ -106,4 +106,12 @@
     return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageCropped]];
 }
 
++ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index {
+    return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoFrame, (long)index];
+}
+
++ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix {
+    return [NSString stringWithFormat:@"%@%ld%@", PrefixImagePhotoFrame, (long)index, postfix];
+}
+
 @end

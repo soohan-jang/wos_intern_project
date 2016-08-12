@@ -50,8 +50,13 @@
 void uncaughtExceptionHandler(NSException *exception) {
     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionConnectDelegate = nil;
+    connectionManager.sessionDelegate = nil;
+    
+    connectionManager.photoFrameControlDelegate = nil;
+    connectionManager.photoFrameDataDelegate = nil;
+    
     connectionManager.photoEditorDelegate = nil;
+    
     connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
     [connectionManager clear];
@@ -63,8 +68,13 @@ void uncaughtExceptionHandler(NSException *exception) {
 - (void)clearResources {
     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionConnectDelegate = nil;
+    connectionManager.sessionDelegate = nil;
+    
+    connectionManager.photoFrameControlDelegate = nil;
+    connectionManager.photoFrameDataDelegate = nil;
+    
     connectionManager.photoEditorDelegate = nil;
+    
     connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
     [connectionManager clear];
