@@ -15,6 +15,10 @@ CGFloat const DefaultFontSize = 20;
 @property (weak, nonatomic) IBOutlet UIView *backgroundView;
 @property (weak, nonatomic) IBOutlet UITextView *textView;
 
+@property (strong, nonatomic) UIColor *textColor;
+@property (assign, nonatomic) NSInteger textSize;
+@property (strong, nonatomic) UIFont *textFont;
+
 @end
 
 @implementation PhotoInputTextMenuView
@@ -42,6 +46,8 @@ CGFloat const DefaultFontSize = 20;
     self.textView.backgroundColor = [UIColor clearColor];
 }
 
+CGFloat const Scale = 4.0f;
+
 - (UIImage *)textViewConvertToImage {
     NSString *originText = self.textView.text;
     NSString *Trimedtext = [originText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -51,7 +57,7 @@ CGFloat const DefaultFontSize = 20;
     }
     
     //텍스트가 그려질 UIImage 객체를 생성한다.
-    CGSize imageSize = self.textView.frame.size;
+    CGSize imageSize = CGSizeMake(self.textView.bounds.size.width * Scale, self.textView.bounds.size.height * Scale);
     UIGraphicsBeginImageContext(imageSize);
     CGContextRef context = UIGraphicsGetCurrentContext();
     [[UIColor clearColor] setFill];
@@ -61,16 +67,17 @@ CGFloat const DefaultFontSize = 20;
     
     //이후 만들어진 UIImage 객체 위에 Text를 그린다.
     UIGraphicsBeginImageContext(imageSize);
+    
     [[UIColor blackColor] set];
     [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
     
-    CGSize textSize = [originText sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20]}];
-    CGRect rect = CGRectMake((imageSize.width - textSize.width) / 2,
-                             (imageSize.height - textSize.height) / 2,
+    CGSize textSize = [originText sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20 * Scale]}];
+    CGRect rect = CGRectMake((imageSize.width - textSize.width) / Scale,
+                             (imageSize.height - textSize.height) / Scale,
                              imageSize.width,
                              imageSize.height);
     
-    [originText drawInRect:CGRectIntegral(rect) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20]}];
+    [originText drawInRect:CGRectIntegral(rect) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:20 * Scale]}];
     UIImage *textImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     

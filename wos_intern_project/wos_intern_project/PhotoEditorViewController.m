@@ -735,7 +735,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)inputTextMenuViewDidFinished:(PhotoInputTextMenuView *)inputTextMenu WithImage:(UIImage *)image {
     [self setVisibleInputTextMenuView:NO];
-    [self addDecorateView:image];
+    [self addDecorateView:image scale:0.25f];
 }
 
 - (void)inputTextMenuViewDidCancelled:(PhotoInputTextMenuView *)inputTextMenu {
