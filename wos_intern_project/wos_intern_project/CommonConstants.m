@@ -25,8 +25,10 @@ NSString *const SegueMoveToAlbum                        = @"moveToPhotoAlbum";
 NSString *const SegueMoveToFrameSelect                  = @"moveToPhotoFrameSelect";
 NSString *const SegueMoveToEditor                       = @"moveToPhotoEditor";
 NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
+NSString *const SeguePopupSticker                       = @"popupAttachSticker";
 
 NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
 NSString *const ReuseCellEditor                         = @"photoFrameCell";
+NSString *const ReuseCellSticker                        = @"stickerCell";
 
 NSTimeInterval const DelayTime                          = 1.0f;

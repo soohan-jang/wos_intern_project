@@ -51,6 +51,8 @@
 		4AC91E671D586A6900DB9E50 /* CanvasPathData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AC91E661D586A6900DB9E50 /* CanvasPathData.m */; };
 		4AE5AD8E1D53489E00762EE0 /* AlertHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AE5AD8D1D53489E00762EE0 /* AlertHelper.m */; };
 		4B4490A81D3B83F200E5972F /* PhotoFrameSelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A97B5FF1D336486003899F7 /* PhotoFrameSelectViewController.m */; };
+		4B7C162C1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7C162B1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.m */; };
+		4B7C162F1D61FC3B000266EE /* PhotoAttachStickerViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B7C162E1D61FC3B000266EE /* PhotoAttachStickerViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -160,6 +162,10 @@
 		4B4490B81D46664600E5972F /* PEResizeControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEResizeControl.m; sourceTree = "<group>"; };
 		4B4490B91D46664600E5972F /* UIImage+PECrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+PECrop.h"; sourceTree = "<group>"; };
 		4B4490BA1D46664600E5972F /* UIImage+PECrop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+PECrop.m"; sourceTree = "<group>"; };
+		4B7C162A1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAttachStickerMenuViewController.h; sourceTree = "<group>"; };
+		4B7C162B1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAttachStickerMenuViewController.m; sourceTree = "<group>"; };
+		4B7C162D1D61FC3B000266EE /* PhotoAttachStickerViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAttachStickerViewCell.h; sourceTree = "<group>"; };
+		4B7C162E1D61FC3B000266EE /* PhotoAttachStickerViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAttachStickerViewCell.m; sourceTree = "<group>"; };
 		4BA0B6371D4CF2EA00403318 /* XXXRoundMenuButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XXXRoundMenuButton.h; sourceTree = "<group>"; };
 		4BA0B6381D4CF2EA00403318 /* XXXRoundMenuButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XXXRoundMenuButton.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -225,15 +231,15 @@
 			children = (
 				4A97B6011D33649A003899F7 /* PhotoEditorViewController.h */,
 				4A97B6021D33649A003899F7 /* PhotoEditorViewController.m */,
+				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
+				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
 				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
 				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
 				4A4E28BE1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.h */,
 				4A4E28BF1D4F54ED0014F162 /* PhotoDecorateDataDisplayView.m */,
 				4A41052C1D5C804B00FEEFE9 /* DrawMenuView */,
-				4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */,
-				4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */,
-				4B44908F1D3A5D4700E5972F /* PhotoEditorFrameViewCell.h */,
-				4B4490901D3A5D4700E5972F /* PhotoEditorFrameViewCell.m */,
+				4B7C16311D61FD96000266EE /* TextMenuView */,
+				4B7C16301D61FD84000266EE /* StickerMenuView */,
 			);
 			name = PhotoEditorView;
 			sourceTree = "<group>";
@@ -423,6 +429,26 @@
 			name = PEPhotoCropEditor;
 			sourceTree = "<group>";
 		};
+		4B7C16301D61FD84000266EE /* StickerMenuView */ = {
+			isa = PBXGroup;
+			children = (
+				4B7C162A1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.h */,
+				4B7C162B1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.m */,
+				4B7C162D1D61FC3B000266EE /* PhotoAttachStickerViewCell.h */,
+				4B7C162E1D61FC3B000266EE /* PhotoAttachStickerViewCell.m */,
+			);
+			name = StickerMenuView;
+			sourceTree = "<group>";
+		};
+		4B7C16311D61FD96000266EE /* TextMenuView */ = {
+			isa = PBXGroup;
+			children = (
+				4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */,
+				4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */,
+			);
+			name = TextMenuView;
+			sourceTree = "<group>";
+		};
 		4BA0B6361D4CF2A900403318 /* XXXRoundMenuButton */ = {
 			isa = PBXGroup;
 			children = (
@@ -584,6 +610,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A5448A71D51E69E00883E08 /* MBProgressHUD.m in Sources */,
+				4B7C162F1D61FC3B000266EE /* PhotoAttachStickerViewCell.m in Sources */,
 				4A5448A81D51E69E00883E08 /* WMProgressHUD.m in Sources */,
 				4A5448A91D51E69E00883E08 /* SphereMenu.m in Sources */,
 				4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */,
@@ -598,6 +625,7 @@
 				4A5448B11D51E69E00883E08 /* CommonConstants.m in Sources */,
 				4A5448B41D51E69E00883E08 /* PhotoFrameSelectViewCell.m in Sources */,
 				4A14A5401D5AB69F000C2079 /* MessageFactory.m in Sources */,
+				4B7C162C1D61B3F9000266EE /* PhotoAttachStickerMenuViewController.m in Sources */,
 				4A5448B51D51E69E00883E08 /* PhotoEditorFrameViewCell.m in Sources */,
 				4A5448B61D51E69E00883E08 /* MainViewController.m in Sources */,
 				4A5448B71D51E69E00883E08 /* PhotoFrameSelectViewController.m in Sources */,

@@ -120,18 +120,16 @@
 
 - (IBAction)backButtonTapped:(id)sender {
     __weak typeof(self) weakSelf = self;
-    UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
-    UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
-                                                                   handler:^(UIAlertAction * _Nonnull action) {
-                                                                       __strong typeof(weakSelf) self = weakSelf;
-                                                                       [self presentMainViewController];
-                                                                   }];
-                                             
     [AlertHelper showAlertControllerOnViewController:self
                                             titleKey:@"alert_title_session_disconnect_ask"
                                           messageKey:@"alert_content_session_disconnect_ask"
-                                         firstButton:noActionButton
-                                        secondButton:yesActionButton];
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      __strong typeof(weakSelf) self = weakSelf;
+                                      [self presentMainViewController];
+                                  }];
 }
 
 - (IBAction)doneButtonTapped:(id)sender {
@@ -220,36 +218,6 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    
-    UIAlertAction *declineActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_decline"
-                                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                                           __strong typeof(weakSelf) self = weakSelf;
-                                                                           if (!self) {
-                                                                               return;
-                                                                           }
-                                                                           
-                                                                           NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
-                                                                           [[ConnectionManager sharedInstance] sendMessage:message];
-                                                                           
-                                                                           self.doneButton.enabled = YES;
-                                                                       }];
-    
-    UIAlertAction *acceptActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_accept"
-                                                                      handler:^(UIAlertAction * _Nonnull action) {
-                                                                          __strong typeof(weakSelf) self = weakSelf;
-                                                                          if (!self) {
-                                                                              return;
-                                                                          }
-                                                                          
-                                                                          //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-                                                                          ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                          
-                                                                          NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:YES];
-                                                                          [connectionManager sendMessage:message];
-                                                                          
-                                                                          [self presentPhotoEditorViewController];
-                                                                      }];
-    
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
@@ -259,8 +227,33 @@
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_frame_select_confirm"
                                               messageKey:@"alert_content_frame_select_confirm"
-                                             firstButton:declineActionButton
-                                            secondButton:acceptActionButton];
+                                                  button:@"alert_button_text_decline"
+                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                                      __strong typeof(weakSelf) self = weakSelf;
+                                                      if (!self) {
+                                                          return;
+                                                      }
+                                                      
+                                                      NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
+                                                      [[ConnectionManager sharedInstance] sendMessage:message];
+                                                      
+                                                      self.doneButton.enabled = YES;
+                                                  }
+                                             otherButton:@"alert_button_text_accept"
+                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                                 __strong typeof(weakSelf) self = weakSelf;
+                                                 if (!self) {
+                                                     return;
+                                                 }
+                                                 
+                                                 //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
+                                                 ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+                                                 
+                                                 NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:YES];
+                                                 [connectionManager sendMessage:message];
+                                                 
+                                                 [self presentPhotoEditorViewController];
+                                      }];
     }];
 }
 
@@ -275,27 +268,19 @@
     [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
     
     __weak typeof(self) weakSelf = self;
-    
-    
-    
-    
-    
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        
-        UIAlertAction *okActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_ok"
-                                                                      handler:^(UIAlertAction * _Nonnull action) {
-                                                                          if (!self) {
-                                                                              return;
-                                                                          }
-                                                                          
-                                                                          [self presentMainViewController];
-                                                                      }];
-        
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_session_disconnected"
                                               messageKey:@"alert_content_session_disconnected"
-                                                  button:okActionButton];
+                                                  button:@"alert_button_text_ok"
+                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                               if (!self) {
+                                                   return;
+                                               }
+                                               
+                                               [self presentMainViewController];
+                                           }];
     }];
 }
 

@@ -24,8 +24,10 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
 @property (nonatomic, weak) IBOutlet UIBarButtonItem *eraseButton;
 
 @property (nonatomic, weak) IBOutlet UIView *lineColorSubMenu;
-@property (nonatomic, weak) IBOutlet UIView *lineWidthSubMenu;
+@property (nonatomic, weak) IBOutlet UIButton *defalutLineColorButton;
+@property (nonatomic, strong) UIButton *prevSelectedLineColorButton;
 
+@property (nonatomic, weak) IBOutlet UIView *lineWidthSubMenu;
 @property (nonatomic, weak) IBOutlet UISlider *lineWidthSlider;
 @property (nonatomic, weak) IBOutlet UILabel *lineWidthLabel;
 
@@ -36,10 +38,10 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
 - (void)setHidden:(BOOL)hidden {
     [super setHidden:hidden];
     
-    if (!hidden)
+    if (hidden)
         return;
     
-    //hidden되어 화면에서 사라질 때, DrawPenView를 초기화한다.
+    //hidden NO가 되어 화면에 나타날 때, DrawPenView를 초기화한다.
     if (self.eraseButton.tag == Selected)
         [self toggleEraseButton];
     
@@ -48,8 +50,15 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     
     //CanvasView를 초기화한다.
     [self.canvasView clear];
-    [self.canvasView setLineColor:[UIColor blackColor]];
+    [self.canvasView setLineColor:[UIColor colorWithRed:51.f / 255.f
+                                                  green:51.f / 255.f
+                                                   blue:51.f / 255.f
+                                                  alpha:1.f]];
     [self.canvasView setLineWidth:DefaultLineWidth];
+    
+    [self.prevSelectedLineColorButton setSelected:NO];
+    self.prevSelectedLineColorButton = self.defalutLineColorButton;
+    [self.prevSelectedLineColorButton setSelected:YES];
 }
 
 
@@ -76,6 +85,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self closeEraseSubMenu];
     
     [self.lineColorSubMenu setHidden:!self.lineColorSubMenu.isHidden];
+    [self.prevSelectedLineColorButton setSelected:YES];
 }
 
 - (IBAction)tappedLineWidthButton:(id)sender {
@@ -126,22 +136,46 @@ NSInteger const Selected = 1;
 
 #pragma mark - EventHandler Line Color Menu Methods
 
-- (IBAction)tappedLineColorMenuItem:(UIView *)sender {
+- (IBAction)tappedLineColorMenuItem:(UIButton *)sender {
+    if (self.prevSelectedLineColorButton) {
+        [self.prevSelectedLineColorButton setSelected:NO];
+    }
+    
+    if (sender.tag != LineColorClose) {
+        self.prevSelectedLineColorButton = sender;
+        [self.prevSelectedLineColorButton setSelected:YES];
+    }
+    
     switch (sender.tag) {
         case LineColorBlack:
-            [self.canvasView setLineColor:[UIColor blackColor]];
+            [self.canvasView setLineColor:[UIColor colorWithRed:51.f / 255.f
+                                                          green:51.f / 255.f
+                                                           blue:51.f / 255.f
+                                                          alpha:1.f]];
             break;
         case LineColorRed:
-            [self.canvasView setLineColor:[UIColor redColor]];
+            [self.canvasView setLineColor:[UIColor colorWithRed:231.f / 255.f
+                                                          green:76.f / 255.f
+                                                           blue:60.f / 255.f
+                                                          alpha:1.f]];
             break;
         case LineColorGreen:
-            [self.canvasView setLineColor:[UIColor greenColor]];
+            [self.canvasView setLineColor:[UIColor colorWithRed:39.f / 255.f
+                                                          green:174.f / 255.f
+                                                           blue:96.f / 255.f
+                                                          alpha:1.f]];
             break;
         case LineColorBlue:
-            [self.canvasView setLineColor:[UIColor blueColor]];
+            [self.canvasView setLineColor:[UIColor colorWithRed:52.f / 255.f
+                                                          green:152.f / 255.f
+                                                           blue:219.f / 255.f
+                                                          alpha:1.f]];
             break;
         case LineColorYellow:
-            [self.canvasView setLineColor:[UIColor yellowColor]];
+            [self.canvasView setLineColor:[UIColor colorWithRed:241.f / 255.f
+                                                          green:196.f / 255.f
+                                                           blue:15.f / 255.f
+                                                          alpha:1.f]];
             break;
         case LineColorClose:
             [self closeLineColorSubMenu];

@@ -131,24 +131,21 @@
             return;
         }
         
-        
-        UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
-        UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
-                                                                 handler:^(UIAlertAction * _Nonnull action) {
-                                                                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                                 }];
-        
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_album_not_authorized"
                                               messageKey:@"alert_content_album_not_authorized"
-                                             firstButton:noActionButton
-                                            secondButton:yesActionButton];
+                                                  button:@"alert_button_text_no"
+                                           buttonHandler:nil
+                                             otherButton:@"alert_button_text_yes"
+                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                      }];
     } else {
-        UIAlertAction *okActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_ok" handler:nil];
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_bluetooth_off"
                                               messageKey:@"alert_content_bluetooth_off"
-                                                  button:okActionButton];
+                                                  button:@"alert_button_text_ok"
+                                           buttonHandler:nil];
     }
 }
 
@@ -202,39 +199,34 @@
     self.invitationHandlers[peerID] = invitationHandler;
     
     __weak typeof(self) weakSelf = self;
-    
-    UIAlertAction *declineActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_decline"
-                                                                       handler:^(UIAlertAction * _Nonnull action) {
-                                                                           __strong typeof(self) self = weakSelf;
-                                                                           void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
-                                                                           
-                                                                           if (!self || !invitationHandler) {
-                                                                               return;
-                                                                           }
-                                                                           
-                                                                           invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
-                                                                           [self.invitationHandlers removeObjectForKey:peerID];
-                                                                       }];
-    
-    UIAlertAction *acceptActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_accept"
-                                                                      handler:^(UIAlertAction * _Nonnull action) {
-                                                                          __strong typeof(self) self = weakSelf;
-                                                                          void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
-                                                                          
-                                                                          if (!self || !invitationHandler) {
-                                                                              return;
-                                                                          }
-                                                                          
-                                                                          invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
-                                                                          [self.invitationHandlers removeObjectForKey:peerID];
-                                                                          self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
-                                                                      }];
-    
     [AlertHelper showAlertControllerOnViewController:self
                                                title:NSLocalizedString(@"alert_title_invitation_received", nil)
                                              message:[NSString stringWithFormat:@"\"%@\" %@", peerID.displayName, NSLocalizedString(@"alert_content_invitation_received", nil)]
-                                         firstButton:declineActionButton
-                                        secondButton:acceptActionButton];
+                                              button:@"alert_button_text_decline"
+                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                           __strong typeof(self) self = weakSelf;
+                                           void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
+                                           
+                                           if (!self || !invitationHandler) {
+                                               return;
+                                           }
+                                           
+                                           invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
+                                           [self.invitationHandlers removeObjectForKey:peerID];
+                                       }
+                                         otherButton:@"alert_button_text_accept"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                             __strong typeof(self) self = weakSelf;
+                                             void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
+                                             
+                                             if (!self || !invitationHandler) {
+                                                 return;
+                                             }
+                                             
+                                             invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
+                                             [self.invitationHandlers removeObjectForKey:peerID];
+                                             self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
+                                  }];
 }
 
 

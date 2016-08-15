@@ -236,19 +236,16 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    
-    UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
-    UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
-                                                                   handler:^(UIAlertAction * _Nonnull action) {
-                                                                       __strong typeof(weakSelf) self = weakSelf;
-                                                                       [self presentMainViewController];
-                                                                   }];
-    
     [AlertHelper showAlertControllerOnViewController:self
                                             titleKey:@"alert_title_session_disconnect_ask"
                                           messageKey:@"alert_content_data_not_save"
-                                         firstButton:noActionButton
-                                        secondButton:yesActionButton];
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                             __strong typeof(weakSelf) self = weakSelf;
+                                             [self presentMainViewController];
+                                         }];
 }
 
 - (IBAction)saveButtonTapped:(id)sender {
@@ -391,17 +388,15 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         return NO;
     }
     
-    UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no" handler:nil];
-    UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
-                                                                   handler:^(UIAlertAction * _Nonnull action) {
-                                                                       [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                                                   }];
-    
     [AlertHelper showAlertControllerOnViewController:self
                                             titleKey:@"alert_title_album_not_authorized"
                                           messageKey:@"alert_content_album_not_authorized"
-                                         firstButton:noActionButton
-                                        secondButton:yesActionButton];
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                         }];
     
     return YES;
 }
@@ -833,31 +828,6 @@ CGFloat const TextDecorateViewScale = 0.25f;
     [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
     
     __weak typeof(self) weakSelf = self;
-    
-    UIAlertAction *noActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_no"
-                                                                handler:^(UIAlertAction * _Nonnull action) {
-                                                                    //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-                                                                    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                                    [connectionManager setSessionDelegate:nil];
-                                                                    [connectionManager setPhotoDataDelegate:nil];
-                                                                    [connectionManager setDecorateDataDelegate:nil];
-                                                                    [connectionManager setMessageQueueEnabled:NO];
-                                                                    [connectionManager clearMessageQueue];
-                                                                    
-                                                                    [self.decoDataController setDelegate:nil];
-                                                                    
-                                                                    [connectionManager disconnectSession];
-                                                                }];
-    
-    UIAlertAction *yesActionButton = [AlertHelper createActionWithTitleKey:@"alert_button_text_yes"
-                                                                 handler:^(UIAlertAction * _Nonnull action) {
-                                                                     __strong typeof(weakSelf) self = weakSelf;
-                                                                     if (!self)
-                                                                         return;
-                                                                     
-                                                                     [self presentMainViewController];
-                                                                 }];
-    
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
@@ -867,8 +837,28 @@ CGFloat const TextDecorateViewScale = 0.25f;
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_session_disconnected"
                                               messageKey:@"alert_content_photo_edit_continue"
-                                             firstButton:noActionButton
-                                            secondButton:yesActionButton];
+                                                  button:@"alert_button_text_no"
+                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                               //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
+                                               ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+                                               [connectionManager setSessionDelegate:nil];
+                                               [connectionManager setPhotoDataDelegate:nil];
+                                               [connectionManager setDecorateDataDelegate:nil];
+                                               [connectionManager setMessageQueueEnabled:NO];
+                                               [connectionManager clearMessageQueue];
+                                               
+                                               [self.decoDataController setDelegate:nil];
+                                               
+                                               [connectionManager disconnectSession];
+                                           }
+                                             otherButton:@"alert_button_text_yes"
+                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                                 __strong typeof(weakSelf) self = weakSelf;
+                                                 if (!self)
+                                                     return;
+                                                 
+                                                 [self presentMainViewController];
+                                             }];
     }];
 }
 

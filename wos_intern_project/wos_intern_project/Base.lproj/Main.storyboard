@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="urh-dS-bEg">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="dKW-hc-NhL">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -306,40 +306,75 @@
                                             <constraint firstAttribute="height" constant="50" id="4ar-ZD-aVa"/>
                                         </constraints>
                                         <items>
-                                            <barButtonItem title="Black" id="VpP-sO-gfo">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="us4-zC-5OF"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="Hl3-Ox-c5s">
+                                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="9Jb-lf-zRd">
+                                                    <rect key="frame" x="20" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickBlack"/>
+                                                    <state key="selected" image="ColorPickBlackCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="xP1-Tg-Fn2"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="UEi-EF-NwH"/>
-                                            <barButtonItem tag="1" title="Red" id="pop-77-0R6">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="86S-4C-6rV"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="YcI-Zn-mHX">
+                                                <button key="customView" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="v0y-3f-F0I">
+                                                    <rect key="frame" x="124" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickRed"/>
+                                                    <state key="selected" image="ColorPickRedCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="M93-ju-0wJ"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="Dra-hJ-7jY"/>
-                                            <barButtonItem tag="2" title="Green" id="Ess-tw-MYe">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="TWd-yr-kiM"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="K3C-wd-fBJ">
+                                                <button key="customView" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="rFl-4r-qIf">
+                                                    <rect key="frame" x="228" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickGreen"/>
+                                                    <state key="selected" image="ColorPickGreenCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="Zne-NI-tpv"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="RqX-1F-LeT"/>
-                                            <barButtonItem tag="3" title="Blue" id="0ok-VM-yeL">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="nLF-MD-VGU"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="Y5D-dF-qjH">
+                                                <button key="customView" opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wVU-uP-TMn">
+                                                    <rect key="frame" x="332" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickBlue"/>
+                                                    <state key="selected" image="ColorPickBlueCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="TrA-Bh-qQq"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
                                             <barButtonItem style="plain" systemItem="flexibleSpace" id="ly7-C5-xFD"/>
-                                            <barButtonItem tag="4" title="Yellow" id="V5u-l6-zlu">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="mZq-Zo-gWZ"/>
-                                                </connections>
+                                            <barButtonItem style="plain" id="dvh-Ef-cnU">
+                                                <button key="customView" opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="BDt-py-yj2">
+                                                    <rect key="frame" x="436" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickYellow"/>
+                                                    <state key="selected" image="ColorPickYellowCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="EHY-Fn-xhv"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
-                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="ZQW-BM-YIl"/>
-                                            <barButtonItem tag="5" title="Close" id="iiR-o2-YED">
-                                                <connections>
-                                                    <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" id="Mqt-8n-H6b"/>
-                                                </connections>
+                                            <barButtonItem tag="5" style="plain" systemItem="flexibleSpace" id="ZQW-BM-YIl"/>
+                                            <barButtonItem style="plain" id="Lc7-7p-f6Q">
+                                                <button key="customView" opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wGM-pQ-tD3">
+                                                    <rect key="frame" x="540" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="CloseSubMenu"/>
+                                                    <connections>
+                                                        <action selector="tappedLineColorMenuItem:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="Ned-gH-Bjj"/>
+                                                    </connections>
+                                                </button>
                                             </barButtonItem>
                                         </items>
                                     </toolbar>
@@ -347,25 +382,26 @@
                                         <rect key="frame" x="0.0" y="411" width="600" height="50"/>
                                         <subviews>
                                             <slider opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="470" placeholderIntrinsicHeight="30" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="4" minValue="1" maxValue="20" translatesAutoresizingMaskIntoConstraints="NO" id="j9s-Zo-Zg6">
-                                                <rect key="frame" x="8" y="10" width="459" height="31"/>
+                                                <rect key="frame" x="8" y="10" width="464" height="31"/>
                                                 <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                                                 <connections>
                                                     <action selector="valueChnagedLineWidthSlider:" destination="Zh5-Kc-cgB" eventType="valueChanged" id="MA0-CX-itT"/>
                                                 </connections>
                                             </slider>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z5J-Uk-a4S">
-                                                <rect key="frame" x="535" y="10" width="50" height="30"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Z5J-Uk-a4S">
+                                                <rect key="frame" x="540" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="3Tl-Om-0NS"/>
-                                                    <constraint firstAttribute="height" constant="30" id="YuM-Uy-cs6"/>
+                                                    <constraint firstAttribute="height" constant="50" id="YuM-Uy-cs6"/>
                                                 </constraints>
-                                                <state key="normal" title="Close"/>
+                                                <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <state key="normal" title="Close" image="CloseSubMenu"/>
                                                 <connections>
                                                     <action selector="tappedLineWidthMenuCloseButton:" destination="Zh5-Kc-cgB" eventType="touchUpInside" id="1T3-ma-CZA"/>
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOc-15-G9H">
-                                                <rect key="frame" x="475" y="0.0" width="50" height="50"/>
+                                                <rect key="frame" x="480" y="0.0" width="50" height="50"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="5vR-kd-Yi0"/>
                                                     <constraint firstAttribute="height" constant="50" id="Wdo-aJ-AS5"/>
@@ -384,7 +420,7 @@
                                             <constraint firstItem="j9s-Zo-Zg6" firstAttribute="centerY" secondItem="Dgt-wX-GiS" secondAttribute="centerY" id="Vs6-P5-KrL"/>
                                             <constraint firstItem="Z5J-Uk-a4S" firstAttribute="centerY" secondItem="Dgt-wX-GiS" secondAttribute="centerY" id="j2z-MQ-g0g"/>
                                             <constraint firstItem="Z5J-Uk-a4S" firstAttribute="leading" secondItem="DOc-15-G9H" secondAttribute="trailing" constant="10" id="pbC-SS-kqE"/>
-                                            <constraint firstAttribute="trailing" secondItem="Z5J-Uk-a4S" secondAttribute="trailing" constant="15" id="qAL-z2-jOw"/>
+                                            <constraint firstAttribute="trailing" secondItem="Z5J-Uk-a4S" secondAttribute="trailing" constant="10" id="qAL-z2-jOw"/>
                                         </constraints>
                                     </view>
                                     <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QzL-H7-SyN">
@@ -440,6 +476,7 @@
                                 </constraints>
                                 <connections>
                                     <outlet property="canvasView" destination="gsE-tO-utS" id="htB-Aa-bzK"/>
+                                    <outlet property="defalutLineColorButton" destination="9Jb-lf-zRd" id="Nup-6V-Mz9"/>
                                     <outlet property="eraseButton" destination="d0N-50-ppk" id="pnG-iW-UAU"/>
                                     <outlet property="lineColorSubMenu" destination="Qdr-Ub-FbH" id="n3c-2t-4O0"/>
                                     <outlet property="lineWidthLabel" destination="DOc-15-G9H" id="aeS-9U-sFe"/>
@@ -450,6 +487,156 @@
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QXE-r0-ypx" customClass="PhotoInputTextMenuView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxw-G8-WEe">
+                                        <rect key="frame" x="10" y="-22" width="580" height="580"/>
+                                        <subviews>
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hsO-6t-7AV">
+                                                <rect key="frame" x="20" y="20" width="540" height="540"/>
+                                                <subviews>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" keyboardDismissMode="interactive" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="AQv-mz-qID">
+                                                        <rect key="frame" x="265" y="250" width="10" height="40"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
+                                                    </textView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerY" secondItem="hsO-6t-7AV" secondAttribute="centerY" id="Kft-Zl-ryK"/>
+                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerX" secondItem="hsO-6t-7AV" secondAttribute="centerX" id="jD9-1W-8Is"/>
+                                                </constraints>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="Uxw-G8-WEe" secondAttribute="height" multiplier="1:1" id="IKE-jq-xFf"/>
+                                            <constraint firstAttribute="trailing" secondItem="hsO-6t-7AV" secondAttribute="trailing" constant="20" id="Yar-O2-uXP"/>
+                                            <constraint firstAttribute="bottom" secondItem="hsO-6t-7AV" secondAttribute="bottom" constant="20" id="hSF-kN-Uhl"/>
+                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="top" secondItem="Uxw-G8-WEe" secondAttribute="top" constant="20" id="mo5-Ze-KTH"/>
+                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="leading" secondItem="Uxw-G8-WEe" secondAttribute="leading" constant="20" id="xNS-u4-3kC"/>
+                                        </constraints>
+                                    </view>
+                                    <toolbar hidden="YES" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L6V-PW-ONJ">
+                                        <rect key="frame" x="0.0" y="411" width="600" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="Hss-P5-sOV"/>
+                                        </constraints>
+                                        <items>
+                                            <barButtonItem style="plain" id="WaR-1W-9oe">
+                                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="7dw-XO-3QD">
+                                                    <rect key="frame" x="20" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickBlack"/>
+                                                    <state key="selected" image="ColorPickBlackCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="sVh-a0-5De"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="OfC-pI-UMH"/>
+                                            <barButtonItem style="plain" id="Gau-yh-GjM">
+                                                <button key="customView" opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1t8-3v-g5n">
+                                                    <rect key="frame" x="124" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickRed"/>
+                                                    <state key="selected" image="ColorPickRedCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="Q15-3M-bE6"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="eNv-Ok-dAG"/>
+                                            <barButtonItem style="plain" id="F5O-G1-pb7">
+                                                <button key="customView" opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Hdt-B4-kwo">
+                                                    <rect key="frame" x="228" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickGreen"/>
+                                                    <state key="selected" image="ColorPickGreenCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="mmH-cQ-BlR"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="b4x-ql-Ib4"/>
+                                            <barButtonItem style="plain" id="Anw-NM-wUg">
+                                                <button key="customView" opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="USi-Ye-kuc">
+                                                    <rect key="frame" x="332" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickBlue"/>
+                                                    <state key="selected" image="ColorPickBlueCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="02Q-y7-Bfl"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="zR5-E0-MW8"/>
+                                            <barButtonItem style="plain" id="xIl-QX-RwM">
+                                                <button key="customView" opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="dTx-AG-QxC">
+                                                    <rect key="frame" x="436" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="ColorPickYellow"/>
+                                                    <state key="selected" image="ColorPickYellowCheck"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="eIk-hq-LIi"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                            <barButtonItem style="plain" systemItem="flexibleSpace" id="seL-DW-M1g"/>
+                                            <barButtonItem style="plain" id="3mC-Ea-yu3">
+                                                <button key="customView" opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="LI7-Dx-lJU">
+                                                    <rect key="frame" x="540" y="5" width="40" height="40"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <state key="normal" image="CloseSubMenu"/>
+                                                    <connections>
+                                                        <action selector="tappedTextColorMenuItem:" destination="QXE-r0-ypx" eventType="touchUpInside" id="HxJ-fF-5jB"/>
+                                                    </connections>
+                                                </button>
+                                            </barButtonItem>
+                                        </items>
+                                    </toolbar>
+                                    <view hidden="YES" alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fsJ-Nz-Y0d">
+                                        <rect key="frame" x="0.0" y="411" width="600" height="50"/>
+                                        <subviews>
+                                            <slider opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="470" placeholderIntrinsicHeight="30" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minValue="15" maxValue="50" translatesAutoresizingMaskIntoConstraints="NO" id="NQb-7R-edk">
+                                                <rect key="frame" x="8" y="10" width="464" height="31"/>
+                                                <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
+                                                <connections>
+                                                    <action selector="valueChnagedLineWidthSlider:" destination="QXE-r0-ypx" eventType="valueChanged" id="5MV-b3-TeB"/>
+                                                </connections>
+                                            </slider>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V7B-rd-57P">
+                                                <rect key="frame" x="540" y="0.0" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="36I-n8-d6K"/>
+                                                    <constraint firstAttribute="width" constant="50" id="fEP-Ig-T32"/>
+                                                </constraints>
+                                                <state key="normal" title="Close" image="CloseSubMenu"/>
+                                                <connections>
+                                                    <action selector="tappedLineWidthMenuCloseButton:" destination="QXE-r0-ypx" eventType="touchUpInside" id="sXz-c5-4rd"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jdP-8O-4HN">
+                                                <rect key="frame" x="480" y="0.0" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="ZYL-CI-SWX"/>
+                                                    <constraint firstAttribute="width" constant="50" id="yaZ-cc-qMm"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstItem="NQb-7R-edk" firstAttribute="leading" secondItem="fsJ-Nz-Y0d" secondAttribute="leading" constant="10" id="1lo-mY-DMT"/>
+                                            <constraint firstItem="jdP-8O-4HN" firstAttribute="centerY" secondItem="fsJ-Nz-Y0d" secondAttribute="centerY" id="AOe-fC-Tlu"/>
+                                            <constraint firstItem="V7B-rd-57P" firstAttribute="centerY" secondItem="fsJ-Nz-Y0d" secondAttribute="centerY" id="R7h-pM-P5S"/>
+                                            <constraint firstItem="V7B-rd-57P" firstAttribute="leading" secondItem="jdP-8O-4HN" secondAttribute="trailing" constant="10" id="gME-J8-Rw3"/>
+                                            <constraint firstItem="NQb-7R-edk" firstAttribute="centerY" secondItem="fsJ-Nz-Y0d" secondAttribute="centerY" id="idd-Yc-lLF"/>
+                                            <constraint firstAttribute="trailing" secondItem="V7B-rd-57P" secondAttribute="trailing" constant="10" id="ooe-n3-v8h"/>
+                                            <constraint firstItem="jdP-8O-4HN" firstAttribute="leading" secondItem="NQb-7R-edk" secondAttribute="trailing" constant="10" id="rjh-wO-SaC"/>
+                                            <constraint firstAttribute="height" constant="50" id="s8W-RU-w4s"/>
+                                        </constraints>
+                                    </view>
                                     <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X8h-ik-pql">
                                         <rect key="frame" x="0.0" y="466" width="600" height="70"/>
                                         <constraints>
@@ -487,45 +674,26 @@
                                             </barButtonItem>
                                         </items>
                                     </toolbar>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxw-G8-WEe">
-                                        <rect key="frame" x="10" y="-22" width="580" height="580"/>
-                                        <subviews>
-                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hsO-6t-7AV">
-                                                <rect key="frame" x="20" y="20" width="540" height="540"/>
-                                                <subviews>
-                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" keyboardDismissMode="interactive" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="AQv-mz-qID">
-                                                        <rect key="frame" x="265" y="250" width="10" height="40"/>
-                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
-                                                    </textView>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerY" secondItem="hsO-6t-7AV" secondAttribute="centerY" id="Kft-Zl-ryK"/>
-                                                    <constraint firstItem="AQv-mz-qID" firstAttribute="centerX" secondItem="hsO-6t-7AV" secondAttribute="centerX" id="jD9-1W-8Is"/>
-                                                </constraints>
-                                            </view>
-                                        </subviews>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="Uxw-G8-WEe" secondAttribute="height" multiplier="1:1" id="IKE-jq-xFf"/>
-                                            <constraint firstAttribute="trailing" secondItem="hsO-6t-7AV" secondAttribute="trailing" constant="20" id="Yar-O2-uXP"/>
-                                            <constraint firstAttribute="bottom" secondItem="hsO-6t-7AV" secondAttribute="bottom" constant="20" id="hSF-kN-Uhl"/>
-                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="top" secondItem="Uxw-G8-WEe" secondAttribute="top" constant="20" id="mo5-Ze-KTH"/>
-                                            <constraint firstItem="hsO-6t-7AV" firstAttribute="leading" secondItem="Uxw-G8-WEe" secondAttribute="leading" constant="20" id="xNS-u4-3kC"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="X8h-ik-pql" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="2bC-Cd-wGI"/>
+                                    <constraint firstItem="L6V-PW-ONJ" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="9DU-bI-Qth"/>
+                                    <constraint firstItem="fsJ-Nz-Y0d" firstAttribute="width" secondItem="QXE-r0-ypx" secondAttribute="width" id="GFd-3K-MpZ"/>
                                     <constraint firstItem="Uxw-G8-WEe" firstAttribute="leading" secondItem="QXE-r0-ypx" secondAttribute="leading" constant="10" id="HU2-Wn-xm5"/>
+                                    <constraint firstItem="L6V-PW-ONJ" firstAttribute="width" secondItem="QXE-r0-ypx" secondAttribute="width" id="P08-70-esZ"/>
                                     <constraint firstItem="Uxw-G8-WEe" firstAttribute="centerY" secondItem="QXE-r0-ypx" secondAttribute="centerY" id="QSj-bE-YxZ"/>
                                     <constraint firstItem="Uxw-G8-WEe" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="SX0-wh-eJ6"/>
+                                    <constraint firstItem="fsJ-Nz-Y0d" firstAttribute="centerX" secondItem="QXE-r0-ypx" secondAttribute="centerX" id="lf1-Ji-jOK"/>
                                     <constraint firstItem="X8h-ik-pql" firstAttribute="width" secondItem="QXE-r0-ypx" secondAttribute="width" id="pO4-Rc-SAE"/>
                                     <constraint firstAttribute="trailing" secondItem="Uxw-G8-WEe" secondAttribute="trailing" constant="10" id="s9N-Vj-fpt"/>
                                 </constraints>
                                 <connections>
                                     <outlet property="backgroundView" destination="Uxw-G8-WEe" id="Wjk-If-Wpq"/>
+                                    <outlet property="defaultTextColorButton" destination="7dw-XO-3QD" id="hQh-9S-6xm"/>
+                                    <outlet property="textColorSubMenu" destination="L6V-PW-ONJ" id="8ML-48-lo0"/>
+                                    <outlet property="textSizeLabel" destination="jdP-8O-4HN" id="vgP-Mx-OzJ"/>
+                                    <outlet property="textSizeSlider" destination="NQb-7R-edk" id="kEL-xj-ynl"/>
+                                    <outlet property="textSizeSubMenu" destination="fsJ-Nz-Y0d" id="VkM-ED-YpF"/>
                                     <outlet property="textView" destination="AQv-mz-qID" id="OFA-jp-xT3"/>
                                 </connections>
                             </view>
@@ -536,7 +704,9 @@
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Wfh-aY-Vx8" secondAttribute="bottom" constant="-60" id="2hq-Sv-zz0"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="leading" secondItem="bsr-62-H2Z" secondAttribute="leading" id="2iG-aV-pcf"/>
                             <constraint firstItem="Zh5-Kc-cgB" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="7AR-Mg-o4A"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="L6V-PW-ONJ" secondAttribute="bottom" constant="75" id="8A4-7n-099"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="X8h-ik-pql" secondAttribute="bottom" id="Adh-Xc-xZL"/>
+                            <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="fsJ-Nz-Y0d" secondAttribute="bottom" constant="75" id="KiG-kM-gkK"/>
                             <constraint firstItem="uyW-Ko-FP5" firstAttribute="top" secondItem="Qdr-Ub-FbH" secondAttribute="bottom" constant="75" id="LYG-Ni-tnI"/>
                             <constraint firstItem="kfz-pT-T9E" firstAttribute="top" secondItem="JaJ-32-eok" secondAttribute="bottom" id="OH2-Kx-Zes"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Wfh-aY-Vx8" secondAttribute="trailing" constant="-80" id="OPN-Hz-Lry"/>
@@ -579,11 +749,69 @@
                         <outlet property="editMenuButton" destination="Wfh-aY-Vx8" id="ZxV-zy-2ko"/>
                         <outlet property="inputTextMenuView" destination="QXE-r0-ypx" id="eKl-kS-pqN"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
+                        <segue destination="IXs-ec-yu0" kind="presentation" identifier="popupAttachSticker" id="RLt-g1-j2Q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jzB-Gq-28Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1717" y="317"/>
+        </scene>
+        <!--Photo Attach Sticker Menu View Controller-->
+        <scene sceneID="EGo-Sa-3Ep">
+            <objects>
+                <viewController id="IXs-ec-yu0" customClass="PhotoAttachStickerMenuViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="5dR-rK-XxI"/>
+                        <viewControllerLayoutGuide type="bottom" id="Pqb-vj-xHd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="2Mp-5T-VFr">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="pnB-Mt-L10">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="SRB-1L-zWP">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="stickerCell" id="pZL-QY-jTe" customClass="PhotoAttachStickerViewCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fNV-N3-vwA">
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                </imageView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <constraints>
+                                            <constraint firstItem="fNV-N3-vwA" firstAttribute="leading" secondItem="pZL-QY-jTe" secondAttribute="leading" id="Tp8-da-sc0"/>
+                                            <constraint firstAttribute="bottom" secondItem="fNV-N3-vwA" secondAttribute="bottom" id="TzU-rJ-i5N"/>
+                                            <constraint firstAttribute="trailing" secondItem="fNV-N3-vwA" secondAttribute="trailing" id="mO0-rD-5Er"/>
+                                            <constraint firstItem="fNV-N3-vwA" firstAttribute="top" secondItem="pZL-QY-jTe" secondAttribute="top" id="uig-ZW-UYa"/>
+                                        </constraints>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="pnB-Mt-L10" firstAttribute="width" secondItem="2Mp-5T-VFr" secondAttribute="width" id="6Ag-Kd-J2G"/>
+                            <constraint firstItem="pnB-Mt-L10" firstAttribute="centerY" secondItem="2Mp-5T-VFr" secondAttribute="centerY" id="Q5W-cS-6eU"/>
+                            <constraint firstItem="pnB-Mt-L10" firstAttribute="height" secondItem="2Mp-5T-VFr" secondAttribute="height" id="UUn-W5-9m9"/>
+                            <constraint firstItem="pnB-Mt-L10" firstAttribute="centerX" secondItem="2Mp-5T-VFr" secondAttribute="centerX" id="cTa-Aw-e0T"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HD9-cl-LC7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2449" y="317"/>
         </scene>
         <!--Photo Crop View Controller-->
         <scene sceneID="R8X-vd-KNR">
@@ -841,6 +1069,17 @@
         <image name="Back" width="48" height="48"/>
         <image name="BluetoothIcon" width="181" height="243"/>
         <image name="Close" width="50" height="50"/>
+        <image name="CloseSubMenu" width="40" height="40"/>
+        <image name="ColorPickBlack" width="40" height="40"/>
+        <image name="ColorPickBlackCheck" width="40" height="40"/>
+        <image name="ColorPickBlue" width="40" height="40"/>
+        <image name="ColorPickBlueCheck" width="40" height="40"/>
+        <image name="ColorPickGreen" width="40" height="40"/>
+        <image name="ColorPickGreenCheck" width="40" height="40"/>
+        <image name="ColorPickRed" width="40" height="40"/>
+        <image name="ColorPickRedCheck" width="40" height="40"/>
+        <image name="ColorPickYellow" width="40" height="40"/>
+        <image name="ColorPickYellowCheck" width="40" height="40"/>
         <image name="DecorateOff" width="64" height="64"/>
         <image name="DecorateOn" width="64" height="64"/>
         <image name="Delete" width="50" height="50"/>
