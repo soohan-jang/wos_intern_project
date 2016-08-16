@@ -8,6 +8,7 @@
 
 #import "PhotoDecorateDataDisplayView.h"
 #import "PhotoDecorateData.h"
+#import "ColorUtility.h"
 
 @interface PhotoDecorateDataDisplayView ()
 
@@ -27,7 +28,7 @@
     
     if (self) {
         self.selectedDecoViewIndex = -1;
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [ColorUtility colorWithName:Transparent];
         [self addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(deselectDecoView)]];
         [self setupSubMenuButtons];
     }
@@ -416,12 +417,8 @@ NSString *const BoundaryLayerName = @"boundaryLayer";
     [shapeLayer setPosition:CGPointMake(frame.size.width / 2.0f,
                                         frame.size.height / 2.0f)];
     
-    [shapeLayer setStrokeColor:[[UIColor colorWithRed:243 / 255.0f
-                                                green:156 / 255.0f
-                                                 blue:18 / 255.0f
-                                                alpha:1] CGColor]];
-    
-    [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
+    [shapeLayer setStrokeColor:[[ColorUtility colorWithName:Orange] CGColor]];
+    [shapeLayer setFillColor:[[ColorUtility colorWithName:Transparent] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];
@@ -500,7 +497,7 @@ NSInteger const PreventImageHeight  = 40;
 //1:n 통신으로 가더라도, PreventView는 각 DrawObject의 자식뷰이므로 Tag로 인해 가져오는 것에 혼선을 빚는 일은 없음.
 - (UIView *)generateEditPreventImageView:(CGRect)frame {
     UIView *preventView = [[UIView alloc] initWithFrame:frame];
-    [preventView setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:0 alpha:0.2]];
+    [preventView setBackgroundColor:[ColorUtility colorWithName:Transparent2f]];
     [preventView setTag:PreventViewTag];
     
     UIImageView *preventImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Editing"]];

@@ -51,5 +51,7 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
 
 + (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index;
 + (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix;
++ (NSString *)generatePhotoStickerImageWithIndex:(NSInteger)index;
++ (UIImage *)renderImageNamed:(NSString *)imageName renderColor:(UIColor *)color;
 
 @end

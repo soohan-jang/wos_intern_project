@@ -13,7 +13,7 @@ NSInteger const PhotoFrameCellCount = 12;
 
 @interface PhotoFrameSelectCellManager () <ConnectionManagerPhotoFrameDataDelegate>
 
-@property (strong, nonatomic) NSMutableArray<PhotoFrameSelectCellData *> *cellDatas;
+@property (strong, atomic) NSMutableArray<PhotoFrameSelectCellData *> *cellDatas;
 
 @end
 

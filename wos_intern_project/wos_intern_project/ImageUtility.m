@@ -7,9 +7,7 @@
 //
 
 #import "ImageUtility.h"
-
 #import <AssetsLibrary/AssetsLibrary.h>
-
 #import "CommonConstants.h"
 
 @implementation ImageUtility
@@ -112,6 +110,29 @@
 
 + (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix {
     return [NSString stringWithFormat:@"%@%ld%@", PrefixImagePhotoFrame, (long)index, postfix];
+}
+
++ (NSString *)generatePhotoStickerImageWithIndex:(NSInteger)index {
+    return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoSticker, (long)index];
+}
+
++ (UIImage *)renderImageNamed:(NSString *)imageName renderColor:(UIColor *)color {
+    UIImage *image = [UIImage imageNamed:imageName];
+    
+    CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextClipToMask(context, rect, image.CGImage);
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    UIImage *flippedImage = [UIImage imageWithCGImage:img.CGImage
+                                                scale:1.0
+                                          orientation:UIImageOrientationDownMirrored];
+    
+    return flippedImage;
 }
 
 @end

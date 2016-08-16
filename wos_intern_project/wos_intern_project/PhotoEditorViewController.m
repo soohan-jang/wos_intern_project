@@ -23,15 +23,17 @@
 #import "PhotoDecorateDataDisplayView.h"
 #import "PhotoDrawPenMenuView.h"
 #import "PhotoInputTextMenuView.h"
+#import "PhotoStickerMenuView.h"
 
 #import "PhotoDecorateData.h"
 
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
 #import "ImageUtility.h"
+#import "ColorUtility.h"
 #import "MessageFactory.h"
 
-@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoDataDelegate>
+@interface PhotoEditorViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, SphereMenuDelegate, XXXRoundMenuButtonDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoDataDelegate>
 
 @property (nonatomic, strong) PhotoEditorFrameCellManager *cellManager;
 @property (atomic, strong) DecorateDataController *decoDataController;
@@ -51,6 +53,8 @@
 @property (weak, nonatomic) IBOutlet PhotoDrawPenMenuView *drawPenMenuView;
 //텍스트를 작성할 수 있는 뷰
 @property (weak, nonatomic) IBOutlet PhotoInputTextMenuView *inputTextMenuView;
+//스티커를 선택할 수 있는 뷰
+@property (weak, nonatomic) IBOutlet PhotoStickerMenuView *stickerMenuView;
 
 @end
 
@@ -59,7 +63,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
     
     [self setupDelegates];
     [self setupDrawController];
@@ -75,6 +78,7 @@
     
     self.drawPenMenuView.delegate = self;
     self.inputTextMenuView.delegate = self;
+    self.stickerMenuView.delegate = self;
 }
 
 - (void)setupMenu {
@@ -84,10 +88,7 @@
                                  startDegree:-M_PI
                                 layoutDegree:M_PI / 2];
     
-    [self.editMenuButton setMainColor:[UIColor colorWithRed:45 / 255.f
-                                                      green:140 / 255.f
-                                                       blue:213 / 255.f
-                                                      alpha:1]];
+    [self.editMenuButton setMainColor:[ColorUtility colorWithName:Orange]];
     
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
@@ -177,6 +178,18 @@
     }
 }
 
+- (void)setVisibleStickerMenuView:(BOOL)visible {
+    if (visible) {
+        [self.decoDataVisibleToggleButton setHidden:YES];
+        [self.editMenuButton setHidden:YES];
+        [self.stickerMenuView setHidden:NO];
+    } else {
+        [self.decoDataVisibleToggleButton setHidden:NO];
+        [self.editMenuButton setHidden:NO];
+        [self.stickerMenuView setHidden:YES];
+    }
+}
+
 - (void)setVisibleDecorateDataDisplayView:(BOOL)visible {
     //visible이 yes이면 DrawObject가 화면에 표시되는 상태를 의미한다.
     if (visible) {
@@ -189,7 +202,7 @@
 }
 
 
-#pragma mark - Load Other ViewController Methods
+#pragma mark - Present Other ViewController Methods
 
 - (void)presentPhotoCropViewController {
     [self performSegueWithIdentifier:SegueMoveToCropper sender:self];
@@ -300,6 +313,11 @@
     for (PhotoEditorFrameViewCell *cell in self.collectionView.visibleCells) {
         [cell setStrokeBorder];
     }
+    
+    //캡쳐된 이미지를 포토 앨범에 저장한다.
+    //이 메소드는 ImageUtility로 이동한다. 또한 completion handler를 작성하도록 구현하여, 저장한 이후에 Alert으로 알릴 수 있도록 한다.
+    //저장하는 동안에는 ProgressView를 표시하여 편집이 불가능하게 만든다.
+    UIImageWriteToSavedPhotosAlbum(mergedImage, nil, nil, nil);
 }
 
 - (IBAction)decoreateVisibleToggled:(id)sender {
@@ -402,8 +420,26 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuCamera {
-    //camera
-    //아래의 코드는 버그 방지를 위해, 임시로 추가시킨 코드이다. 기능이 구현되면 삭제될 예정이다.
+    if ([ValidateCheckUtility checkPhotoCameraAccessAuthority]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
+        
+        return NO;
+    }
+    
+    //Alert Text 변경 예정.
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_album_not_authorized"
+                                          messageKey:@"alert_content_album_not_authorized"
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                  }];
+    
     return YES;
 }
 
@@ -469,7 +505,8 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 }
 
 - (void)decorateMainMenuSticker {
-    
+    [self setVisibleStickerMenuView:YES];
+    [self setVisibleDecorateDataDisplayView:YES];
 }
 
 
@@ -787,6 +824,17 @@ CGFloat const TextDecorateViewScale = 0.25f;
 
 - (void)inputTextMenuViewDidCancelled:(PhotoInputTextMenuView *)inputTextMenu {
     [self setVisibleInputTextMenuView:NO];
+}
+
+
+#pragma mark - PhotoStickerViewController Delegate Methods
+
+- (void)stickerViewControllerDidSelected:(UIImage *)sticker {
+    [self addDecorateView:sticker];
+}
+
+- (void)stickerViewControllerDidClosed:(PhotoStickerMenuView *)viewController {
+    [self setVisibleStickerMenuView:NO];
 }
 
 

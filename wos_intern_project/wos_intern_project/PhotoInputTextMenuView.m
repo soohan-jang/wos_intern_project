@@ -7,6 +7,7 @@
 //
 
 #import "PhotoInputTextMenuView.h"
+#import "ColorUtility.h"
 
 CGFloat const DefaultFontSize = 20;
 
@@ -48,7 +49,7 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-    [self setupViews];
+    [self initialize];
 }
 
 - (void)setHidden:(BOOL)hidden {
@@ -59,10 +60,7 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
     
     //hidden NO가 되어 화면에 나타날 때, DrawPenView를 초기화한다.
     self.textView.text = @"";
-    self.textView.textColor = [UIColor colorWithRed:51.f / 255.f
-                                              green:51.f / 255.f
-                                               blue:51.f / 255.f
-                                              alpha:1.f];
+    self.textView.textColor = [ColorUtility colorWithName:DarkGray];
     self.textView.font = [UIFont systemFontOfSize:DefaultFontSize];
     
     [self.textSizeSlider setValue:DefaultFontSize];
@@ -73,9 +71,9 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
     [self.prevSelectedTextColorButton setSelected:YES];
 }
 
-- (void)setupViews {
-    self.backgroundView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
-    self.textView.backgroundColor = [UIColor clearColor];
+- (void)initialize {
+    self.backgroundView.backgroundColor = [ColorUtility colorWithName:Transparent2f];
+    self.textView.backgroundColor = [ColorUtility colorWithName:Transparent];
 }
 
 CGFloat const Scale = 4.0f;
@@ -94,7 +92,7 @@ CGFloat const Scale = 4.0f;
     CGSize imageSize = CGSizeMake(self.textView.bounds.size.width * Scale, self.textView.bounds.size.height * Scale);
     UIGraphicsBeginImageContext(imageSize);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    [[UIColor clearColor] setFill];
+    [[ColorUtility colorWithName:Transparent] setFill];
     CGContextFillRect(context, CGRectMake(0, 0, imageSize.width, imageSize.height));
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -180,34 +178,19 @@ CGFloat const Scale = 4.0f;
     
     switch (sender.tag) {
         case TextColorBlack:
-            self.textColor = [UIColor colorWithRed:51.f / 255.f
-                                             green:51.f / 255.f
-                                              blue:51.f / 255.f
-                                             alpha:1.f];
+            [self setTextColor:[ColorUtility colorWithName:DarkGray]];
             break;
         case TextColorRed:
-            self.textColor = [UIColor colorWithRed:231.f / 255.f
-                                                          green:76.f / 255.f
-                                                           blue:60.f / 255.f
-                                                          alpha:1.f];
+            [self setTextColor:[ColorUtility colorWithName:Red]];
             break;
         case TextColorGreen:
-            self.textColor = [UIColor colorWithRed:39.f / 255.f
-                                                          green:174.f / 255.f
-                                                           blue:96.f / 255.f
-                                                          alpha:1.f];
+            [self setTextColor:[ColorUtility colorWithName:Green]];
             break;
         case TextColorBlue:
-            self.textColor = [UIColor colorWithRed:52.f / 255.f
-                                                          green:152.f / 255.f
-                                                           blue:219.f / 255.f
-                                                          alpha:1.f];
+            [self setTextColor:[ColorUtility colorWithName:Blue]];
             break;
         case TextColorYellow:
-            self.textColor = [UIColor colorWithRed:241.f / 255.f
-                                                          green:196.f / 255.f
-                                                           blue:15.f / 255.f
-                                                          alpha:1.f];
+            [self setTextColor:[ColorUtility colorWithName:Yellow]];
             break;
         case TextColorClose:
             [self closeTextColorSubMenu];

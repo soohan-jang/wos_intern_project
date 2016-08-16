@@ -13,6 +13,8 @@
 NSString *const ApplicationBluetoothServiceType         = @"Co-PhotoEditor";
 
 NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
+NSString *const PrefixImagePhotoSticker                 = @"PhotoSticker";
+
 NSString *const PostFixImagePhotoFrameOrange            = @"_orange";
 NSString *const PostFixImagePhotoFrameBlue              = @"_blue";
 NSString *const PostFixImagePhotoFrameGreen             = @"_green";
@@ -25,7 +27,7 @@ NSString *const SegueMoveToAlbum                        = @"moveToPhotoAlbum";
 NSString *const SegueMoveToFrameSelect                  = @"moveToPhotoFrameSelect";
 NSString *const SegueMoveToEditor                       = @"moveToPhotoEditor";
 NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
-NSString *const SeguePopupSticker                       = @"popupAttachSticker";
+NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 
 NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
 NSString *const ReuseCellEditor                         = @"photoFrameCell";

@@ -9,6 +9,7 @@
 #import "ValidateCheckUtility.h"
 
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation ValidateCheckUtility
 
@@ -20,7 +21,25 @@
 + (BOOL)checkPhotoAlbumAccessAuthority {
     ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
     
+    if (!status) {
+        return NO;
+    }
+    
     if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized) {
+        return YES;
+    }
+    
+    return NO;
+}
+
++ (BOOL)checkPhotoCameraAccessAuthority {
+    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    
+    if (!status) {
+        return NO;
+    }
+    
+    if (status == AVAuthorizationStatusNotDetermined || status == AVAuthorizationStatusAuthorized) {
         return YES;
     }
     

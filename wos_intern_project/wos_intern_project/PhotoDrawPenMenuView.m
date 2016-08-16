@@ -8,6 +8,7 @@
 
 #import "PhotoDrawPenMenuView.h"
 #import "PhotoDrawCanvasView.h"
+#import "ColorUtility.h"
 
 typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     LineColorBlack  = 0,
@@ -50,10 +51,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     
     //CanvasView를 초기화한다.
     [self.canvasView clear];
-    [self.canvasView setLineColor:[UIColor colorWithRed:51.f / 255.f
-                                                  green:51.f / 255.f
-                                                   blue:51.f / 255.f
-                                                  alpha:1.f]];
+    [self.canvasView setLineColor:[ColorUtility colorWithName:DarkGray]];
     [self.canvasView setLineWidth:DefaultLineWidth];
     
     [self.prevSelectedLineColorButton setSelected:NO];
@@ -107,10 +105,7 @@ NSInteger const Selected = 1;
 
 - (void)toggleEraseButton {
     if (self.eraseButton.tag == Normal) {
-        self.eraseButton.tintColor = [UIColor colorWithRed:243 / 255.0f
-                                                     green:156 / 255.0f
-                                                      blue:18 / 255.0f
-                                                     alpha:1];
+        self.eraseButton.tintColor = [ColorUtility colorWithName:Orange];
         self.eraseButton.tag = Selected;
         self.canvasView.drawMode = ModeErase;
     } else if (self.eraseButton.tag == Selected) {
@@ -148,34 +143,19 @@ NSInteger const Selected = 1;
     
     switch (sender.tag) {
         case LineColorBlack:
-            [self.canvasView setLineColor:[UIColor colorWithRed:51.f / 255.f
-                                                          green:51.f / 255.f
-                                                           blue:51.f / 255.f
-                                                          alpha:1.f]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:DarkGray]];
             break;
         case LineColorRed:
-            [self.canvasView setLineColor:[UIColor colorWithRed:231.f / 255.f
-                                                          green:76.f / 255.f
-                                                           blue:60.f / 255.f
-                                                          alpha:1.f]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:Red]];
             break;
         case LineColorGreen:
-            [self.canvasView setLineColor:[UIColor colorWithRed:39.f / 255.f
-                                                          green:174.f / 255.f
-                                                           blue:96.f / 255.f
-                                                          alpha:1.f]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:Green]];
             break;
         case LineColorBlue:
-            [self.canvasView setLineColor:[UIColor colorWithRed:52.f / 255.f
-                                                          green:152.f / 255.f
-                                                           blue:219.f / 255.f
-                                                          alpha:1.f]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:Blue]];
             break;
         case LineColorYellow:
-            [self.canvasView setLineColor:[UIColor colorWithRed:241.f / 255.f
-                                                          green:196.f / 255.f
-                                                           blue:15.f / 255.f
-                                                          alpha:1.f]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:Yellow]];
             break;
         case LineColorClose:
             [self closeLineColorSubMenu];

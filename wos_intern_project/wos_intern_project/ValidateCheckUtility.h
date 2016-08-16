@@ -11,5 +11,6 @@
 @interface ValidateCheckUtility : NSObject
 
 + (BOOL)checkPhotoAlbumAccessAuthority;
++ (BOOL)checkPhotoCameraAccessAuthority;
 
 @end

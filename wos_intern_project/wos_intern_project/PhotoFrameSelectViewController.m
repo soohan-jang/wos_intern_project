@@ -36,7 +36,6 @@
     [super viewDidLoad];
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
-    [self.collectionView setBackgroundColor:[UIColor clearColor]];
     
     [self setupConnectionManager];
     [self setupCellManager];

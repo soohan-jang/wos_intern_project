@@ -8,6 +8,7 @@
 
 #import "PhotoDrawCanvasView.h"
 #import "CanvasPathData.h"
+#import "ColorUtility.h"
 
 CGFloat const DefaultLineWidth = 4;
 
@@ -27,10 +28,10 @@ CGFloat const DefaultLineWidth = 4;
     self = [super initWithCoder:aDecoder];
     
     if (self) {
-        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+        self.backgroundColor = [ColorUtility colorWithName:Transparent2f];
         self.pathDatas = [[NSMutableArray alloc] init];
         
-        self.lineColor = [UIColor blackColor];
+        self.lineColor = [ColorUtility colorWithName:Black];
         self.lineWidth = DefaultLineWidth;
         
         path = [UIBezierPath bezierPath];
@@ -193,7 +194,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
         return nil;
     
     //이미지 캡쳐 전에, 배경을 투명하게 만든다.
-    self.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [ColorUtility colorWithName:Transparent];
     
     UIGraphicsBeginImageContext(self.bounds.size);
     [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
@@ -204,7 +205,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     UIImage *pathImage = [UIImage imageWithCGImage:pathImageRef];
     
     //이미지 캡쳐가 종료되었으므로, 배경색을 다시 원상 복구한다.
-    self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2];
+    self.backgroundColor = [ColorUtility colorWithName:Transparent2f];
     //또한 사용하였던 CGImageRef를 해제한다.
     CGImageRelease(pathImageRef);
     

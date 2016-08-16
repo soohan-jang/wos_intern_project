@@ -10,6 +10,8 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 
+#import "PhotoEditorFrameCellData.h"
+
 NSInteger const DefaultMargin = 5;
 
 @interface PhotoEditorFrameCellManager ()
@@ -18,9 +20,7 @@ NSInteger const DefaultMargin = 5;
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
-@property (atomic, strong) NSMutableDictionary *cellFullscreenImages;
-@property (atomic, strong) NSMutableDictionary *cellCroppedImages;
-@property (atomic, strong) NSMutableDictionary *cellStates;
+@property (atomic, strong) NSArray<PhotoEditorFrameCellData *> *cellDatas;
 
 @end
 
@@ -31,6 +31,19 @@ NSInteger const DefaultMargin = 5;
     
     if (self) {
         self.photoFrameNumber = frameNumber;
+        
+        NSMutableArray<PhotoEditorFrameCellData *> *cellInitArray = [[NSMutableArray alloc] init];
+        
+        for (int i = 0; i < [self getItemNumber]; i++) {
+            [cellInitArray addObject:[[PhotoEditorFrameCellData alloc] init]];
+        }
+        
+        if (cellInitArray != nil || cellInitArray.count > 0) {
+            self.cellDatas = [NSArray arrayWithArray:cellInitArray];
+        }
+        
+        [cellInitArray removeAllObjects];
+        cellInitArray = nil;
     }
     
     return self;
@@ -137,45 +150,82 @@ NSInteger const DefaultMargin = 5;
 }
 
 - (void)setCellStateAtIndexPath:(NSIndexPath *)indexPath state:(NSInteger)state {
-    if (self.cellStates == nil) {
-        self.cellStates = [@{indexPath: @(state)} mutableCopy];
-    } else {
-        self.cellStates[indexPath] = @(state);
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return;
     }
+    
+    self.cellDatas[indexPath.item].state = state;
 }
 
 - (void)setCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath fullscreenImage:(UIImage *)fullscreenImage {
-    if (self.cellFullscreenImages == nil) {
-        self.cellFullscreenImages = [@{indexPath: fullscreenImage} mutableCopy];
-    } else {
-        self.cellFullscreenImages[indexPath] = fullscreenImage;
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return;
     }
+    
+    self.cellDatas[indexPath.item].fullscreenImage = fullscreenImage;
 }
 
 - (void)setCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath croppedImage:(UIImage *)croppedImage {
-    if (self.cellCroppedImages == nil) {
-        self.cellCroppedImages = [@{indexPath: croppedImage} mutableCopy];
-    } else {
-        self.cellCroppedImages[indexPath] = croppedImage;
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return;
     }
+    
+    self.cellDatas[indexPath.item].croppedImage = croppedImage;
 }
 
 - (NSInteger)getCellStateAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.cellStates[indexPath] integerValue];
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return NSNotFound;
+    }
+    
+    return self.cellDatas[indexPath.item].state;
 }
 
 - (UIImage *)getCellFullscreenImageAtIndexPath:(NSIndexPath *)indexPath {
-    return self.cellFullscreenImages[indexPath];
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return nil;
+    }
+    
+    return self.cellDatas[indexPath.item].fullscreenImage;
 }
 
 - (UIImage *)getCellCroppedImageAtIndexPath:(NSIndexPath *)indexPath {
-    return self.cellCroppedImages[indexPath];
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return nil;
+    }
+    
+    return self.cellDatas[indexPath.item].croppedImage;
 }
 
 - (void)clearCellDataAtIndexPath:(NSIndexPath *)indexPath {
-    self.cellStates[indexPath] = nil;
-    self.cellFullscreenImages[indexPath] = nil;
-    self.cellCroppedImages[indexPath] = nil;
+    if ([self isNilOrEmpty] || [self isOutBoundIndex:indexPath.item]) {
+        return;
+    }
+    
+    PhotoEditorFrameCellData *data = self.cellDatas[indexPath.item];
+    data.state = CellStateNone;
+    data.fullscreenImage = nil;
+    data.croppedImage = nil;
+}
+
+- (BOOL)isNilOrEmpty {
+    if (self.cellDatas == nil || self.cellDatas.count == 0) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)isOutBoundIndex:(NSInteger)index {
+    if ([self isNilOrEmpty]) {
+        return YES;
+    }
+    
+    if (self.cellDatas.count <= index) {
+        return YES;
+    }
+    
+    return NO;
 }
 
 @end

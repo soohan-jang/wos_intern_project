@@ -8,7 +8,7 @@
 
 #import "PhotoEditorFrameViewCell.h"
 
-#define BOUNDARY_STROKE_COLOR               [[UIColor colorWithRed:243 / 255.0f green:156 / 255.0f blue:18 / 255.0f alpha:1] CGColor]
+#import "ColorUtility.h"
 
 NSString *const NOTIFICATION_SELECTED_CELL  = @"notification_selected_cell";
 NSString *const KEY_SELECTED_CELL_INDEXPATH = @"selected_cell_indexpath";
@@ -51,8 +51,8 @@ NSString *const KEY_SELECTED_CELL_CENTER  = @"selected_cell_center";
     
     [shapeLayer setBounds:shapeRect];
     [shapeLayer setPosition:CGPointMake(self.bounds.size.width / 2.0f, self.bounds.size.height / 2.0f)];
-    [shapeLayer setFillColor:[[UIColor clearColor] CGColor]];
-    [shapeLayer setStrokeColor:BOUNDARY_STROKE_COLOR];
+    [shapeLayer setFillColor:[[ColorUtility colorWithName:Transparent] CGColor]];
+    [shapeLayer setStrokeColor:[[ColorUtility colorWithName:Orange] CGColor]];
     [shapeLayer setLineWidth:strokeLineWitdth];
     [shapeLayer setLineJoin:kCALineJoinMiter];
     [shapeLayer setLineDashPattern:@[@10, @5]];
