@@ -50,9 +50,9 @@
             blue = 15.f;
             break;
         case Orange:
-            red = 45.f;
-            green = 140.f;
-            blue = 213.f;
+            red = 243.f;
+            green = 156.f;
+            blue = 18.f;
             alpha = 1.f;
             break;
     }

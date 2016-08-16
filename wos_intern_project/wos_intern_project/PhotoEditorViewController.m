@@ -88,7 +88,7 @@
                                  startDegree:-M_PI
                                 layoutDegree:M_PI / 2];
     
-    [self.editMenuButton setMainColor:[ColorUtility colorWithName:Orange]];
+    [self.editMenuButton setMainColor:[ColorUtility colorWithName:Blue]];
     
     [self.editMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.editMenuButton setCenterIconType:XXXIconTypeCustomImage];
@@ -697,8 +697,6 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     if (index == NSNotFound) {
         return;
     }
-    
-    [self.decoDataController deleteDecorateDataAtIndex:index];
     
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{

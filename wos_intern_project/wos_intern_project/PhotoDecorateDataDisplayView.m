@@ -310,16 +310,26 @@ NSInteger const SubMenuHeight          = 30;
         return;
     }
     
-    UIView *view = recognizer.view;
-    NSInteger index = [self getDecoViewIndex:recognizer.view];
+    CGPoint point = [recognizer locationInView:self];
+    
+    UIView *view = self.subviews[self.selectedDecoViewIndex];
+    
+    //point check
+    CGFloat viewX1 = view.frame.origin.x;
+    CGFloat viewY1 = view.frame.origin.y;
+    CGFloat viewX2 = view.frame.size.width + viewX1;
+    CGFloat viewY2 = view.frame.size.height + viewY1;
+    
+    //isContainsPoint?
+    if (!(viewX1 <= point.x && point.x <= viewX2 && viewY1 <= point.y && point.y <= viewY2)) {
+        return;
+    }
     
     //이동거리 제한을 둬야함.
     CGFloat x1 = self.bounds.origin.x;
     CGFloat y1 = self.bounds.origin.y;
     CGFloat x2 = self.bounds.size.width + x1;
     CGFloat y2 = self.bounds.size.height + y1;
-    
-    CGPoint point = [recognizer locationInView:self];
     
     if (!(x1 < point.x && point.x < x2 && y1 < point.y && point.y < y2)) {
         return;
@@ -328,7 +338,7 @@ NSInteger const SubMenuHeight          = 30;
     view.center = point;
     [self drawSubMenus];
     
-    [self.delegate decoViewDidMovedAtIndex:index movedPoint:view.frame.origin];
+    [self.delegate decoViewDidMovedAtIndex:self.selectedDecoViewIndex movedPoint:view.frame.origin];
 }
 
 /**

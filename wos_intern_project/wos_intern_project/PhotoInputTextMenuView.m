@@ -38,7 +38,6 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
 //@property (weak, nonatomic) IBOutlet UIButton *defalutTextFontButton;
 //@property (strong, nonatomic) UIButton *prevSelectedTextFontButton;
 
-@property (strong, nonatomic) UIColor *textColor;
 @property (assign, nonatomic) NSInteger textSize;
 @property (assign, nonatomic) BOOL isBold, isItalic, isUnderLine;
 
@@ -100,7 +99,6 @@ CGFloat const Scale = 4.0f;
     //이후 만들어진 UIImage 객체 위에 Text를 그린다.
     UIGraphicsBeginImageContext(imageSize);
     
-    [self.textColor set];
     [image drawInRect:CGRectMake(0, 0, image.size.width, image.size.height)];
     
     CGSize textSize = [originText sizeWithAttributes:@{NSFontAttributeName:font}];
@@ -109,7 +107,9 @@ CGFloat const Scale = 4.0f;
                              imageSize.width,
                              imageSize.height);
     
-    [originText drawInRect:CGRectIntegral(rect) withAttributes:@{NSFontAttributeName:font}];
+    [originText drawInRect:CGRectIntegral(rect) withAttributes:@{NSFontAttributeName:font,
+                                                                 NSForegroundColorAttributeName:self.textView.textColor}];
+    
     UIImage *textImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
@@ -178,26 +178,24 @@ CGFloat const Scale = 4.0f;
     
     switch (sender.tag) {
         case TextColorBlack:
-            [self setTextColor:[ColorUtility colorWithName:DarkGray]];
+            self.textView.textColor = [ColorUtility colorWithName:DarkGray];
             break;
         case TextColorRed:
-            [self setTextColor:[ColorUtility colorWithName:Red]];
+            self.textView.textColor = [ColorUtility colorWithName:Red];
             break;
         case TextColorGreen:
-            [self setTextColor:[ColorUtility colorWithName:Green]];
+            self.textView.textColor = [ColorUtility colorWithName:Green];
             break;
         case TextColorBlue:
-            [self setTextColor:[ColorUtility colorWithName:Blue]];
+             self.textView.textColor = [ColorUtility colorWithName:Blue];
             break;
         case TextColorYellow:
-            [self setTextColor:[ColorUtility colorWithName:Yellow]];
+             self.textView.textColor = [ColorUtility colorWithName:Yellow];
             break;
         case TextColorClose:
             [self closeTextColorSubMenu];
             break;
     }
-    
-    self.textView.textColor = self.textColor;
 }
 
 

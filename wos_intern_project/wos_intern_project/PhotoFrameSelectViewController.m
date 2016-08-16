@@ -19,6 +19,7 @@
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
+#import "ColorUtility.h"
 
 @interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, PhotoFrameSelectCellManagerDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoFrameControlDelegate>
 
@@ -36,6 +37,7 @@
     [super viewDidLoad];
     
     [self setAutomaticallyAdjustsScrollViewInsets:NO];
+    [self.collectionView setBackgroundColor:[ColorUtility colorWithName:Transparent]];
     
     [self setupConnectionManager];
     [self setupCellManager];
