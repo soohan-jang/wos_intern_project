@@ -21,10 +21,6 @@
 + (BOOL)checkPhotoAlbumAccessAuthority {
     ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
     
-    if (!status) {
-        return NO;
-    }
-    
     if (status == ALAuthorizationStatusNotDetermined || status == ALAuthorizationStatusAuthorized) {
         return YES;
     }
@@ -34,10 +30,6 @@
 
 + (BOOL)checkPhotoCameraAccessAuthority {
     AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    
-    if (!status) {
-        return NO;
-    }
     
     if (status == AVAuthorizationStatusNotDetermined || status == AVAuthorizationStatusAuthorized) {
         return YES;

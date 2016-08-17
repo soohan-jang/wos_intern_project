@@ -70,15 +70,7 @@
                             <constraint firstItem="Uh2-bE-put" firstAttribute="bottom" secondItem="dHD-TJ-yiL" secondAttribute="bottom" constant="20" id="sVI-5n-2Gz"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="DAS-Ns-Emb">
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" image="Album" id="FY3-cc-wpi">
-                            <inset key="imageInsets" minX="16" minY="8" maxX="0.0" maxY="8"/>
-                            <connections>
-                                <action selector="loadPhotoAlbumViewController:" destination="O8G-ct-xDM" id="pBZ-wz-u0R"/>
-                                <segue destination="zGW-6d-CIL" kind="show" id="HO4-Z4-dcV"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="DAS-Ns-Emb"/>
                     <connections>
                         <segue destination="oMG-MB-uvc" kind="show" identifier="moveToPhotoFrameSelect" id="mdC-To-FUk"/>
                     </connections>
@@ -99,7 +91,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Icf-Gm-nhu">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Icf-Gm-nhu">
                                 <rect key="frame" x="20" y="64" width="560" height="536"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1K3-4n-4S5">
                                     <size key="itemSize" width="50" height="50"/>
@@ -109,7 +101,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="temp" id="Rwc-aO-h25">
-                                        <rect key="frame" x="0.0" y="64" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
@@ -1164,7 +1156,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Album" width="50" height="50"/>
         <image name="Back" width="48" height="48"/>
         <image name="BluetoothIcon" width="181" height="243"/>
         <image name="Close" width="50" height="50"/>
