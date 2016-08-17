@@ -19,7 +19,6 @@
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
-#import "ColorUtility.h"
 
 @interface PhotoFrameSelectViewController () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, PhotoFrameSelectCellManagerDelegate, ConnectionManagerSessionDelegate, ConnectionManagerPhotoFrameControlDelegate>
 
@@ -33,24 +32,38 @@
 
 @implementation PhotoFrameSelectViewController
 
+
+#pragma mark - Life Cycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setAutomaticallyAdjustsScrollViewInsets:NO];
-    [self.collectionView setBackgroundColor:[ColorUtility colorWithName:Transparent]];
+    if (![self checkConnectionState]) {
+        [self receivedPeerDisconnected];
+        return;
+    }
     
-    [self setupConnectionManager];
-    [self setupCellManager];
+    [self prepareCellManager];
+    [self prepareConnectionManager];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     //View가 화면에 표시된 이후에 동기화하여, 동기화할 내용이 화면에 제대로 표시될 수 있도록 한다.
     [self startMessageSynchronize];
     
     //동기화 종료 이후, 스크린 정보를 상대방에게 보낸다.
-    NSDictionary *message = [MessageFactory MessageGenerateScreenSize:[UIScreen mainScreen].bounds.size];
-    [[ConnectionManager sharedInstance] sendMessage:message];
+    [self sendScreenSizeMessage];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.photoFrameControlDelegate = nil;
+    connectionManager.photoFrameDataDelegate = nil;
+    self.cellManager.delegate = nil;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -60,12 +73,34 @@
     }
 }
 
-- (void)setupCellManager {
-    self.cellManager = [[PhotoFrameSelectCellManager alloc] init];
+- (void)dealloc {
+    self.collectionView = nil;
+    self.doneButton = nil;
+    
+    self.cellManager = nil;
+    self.progressView = nil;
+}
+
+
+#pragma mark - Check Session State
+
+- (BOOL)checkConnectionState {
+    if ([ConnectionManager sharedInstance].sessionState == MCSessionStateConnected) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+
+#pragma mark - Prepare Methods
+
+- (void)prepareCellManager {
+    self.cellManager = [[PhotoFrameSelectCellManager alloc] initWithCollectionViewSize:self.collectionView.bounds.size];
     self.cellManager.delegate = self;
 }
 
-- (void)setupConnectionManager {
+- (void)prepareConnectionManager {
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
     connectionManager.sessionDelegate = self;
     connectionManager.photoFrameControlDelegate = self;
@@ -86,38 +121,45 @@
 }
 
 
+#pragma mark - Send Screen Size Method
+
+- (void)sendScreenSizeMessage {
+    NSDictionary *message = [MessageFactory MessageGenerateScreenSize:[UIScreen mainScreen].bounds.size];
+    [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+- (void)sendSelectedFrameMessage:(NSIndexPath *)indexPath {
+    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameSelected:indexPath];
+    [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+- (void)sendConfirmRequestMessage {
+    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameRequestConfirm:self.cellManager.ownSelectedIndexPath];
+    [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+- (void)sendConfirmAckMessage:(BOOL)ack {
+    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:ack];
+    [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+
 #pragma mark - Present Other ViewController Methods
 
 - (void)presentPhotoEditorViewController {
-    //통신과 관련된 Delegate의 연결을 끊는다.
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    [connectionManager setSessionDelegate:nil];
-    [connectionManager setPhotoFrameControlDelegate:nil];
-    [connectionManager setPhotoFrameDataDelegate:nil];
-    [self.cellManager setDelegate:nil];
-    
-    //PhotoEditorVC 진입 시, 메시지큐 사용을 활성화한다.
-    [connectionManager clearMessageQueue];
-    [connectionManager setMessageQueueEnabled:YES];
     [self performSegueWithIdentifier:SegueMoveToEditor sender:self];
 }
 
 - (void)presentMainViewController {
-    //통신과 관련된 Delegate의 연결을 끊는다.
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    [connectionManager setSessionDelegate:nil];
-    [connectionManager setPhotoFrameControlDelegate:nil];
-    [connectionManager setPhotoFrameDataDelegate:nil];
-    [self.cellManager setDelegate:nil];
-    
-    //Main VC로 진입 시, 세션 연결을 종료한다.
     [connectionManager disconnectSession];
+    connectionManager.sessionDelegate = nil;
     
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 
-#pragma mark - EventHandle Methods
+#pragma mark - EventHandling
 
 - (IBAction)backButtonTapped:(id)sender {
     __weak typeof(self) weakSelf = self;
@@ -142,11 +184,8 @@
         return;
     }
     
-    if (!self.progressView.isHidden) {
+    if (self.progressView || !self.progressView.isHidden) {
         [ProgressHelper dismissProgress:self.progressView];
-    }
-    
-    if (self.progressView) {
         self.progressView = nil;
     }
     
@@ -159,40 +198,37 @@
     }
     
     //이후에 Confirm Message를 전송한다.
-    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameRequestConfirm:self.cellManager.ownSelectedIndexPath];
-    [[ConnectionManager sharedInstance] sendMessage:message];
+    [self sendConfirmRequestMessage];
 }
 
 
 #pragma mark - CollectionViewController DataSource Methods
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return [self.cellManager getItemNumber];
+    return self.cellManager.numberOfCells;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     PhotoFrameSelectViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ReuseCellFrameSlt forIndexPath:indexPath];
-    cell.frameImageView.image = [self.cellManager getCellImageAtIndexPath:indexPath];
+    cell.frameImageView.image = [self.cellManager cellImageAtIndexPath:indexPath];
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self.cellManager setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
-    
-    NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameSelected:indexPath];
-    [[ConnectionManager sharedInstance] sendMessage:message];
+    [self sendSelectedFrameMessage:indexPath];
 }
 
 
 #pragma mark - CollectionViewController Delegate Flowlayout Methods
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.cellManager getCellSize:collectionView.bounds.size];
+    return [self.cellManager sizeOfCell:self.collectionView.bounds.size];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return [self.cellManager getEdgeInsetsOfSection:self.collectionView.bounds.size];
+    return [self.cellManager edgeInsets:self.collectionView.bounds.size];
 }
 
 
@@ -213,8 +249,6 @@
 
 - (void)didRequestConfirmCellWithIndexPath:(NSIndexPath *)indexPath {
     if (self.navigationController.visibleViewController != self) {
-        NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
-        [[ConnectionManager sharedInstance] sendMessage:message];
         return;
     }
     
@@ -230,31 +264,24 @@
                                               messageKey:@"alert_content_frame_select_confirm"
                                                   button:@"alert_button_text_decline"
                                            buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                                      __strong typeof(weakSelf) self = weakSelf;
-                                                      if (!self) {
-                                                          return;
-                                                      }
+                                               __strong typeof(weakSelf) self = weakSelf;
+                                               if (!self) {
+                                                   return;
+                                               }
                                                       
-                                                      NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:NO];
-                                                      [[ConnectionManager sharedInstance] sendMessage:message];
-                                                      
-                                                      self.doneButton.enabled = YES;
-                                                  }
+                                               [self sendConfirmAckMessage:NO];
+                                               self.doneButton.enabled = YES;
+                                            }
                                              otherButton:@"alert_button_text_accept"
                                       otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                                 __strong typeof(weakSelf) self = weakSelf;
-                                                 if (!self) {
-                                                     return;
-                                                 }
-                                                 
-                                                 //액자편집화면 진입 시, 동기화 큐 사용을 허가하고 리소스를 정리한다.
-                                                 ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-                                                 
-                                                 NSDictionary *message = [MessageFactory MessageGeneratePhotoFrameConfirmed:YES];
-                                                 [connectionManager sendMessage:message];
-                                                 
-                                                 [self presentPhotoEditorViewController];
-                                      }];
+                                                __strong typeof(weakSelf) self = weakSelf;
+                                                if (!self) {
+                                                    return;
+                                                }
+                                          
+                                                [self sendConfirmAckMessage:YES];
+                                                [self presentPhotoEditorViewController];
+                                            }];
     }];
 }
 
@@ -262,12 +289,11 @@
 #pragma mark - ConnectionManager Session Connect Delegate Methods
 
 - (void)receivedPeerConnected {
-    [ConnectionManager sharedInstance].sessionState = MCSessionStateConnected;
+    //여기선 세션 연결이 일어날 일이 없다.
+    //추후에 세션 연결 끊겼다가 다시 복구되는 경우에나 사용할 것 같다.
 }
 
 - (void)receivedPeerDisconnected {
-    [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
-    
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;

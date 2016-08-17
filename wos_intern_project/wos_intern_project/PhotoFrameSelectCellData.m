@@ -8,7 +8,16 @@
 
 #import "PhotoFrameSelectCellData.h"
 #import "CommonConstants.h"
-#import "ImageUtility.h"
+#import "ColorUtility.h"
+
+@interface PhotoFrameSelectCellData ()
+
+@property (nonatomic, strong) NSIndexPath *indexPath;
+
+@property (nonatomic, assign) BOOL ownSelected;
+@property (nonatomic, assign) BOOL otherSelected;
+
+@end
 
 @implementation PhotoFrameSelectCellData
 
@@ -16,10 +25,10 @@
     self = [super init];
     
     if (self) {
-        self.indexPath = indexPath;
-        self.ownSelected = NO;
-        self.otherSelected = NO;
-        [self updateCellState];
+        _indexPath = indexPath;
+        _ownSelected = NO;
+        _otherSelected = NO;
+        _stateColor = [ColorUtility colorWithName:White];
     }
     
     return self;
@@ -27,37 +36,28 @@
 
 - (void)updateCellState:(BOOL)state isOwnSelection:(BOOL)isOwnSelection {
     if (isOwnSelection) {
-        self.ownSelected = state;
+        _ownSelected = state;
     } else {
-        self.otherSelected = state;
+        _otherSelected = state;
     }
     
-    [self updateCellState];
+    if (_ownSelected && _otherSelected) {
+        _stateColor = [ColorUtility colorWithName:Green];
+    } else if (_ownSelected && !_otherSelected) {
+        _stateColor = [ColorUtility colorWithName:Blue];
+    } else if (!_ownSelected && _otherSelected) {
+        _stateColor = [ColorUtility colorWithName:Orange];
+    } else {
+        _stateColor = [ColorUtility colorWithName:White];
+    }
 }
 
-- (void)updateCellState {
-    if (self.ownSelected && self.otherSelected) {
-        self.image = [UIImage imageNamed:[ImageUtility generatePhotoFrameImageWithIndex:self.indexPath.item
-                                                                                postfix:PostFixImagePhotoFrameGreen]];
-        return;
+- (BOOL)isBothSelected {
+    if (_ownSelected && _otherSelected) {
+        return YES;
     }
     
-    if (self.ownSelected && !self.otherSelected) {
-        self.image = [UIImage imageNamed:[ImageUtility generatePhotoFrameImageWithIndex:self.indexPath.item
-                                                                                postfix:PostFixImagePhotoFrameBlue]];
-        return;
-    }
-    
-    if (!self.ownSelected && self.otherSelected) {
-        self.image = [UIImage imageNamed:[ImageUtility generatePhotoFrameImageWithIndex:self.indexPath.item
-                                                                                postfix:PostFixImagePhotoFrameOrange]];
-        return;
-    }
-    
-    if (!self.ownSelected && !self.otherSelected) {
-        self.image = [UIImage imageNamed:[ImageUtility generatePhotoFrameImageWithIndex:self.indexPath.item]];
-        return;
-    }
+    return NO;
 }
 
 @end

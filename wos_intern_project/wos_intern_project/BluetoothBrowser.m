@@ -94,14 +94,11 @@ NS_ENUM(NSInteger, DismissType) {
 #pragma mark - ConnectionManagerSessionDelegate
 
 - (void)receivedPeerConnected {
-    //메시지 큐 사용을 활성화한다.
-    [[ConnectionManager sharedInstance] setMessageQueueEnabled:YES];
     [self dismissBrowserViewController:DismissTypeConnected];
 }
 
 - (void)receivedPeerDisconnected {
-    //메시지 큐 사용을 비활성화한다.
-    [[ConnectionManager sharedInstance] setMessageQueueEnabled:NO];
+    
 }
 
 @end

@@ -8,8 +8,9 @@
 
 #import "PhotoFrameSelectCellManager.h"
 #import "ConnectionManager.h"
+#import "ImageUtility.h"
 
-NSInteger const PhotoFrameCellCount = 12;
+NSInteger const NumberOfPhotoFrameCells = 12;
 
 @interface PhotoFrameSelectCellManager () <ConnectionManagerPhotoFrameDataDelegate>
 
@@ -19,42 +20,19 @@ NSInteger const PhotoFrameCellCount = 12;
 
 @implementation PhotoFrameSelectCellManager
 
-- (instancetype)init {
+- (instancetype)initWithCollectionViewSize:(CGSize)size {
     self = [super init];
     
     if (self) {
         [ConnectionManager sharedInstance].photoFrameDataDelegate = self;
         self.cellDatas = [[NSMutableArray alloc] init];
         
-        for (int i = 0; i < PhotoFrameCellCount; i++) {
+        for (int i = 0; i < NumberOfPhotoFrameCells; i++) {
             [self.cellDatas addObject:[[PhotoFrameSelectCellData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
         }
     }
     
     return self;
-}
-
-- (NSInteger)getItemNumber {
-    return PhotoFrameCellCount;
-}
-
-- (CGSize)getCellSize:(CGSize)collectionViewSize {
-    //한 라인에 셀 3개를 배치한다. 따라서 셀 간의 간격은 2곳이 생긴다.
-    CGFloat cellBetweenSpace = 20.0f * 2.0f;
-    CGFloat cellWidth = (collectionViewSize.width - cellBetweenSpace) / 3.0f;
-    return CGSizeMake(cellWidth, cellWidth);
-}
-
-- (UIEdgeInsets)getEdgeInsetsOfSection:(CGSize)collectionViewSize {
-    //셀의 높이는 너비와 같다. 셀은 가로로 4개가 배치되므로, 셀 너비값의 4배가 각 셀의 높이를 합한 값이 된다.
-    CGFloat cellBetweenSpace = 20.0f * 2.0f;
-    CGFloat cellsHeight = ((collectionViewSize.width - cellBetweenSpace) / 3.0f) * 4.0f;
-    //셀 간의 간격은 3곳이 생기며, 라인 간 간격은 20으로 정의되어 있다.
-    CGFloat cellsBetweenSpace = 20.0f * 3.0f;
-    //남은 공간의 절반을 상단의 inset으로 지정하면, 수직으로 중간에 정렬시킬 수 있다.
-    CGFloat topInset = (collectionViewSize.height - cellsHeight - cellsBetweenSpace) / 2.0f;
-    
-    return UIEdgeInsetsMake(topInset, 0, 0, 0);
 }
 
 //isOwnSelection으로 내가 발생시킨 이벤트인지, 상대방에 발생시킨 이벤트인지 파악한다.
@@ -102,16 +80,45 @@ NSInteger const PhotoFrameCellCount = 12;
         _otherSelectedIndexPath = prevIndexPath;
     }
     
-    [self.delegate didUpdateCellStateWithDoneActivate:(cellData.ownSelected && cellData.otherSelected)];
+    [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
 }
 
-- (UIImage *)getCellImageAtIndexPath:(NSIndexPath *)indexPath {
-    return self.cellDatas[indexPath.item].image;
+- (NSInteger)numberOfCells {
+    return NumberOfPhotoFrameCells;
+}
+
+- (CGSize)sizeOfCell:(CGSize)size {
+    CGFloat cellBetweenSpace = 20.0f * 2.0f;
+    CGFloat cellWidth = (size.width - cellBetweenSpace) / 3.0f;
+    
+    return CGSizeMake(cellWidth, cellWidth);
+}
+
+- (UIEdgeInsets)edgeInsets:(CGSize)size {
+    CGFloat cellBetweenSpace = 20.0f * 2.0f;
+    //셀의 높이는 너비와 같다. 셀은 가로로 4개가 배치되므로, 셀 너비값의 4배가 각 셀의 높이를 합한 값이 된다.
+    CGFloat cellsHeight = ((size.width - cellBetweenSpace) / 3.0f) * 4.0f;
+    //셀 간의 간격은 3곳이 생기며, 라인 간 간격은 20으로 정의되어 있다.
+    CGFloat cellsBetweenSpace = 20.0f * 3.0f;
+    //남은 공간의 절반을 상단의 inset으로 지정하면, 수직으로 중간에 정렬시킬 수 있다.
+    CGFloat topInset = (size.height - cellsHeight - cellsBetweenSpace) / 2.0f;
+    
+    return UIEdgeInsetsMake(topInset, 0, 0, 0);
+}
+
+- (UIImage *)cellImageAtIndexPath:(NSIndexPath *)indexPath {
+    return [ImageUtility renderImageNamed:[ImageUtility generatePhotoFrameImageWithIndex:indexPath.item]
+                              renderColor:_cellDatas[indexPath.item].stateColor];
 }
 
 - (BOOL)isEqualBothSelectedIndexPath {
-    if (self.ownSelectedIndexPath.item == self.otherSelectedIndexPath.item)
+    if (!_ownSelectedIndexPath || !_otherSelectedIndexPath) {
+        return NO;
+    }
+    
+    if (_ownSelectedIndexPath.item == _otherSelectedIndexPath.item) {
         return YES;
+    }
     
     return NO;
 }
@@ -126,7 +133,7 @@ NSInteger const PhotoFrameCellCount = 12;
     [self setSelectedCellAtIndexPath:indexPath isOwnSelection:NO];
     
     PhotoFrameSelectCellData *cellData = self.cellDatas[indexPath.item];
-    [self.delegate didUpdateCellStateWithDoneActivate:(cellData.ownSelected && cellData.otherSelected)];
+    [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
 }
 
 - (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath {

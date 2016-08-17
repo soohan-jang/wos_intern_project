@@ -12,10 +12,6 @@
 extern NSString *const PrefixImagePhotoFrame;
 extern NSString *const PrefixImagePhotoSticker;
 
-extern NSString *const PostFixImagePhotoFrameOrange;
-extern NSString *const PostFixImagePhotoFrameBlue;
-extern NSString *const PostFixImagePhotoFrameGreen;
-
 extern NSString *const PostfixImageFullscreen;
 extern NSString *const PostfixImageCropped;
 extern NSString *const SperatorImageName;

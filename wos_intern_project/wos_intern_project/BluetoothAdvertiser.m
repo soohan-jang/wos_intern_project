@@ -31,6 +31,9 @@
     return self;
 }
 
+
+#pragma mark - Start & Stop Advertising
+
 - (void)advertiseStart {
     [ConnectionManager sharedInstance].sessionDelegate = self;
     [_advertiser startAdvertisingPeer];
@@ -61,16 +64,12 @@
 
 - (void)receivedPeerConnected {
     if (self.delegate) {
-        //메시지 큐 사용을 활성화한다.
-        [[ConnectionManager sharedInstance] setMessageQueueEnabled:YES];
         [_delegate advertiserSessionConnected];
     }
 }
 
 - (void)receivedPeerDisconnected {
     if (self.delegate) {
-        //메시지 큐 사용을 활성화한다.
-        [[ConnectionManager sharedInstance] setMessageQueueEnabled:YES];
         [_delegate advertiserSessionNotConnected];
     }
 }

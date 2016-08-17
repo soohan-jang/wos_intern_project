@@ -11,10 +11,6 @@
 NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
 NSString *const PrefixImagePhotoSticker                 = @"PhotoSticker";
 
-NSString *const PostFixImagePhotoFrameOrange            = @"_orange";
-NSString *const PostFixImagePhotoFrameBlue              = @"_blue";
-NSString *const PostFixImagePhotoFrameGreen             = @"_green";
-
 NSString *const PostfixImageFullscreen                  = @"_fullscreen";
 NSString *const PostfixImageCropped                     = @"_cropped";
 NSString *const SperatorImageName                       = @"+";
