@@ -8,10 +8,6 @@
 
 #import "CommonConstants.h"
 
-/** MCSession Service Type **/
-/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
-NSString *const ApplicationBluetoothServiceType         = @"Co-PhotoEditor";
-
 NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
 NSString *const PrefixImagePhotoSticker                 = @"PhotoSticker";
 

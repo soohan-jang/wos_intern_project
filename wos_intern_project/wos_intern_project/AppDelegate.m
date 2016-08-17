@@ -18,7 +18,6 @@
 
 // Override point for customization after application launch.
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [[ConnectionManager sharedInstance] disconnectSession];
     return YES;
 }
 
@@ -62,6 +61,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     [connectionManager disconnectSession];
     [connectionManager clear];
     
+    connectionManager = nil;
+    
     //사용된 임시 파일을 정리한다.
     [ImageUtility removeAllTemporaryImages];
 }
@@ -80,6 +81,8 @@ void uncaughtExceptionHandler(NSException *exception) {
     connectionManager.messageQueueEnabled = NO;
     [connectionManager disconnectSession];
     [connectionManager clear];
+    
+    connectionManager = nil;
     
     //사용된 임시 파일을 정리한다.
     [ImageUtility removeAllTemporaryImages];

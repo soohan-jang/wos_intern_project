@@ -12,6 +12,8 @@
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A14A5401D5AB69F000C2079 /* MessageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A53F1D5AB69F000C2079 /* MessageFactory.m */; };
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
+		4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */; };
+		4A3F99E21D63F705007915E1 /* BluetoothAdvertiser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99E11D63F705007915E1 /* BluetoothAdvertiser.m */; };
 		4A4105281D5C16C700FEEFE9 /* PhotoInputTextMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */; };
 		4A41052B1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052A1D5C804200FEEFE9 /* PhotoFrameSelectCellManager.m */; };
 		4A41052F1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052E1D5C8AF800FEEFE9 /* PhotoFrameSelectCellData.m */; };
@@ -98,6 +100,10 @@
 		4A14A53F1D5AB69F000C2079 /* MessageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageFactory.m; sourceTree = "<group>"; };
 		4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchAsyncHelper.h; sourceTree = "<group>"; };
 		4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchAsyncHelper.m; sourceTree = "<group>"; };
+		4A3F99DD1D63F6FD007915E1 /* BluetoothBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothBrowser.h; sourceTree = "<group>"; };
+		4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothBrowser.m; sourceTree = "<group>"; };
+		4A3F99E01D63F705007915E1 /* BluetoothAdvertiser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothAdvertiser.h; sourceTree = "<group>"; };
+		4A3F99E11D63F705007915E1 /* BluetoothAdvertiser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothAdvertiser.m; sourceTree = "<group>"; };
 		4A4105261D5C16C700FEEFE9 /* PhotoInputTextMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoInputTextMenuView.h; sourceTree = "<group>"; };
 		4A4105271D5C16C700FEEFE9 /* PhotoInputTextMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoInputTextMenuView.m; sourceTree = "<group>"; };
 		4A4105291D5C804200FEEFE9 /* PhotoFrameSelectCellManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFrameSelectCellManager.h; sourceTree = "<group>"; };
@@ -230,6 +236,30 @@
 				4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		4A3F99D51D63F5D6007915E1 /* MainView */ = {
+			isa = PBXGroup;
+			children = (
+				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
+				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
+				4A3F99DD1D63F6FD007915E1 /* BluetoothBrowser.h */,
+				4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */,
+				4A3F99E01D63F705007915E1 /* BluetoothAdvertiser.h */,
+				4A3F99E11D63F705007915E1 /* BluetoothAdvertiser.m */,
+			);
+			name = MainView;
+			sourceTree = "<group>";
+		};
+		4A3F99D61D63F5EA007915E1 /* NoneDev */ = {
+			isa = PBXGroup;
+			children = (
+				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
+				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
+				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
+				4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */,
+			);
+			name = NoneDev;
 			sourceTree = "<group>";
 		};
 		4A4105221D5C151A00FEEFE9 /* PhotoEditorView */ = {
@@ -380,14 +410,10 @@
 		4A97B60A1D336514003899F7 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				4A4ACF311D2B6D2C00BC2FC4 /* MainViewController.h */,
-				4A4ACF321D2B6D2C00BC2FC4 /* MainViewController.m */,
+				4A3F99D51D63F5D6007915E1 /* MainView */,
 				4A4105231D5C154900FEEFE9 /* FrameSelectView */,
 				4A4105221D5C151A00FEEFE9 /* PhotoEditorView */,
-				4A97B6041D3364AA003899F7 /* PhotoAlbumViewController.h */,
-				4A97B6051D3364AA003899F7 /* PhotoAlbumViewController.m */,
-				4A97B6071D3364CA003899F7 /* PhotoViewerViewController.h */,
-				4A97B6081D3364CA003899F7 /* PhotoViewerViewController.m */,
+				4A3F99D61D63F5EA007915E1 /* NoneDev */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -641,7 +667,9 @@
 				4A5448B61D51E69E00883E08 /* MainViewController.m in Sources */,
 				4A5448B71D51E69E00883E08 /* PhotoFrameSelectViewController.m in Sources */,
 				4A5448B81D51E69E00883E08 /* PhotoEditorViewController.m in Sources */,
+				4A3F99E21D63F705007915E1 /* BluetoothAdvertiser.m in Sources */,
 				4A5448B91D51E69E00883E08 /* PhotoCropViewController.m in Sources */,
+				4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */,
 				4A5448BA1D51E69E00883E08 /* PhotoDecorateDataDisplayView.m in Sources */,
 				4A5448BB1D51E69E00883E08 /* PhotoDrawPenMenuView.m in Sources */,
 				4A5448BC1D51E69E00883E08 /* PhotoAlbumViewController.m in Sources */,

@@ -9,10 +9,6 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSDate.h>
 
-/** MCSession Service Type **/
-/** 이 값이 일치하는 장비만 Bluetooth 장비목록에 노출된다 **/
-extern NSString *const ApplicationBluetoothServiceType;
-
 extern NSString *const PrefixImagePhotoFrame;
 extern NSString *const PrefixImagePhotoSticker;
 

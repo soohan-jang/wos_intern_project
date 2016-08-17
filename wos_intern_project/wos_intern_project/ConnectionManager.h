@@ -9,6 +9,8 @@
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+extern NSString *const ConnectionManagerServiceType;
+
 @protocol ConnectionManagerSessionDelegate;
 
 @protocol ConnectionManagerPhotoFrameDataDelegate;

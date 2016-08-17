@@ -2,7 +2,7 @@
 //  MainViewController.m
 //  wos_intern_project
 //
-//  Created by Naver on 2016. 7. 5..
+//  Created by 장수한 on 2016. 7. 5..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
@@ -11,6 +11,8 @@
 #import "CommonConstants.h"
 
 #import "ConnectionManager.h"
+#import "BluetoothBrowser.h"
+#import "BluetoothAdvertiser.h"
 #import "ValidateCheckUtility.h"
 
 #import "PhotoFrameSelectViewController.h"
@@ -21,269 +23,197 @@
 #import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
 
-@interface MainViewController () <MCBrowserViewControllerDelegate, MCNearbyServiceAdvertiserDelegate, ConnectionManagerSessionDelegate>
+@interface MainViewController () <BluetoothBrowserDelegate, BluetoothAdvertiserDelegate>
 
-@property (nonatomic, strong) MCBrowserViewController *browserViewController;
-@property (nonatomic, strong) MCNearbyServiceAdvertiser *advertiser;
+@property (strong, nonatomic) BluetoothBrowser *browser;
+@property (strong, nonatomic) BluetoothAdvertiser *advertiser;
 
 @property (nonatomic, strong) WMProgressHUD *progressView;
-@property (nonatomic, strong) NSMutableDictionary *invitationHandlers;
 
 @end
 
 @implementation MainViewController
 
+
+#pragma mark - Life Cyle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setupBluetoothBrowser];
-    [self setupBluetoothAdvertiser];
-    [self setupGestureRecognizer];
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [self setupConnectionManager];
-    [self startAdvertise];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [self stopAdvertise];
-}
-
-- (void)setupConnectionManager {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionDelegate = self;
-}
-
-- (void)setupBluetoothBrowser {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    self.browserViewController = [[MCBrowserViewController alloc] initWithServiceType:ApplicationBluetoothServiceType
-                                                                              session:connectionManager.ownSession];
-    //1:1 통신이므로 연결할 피어의 수는 하나로 제한한다.
-    self.browserViewController.maximumNumberOfPeers = 1;
-    self.browserViewController.delegate = self;
-}
-
-- (void)setupBluetoothAdvertiser {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    self.advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:connectionManager.ownPeerId
-                                                        discoveryInfo:nil
-                                                          serviceType:ApplicationBluetoothServiceType];
-    self.advertiser.delegate = self;
-}
-
-- (void)setupGestureRecognizer {
-    UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                           action:@selector(loadBrowserViewController)];
-    tabGestureRecognizer.numberOfTapsRequired = 1;
-    [self.view addGestureRecognizer:tabGestureRecognizer];
-    [self.view setUserInteractionEnabled:YES];
+    [self prepareAdvertiser];
+    [self addTapGestureRecognizerOnBackgroundView];
 }
 
 - (void)dealloc {
-    [ConnectionManager sharedInstance].sessionDelegate = nil;
-    
-    self.browserViewController.delegate = nil;
-    self.browserViewController = nil;
-    
-    self.advertiser.delegate = nil;
-    self.advertiser = nil;
-    
     for (UIGestureRecognizer *recognizer in self.view.gestureRecognizers) {
         [self.view removeGestureRecognizer:recognizer];
     }
     
-    self.progressView = nil;
+    _browser.delegate = nil;
+    _browser = nil;
+    
+    _advertiser.delegate = nil;
+    _advertiser = nil;
+    
+    _progressView = nil;
 }
 
-     
-#pragma mark - Load Other ViewController Methods
+
+#pragma mark - Prepare & Clear Bluetooth Connection
 
 /**
- PhotoAlbumViewController를 호출한다.
+ * @brief 장비를 검색하고 연결을 시도할 때 사용하는 Browser를 생성하고, delegate를 등록한다.
  */
-- (IBAction)loadPhotoAlbumViewController:(id)sender {
-//    [self performSegueWithIdentifier:SegueMoveToAlbum sender:self];
+- (void)prepareBrowser {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    
+    _browser = [[BluetoothBrowser alloc] initWithServiceType:ConnectionManagerServiceType
+                                                     session:connectionManager.ownSession];
+    _browser.delegate = self;
 }
 
 /**
- PhotoFrameViewController를 호출한다.
+ * @brief 장비 검색을 활성화시키는 Advertiser를 생성하고, delegate를 등록한다.
  */
-- (void)loadPhotoFrameViewController {
+- (void)prepareAdvertiser {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    
+    _advertiser = [[BluetoothAdvertiser alloc] initWithServiceType:ConnectionManagerServiceType
+                                                            peerId:connectionManager.ownPeerId];
+    _advertiser.delegate = self;
+    
+    [_advertiser advertiseStart];
+}
+
+
+#pragma mark - EventHandling
+
+/**
+ * @brief 백그라운드 뷰(self.view)를 탭했을 때 대응할 EventHandler를 등록한다.
+ */
+- (void)addTapGestureRecognizerOnBackgroundView {
+    UIView *view = self.view;
+    
+    UITapGestureRecognizer *tabGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(presentBrowserViewController)];
+    [view addGestureRecognizer:tabGestureRecognizer];
+    [view setUserInteractionEnabled:YES];
+}
+
+
+#pragma mark - Present ViewController
+
+/**
+ * @brief 장비를 검색하고 연결할 VC를 화면에 표시한다.
+ */
+- (void)presentBrowserViewController {
+    [self prepareBrowser];
+    
+    if ([_browser presentBrowserViewController:self]) {
+        [_advertiser advertiseStop];
+        return;
+    }
+    
+    //블루투스가 비활성화된 경우 NO를 리턴하며, 이에 대한 처리가 필요하다.
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_bluetooth_off"
+                                          messageKey:@"alert_content_bluetooth_off"
+                                              button:@"alert_button_text_ok"
+                                       buttonHandler:nil];
+}
+
+- (void)presentFrameSelectViewController {
     [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];
 }
 
-/**
- BrowserViewController를 화면에 표시한다. 블루투스의 현재 상태를 확인하여, 블루투스가 켜지지 않은 상태라면 Alert를 표시한다.
- */
-- (void)loadBrowserViewController {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+
+#pragma mark - Bluetooth Browser Methods
+
+- (void)browserSessionConnected {
+    _browser.delegate = nil;
     
-    if ([connectionManager isBluetoothAvailable]) {
-        if ([ValidateCheckUtility checkPhotoAlbumAccessAuthority]) {
-            [self presentViewController:self.browserViewController
-                               animated:YES
-                             completion:nil];
-            return;
-        }
-        
-        [AlertHelper showAlertControllerOnViewController:self
-                                                titleKey:@"alert_title_album_not_authorized"
-                                              messageKey:@"alert_content_album_not_authorized"
-                                                  button:@"alert_button_text_no"
-                                           buttonHandler:nil
-                                             otherButton:@"alert_button_text_yes"
-                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                      }];
-    } else {
-        [AlertHelper showAlertControllerOnViewController:self
-                                                titleKey:@"alert_title_bluetooth_off"
-                                              messageKey:@"alert_content_bluetooth_off"
-                                                  button:@"alert_button_text_ok"
-                                           buttonHandler:nil];
-    }
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        [self presentFrameSelectViewController];
+    }];
+}
+
+- (void)browserSessionNotConnected {
+    [_advertiser advertiseStart];
 }
 
 
 #pragma mark - Bluetooth Advertiser Methods
 
-/**
- 다른 단말기가 자신의 단말기를 찾을 수 있게 하는 신호 송출을 시작한다.
- */
-- (void)startAdvertise {
-    if (self.advertiser != nil) {
-        [self.advertiser startAdvertisingPeer];
-    }
+//Error Handling Method
+- (void)didNotStartAdvertising {
+    //Alert 표시하고, 확인 누르면 Assert.
 }
 
-/**
- 다른 단말기가 자신의 단말기를 찾을 수 있게 하는 신호 송출을 중단한다.
- */
-- (void)stopAdvertise {
-    if (self.advertiser != nil) {
-        [self.advertiser stopAdvertisingPeer];
-    }
-}
-
-
-#pragma mark - MCBrowserViewControllerDelegate Methods
-
-//Session Connecte Done.
-- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
-    [browserViewController dismissViewControllerAnimated:YES completion:nil];
-}
-
-//Session Connect Cancel.
-- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
-    [browserViewController dismissViewControllerAnimated:YES completion:nil];
-    [[ConnectionManager sharedInstance] disconnectSession];
-}
-
-
-#pragma mark - MCNearbyServiceAdvertiserDelegate Methods
-
-- (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
-    if (self.invitationHandlers == nil) {
-        self.invitationHandlers = [[NSMutableDictionary alloc] init];
-    }
-    
-    if (peerID == nil || invitationHandler == nil) {
-        return;
-    }
-    
-    self.invitationHandlers[peerID] = invitationHandler;
+- (void)didReceiveInvitationWithPeerId:(MCPeerID *)peerID invitationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
+    NSString *message = [NSString stringWithFormat:@"\"%@\" %@", peerID.displayName,
+                                                                 NSLocalizedString(@"alert_content_invitation_received", nil)];
     
     __weak typeof(self) weakSelf = self;
     [AlertHelper showAlertControllerOnViewController:self
                                                title:NSLocalizedString(@"alert_title_invitation_received", nil)
-                                             message:[NSString stringWithFormat:@"\"%@\" %@", peerID.displayName, NSLocalizedString(@"alert_content_invitation_received", nil)]
+                                             message:message
                                               button:@"alert_button_text_decline"
                                        buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                           __strong typeof(self) self = weakSelf;
-                                           void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
-                                           
-                                           if (!self || !invitationHandler) {
-                                               return;
-                                           }
-                                           
                                            invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
-                                           [self.invitationHandlers removeObjectForKey:peerID];
                                        }
                                          otherButton:@"alert_button_text_accept"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                             __strong typeof(self) self = weakSelf;
-                                             void (^invitationHandler)(BOOL, MCSession *) = self.invitationHandlers[peerID];
-                                             
-                                             if (!self || !invitationHandler) {
-                                                 return;
-                                             }
-                                             
-                                             invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
-                                             [self.invitationHandlers removeObjectForKey:peerID];
-                                             self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
+                                      __strong typeof(weakSelf) self = weakSelf;
+                                      invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
+                                      _progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
                                   }];
 }
 
-
-#pragma mark - ConnectionManager Delegate Methods
-
-- (void)receivedPeerConnected {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionState = MCSessionStateConnected;
-    
-    //메시지 큐 사용을 활성화한다.
-    [connectionManager setMessageQueueEnabled:YES];
-    
-    __weak typeof(self) weakSelf = self;
-    if ([self.navigationController presentedViewController] == self.browserViewController) {
-        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-            __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.browserViewController) {
-                return;
-            }
-            
-            [self.browserViewController dismissViewControllerAnimated:YES completion:^{
-                if (!self) {
-                    return;
-                }
-                
-                [self loadPhotoFrameViewController];
-            }];
-        }];
-    } else {
-        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-            __strong typeof(weakSelf) self = weakSelf;
-            if (!self || !self.progressView) {
-                return;
-            }
-            
-            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_connected" dismissType:DismissWithDone];
-        }];
-        
-        //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
-        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
-            __strong typeof(weakSelf) self = weakSelf;
-            if (!self) {
-                return;
-            }
-            
-            [self loadPhotoFrameViewController];
-        } delay:DelayTime];
+- (void)advertiserSessionConnected {
+    //ProgressView가 nil이거나 숨겨진 상태라면, 초대장을 받은 정상적인 Advertiser가 아님.
+    //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
+    if (!_progressView || _progressView.hidden) {
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        [connectionManager setMessageQueueEnabled:NO];
+        [connectionManager disconnectSession];
+        return;
     }
-}
-
-- (void)receivedPeerDisconnected {
-    [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
     
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlock:^{
         __strong typeof(weakSelf) self = weakSelf;
-        if (!self || !self.progressView) {
+        if (!self) {
+            return;
+        }
+        
+        [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_connected" dismissType:DismissWithDone];
+    }];
+    
+    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
+            return;
+        }
+        
+        [self presentFrameSelectViewController];
+    } delay:DelayTime];
+}
+
+- (void)advertiserSessionNotConnected {
+    if (!_progressView || _progressView.hidden) {
+        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+        [connectionManager setMessageQueueEnabled:NO];
+        [connectionManager disconnectSession];
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
             return;
         }
         

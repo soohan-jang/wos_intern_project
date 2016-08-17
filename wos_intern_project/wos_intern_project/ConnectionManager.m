@@ -11,6 +11,8 @@
 #import "ImageUtility.h"
 #import "MessageFactory.h"
 
+NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
+
 @interface ConnectionManager ()
 
 @property (nonatomic, strong) CBCentralManager *bluetoothManager;
@@ -44,6 +46,7 @@
         _ownPeerId = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
         _ownSession = [[MCSession alloc] initWithPeer:_ownPeerId];
         _ownSession.delegate = self;
+        _sessionState = MCSessionStateNotConnected;
         
         self.bluetoothManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()];
         self.messageQueue = [[NSMutableArray alloc] init];
@@ -174,13 +177,18 @@
 
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state {
     if (self.sessionDelegate) {
-        if (state == MCSessionStateConnected) {
-            NSLog(@"Session Connected");
-            [self.sessionDelegate receivedPeerConnected];
-        } else if (state == MCSessionStateNotConnected) {
-            NSLog(@"Session Disconnected");
-            self.lastSendMsgTimestamp = nil;
-            [self.sessionDelegate receivedPeerDisconnected];
+        _sessionState = state;
+        
+        switch (_sessionState) {
+            case MCSessionStateConnected:
+                NSLog(@"Session Connected");
+                [self.sessionDelegate receivedPeerConnected];
+                break;
+            case MCSessionStateNotConnected:
+                NSLog(@"Session Disconnected");
+                self.lastSendMsgTimestamp = nil;
+                [self.sessionDelegate receivedPeerDisconnected];
+                break;
         }
     }
 }
