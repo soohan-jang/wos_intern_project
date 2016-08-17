@@ -25,4 +25,4 @@ NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
 NSString *const ReuseCellEditor                         = @"photoFrameCell";
 NSString *const ReuseCellSticker                        = @"stickerCell";
 
-NSTimeInterval const DelayTime                          = 1.0f;
+NSTimeInterval const DelayTime                          = 0.5f;

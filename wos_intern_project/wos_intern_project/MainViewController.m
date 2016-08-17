@@ -169,7 +169,7 @@
 
 - (void)browserSessionConnected {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         [self presentFrameSelectViewController];
     }];
@@ -219,7 +219,7 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
@@ -229,7 +229,7 @@
     }];
     
     //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
@@ -248,7 +248,7 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;

@@ -236,7 +236,7 @@
 
 - (void)didUpdateCellStateWithDoneActivate:(BOOL)activate {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
@@ -253,7 +253,7 @@
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
@@ -295,7 +295,7 @@
 
 - (void)receivedPeerDisconnected {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         [AlertHelper showAlertControllerOnViewController:self
                                                 titleKey:@"alert_title_session_disconnected"
@@ -318,7 +318,7 @@
     __weak typeof(self) weakSelf = self;
     
     if (confirmAck) {
-        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
             __strong typeof(weakSelf) self = weakSelf;
             if (!self) {
                 return;
@@ -334,7 +334,7 @@
                                             repeats:NO];
         }];
     } else {
-        [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
             __strong typeof(weakSelf) self = weakSelf;
             if (!self) {
                 return;
@@ -348,7 +348,7 @@
 
 - (void)interruptedPhotoFrameConfirmProgress {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;

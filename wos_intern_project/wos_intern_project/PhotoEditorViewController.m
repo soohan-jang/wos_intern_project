@@ -113,7 +113,7 @@
 
 - (void)reloadDataAtIndexPath:(NSIndexPath *)indexPath {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.collectionView)
             return;
@@ -477,7 +477,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         
         switch (index) {
@@ -527,7 +527,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
             NSDictionary *message = [MessageFactory MessageGeneratePhotoEditCanceled:self.selectedIndexPath];
             [[ConnectionManager sharedInstance] sendMessage:message];
         } else {
-            [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+            [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
                 __strong typeof(weakSelf) self = weakSelf;
                 [self presentPhotoCropViewController];
             }];
@@ -586,7 +586,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didSelectDecorateData:(NSInteger)index {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -598,7 +598,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didDeselectDecorateData:(NSInteger)index {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -610,7 +610,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didInsertDecorateData:(NSInteger)index scale:(CGFloat)scale {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         
         UIImageView *decoView = [[self.decoDataController getDecorateDataAtIndex:index] getView];
@@ -647,7 +647,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didUpdateDecorateData:(NSInteger)index point:(CGPoint)point {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -659,7 +659,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didUpdateDecorateData:(NSInteger)index rect:(CGRect)rect {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -671,7 +671,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didUpdateDecorateData:(NSInteger)index angle:(CGFloat)angle {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -683,7 +683,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 
 - (void)didUpdateDecorateDataZOrder:(NSInteger)index {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -699,7 +699,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -712,7 +712,7 @@ float const WaitUntilAnimationFinish = 0.24 + 0.06;
 - (void)didInterruptDecorateData {
     __weak typeof(self) weakSelf = self;
     
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self || !self.decorateDataDisplayView) {
             return;
@@ -874,7 +874,7 @@ CGFloat const TextDecorateViewScale = 0.25f;
     [ConnectionManager sharedInstance].sessionState = MCSessionStateNotConnected;
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
@@ -960,7 +960,7 @@ CGFloat const TextDecorateViewScale = 0.25f;
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlock:^{
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
         if (!self) {
             return;
