@@ -15,13 +15,14 @@
 #import "BluetoothAdvertiser.h"
 #import "ValidateCheckUtility.h"
 
-#import "PhotoFrameSelectViewController.h"
-#import "PhotoEditorViewController.h"
+#import "SelectPhotoFrameViewController.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
+
+NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 @interface MainViewController () <BluetoothBrowserDelegate, BluetoothAdvertiserDelegate>
 
@@ -203,7 +204,7 @@
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
                                       __strong typeof(weakSelf) self = weakSelf;
                                       invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
-                                      self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_connecting"];
+                                      self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_connecting"];
                                       [self.view setUserInteractionEnabled:NO];
                                   }];
 }
@@ -212,9 +213,7 @@
     //ProgressView가 nil이거나 숨겨진 상태라면, 초대장을 받은 정상적인 Advertiser가 아님.
     //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
     if (!self.progressView || self.progressView.hidden) {
-        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-        [connectionManager setMessageQueueEnabled:NO];
-        [connectionManager disconnectSession];
+        [[ConnectionManager sharedInstance] disconnectSession];
         return;
     }
     
@@ -241,9 +240,7 @@
 
 - (void)advertiserSessionNotConnected {
     if (!_progressView || _progressView.hidden) {
-        ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-        [connectionManager setMessageQueueEnabled:NO];
-        [connectionManager disconnectSession];
+        [[ConnectionManager sharedInstance] disconnectSession];
         return;
     }
     

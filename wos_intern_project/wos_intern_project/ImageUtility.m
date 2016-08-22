@@ -12,7 +12,19 @@
 
 @implementation ImageUtility
 
-+ (void)getFullscreenUIImageAthURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
++ (UIImage *)resizeImage:(UIImage *)image {
+    CGFloat scale = [UIScreen mainScreen].scale * 3;
+    CGRect resizeRect = CGRectMake(0, 0, image.size.width / scale, image.size.height / scale);
+    
+    UIGraphicsBeginImageContext(resizeRect.size);
+    [image drawInRect:resizeRect];
+    UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
+}
+
++ (void)fullscreenImageAtURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock {
     ALAssetsLibrary *assetslibrary = [[ALAssetsLibrary alloc] init];
     
     [assetslibrary assetForURL:url resultBlock:^(ALAsset *asset) {
@@ -62,6 +74,10 @@
     }];
 }
 
++ (void)saveImageAtPhotoAlbum:(UIImage *)image {
+    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+}
+
 + (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     NSData *fullscreenImageData = UIImagePNGRepresentation(fullscreenImage);
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
@@ -96,27 +112,23 @@
     [fileManage removeItemAtPath:NSTemporaryDirectory() error:nil];
 }
 
-+ (NSURL *)generateFullscreenImageURLWithFilename:(NSString *)filename {
++ (NSURL *)fullscreenImageURLWithFilename:(NSString *)filename {
     return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageFullscreen]];
 }
 
-+ (NSURL *)generateCroppedImageURLWithFilename:(NSString *)filename {
++ (NSURL *)croppedImageURLWithFilename:(NSString *)filename {
     return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PostfixImageCropped]];
 }
 
-+ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index {
++ (NSString *)photoFrameImageWithIndex:(NSInteger)index {
     return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoFrame, (long)index];
 }
 
-+ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix {
-    return [NSString stringWithFormat:@"%@%ld%@", PrefixImagePhotoFrame, (long)index, postfix];
-}
-
-+ (NSString *)generatePhotoStickerImageWithIndex:(NSInteger)index {
++ (NSString *)photoStickerImageWithIndex:(NSInteger)index {
     return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoSticker, (long)index];
 }
 
-+ (UIImage *)renderImageNamed:(NSString *)imageName renderColor:(UIColor *)color {
++ (UIImage *)coloredImageNamed:(NSString *)imageName color:(UIColor *)color {
     UIImage *image = [UIImage imageNamed:imageName];
     
     CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
@@ -128,11 +140,44 @@
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    UIImage *flippedImage = [UIImage imageWithCGImage:img.CGImage
+    UIImage *coloredImage = [UIImage imageWithCGImage:img.CGImage
                                                 scale:1.0
                                           orientation:UIImageOrientationDownMirrored];
     
-    return flippedImage;
+    return coloredImage;
+}
+
+CGFloat const CaptureScale = 4.0f;
+
++ (UIImage *)viewCaptureImage:(UIView *)view {
+    CGRect bounds = CGRectMake(view.bounds.origin.x,
+                               view.bounds.origin.y,
+                               view.bounds.size.width * CaptureScale,
+                               view.bounds.size.height * CaptureScale);
+    
+    UIGraphicsBeginImageContext(bounds.size);
+    [view drawViewHierarchyInRect:bounds afterScreenUpdates:YES];
+    UIImage *canvasViewCaptureImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    CGImageRef imageRef = CGImageCreateWithImageInRect([canvasViewCaptureImage CGImage], bounds);
+    UIImage *captureImage = [UIImage imageWithCGImage:imageRef];
+    
+    CGImageRelease(imageRef);
+    
+    return captureImage;
+}
+
++ (UIImage *)mergeImage:(UIImage *)imageA imageB:(UIImage *)imageB {
+    CGRect bounds = CGRectMake(0, 0, imageA.size.width, imageA.size.height);
+    
+    UIGraphicsBeginImageContext(imageA.size);
+    [imageA drawInRect:bounds];
+    [imageB drawInRect:CGRectIntegral(bounds)];
+    UIImage *mergedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return mergedImage;
 }
 
 @end

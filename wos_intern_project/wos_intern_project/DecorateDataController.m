@@ -8,16 +8,18 @@
 
 #import "DecorateDataController.h"
 #import "ConnectionManager.h"
+#import "DecorateDataDisplayView.h"
 
-#import "PhotoDecorateData.h"
+@interface DecorateDataController () <DecorateDataDisplayViewDataSource, ConnectionManagerDecorateDataDelegate>
 
-@interface DecorateDataController () <ConnectionManagerDecorateDataDelegate>
-
-@property (atomic, strong) NSMutableArray<PhotoDecorateData *> *decorateDataArray;
+@property (atomic, strong) NSMutableArray<DecorateData *> *decorateDataArray;
 
 @end
 
 @implementation DecorateDataController
+
+
+#pragma mark - init method
 
 - (instancetype)init {
     self = [super init];
@@ -29,199 +31,228 @@
     return self;
 }
 
-- (void)addDecorateData:(PhotoDecorateData *)decoData {
-    if (!decoData) {
+
+#pragma mark - Add & Update & Delete Decorate Data Methods
+
+- (void)addDecorateData:(DecorateData *)decorateData {
+    if (!decorateData) {
         return;
     }
     
-    if (self.decorateDataArray == nil) {
-        self.decorateDataArray = [@[decoData] mutableCopy];
-    } else {
-        [self.decorateDataArray addObject:decoData];
-        [self sortDecorateDatas];
+    if (!self.decorateDataArray) {
+        self.decorateDataArray = [[NSMutableArray alloc] init];
+    }
+    
+    [self.decorateDataArray addObject:decorateData];
+    [self sortDecorateDataArray];
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:decorateData.uuid];
     }
 }
 
-- (void)updateDecorateDataAtIndex:(NSInteger)index point:(CGPoint)point {
-    if ([self isOutBoundIndex:index]) {
+- (void)selectDecorateData:(NSUUID *)uuid selected:(BOOL)selected {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (!data) {
         return;
     }
     
-    [self.decorateDataArray[index] move:point];
+    data.selected = selected;
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)updateDecorateDataAtIndex:(NSInteger)index rect:(CGRect)rect {
-    if ([self isOutBoundIndex:index]) {
+- (void)updateDecorateData:(NSUUID *)uuid frame:(CGRect)frame {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (!data) {
         return;
     }
     
-    [self.decorateDataArray[index] resize:rect];
+    data.frame = frame;
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)updateDecorateDataAtIndex:(NSInteger)index angle:(CGFloat)angle {
-    if ([self isOutBoundIndex:index]) {
+- (void)deleteDecorateData:(NSUUID *)uuid {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (!data) {
         return;
     }
     
-    [self.decorateDataArray[index] rotate:angle];
+    [self.decorateDataArray removeObject:data];
+        
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)updateDecorateDataZOrderAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index]) {
-        return;
+
+#pragma mark - Utility Methods
+
+- (BOOL)isDecorateDataArrayNilOrEmpty {
+    if (!self.decorateDataArray || self.decorateDataArray.count == 0) {
+        return YES;
     }
     
-    [self.decorateDataArray[index] changeZOrder];
+    return NO;
 }
 
-- (void)deleteDecorateDataAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index]) {
-        return;
-    }
-    
-    [self.decorateDataArray removeObjectAtIndex:index];
-}
-
-- (NSUInteger)getIndexOfTimestamp:(NSNumber *)timestamp {
-    if (!timestamp || [self isEmpty]) {
-        return NSNotFound;
-    }
-    
-    NSInteger index = 0;
-    for (PhotoDecorateData *decoData in self.decorateDataArray) {
-        if ([decoData.timestamp isEqualToNumber:timestamp]) {
-            return index;
-        }
-        index++;
-    }
-    
-    return NSNotFound;
-}
-
-- (NSUInteger)getIndexOfDecorateData:(PhotoDecorateData *)data {
-    if (!data || [self isEmpty]) {
-        return NSNotFound;
-    }
-    
-    return [self.decorateDataArray indexOfObject:data];
-}
-
-- (PhotoDecorateData *)getDecorateDataAtIndex:(NSInteger)index {
-    if ([self isOutBoundIndex:index]) {
+- (DecorateData *)decorateDataOfUUID:(NSUUID *)uuid {
+    if (!uuid || [self isDecorateDataArrayNilOrEmpty]) {
         return nil;
     }
     
-    return self.decorateDataArray[index];
-}
-
-//내부에 존재하는 deco Data를 view로 변환하여 전달한다.
-- (NSArray *)getDecorateViewArray {
-    if (![self isEmpty]) {
-        NSMutableArray<UIView *> *viewArray = [[NSMutableArray alloc] initWithCapacity:self.decorateDataArray.count];
-        for (PhotoDecorateData *decoData in self.decorateDataArray) {
-            UIView *view = [decoData getView];
-            [viewArray addObject:view];
+    NSString *uuidString = uuid.UUIDString;
+    
+    for (DecorateData *data in self.decorateDataArray) {
+        if ([data.uuid.UUIDString isEqualToString:uuidString]) {
+            return data;
         }
-        
-        return viewArray;
     }
     
     return nil;
 }
 
 //동기식 정렬을 수행한다. 따라서 이 메소드를 호출한 뒤에 작업을 진행한다고 비동기성으로 문제가 발생하지 않는다.
-- (void)sortDecorateDatas {
-    if (![self isEmpty]) {
-        [self.decorateDataArray sortUsingComparator:^NSComparisonResult(PhotoDecorateData  *_Nonnull obj1, PhotoDecorateData  *_Nonnull obj2) {
-            return [obj1.timestamp compare:obj2.timestamp];
+- (void)sortDecorateDataArray {
+    if (![self isDecorateDataArrayNilOrEmpty]) {
+        [self.decorateDataArray sortUsingComparator:^NSComparisonResult(DecorateData  *_Nonnull data1, DecorateData  *_Nonnull data2) {
+            return [data1.timestamp compare:data2.timestamp];
         }];
     }
 }
 
-- (BOOL)isEmpty {
-    if (self.decorateDataArray != nil && self.decorateDataArray.count > 0) {
-        return NO;
+
+#pragma mark - Decorate DisplayView DataSource Methods
+
+- (DecorateView *)decorateDisplayView:(DecorateDataDisplayView *)decorateDisplayView decorateViewOfUUID:(NSUUID *)uuid {
+    DecorateView *view = [decorateDisplayView decorateViewOfUUID:uuid];
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    //Update
+    if (view && data) {
+        view.frame = data.frame;
+        
+        view.enabled = data.enabled;
+        
+        //enabled가 NO로 설정된 객체에 대해선 선택을 수행할 수 없으므로, 선택관련 로직을 무시한다.
+        if (!view.enabled) {
+            return nil;
+        }
+        
+        //선택해제된 경우
+        if (view.selected && !data.selected) {
+            view.selected = data.selected;
+            [decorateDisplayView removeControlButtonsFromSelectedDecorateView];
+            return nil;
+        }
+        
+        if (data.selected) {
+            view.selected = data.selected;
+            [decorateDisplayView drawControlButtonsOnSelectedDecorateView];
+        }
+        
+        return nil;
     }
     
-    return YES;
-}
-
-- (NSInteger)getCount {
-    if ([self isEmpty]) {
-        return 0;
-    } else {
-        return self.decorateDataArray.count;
-    }
-}
-
-- (BOOL)isOutBoundIndex:(NSInteger)index {
-    if ([self isEmpty]) {
-        return YES;
+    //Delete
+    if (view && !data) {
+        if (view.selected) {
+            [decorateDisplayView removeControlButtonsFromSelectedDecorateView];
+        }
+        
+        [view removeFromSuperview];
+        view = nil;
+        
+        return nil;
     }
     
-    if (index < [self getCount]) {
-        return NO;
+    //Insert
+    if (!view && data) {
+        return data.decorateView;
     }
     
-    return YES;
+    return nil;
 }
 
 
-#pragma mark - ConnectionManager Decorate Data Delegate Methods
+#pragma mark - ConnectionManager Decorate DataDelegate Methods
 
-- (void)receivedEditorDecorateDataEditing:(NSInteger)index {
-    [self.delegate didSelectDecorateData:index];
+- (void)receivedDecorateDataEditing:(NSUUID *)uuid {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (data) {
+        data.enabled = NO;
+    }
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index {
-    [self.delegate didDeselectDecorateData:index];
+- (void)receivedDecorateDataEditCancelled:(NSUUID *)uuid {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (data) {
+        data.enabled = YES;
+    }
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData scale:(CGFloat)scale timestamp:(NSNumber *)timestamp {
-    if (!insertData) {
+- (void)receivedDecorateDataInsert:(DecorateData *)data {
+    if (!data) {
         return;
     }
     
     ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    PhotoDecorateData *decorateData = [[PhotoDecorateData alloc] initWithImage:insertData widthRadio:connectionManager.widthRatio heightRatio:connectionManager.heightRatio timestamp:timestamp];
+    data.frame = CGRectMake(data.frame.origin.x,
+                            data.frame.origin.y,
+                            data.frame.size.width / connectionManager.widthRatio,
+                            data.frame.size.height / connectionManager.heightRatio);
     
-    [self addDecorateData:decorateData];
-    [self.delegate didInsertDecorateData:[self getIndexOfDecorateData:decorateData] scale:scale];
+    [self addDecorateData:data];
 }
 
-- (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point {
-    [self updateDecorateDataAtIndex:index point:point];
-    [self.delegate didUpdateDecorateData:index point:point];
-}
-
-- (void)receivedEditorDecorateDataResized:(NSInteger)index resizedRect:(CGRect)rect {
-    [self updateDecorateDataAtIndex:index rect:rect];
-    [self.delegate didUpdateDecorateData:index rect:rect];
-}
-
-- (void)receivedEditorDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)angle {
-    [self updateDecorateDataAtIndex:index angle:angle];
-    [self.delegate didUpdateDecorateData:index angle:angle];
-}
-
-- (void)receivedEditorDecorateDataZOrderChanged:(NSInteger)index {
-    [self updateDecorateDataZOrderAtIndex:index];
-    [self.delegate didUpdateDecorateDataZOrder:index];
-}
-
-- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp {
-    NSUInteger index = [self getIndexOfTimestamp:timestamp];
+- (void)receivedDecorateDataUpdate:(NSUUID *)uuid frame:(CGRect)frame {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
     
-    if (index == NSNotFound) {
-        return;
+    if (data) {
+        data.frame = frame;
     }
     
-    [self deleteDecorateDataAtIndex:index];
-    [self.delegate didDeleteDecorateData:index];
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
-- (void)interruptedEditorDecorateDataEditing {
-    [self.delegate didInterruptDecorateData];
+- (void)receivedDecorateDataDeleted:(NSUUID *)uuid {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (data) {
+        [self deleteDecorateData:uuid];
+    }
+}
+
+- (void)interruptedDecorateDataEditing:(NSUUID *)uuid {
+    DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (data) {
+        data.selected = NO;
+    }
+    
+    if (self.delegate) {
+        [self.delegate didDecorateDataArrayUpdate:uuid];
+    }
 }
 
 @end

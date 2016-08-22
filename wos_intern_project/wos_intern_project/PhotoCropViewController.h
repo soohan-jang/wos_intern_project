@@ -14,7 +14,7 @@
 
 @property (weak, nonatomic) id<PhotoCropViewControllerDelegate> delegate;
 
-@property (assign, nonatomic) CGSize cellSize;
+@property (assign, nonatomic) CGSize cropAreaSize;
 @property (strong, nonatomic) NSURL *imageUrl;
 @property (strong, nonatomic) UIImage *fullscreenImage;
 

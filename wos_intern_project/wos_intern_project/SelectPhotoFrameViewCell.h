@@ -1,5 +1,5 @@
 //
-//  PhotoFrameSelectViewCell.h
+//  SelectPhotoFrameViewCell.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 7. 15..
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoFrameSelectViewCell : UICollectionViewCell
+@interface SelectPhotoFrameViewCell : UICollectionViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *frameImageView;
 

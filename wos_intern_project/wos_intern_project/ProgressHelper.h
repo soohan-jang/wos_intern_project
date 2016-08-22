@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, ProgressDismissType) {
 
 /**
  @berif
- ProgressHUD의 타이틀과 이미지를 변경하고, 1초 후에 ProgressHUD를 제거한다.
+ ProgressHUD의 타이틀과 이미지를 변경하고, 정의된 DelayTime 후에 ProgressHUD를 제거한다.
  */
 + (void)dismissProgress:(WMProgressHUD *)progress dismissTitleKey:(NSString *)dismissTitleKey dismissType:(NSInteger)type;
 

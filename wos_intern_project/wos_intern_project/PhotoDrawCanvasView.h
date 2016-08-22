@@ -21,7 +21,15 @@ extern CGFloat const DefaultLineWidth;
 @property (nonatomic, assign) NSInteger lineWidth;
 @property (nonatomic, assign) NSInteger drawMode;
 
-- (UIImage *)getPathImage;
+/**
+ * @brief 그려진 Path 객체의 경계를 계산하여, 그려진 영역만큼을 캡쳐한다.
+ * @return UIImage : 캡쳐된 이미지가 담긴 객체
+ */
+- (UIImage *)viewCapture;
+
+/**
+ * @brief 그려진 Path 객체를 모두 지운다.
+ */
 - (void)clear;
 
 @end

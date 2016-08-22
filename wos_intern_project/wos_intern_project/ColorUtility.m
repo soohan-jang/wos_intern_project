@@ -14,42 +14,45 @@
     CGFloat red = 0.f, green = 0.f, blue = 0.f, alpha = 1.f;
     
     switch (colorName) {
-        case Transparent:
+        case ColorNameTransparent:
             alpha = 0.f;
             break;
-        case Transparent2f:
+        case ColorNameTransparent2f:
             alpha = 0.2f;
             break;
-        case Black:
+        case ColorNameTransparent4f:
+            alpha = 0.4f;
+            break;
+        case ColorNameBlack:
             red = green = blue = 0.f;
             break;
-        case White:
+        case ColorNameWhite:
             red = green = blue = 255.f;
             break;
-        case DarkGray:
+        case ColorNameDarkGray:
             red = green = blue = 51.f;
             break;
-        case Red:
+        case ColorNameRed:
             red = 231.f;
             green = 76.f;
             blue = 60.f;
             break;
-        case Green:
+        case ColorNameGreen:
             red = 39.f;
             green = 174.f;
             blue = 96.f;
             break;
-        case Blue:
+        case ColorNameBlue:
             red = 52.f;
             green = 152.f;
             blue = 219.f;
             break;
-        case Yellow:
+        case ColorNameYellow:
             red = 241.f;
             green = 196.f;
             blue = 15.f;
             break;
-        case Orange:
+        case ColorNameOrange:
             red = 243.f;
             green = 156.f;
             blue = 18.f;

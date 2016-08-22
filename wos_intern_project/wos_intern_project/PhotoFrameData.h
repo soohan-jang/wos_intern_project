@@ -1,5 +1,5 @@
 //
-//  PhotoFrameSelectCellData.h
+//  PhotoFrameData.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 11..
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIImage.h>
 
-@interface PhotoFrameSelectCellData : NSObject
+@interface PhotoFrameData : NSObject
 
 @property (strong, nonatomic) UIColor *stateColor;
 

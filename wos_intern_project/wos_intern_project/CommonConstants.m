@@ -15,14 +15,4 @@ NSString *const PostfixImageFullscreen                  = @"_fullscreen";
 NSString *const PostfixImageCropped                     = @"_cropped";
 NSString *const SperatorImageName                       = @"+";
 
-NSString *const SegueMoveToAlbum                        = @"moveToPhotoAlbum";
-NSString *const SegueMoveToFrameSelect                  = @"moveToPhotoFrameSelect";
-NSString *const SegueMoveToEditor                       = @"moveToPhotoEditor";
-NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
-NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
-
-NSString *const ReuseCellFrameSlt                       = @"frameSelectCell";
-NSString *const ReuseCellEditor                         = @"photoFrameCell";
-NSString *const ReuseCellSticker                        = @"stickerCell";
-
 NSTimeInterval const DelayTime                          = 0.5f;

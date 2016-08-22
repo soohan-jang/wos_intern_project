@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     
     //CanvasView를 초기화한다.
     [self.canvasView clear];
-    [self.canvasView setLineColor:[ColorUtility colorWithName:DarkGray]];
+    [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameDarkGray]];
     [self.canvasView setLineWidth:DefaultLineWidth];
     
     [self.prevSelectedLineColorButton setSelected:NO];
@@ -67,7 +67,8 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self closeLineWidthSubMenu];
     [self closeEraseSubMenu];
     
-    [self.delegate drawPenMenuViewDidFinished:self WithImage:[self.canvasView getPathImage]];
+    DecorateData *data = [[DecorateData alloc] initWithImage:[self.canvasView viewCapture]];
+    [self.delegate drawPenMenuViewDidFinished:data];
 }
 
 - (IBAction)tappedCancelButton:(id)sender {
@@ -75,7 +76,7 @@ typedef NS_ENUM(NSInteger, LineColorMenuItem) {
     [self closeLineWidthSubMenu];
     [self closeEraseSubMenu];
     
-    [self.delegate drawPenMenuViewDidCancelled:self];
+    [self.delegate drawPenMenuViewDidCancelled];
 }
 
 - (IBAction)tappedLineColorButton:(id)sender {
@@ -105,7 +106,7 @@ NSInteger const Selected = 1;
 
 - (void)toggleEraseButton {
     if (self.eraseButton.tag == Normal) {
-        self.eraseButton.tintColor = [ColorUtility colorWithName:Orange];
+        self.eraseButton.tintColor = [ColorUtility colorWithName:ColorNameOrange];
         self.eraseButton.tag = Selected;
         self.canvasView.drawMode = ModeErase;
     } else if (self.eraseButton.tag == Selected) {
@@ -143,19 +144,19 @@ NSInteger const Selected = 1;
     
     switch (sender.tag) {
         case LineColorBlack:
-            [self.canvasView setLineColor:[ColorUtility colorWithName:DarkGray]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameDarkGray]];
             break;
         case LineColorRed:
-            [self.canvasView setLineColor:[ColorUtility colorWithName:Red]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameRed]];
             break;
         case LineColorGreen:
-            [self.canvasView setLineColor:[ColorUtility colorWithName:Green]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameGreen]];
             break;
         case LineColorBlue:
-            [self.canvasView setLineColor:[ColorUtility colorWithName:Blue]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameBlue]];
             break;
         case LineColorYellow:
-            [self.canvasView setLineColor:[ColorUtility colorWithName:Yellow]];
+            [self.canvasView setLineColor:[ColorUtility colorWithName:ColorNameYellow]];
             break;
         case LineColorClose:
             [self closeLineColorSubMenu];

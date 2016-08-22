@@ -1,5 +1,5 @@
 //
-//  PhotoEditorFrameCellData.h
+//  PhotoData.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 16..
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoEditorFrameCellData : NSObject
+@interface PhotoData : NSObject
 
 @property (atomic, assign) NSInteger state;
 @property (atomic, strong) UIImage *fullscreenImage;

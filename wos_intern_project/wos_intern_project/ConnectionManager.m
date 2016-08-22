@@ -20,7 +20,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
 @property (nonatomic, strong) NSMutableArray<NSDictionary *> *messageQueue;
 @property (nonatomic, strong) NSNumber *lastSendMsgTimestamp;
 @property (nonatomic, strong) NSIndexPath *selectedPhotoFrameIndex;
-@property (nonatomic, strong) NSNumber *selectedDecorateDataIndex;
+@property (nonatomic, strong) NSUUID *selectedDecorateDataUUID;
 
 @end
 
@@ -74,18 +74,18 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
         case vDataTypePhotoFrameRequestConfirm:
             self.lastSendMsgTimestamp = message[kPhotoFrameConfirmTimestamp];
             break;
-        case vDataTypeEditorPhotoEdit:
-            self.lastSendMsgTimestamp = message[kEditorPhotoEditTimestamp];
-            self.selectedPhotoFrameIndex = message[kEditorPhotoIndexPath];
+        case vDataTypePhotoEdit:
+            self.lastSendMsgTimestamp = message[kPhotoEditTimestamp];
+            self.selectedPhotoFrameIndex = message[kPhotoIndexPath];
             break;
-        case vDataTypeEditorDecorateEdit:
-            self.lastSendMsgTimestamp = message[kEditorDecorateEditTimestamp];
-            self.selectedDecorateDataIndex = message[kEditorDecorateIndex];
+        case vDataTypeDecorateEdit:
+            self.lastSendMsgTimestamp = message[kDecorateEditTimestamp];
+            self.selectedDecorateDataUUID = message[kDecorateUUID];
             break;
         default:
             self.lastSendMsgTimestamp = nil;
             self.selectedPhotoFrameIndex = nil;
-            self.selectedDecorateDataIndex = nil;
+            self.selectedDecorateDataUUID = nil;
     }
     
     NSData *archivedMessage = [NSKeyedArchiver archivedDataWithRootObject:message];
@@ -115,9 +115,16 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
 }
 
 - (void)disconnectSession {
-    [self.ownSession disconnect];
-    [self setMessageQueueEnabled:NO];
+    self.sessionDelegate = nil;
+    self.photoFrameDelegate = nil;
+    self.photoFrameDataDelegate = nil;
+    self.photoDataDelegate = nil;
+    self.decorateDataDelegate = nil;
+    
+    self.messageQueueEnabled = NO;
     [self clearMessageQueue];
+    
+    [self.ownSession disconnect];
 }
 
 - (void)clear {
@@ -138,7 +145,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
 }
 
 
-#pragma mark - MessagePool Methods
+#pragma mark - MessageQueue Methods
 
 - (void)putMessage:(NSDictionary *)message {
     if (self.messageQueue == nil) {
@@ -198,8 +205,17 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
     
     NSInteger dataType = [message[kDataType] integerValue];
     
-    if (self.photoFrameControlDelegate) {
+    if (self.photoFrameDelegate) {
         switch (dataType) {
+            case vDataTypePhotoFrameRequestConfirm:
+                NSLog(@"Received Confirm Frame Select");
+                if (self.lastSendMsgTimestamp == nil) {
+                    [self.photoFrameDelegate receivedPhotoFrameConfirmRequest:message[kPhotoFrameIndexPath]];
+                } else if ([message[kPhotoFrameConfirmTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
+                    [self.photoFrameDelegate interruptedPhotoFrameConfirm];
+                    [self.photoFrameDelegate receivedPhotoFrameConfirmRequest:message[kPhotoFrameIndexPath]];
+                }
+                break;
             case vDataTypeScreenSize:
                 NSLog(@"Received Screen Size");
                 [self calculateScreenRatio:[message[kScreenSize] CGSizeValue]];
@@ -207,12 +223,12 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
             case vDataTypePhotoFrameConfirmedAck:
                 NSLog(@"Received Confirm Ack Frame Select");
                 self.lastSendMsgTimestamp = nil;
-                [self.photoFrameControlDelegate receivedPhotoFrameConfirmAck:[message[kPhotoFrameConfirmedAck] boolValue]];
+                [self.photoFrameDelegate receivedPhotoFrameConfirmAck:[message[kPhotoFrameConfirmedAck] boolValue]];
                 break;
         }
     }
     
-    if (self.photoFrameDataDelegate && self.photoFrameControlDelegate) {
+    if (self.photoFrameDataDelegate) {
         switch (dataType) {
             case vDataTypePhotoFrameSelected:
                 NSLog(@"Received Selected Frame Index");
@@ -226,117 +242,95 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
                     [self.photoFrameDataDelegate receivedPhotoFrameSelected:message[kPhotoFrameIndexPath]];
                 }
                 break;
-            case vDataTypePhotoFrameRequestConfirm:
-                NSLog(@"Received Confirm Frame Select");
-                if (self.lastSendMsgTimestamp == nil) {
-                    [self.photoFrameDataDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndexPath]];
-                } else if ([message[kPhotoFrameConfirmTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                    [self.photoFrameControlDelegate interruptedPhotoFrameConfirmProgress];
-                    [self.photoFrameDataDelegate receivedPhotoFrameRequestConfirm:message[kPhotoFrameIndexPath]];
-                }
-                
-                break;
         }
     }
     
     if (self.photoDataDelegate) {
         switch (dataType) {
-            case vDataTypeEditorPhotoEdit:
+            case vDataTypePhotoEdit:
                 NSLog(@"Received Edit Photo");
                 if (self.lastSendMsgTimestamp == nil) {
-                    [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                    [self.photoDataDelegate receivedPhotoEditing:message[kPhotoIndexPath]];
                     break;
                 }
                 
-                if (self.selectedPhotoFrameIndex.item == ((NSIndexPath *)message[kEditorPhotoIndexPath]).item) {
-                    if ([message[kEditorPhotoEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                        [self.photoDataDelegate interruptedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
-                        [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                if (self.selectedPhotoFrameIndex.item == ((NSIndexPath *)message[kPhotoIndexPath]).item) {
+                    if ([message[kPhotoEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
+                        [self.photoDataDelegate interruptedPhotoEditing:message[kPhotoIndexPath]];
+                        [self.photoDataDelegate receivedPhotoEditing:message[kPhotoIndexPath]];
                         
                         self.lastSendMsgTimestamp = nil;
                         self.selectedPhotoFrameIndex = nil;
                     }
                 } else {
-                    [self.photoDataDelegate receivedEditorPhotoEditing:message[kEditorPhotoIndexPath]];
+                    [self.photoDataDelegate receivedPhotoEditing:message[kPhotoIndexPath]];
                 }
                 
                 break;
-            case vDataTypeEditorPhotoEditCanceled:
+            case vDataTypePhotoEditCanceled:
                 NSLog(@"Received Edit Photo Canceled");
-                [self.photoDataDelegate receivedEditorPhotoEditingCancelled:message[kEditorPhotoIndexPath]];
+                [self.photoDataDelegate receivedPhotoEditingCancelled:message[kPhotoIndexPath]];
                 break;
-            case vDataTypeEditorPhotoInsertedAck:
+            case vDataTypePhotoInsertedAck:
                 NSLog(@"Received Insert Photo Ack");
-                [self.photoDataDelegate receivedEditorPhotoInsertAck:message[kEditorPhotoIndexPath]
-                                                                   ack:[message[kEditorPhotoInsertedAck] boolValue]];
+                [self.photoDataDelegate receivedPhotoInsertAck:message[kPhotoIndexPath]
+                                                                   ack:[message[kPhotoInsertedAck] boolValue]];
                 break;
-            case vDataTypeEditorPhotoDeleted:
+            case vDataTypePhotoDeleted:
                 NSLog(@"Received Delete Photo");
-                [self.photoDataDelegate receivedEditorPhotoDeleted:message[kEditorPhotoIndexPath]];
+                [self.photoDataDelegate receivedPhotoDeleted:message[kPhotoIndexPath]];
                 break;
         }
     }
     
     if (self.decorateDataDelegate) {
         switch (dataType) {
-            case vDataTypeEditorDecorateEdit:
+            case vDataTypeDecorateEdit:
                 NSLog(@"Received Edit Decorate Data");
                 if (self.lastSendMsgTimestamp == nil) {
-                    [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                    [self.decorateDataDelegate receivedDecorateDataEditing:message[kDecorateUUID]];
                     break;
                 }
                 
-                if ([self.selectedDecorateDataIndex integerValue] == [message[kEditorDecorateIndex] integerValue]) {
-                    if ([message[kEditorDecorateEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
-                        [self.decorateDataDelegate interruptedEditorDecorateDataEditing];
-                        [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                if ([self.selectedDecorateDataUUID.UUIDString isEqualToString:((NSUUID *)message[kDecorateUUID]).UUIDString]) {
+                    if ([message[kDecorateEditTimestamp] compare:self.lastSendMsgTimestamp] == NSOrderedAscending) {
+                        [self.decorateDataDelegate interruptedDecorateDataEditing:message[kDecorateUUID]];
+                        [self.decorateDataDelegate receivedDecorateDataEditing:message[kDecorateUUID]];
                         
                         self.lastSendMsgTimestamp = nil;
-                        self.selectedDecorateDataIndex = nil;
+                        self.selectedDecorateDataUUID = nil;
                     }
                 } else {
-                    [self.decorateDataDelegate receivedEditorDecorateDataEditing:[message[kEditorDecorateIndex] integerValue]];
+                    [self.decorateDataDelegate receivedDecorateDataEditing:message[kDecorateUUID]];
                 }
                 
                 break;
-            case vDataTypeEditorDecorateEditCanceled:
+            case vDataTypeDecorateEditCanceled:
                 NSLog(@"Received Edit Cancel Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataEditCancelled:[message[kEditorDecorateIndex] integerValue]];
+                [self.decorateDataDelegate receivedDecorateDataEditCancelled:message[kDecorateUUID]];
                 break;
-            case vDataTypeEditorDecorateInserted:
+            case vDataTypeDecorateInserted:
                 NSLog(@"Received Insert Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataInsert:message[kEditorDecorateInsertedData]
-                                                                      scale:[message[kEditorDecorateInsertedScale] floatValue]
-                                                                  timestamp:message[kEditorDecorateInsertedTimestamp]];
+                [self.decorateDataDelegate receivedDecorateDataInsert:message[kDecorateInsertedData]];
                 break;
-            case vDataTypeEditorDecorateUpdateMoved:
-                NSLog(@"Received Update Moved Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataMoved:[message[kEditorDecorateIndex] integerValue]
-                                                               movedPoint:[message[kEditorDecorateUpdateMovedPoint] CGPointValue]];
+            case vDataTypeDecorateUpdated:
+                NSLog(@"Received Update Decorate Data");
+                [self.decorateDataDelegate receivedDecorateDataUpdate:message[kDecorateUUID]
+                                                              frame:[message[kDEcorateUpdatedFrame] CGRectValue]];
                 break;
-            case vDataTypeEditorDecorateUpdateResized:
-                NSLog(@"Received Update Resized Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataResized:[message[kEditorDecorateIndex] integerValue]
-                                                                resizedRect:[message[kEditorDecorateUpdateResizedRect] CGRectValue]];
-                break;
-            case vDataTypeEditorDecorateUpdateRotated:
-                NSLog(@"Received Update Rotated Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataRotated:[message[kEditorDecorateIndex] integerValue]
-                                                               rotatedAngle:[message[kEditorDecorateUpdateRotatedAngle] floatValue]];
-                break;
-            case vDataTypeEditorDecorateUpdateZOrder:
-                NSLog(@"Received Update Z Order Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataZOrderChanged:[message[kEditorDecorateIndex] integerValue]];
-                break;
-            case vDataTypeEditorDecorateDeleted:
+            case vDataTypeDecorateDeleted:
                 NSLog(@"Received Delete Decorate Data");
-                [self.decorateDataDelegate receivedEditorDecorateDataDeleted:message[kEditorDecorateDeleteTimestamp]];
+                [self.decorateDataDelegate receivedDecorateDataDeleted:message[kDecorateUUID]];
                 break;
         }
     }
 }
 
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
+    if (!self.photoDataDelegate) {
+        return;
+    }
+    
     NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
     if (array == nil || array.count != 2) {
@@ -349,11 +343,15 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
     if ([fileType isEqualToString:PostfixImageCropped]) {
         NSLog(@"Receive Start Insert Photo");
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
-        [self.photoDataDelegate receivedEditorPhotoInsert:indexPath type:fileType url:nil];
+        [self.photoDataDelegate receivedPhotoInsert:indexPath type:fileType url:nil];
     }
 }
 
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error {
+    if (!self.photoDataDelegate) {
+        return;
+    }
+    
     NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
     
     if (array == nil || array.count != 2) {
@@ -364,11 +362,11 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
     NSString *fileType = array[1];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
-    [self.photoDataDelegate receivedEditorPhotoInsert:indexPath type:fileType url:localURL];
+    [self.photoDataDelegate receivedPhotoInsert:indexPath type:fileType url:localURL];
     
     if ([fileType isEqualToString:PostfixImageFullscreen]) {
         NSLog(@"Receive Finish Insert Photo");
-        [self sendMessage:[MessageFactory MessageGeneratePhotoInsertCompleted:indexPath success:YES]];
+        [self sendMessage:[MessageFactory messageGeneratePhotoInsertCompleted:indexPath success:YES]];
     }
 }
 

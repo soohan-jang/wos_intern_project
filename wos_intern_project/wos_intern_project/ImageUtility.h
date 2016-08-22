@@ -19,7 +19,9 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
  Fullscreen Image를 가져온다. URL은 ImagePicker에서 받아오는 ReferenceURL(Assets://)를 사용한다.
  UIImage의 반환은 Block 구문을 통해 반환한다.
  */
-+ (void)getFullscreenUIImageAthURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock;
++ (void)fullscreenImageAtURL:(NSURL *)url resultBlock:(ImageUtilityForGetFullScreenImageBlock)resultBlock;
+
++ (void)saveImageAtPhotoAlbum:(UIImage *)image;
 
 /**
  파일 생성 및 저장에 성공하면, 파일명을 반환한다. 경로는 NSTemporaryDirectory이다.
@@ -41,17 +43,21 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
  filename으로 fullscreen image의 URL을 생성한다.
  URL의 구성은 tempdir/[filename]+_fullscreen의 형태를 지닌다.
  */
-+ (NSURL *)generateFullscreenImageURLWithFilename:(NSString *)filename;
++ (NSURL *)fullscreenImageURLWithFilename:(NSString *)filename;
 
 /**
  filename으로 fullscreen image의 URL을 생성한다.
  URL의 구성은 tempdir/[filename]+_fullscreen의 형태를 지닌다.
  */
-+ (NSURL *)generateCroppedImageURLWithFilename:(NSString *)filename;
++ (NSURL *)croppedImageURLWithFilename:(NSString *)filename;
 
-+ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index;
-+ (NSString *)generatePhotoFrameImageWithIndex:(NSInteger)index postfix:(NSString *)postfix;
-+ (NSString *)generatePhotoStickerImageWithIndex:(NSInteger)index;
-+ (UIImage *)renderImageNamed:(NSString *)imageName renderColor:(UIColor *)color;
++ (NSString *)photoFrameImageWithIndex:(NSInteger)index;
++ (NSString *)photoStickerImageWithIndex:(NSInteger)index;
+
++ (UIImage *)resizeImage:(UIImage *)image;
++ (UIImage *)coloredImageNamed:(NSString *)imageName color:(UIColor *)color;
+
++ (UIImage *)viewCaptureImage:(UIView *)view;
++ (UIImage *)mergeImage:(UIImage *)imageA imageB:(UIImage *)imageB;
 
 @end

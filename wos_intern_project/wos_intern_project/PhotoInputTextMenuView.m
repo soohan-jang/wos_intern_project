@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
     
     //hidden NO가 되어 화면에 나타날 때, DrawPenView를 초기화한다.
     self.textView.text = @"";
-    self.textView.textColor = [ColorUtility colorWithName:DarkGray];
+    self.textView.textColor = [ColorUtility colorWithName:ColorNameDarkGray];
     self.textView.font = [UIFont systemFontOfSize:DefaultFontSize];
     
     [self.textSizeSlider setValue:DefaultFontSize];
@@ -71,8 +71,8 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
 }
 
 - (void)initialize {
-    self.backgroundView.backgroundColor = [ColorUtility colorWithName:Transparent2f];
-    self.textView.backgroundColor = [ColorUtility colorWithName:Transparent];
+    self.backgroundView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
+    self.textView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent];
 }
 
 CGFloat const Scale = 4.0f;
@@ -91,7 +91,7 @@ CGFloat const Scale = 4.0f;
     CGSize imageSize = CGSizeMake(self.textView.bounds.size.width * Scale, self.textView.bounds.size.height * Scale);
     UIGraphicsBeginImageContext(imageSize);
     CGContextRef context = UIGraphicsGetCurrentContext();
-    [[ColorUtility colorWithName:Transparent] setFill];
+    [[ColorUtility colorWithName:ColorNameTransparent] setFill];
     CGContextFillRect(context, CGRectMake(0, 0, imageSize.width, imageSize.height));
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -128,14 +128,15 @@ CGFloat const Scale = 4.0f;
     [self closeTextColorSubMenu];
     [self closeTextSizeSubMenu];
     
-    [self.delegate inputTextMenuViewDidFinished:self WithImage:[self textViewConvertToImage]];
+    DecorateData *data = [[DecorateData alloc] initWithImage:[self textViewConvertToImage] scale:Scale];
+    [self.delegate inputTextMenuViewDidFinished:data];
 }
 
 - (IBAction)tappedCancelButton:(id)sender {
     [self closeTextColorSubMenu];
     [self closeTextSizeSubMenu];
     
-    [self.delegate inputTextMenuViewDidCancelled:self];
+    [self.delegate inputTextMenuViewDidCancelled];
 }
 
 - (IBAction)tappedTextColorButton:(id)sender {
@@ -178,19 +179,19 @@ CGFloat const Scale = 4.0f;
     
     switch (sender.tag) {
         case TextColorBlack:
-            self.textView.textColor = [ColorUtility colorWithName:DarkGray];
+            self.textView.textColor = [ColorUtility colorWithName:ColorNameDarkGray];
             break;
         case TextColorRed:
-            self.textView.textColor = [ColorUtility colorWithName:Red];
+            self.textView.textColor = [ColorUtility colorWithName:ColorNameRed];
             break;
         case TextColorGreen:
-            self.textView.textColor = [ColorUtility colorWithName:Green];
+            self.textView.textColor = [ColorUtility colorWithName:ColorNameGreen];
             break;
         case TextColorBlue:
-             self.textView.textColor = [ColorUtility colorWithName:Blue];
+             self.textView.textColor = [ColorUtility colorWithName:ColorNameBlue];
             break;
         case TextColorYellow:
-             self.textView.textColor = [ColorUtility colorWithName:Yellow];
+             self.textView.textColor = [ColorUtility colorWithName:ColorNameYellow];
             break;
         case TextColorClose:
             [self closeTextColorSubMenu];

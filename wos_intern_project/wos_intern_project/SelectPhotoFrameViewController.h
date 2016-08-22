@@ -1,5 +1,5 @@
 //
-//  PhotoFrameSelectViewController.h
+//  SelectPhotoFrameViewController.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 7. 11..
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoFrameSelectViewController : UIViewController
+@interface SelectPhotoFrameViewController : UIViewController
 
 @end

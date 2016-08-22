@@ -28,10 +28,10 @@ CGFloat const DefaultLineWidth = 4;
     self = [super initWithCoder:aDecoder];
     
     if (self) {
-        self.backgroundColor = [ColorUtility colorWithName:Transparent2f];
+        self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
         self.pathDatas = [[NSMutableArray alloc] init];
         
-        self.lineColor = [ColorUtility colorWithName:Black];
+        self.lineColor = [ColorUtility colorWithName:ColorNameBlack];
         self.lineWidth = DefaultLineWidth;
         
         path = [UIBezierPath bezierPath];
@@ -186,7 +186,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     return captureBounds;
 }
 
-- (UIImage *)getPathImage {
+- (UIImage *)viewCapture {
     CGRect captureBounds = [self calculatePathBounds];
     
     //Bounds가 null이면 nil을 반환한다.
@@ -194,7 +194,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
         return nil;
     
     //이미지 캡쳐 전에, 배경을 투명하게 만든다.
-    self.backgroundColor = [ColorUtility colorWithName:Transparent];
+    self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent];
     
     UIGraphicsBeginImageContext(self.bounds.size);
     [self drawViewHierarchyInRect:self.bounds afterScreenUpdates:YES];
@@ -205,7 +205,7 @@ CGFloat const EraserDistanceIncrement = 0.1f;
     UIImage *pathImage = [UIImage imageWithCGImage:pathImageRef];
     
     //이미지 캡쳐가 종료되었으므로, 배경색을 다시 원상 복구한다.
-    self.backgroundColor = [ColorUtility colorWithName:Transparent2f];
+    self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
     //또한 사용하였던 CGImageRef를 해제한다.
     CGImageRelease(pathImageRef);
     

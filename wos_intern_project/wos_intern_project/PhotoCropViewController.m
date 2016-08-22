@@ -31,40 +31,52 @@
 
 @implementation PhotoCropViewController
 
+
+#pragma mark - Life Cycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self setupCropView];
+    [self setupImage];
 }
 
-- (void)setupCropView {
+- (void)dealloc {
+    self.imageUrl = nil;
+    self.fullscreenImage = nil;
+    self.croppedImage = nil;
+}
+
+
+#pragma mark - Setup Method
+
+- (void)setupImage {
     self.cropView = [[PECropView alloc] initWithFrame:self.cropAreaView.bounds];
     [self.cropAreaView addSubview:self.cropView];
     
     if (self.imageUrl == nil) {
         if (self.fullscreenImage != nil) {
             [self.cropView setImage:self.fullscreenImage];
-            self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
+            self.cropView.imageCropRect = CGRectMake(0, 0, self.cropAreaSize.width, self.cropAreaSize.height);
         } else {
             //Error.
             [self.navigationController popViewControllerAnimated:YES];
         }
     } else {
-        self.progressView = [ProgressHelper showProgressAddedTo:self.view titleKey:@"progress_title_loadding"];
+        self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_loadding"];
         
         __weak typeof(self) weakSelf = self;
-        [ImageUtility getFullscreenUIImageAthURL:self.imageUrl
-                                     resultBlock:^(UIImage *image) {
-                                         __strong typeof(weakSelf) self = weakSelf;
-                                         if (image == nil) {
-                                             //error
-                                         } else {
-                                             self.fullscreenImage = image;
-                                             [self.cropView setImage:image];
-                                             self.cropView.imageCropRect = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
-                                         }
-                                         
-                                         [ProgressHelper dismissProgress:self.progressView];
-                                     }];
+        [ImageUtility fullscreenImageAtURL:self.imageUrl
+                               resultBlock:^(UIImage *image) {
+                                   __strong typeof(weakSelf) self = weakSelf;
+                                   if (image == nil) {
+                                       //error
+                                   } else {
+                                       self.fullscreenImage = image;
+                                       [self.cropView setImage:image];
+                                       self.cropView.imageCropRect = CGRectMake(0, 0, self.cropAreaSize.width, self.cropAreaSize.height);
+                                   }
+                                   
+                                   [ProgressHelper dismissProgress:self.progressView];
+                               }];
     }
 }
 

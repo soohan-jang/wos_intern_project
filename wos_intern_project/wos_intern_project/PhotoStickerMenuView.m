@@ -13,6 +13,7 @@
 #import "ColorUtility.h"
 
 NSInteger const StickerItemNumber = 40;
+NSString *const ReuseCellSticker  = @"stickerCell";
 
 typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
     StickerColorBlack  = 0,
@@ -49,14 +50,14 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
     //hidden NO가 되어 화면에 나타날 때, StickerMenuView를 초기화한다.
     self.prevSelectedStickerColorButton = self.defaultStickerColorButton;
     [self.prevSelectedStickerColorButton setSelected:YES];
-    self.stickerColor = [ColorUtility colorWithName:DarkGray];
+    self.stickerColor = [ColorUtility colorWithName:ColorNameDarkGray];
     
     [self.collectionView reloadData];
 }
 
 - (void)initialize {
-    self.backgroundColor = [ColorUtility colorWithName:Transparent];
-    self.collectionView.backgroundColor = [ColorUtility colorWithName:Transparent2f];
+    self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent];
+    self.collectionView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
     
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
@@ -77,22 +78,22 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
     
     switch (sender.tag) {
         case StickerColorBlack:
-            self.stickerColor = [ColorUtility colorWithName:DarkGray];
+            self.stickerColor = [ColorUtility colorWithName:ColorNameDarkGray];
             break;
         case StickerColorRed:
-            self.stickerColor = [ColorUtility colorWithName:Red];
+            self.stickerColor = [ColorUtility colorWithName:ColorNameRed];
             break;
         case StickerColorGreen:
-            self.stickerColor = [ColorUtility colorWithName:Green];
+            self.stickerColor = [ColorUtility colorWithName:ColorNameGreen];
             break;
         case StickerColorBlue:
-            self.stickerColor = [ColorUtility colorWithName:Blue];
+            self.stickerColor = [ColorUtility colorWithName:ColorNameBlue];
             break;
         case StickerColorYellow:
-            self.stickerColor = [ColorUtility colorWithName:Yellow];
+            self.stickerColor = [ColorUtility colorWithName:ColorNameYellow];
             break;
         case StickerClose:
-            [self.delegate stickerViewControllerDidClosed:self];
+            [self.delegate stickerViewControllerDidClosed];
             return;
     }
     
@@ -106,11 +107,11 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
     PhotoStickerViewCell *cell = (PhotoStickerViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:ReuseCellSticker
                                                                                                    forIndexPath:indexPath];
     
-    UIImage *image = [UIImage imageNamed:[ImageUtility generatePhotoStickerImageWithIndex:indexPath.item]];
+    UIImage *image = [UIImage imageNamed:[ImageUtility photoStickerImageWithIndex:indexPath.item]];
     cell.imageView.image = [image imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     
     if (!self.stickerColor) {
-        self.stickerColor = [ColorUtility colorWithName:DarkGray];
+        self.stickerColor = [ColorUtility colorWithName:ColorNameDarkGray];
     }
     
     cell.imageView.tintColor = self.stickerColor;
@@ -126,10 +127,11 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
 #pragma mark - CollectionView FlowLayout Delegate Methods
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    UIImage *image = [ImageUtility renderImageNamed:[ImageUtility generatePhotoStickerImageWithIndex:indexPath.item]
-                                        renderColor:self.stickerColor];
+    UIImage *image = [ImageUtility coloredImageNamed:[ImageUtility photoStickerImageWithIndex:indexPath.item]
+                                               color:self.stickerColor];
     
-    [self.delegate stickerViewControllerDidSelected:image];
+    DecorateData *data = [[DecorateData alloc] initWithImage:image];
+    [self.delegate stickerViewControllerDidSelected:data];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {

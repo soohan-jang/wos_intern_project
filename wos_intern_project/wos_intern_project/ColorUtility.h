@@ -9,17 +9,18 @@
 #import <UIKit/UIColor.h>
 
 NS_ENUM(NSInteger, ColorName) {
-    Transparent     = 0,
-    Transparent2f   = 1,
-    Black           = 2,
-    White           = 3,
-    DarkGray        = 4,
-    Red             = 5,
-    Green           = 6,
-    Blue            = 7,
-    Yellow          = 8,
-    Orange          = 9,
-    DeepOrange      = 10
+    ColorNameTransparent     = 0,
+    ColorNameTransparent2f,
+    ColorNameTransparent4f,
+    ColorNameBlack,
+    ColorNameWhite,
+    ColorNameDarkGray,
+    ColorNameRed,
+    ColorNameGreen,
+    ColorNameBlue,
+    ColorNameYellow,
+    ColorNameOrange,
+    ColorNameDeepOrange
 };
 
 @interface ColorUtility : NSObject

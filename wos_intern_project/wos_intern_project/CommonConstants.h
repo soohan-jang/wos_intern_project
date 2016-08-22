@@ -16,14 +16,4 @@ extern NSString *const PostfixImageFullscreen;
 extern NSString *const PostfixImageCropped;
 extern NSString *const SperatorImageName;
 
-extern NSString *const SegueMoveToAlbum;
-extern NSString *const SegueMoveToFrameSelect;
-extern NSString *const SegueMoveToEditor;
-extern NSString *const SegueMoveToCropper;
-extern NSString *const SeguePopupSticker;
-
-extern NSString *const ReuseCellFrameSlt;
-extern NSString *const ReuseCellEditor;
-extern NSString *const ReuseCellSticker;
-
 extern NSTimeInterval const DelayTime;

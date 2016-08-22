@@ -8,13 +8,14 @@
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "DecorateData.h"
 
 extern NSString *const ConnectionManagerServiceType;
 
 @protocol ConnectionManagerSessionDelegate;
 
+@protocol ConnectionManagerPhotoFrameDelegate;
 @protocol ConnectionManagerPhotoFrameDataDelegate;
-@protocol ConnectionManagerPhotoFrameControlDelegate;
 
 @protocol ConnectionManagerPhotoDataDelegate;
 @protocol ConnectionManagerDecorateDataDelegate;
@@ -23,15 +24,15 @@ extern NSString *const ConnectionManagerServiceType;
 
 @property (nonatomic, weak) id<ConnectionManagerSessionDelegate> sessionDelegate;
 
+@property (nonatomic, weak) id<ConnectionManagerPhotoFrameDelegate> photoFrameDelegate;
 @property (nonatomic, weak) id<ConnectionManagerPhotoFrameDataDelegate> photoFrameDataDelegate;
-@property (nonatomic, weak) id<ConnectionManagerPhotoFrameControlDelegate> photoFrameControlDelegate;
 
 @property (nonatomic, weak) id<ConnectionManagerPhotoDataDelegate> photoDataDelegate;
 @property (nonatomic, weak) id<ConnectionManagerDecorateDataDelegate> decorateDataDelegate;
 
 @property (nonatomic, assign) BOOL messageQueueEnabled;
 
-@property (nonatomic, assign) NSInteger sessionState;
+@property (nonatomic, assign, readonly) NSInteger sessionState;
 @property (nonatomic, strong, readonly) MCPeerID *ownPeerId;
 @property (nonatomic, strong, readonly) MCSession *ownSession;
 
@@ -113,10 +114,15 @@ extern NSString *const ConnectionManagerServiceType;
 @end
 
 
-#pragma mark - ConnectionManagerFrameSelectDelegate
+#pragma mark - ConnectionManagerPhotoFrameDelegate
 
-@protocol ConnectionManagerPhotoFrameControlDelegate <NSObject>
+@protocol ConnectionManagerPhotoFrameDelegate <NSObject>
 @required
+/**
+ 상대방이 현재 선택한 사진 액자를 최종적하기 위해 동의 여부를 물어볼 때 호출된다.
+ */
+- (void)receivedPhotoFrameConfirmRequest:(NSIndexPath *)confirmIndexPath;
+
 /**
  상대방이 사진 액자를 최종적으로 선택한 것에 대한 동의 여부에 응답했을 때 호출된다.
  */
@@ -125,12 +131,12 @@ extern NSString *const ConnectionManagerServiceType;
 /**
  현재 사용자의 작업을 취소하기 위해 호출된다.
  */
-- (void)interruptedPhotoFrameConfirmProgress;
+- (void)interruptedPhotoFrameConfirm;
 
 @end
 
 
-#pragma mark - ConnectionManagerFrameSelectDataDelegate
+#pragma mark - ConnectionManagerPhotoFrameDataDelegate
 
 @protocol ConnectionManagerPhotoFrameDataDelegate <NSObject>
 @required
@@ -138,11 +144,6 @@ extern NSString *const ConnectionManagerServiceType;
  선택된 사진 액자의 종류를 받았을 때 호출된다. 여기서의 사진 액자는 전체 사진 액자의 틀을 의미한다.
  */
 - (void)receivedPhotoFrameSelected:(NSIndexPath *)indexPath;
-
-/**
- 상대방이 현재 선택한 사진 액자를 최종적하기 위해 동의 여부를 물어볼 때 호출된다.
- */
-- (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath;
 
 @end
 
@@ -154,34 +155,34 @@ extern NSString *const ConnectionManagerServiceType;
 /**
  상대방이 특정 사진 액자 영역을 선택했을 때 호출된다.
  */
-- (void)receivedEditorPhotoEditing:(NSIndexPath *)indexPath;
+- (void)receivedPhotoEditing:(NSIndexPath *)indexPath;
 
 /**
  상대방이 특정 사진 액자 영역을 선택 해제했을 때 호출된다.
  */
-- (void)receivedEditorPhotoEditingCancelled:(NSIndexPath *)indexPath;
+- (void)receivedPhotoEditingCancelled:(NSIndexPath *)indexPath;
 
 /**
  상대방이 특정 사진 액자 영역에 사진을 삽입했을 때 호출된다.
  사진이 삽입되었을 때 내부적으로 sendResourceAtURL을 2번 호출되는데, 어느 사진 액자 영역에 삽입될 지/현재 전달받은 사진 정보가 무엇인지/사진 정보가 저장된 URL을 전달한다.
  우선적으로 CroppedImage를 먼저 보내고, CroppedImage 전송이 종료되면 FullscreenImage를 전송한다.
  */
-- (void)receivedEditorPhotoInsert:(NSIndexPath *)indexPath type:(NSString *)type url:(NSURL *)url;
+- (void)receivedPhotoInsert:(NSIndexPath *)indexPath type:(NSString *)type url:(NSURL *)url;
 
 /**
  상대방이 사진 정보를 모두 수신한 뒤에 이 여부를 전달했을 때 호출된다.
  */
-- (void)receivedEditorPhotoInsertAck:(NSIndexPath *)indexPath ack:(BOOL)insertAck;
+- (void)receivedPhotoInsertAck:(NSIndexPath *)indexPath ack:(BOOL)insertAck;
 
 /**
  상대방이 사진 정보를 삭제했을 때 호출된다.
  */
-- (void)receivedEditorPhotoDeleted:(NSIndexPath *)indexPath;
+- (void)receivedPhotoDeleted:(NSIndexPath *)indexPath;
 
 /**
  현재 사용자의 작업을 취소하기 위해 호출된다.
  */
-- (void)interruptedEditorPhotoEditing:(NSIndexPath *)indexPath;
+- (void)interruptedPhotoEditing:(NSIndexPath *)indexPath;
 
 @end
 
@@ -193,46 +194,31 @@ extern NSString *const ConnectionManagerServiceType;
 /**
  상대방에 특정 그림 객체를 선택했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataEditing:(NSInteger)index;
+- (void)receivedDecorateDataEditing:(NSUUID *)uuid;
 
 /**
  상대방이 특정 그림 객체를 선택해제했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataEditCancelled:(NSInteger)index;
+- (void)receivedDecorateDataEditCancelled:(NSUUID *)uuid;
 
 /**
  상대방이 그림 객체를 삽입했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataInsert:(UIImage *)insertData scale:(CGFloat)scale timestamp:(NSNumber *)timestamp;
+- (void)receivedDecorateDataInsert:(DecorateData *)data;
 
 /**
- 상대방이 그림 객체의 위치를 이동시켰을 때 호출된다.
+ 상대방이 그림 객체의 위치 혹은 크기를 변경했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)point;
-
-/**
- 상대방이 그림 객체의 크기를 변경했을 때 호출된다.
- */
-- (void)receivedEditorDecorateDataResized:(NSInteger)index resizedRect:(CGRect)rect;
-
-/**
- 상대방이 그림 객체를 회전시켰을 때 호출된다.
- */
-- (void)receivedEditorDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)angle;
-
-/**
- 상대방이 그림 객체의 Z-order를 변경했을 때 호출된다.
- */
-- (void)receivedEditorDecorateDataZOrderChanged:(NSInteger)index;
+- (void)receivedDecorateDataUpdate:(NSUUID *)uuid frame:(CGRect)frame;
 
 /**
  상대방이 그림 객체를 삭제했을 때 호출된다.
  */
-- (void)receivedEditorDecorateDataDeleted:(NSNumber *)timestamp;
+- (void)receivedDecorateDataDeleted:(NSUUID *)uuid;
 
 /**
  현재 사용자의 작업을 취소하기 위해 호출된다.
  */
-- (void)interruptedEditorDecorateDataEditing;
+- (void)interruptedDecorateDataEditing:(NSUUID *)uuid;
 
 @end

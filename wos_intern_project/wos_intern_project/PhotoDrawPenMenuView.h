@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DecorateData.h"
 
 @protocol PhotoDrawPenMenuViewDelegate;
 
@@ -25,10 +26,10 @@
 /**
  그림 그리기가 완료되었을 때 그려진 Path의 경계를 계산하여, Capture한 UIImage를 전달한다.
  */
-- (void)drawPenMenuViewDidFinished:(PhotoDrawPenMenuView *)drawPenMenuView WithImage:(UIImage *)image;
+- (void)drawPenMenuViewDidFinished:(DecorateData *)decorateData;
 /**
  그림 그리기가 취소되었을 때 이를 알린다.
  */
-- (void)drawPenMenuViewDidCancelled:(PhotoDrawPenMenuView *)drawPenMenuView;
+- (void)drawPenMenuViewDidCancelled;
 
 @end

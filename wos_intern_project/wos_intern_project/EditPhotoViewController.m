@@ -1,0 +1,745 @@
+//
+//  EditPhotoViewController.m
+//  wos_intern_project
+//
+//  Created by Naver on 2016. 7. 11..
+//  Copyright © 2016년 worksmobile. All rights reserved.
+//
+
+#import "EditPhotoViewController.h"
+
+#import "CommonConstants.h"
+#import "ConnectionManager.h"
+
+#import "DecorateData.h"
+#import "PhotoDataController.h"
+#import "DecorateDataController.h"
+
+#import "XXXRoundMenuButton.h"
+#import "SphereMenu.h"
+
+#import "PhotoCollectionViewCell.h"
+#import "DecorateDataDisplayView.h"
+#import "PhotoCropViewController.h"
+
+#import "PhotoDrawPenMenuView.h"
+#import "PhotoInputTextMenuView.h"
+#import "PhotoStickerMenuView.h"
+
+#import "AlertHelper.h"
+#import "DispatchAsyncHelper.h"
+#import "ProgressHelper.h"
+#import "ImageUtility.h"
+#import "ColorUtility.h"
+#import "ValidateCheckUtility.h"
+#import "MessageFactory.h"
+
+NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
+NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
+
+@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDataControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, ConnectionManagerSessionDelegate>
+
+@property (weak, nonatomic) IBOutlet UIButton *decoDataVisibleToggleButton;
+@property (weak, nonatomic) IBOutlet XXXRoundMenuButton *mainMenuButton;
+@property (strong, nonatomic) SphereMenu *photoMenu;
+
+@property (weak, nonatomic) IBOutlet UICollectionView *photoDisplayCollectionView;  //사진들이 위치하는 뷰
+@property (strong, atomic) PhotoDataController *photoDataController;
+
+@property (weak, nonatomic) IBOutlet DecorateDataDisplayView *decorateDisplayView; //그려진 객체들이 위치하는 뷰
+@property (strong, atomic) DecorateDataController *decorateDataController;
+
+@property (weak, nonatomic) IBOutlet PhotoDrawPenMenuView *drawPenMenuView; //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
+@property (weak, nonatomic) IBOutlet PhotoInputTextMenuView *inputTextMenuView; //텍스트를 작성할 수 있는 뷰
+@property (weak, nonatomic) IBOutlet PhotoStickerMenuView *stickerMenuView; //스티커를 선택할 수 있는 뷰
+
+//For CropViewController
+@property (strong, nonatomic) NSURL *pickedImageURL;
+@property (strong, nonatomic) UIImage *pickedImage;
+
+@end
+
+@implementation EditPhotoViewController
+
+
+#pragma mark - Life Cycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self setupDelegates];
+    [self setupMainMenu];
+}
+
+- (void)dealloc {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.photoDataDelegate = nil;
+    connectionManager.decorateDataDelegate = nil;
+    
+    [ImageUtility removeAllTemporaryImages];
+}
+
+//CropView의 호출은 PhotoDataDisplayView에서 일어난다.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:SegueMoveToCropper]) {
+        PhotoCropViewController *viewController = [segue destinationViewController];
+        viewController.delegate = self;
+        
+        if (self.pickedImageURL) {
+            viewController.imageUrl = self.pickedImageURL;
+            return;
+        }
+        
+        if (self.pickedImage) {
+            viewController.fullscreenImage = self.pickedImage;
+            return;
+        }
+    }
+}
+
+
+#pragma mark - Setup Methods
+
+//이 함수는 EditPhotoVC를 호출하는 VC에서 값을 전달하기 위해 호출하는 함수이다.
+//내부적으로 setupControllers를 호출하여, EditPhotoVC에서 사용하는 DataController를 생성한다.
+- (void)setPhotoFrameNumber:(NSInteger)selectPhotoFrame {
+    [self setupControllers:selectPhotoFrame];
+}
+
+- (void)setupControllers:(NSInteger)selectPhotoFrame {
+    self.photoDataController = [[PhotoDataController alloc] initWithFrameNumber:selectPhotoFrame];
+    self.decorateDataController = [[DecorateDataController alloc] init];
+}
+
+- (void)setupDelegates {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    connectionManager.sessionDelegate = self;
+    
+    //Controller's Delegate
+    self.photoDataController.delegate = self;
+    self.decorateDataController.delegate = self;
+    
+    //DisplayView's Datasource & Delegate
+    self.photoDisplayCollectionView.dataSource = (id<UICollectionViewDataSource>)self.photoDataController;
+    self.photoDisplayCollectionView.delegate = self;
+    
+    self.decorateDisplayView.dataSource = (id<DecorateDataDisplayViewDataSource>)self.decorateDataController;
+    self.decorateDisplayView.delegate = self;
+    
+    //MenuView's Delegate
+    self.drawPenMenuView.delegate = self;
+    self.inputTextMenuView.delegate = self;
+    self.stickerMenuView.delegate = self;
+}
+
+- (void)setupMainMenu {
+    NSArray *menuItems = @[[UIImage imageNamed:@"MenuSticker"], [UIImage imageNamed:@"MenuText"], [UIImage imageNamed:@"MenuPen"]];
+    
+    [self.mainMenuButton loadButtonWithIcons:menuItems
+                                 startDegree:-M_PI
+                                layoutDegree:M_PI / 2];
+    
+    [self.mainMenuButton setMainColor:[ColorUtility colorWithName:ColorNameBlue]];
+    
+    [self.mainMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
+    [self.mainMenuButton setCenterIconType:XXXIconTypeCustomImage];
+    [self.mainMenuButton setDelegate:self];
+}
+
+
+#pragma mark - Present Other ViewController Methods
+
+- (void)presentMainViewController {
+    [[ConnectionManager sharedInstance] disconnectSession];
+    
+    
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (void)presentPhotoCropViewController {
+    [self performSegueWithIdentifier:SegueMoveToCropper sender:self];
+}
+
+
+#pragma mark - EventHandling
+
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    if (self.mainMenuButton.isOpened) {
+        [self.mainMenuButton dismissMenuButton];
+    }
+}
+
+- (IBAction)backButtonTapped:(id)sender {
+    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    NSString *alertTitleKey, *alertContentKey;
+    
+    if (connectionManager.sessionState == MCSessionStateNotConnected) {
+        alertTitleKey = @"alert_title_edit_finish";
+        alertContentKey = @"alert_content_edit_finish";
+    } else if (connectionManager.sessionState == MCSessionStateConnected) {
+        alertTitleKey = @"alert_title_session_disconnect_ask";
+        alertContentKey = @"alert_content_data_not_save";
+    }
+    
+    if (!alertTitleKey && !alertContentKey) {
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:alertTitleKey
+                                          messageKey:alertContentKey
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      __strong typeof(weakSelf) self = weakSelf;
+                                      [self presentMainViewController];
+                                  }];
+}
+
+- (IBAction)saveButtonTapped:(id)sender {
+    WMProgressHUD *progress = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_saving"];
+    
+    UIImage *mergedCaptureImage = [ImageUtility mergeImage:[self viewCapture]
+                                                    imageB:[self.decorateDisplayView viewCapture]];
+    
+    [ImageUtility saveImageAtPhotoAlbum:mergedCaptureImage];
+    [ProgressHelper dismissProgress:progress dismissTitleKey:@"progress_title_saved" dismissType:DismissWithDone];
+}
+
+- (IBAction)decoreateVisibleToggled:(id)sender {
+    UIButton *view = sender;
+    view.selected = !view.selected;
+    
+    [self setMenuVisiblity:MenuVisiblityDecorateDisplay visiblity:view.selected];
+}
+
+
+#pragma mark - View Capture Method
+
+- (UIImage *)viewCapture {
+    //메인메뉴가 열려있으면 닫는다.
+    if (self.mainMenuButton.isOpened) {
+        [self.mainMenuButton dismissMenuButton];
+    }
+    
+    NSArray<PhotoCollectionViewCell *> *cells = self.photoDisplayCollectionView.visibleCells;
+    
+    //이미지 캡쳐 전에, 셀들의 경계선을 지운다.
+    for (PhotoCollectionViewCell *cell in cells) {
+        [cell removeStrokeBorder];
+    }
+    
+    UIImage *capturedImage = [ImageUtility viewCaptureImage:self.photoDisplayCollectionView];
+    
+    //이미지 캡쳐 후에, 셀들의 경계선을 다시 그린다.
+    for (PhotoCollectionViewCell *cell in cells) {
+        [cell setStrokeBorder];
+    }
+    
+    return capturedImage;
+}
+
+
+#pragma mark - DrawPenMenuView & DecorateDataDisplayView's Set Visibility Methods
+
+NS_ENUM(NSInteger, MenuVisiblityType) {
+    MenuVisblityPen = 0,
+    MenuVisiblityText,
+    MenuVisiblitySticker,
+    MenuVisiblityDecorateDisplay
+};
+
+- (void)setMenuVisiblity:(NSInteger)menuType visiblity:(BOOL)visiblity {
+    if (menuType == MenuVisiblityDecorateDisplay) {
+        //togglebutton은 setSelected로 숨기거나, 표시한다.
+        [self.decoDataVisibleToggleButton setSelected:visiblity];
+        [self.decorateDisplayView setHidden:!visiblity];
+        return;
+    }
+    
+    [self.decoDataVisibleToggleButton setSelected:YES];
+    [self.decorateDisplayView setHidden:NO];
+    
+    [self.decoDataVisibleToggleButton setHidden:visiblity];
+    [self.mainMenuButton setHidden:visiblity];
+    
+    switch (menuType) {
+        case MenuVisblityPen:
+            [self.drawPenMenuView setHidden:!visiblity];
+            break;
+        case MenuVisiblityText:
+            [self.inputTextMenuView setHidden:!visiblity];
+            break;
+        case MenuVisiblitySticker:
+            [self.stickerMenuView setHidden:!visiblity];
+            break;
+    }
+}
+
+
+#pragma mark - XXXRoundMenuButton Delegate Method
+
+typedef NS_ENUM(NSInteger, MainMenu) {
+    MainMenuSticker     = 0,
+    MainMenuText        = 1,
+    MainMenuPen         = 2
+};
+
+- (void)xxxRoundMenuButtonDidOpened {
+    
+}
+
+float const WaitUntilMainMenuAnimationFinish = 0.24 + 0.06;
+
+- (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        
+        switch (index) {
+            case MainMenuPen:
+                [self decorateMainMenuPen];
+                break;
+            case MainMenuText:
+                [self decorateMainMenuText];
+                break;
+            case MainMenuSticker:
+                [self decorateMainMenuSticker];
+                break;
+        }
+    } delay:WaitUntilMainMenuAnimationFinish];
+}
+
+- (void)decorateMainMenuPen {
+    [self setMenuVisiblity:MenuVisblityPen visiblity:YES];
+}
+
+- (void)decorateMainMenuText {
+    [self setMenuVisiblity:MenuVisiblityText visiblity:YES];
+}
+
+- (void)decorateMainMenuSticker {
+    [self setMenuVisiblity:MenuVisiblitySticker visiblity:YES];
+}
+
+
+#pragma mark - SphereMenu Delegate Method
+
+typedef NS_ENUM(NSInteger, PhotoMenu) {
+    PhotoMenuTakePhotoAtAlbum  = 0,
+    PhotoMenuTakePhotoAtCamera = 1,
+    PhotoMenuEditPhoto         = 2,
+    PhotoMenuDeletePhoto       = 3
+};
+
+- (void)sphereDidSelected:(SphereMenu *)sphereMenu index:(int)index {
+    BOOL isSendEditCancelMsg = NO;
+    
+    if (index < 0) {
+        isSendEditCancelMsg = YES;
+    } else {
+        switch (index) {
+            case PhotoMenuTakePhotoAtAlbum:
+                isSendEditCancelMsg = [self photoMenuPhotoAlbum];
+                break;
+            case PhotoMenuTakePhotoAtCamera:
+                isSendEditCancelMsg = [self photoMenuCamera];
+                break;
+            case PhotoMenuEditPhoto:
+                isSendEditCancelMsg = [self photoMenuPhotoEdit];
+                break;
+            case PhotoMenuDeletePhoto:
+                isSendEditCancelMsg = [self photoMenuPhotoDelete];
+                break;
+        }
+    }
+    
+    if (isSendEditCancelMsg) {
+        [self sendPhotoDeselectMessage];
+        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        self.photoDataController.selectedIndexPath = nil;
+    }
+    
+    [sphereMenu dismissMenu];
+}
+
+- (BOOL)photoMenuPhotoAlbum {
+    if ([ValidateCheckUtility checkPhotoAlbumAccessAuthority]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
+        
+        return NO;
+    }
+    
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_album_not_authorized"
+                                          messageKey:@"alert_content_album_not_authorized"
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                  }];
+    
+    return YES;
+}
+
+- (BOOL)photoMenuCamera {
+    if ([ValidateCheckUtility checkPhotoCameraAccessAuthority]) {
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
+        
+        return NO;
+    }
+    
+    //Alert Text 변경 예정.
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_album_not_authorized"
+                                          messageKey:@"alert_content_album_not_authorized"
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                  }];
+    
+    return YES;
+}
+
+- (BOOL)photoMenuPhotoEdit {
+    self.pickedImage = [self.photoDataController fullscreenImageOfCellAtSelectedIndexPath];
+    [self presentPhotoCropViewController];
+    
+    return NO;
+}
+
+- (BOOL)photoMenuPhotoDelete {
+    [self sendPhotoDeleteMessage];
+    [self.photoDataController clearCellDataAtSelectedIndexPath];
+    self.photoDataController.selectedIndexPath = nil;
+    return NO;
+}
+
+
+#pragma mark - UIImagePickerController Delegate Methods
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(nonnull NSDictionary<NSString *, id> *)info {
+    if (picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
+        self.pickedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
+    } else if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
+        self.pickedImage = [ImageUtility resizeImage:(UIImage *)info[UIImagePickerControllerOriginalImage]];
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [picker dismissViewControllerAnimated:YES completion:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
+            return;
+        }
+        
+        if (!self.pickedImageURL && !self.pickedImage) {
+            //Error Alert.
+            [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+            self.photoDataController.selectedIndexPath = nil;
+        } else {
+            [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+                __strong typeof(weakSelf) self = weakSelf;
+                [self presentPhotoCropViewController];
+            }];
+            
+        }
+    }];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    [self sendPhotoDeselectMessage];
+    [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+    self.photoDataController.selectedIndexPath = nil;
+}
+
+
+#pragma mark - PhotoCropViewController Delegate Methods
+
+- (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
+    if (!fullscreenImage || !croppedImage) {
+        //Alert. 사진 가져오지 못함.
+        [self sendPhotoDeselectMessage];
+        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        self.photoDataController.selectedIndexPath = nil;
+        return;
+    }
+    
+    //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
+    PhotoData *photoData = [[PhotoData alloc] init];
+    photoData.state = CellStateUploading;
+    photoData.fullscreenImage = fullscreenImage;
+    photoData.croppedImage = croppedImage;
+    
+    self.pickedImageURL = nil;
+    self.pickedImage = nil;
+    
+    //임시로 전달받은 두개의 파일을 저장한다.
+    NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
+    
+    if (!filename) {
+        //Alert. 사진 저장 실패.
+        [self sendPhotoDeselectMessage];
+        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        self.photoDataController.selectedIndexPath = nil;
+        return;
+    }
+    
+    NSURL *fullscreenImageURL = [ImageUtility fullscreenImageURLWithFilename:filename];
+    NSURL *croppedImageURL = [ImageUtility croppedImageURLWithFilename:filename];
+    
+    [self sendPhotoInsertMessage:filename
+              fullscreenImageURL:fullscreenImageURL
+                 croppedImageURL:croppedImageURL];
+    [self.photoDataController setCellDataAtSelectedIndexPath:photoData];
+    self.photoDataController.selectedIndexPath = nil;
+}
+
+- (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
+    self.pickedImageURL = nil;
+    self.pickedImage = nil;
+    
+    [self sendPhotoDeselectMessage];
+    [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+    self.photoDataController.selectedIndexPath = nil;
+}
+
+
+#pragma mark - CollectionViewController Delegate Flowlayout Methods
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.photoDataController sizeOfCell:indexPath collectionViewSize:collectionView.bounds.size];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if (!self.photoMenu.hidden) {
+        if (self.mainMenuButton.isOpened) {
+            [self.mainMenuButton dismissMenuButton];
+        }
+        
+        self.photoDataController.selectedIndexPath = indexPath;
+        
+        NSArray *images;
+        if ([self.photoDataController hasImageAtSelectedIndexPath]) {
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
+        } else {
+            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
+        }
+        
+        if (self.photoMenu)
+            self.photoMenu = nil;
+        
+        CGRect cellFrame = [collectionView cellForItemAtIndexPath:indexPath].frame;
+        CGPoint centerPoint = CGPointMake(collectionView.superview.frame.origin.x + collectionView.frame.origin.x + cellFrame.origin.x + cellFrame.size.width / 2.0f,
+                                          collectionView.superview.frame.origin.y + collectionView.frame.origin.y + cellFrame.origin.y + cellFrame.size.height / 2.0f);
+        
+        self.photoMenu = [[SphereMenu alloc] initWithRootView:self.navigationController.view
+                                                       Center:centerPoint
+                                                   CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
+        self.photoMenu.delegate = self;
+        [self.photoMenu presentMenu];
+        
+        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateEditing];
+        [self sendPhotoSelectMessage];
+    }
+}
+
+/**
+ * @brief IndexPath에 해당하는 하나의 셀만을 reload한다. 기존에 제공되는 reloadItemsAtIndexPaths에 IndexPath가 하나만 담긴 배열을 전달한다.
+ * @param indexPath : 갱신할 셀의 IndexPatah
+ */
+- (void)reloadDataAtIndexPath:(NSIndexPath *)indexPath {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self)
+            return;
+        
+        [self.photoDisplayCollectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }];
+}
+
+
+#pragma mark - Send Message
+
+- (void)sendPhotoSelectMessage {
+    [self sendMessage:[MessageFactory messageGeneratePhotoEdit:self.photoDataController.selectedIndexPath]];
+}
+
+- (void)sendPhotoDeselectMessage {
+    [self sendMessage:[MessageFactory messageGeneratePhotoEditCanceled:self.photoDataController.selectedIndexPath]];
+}
+
+- (void)sendPhotoInsertMessage:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL {
+    [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename
+                                               fullscreenImageURL:fullscreenImageURL
+                                                  croppedImageURL:croppedImageURL
+                                                            index:self.photoDataController.selectedIndexPath.item];
+}
+
+- (void)sendPhotoDeleteMessage {
+    [self sendMessage:[MessageFactory messageGeneratePhotoDeleted:self.photoDataController.selectedIndexPath]];
+}
+
+- (void)sendDecorateSelectMessage:(NSUUID *)uuid {
+    [self sendMessage:[MessageFactory messageGenerateDecorateDataEdit:uuid]];
+}
+
+- (void)sendDecorateDeselectMessage:(NSUUID *)uuid {
+    [self sendMessage:[MessageFactory messageGenerateDecorateDataEditCanceled:uuid]];
+}
+
+- (void)sendDecorateInsertMessage:(DecorateData *)data {
+    [self sendMessage:[MessageFactory messageGenerateDecorateDataInserted:data]];
+}
+
+- (void)sendDecorateUpdateMessage:(NSUUID *)uuid frame:(CGRect)frame {
+    [self sendMessage:[MessageFactory messageGenerateDecorateDataUpdated:uuid frame:frame]];
+}
+
+- (void)sendDecorateDeleteMessage:(NSUUID *)uuid {
+    [self sendMessage:[MessageFactory messageGenerateDecorateDataDeleted:uuid]];
+}
+
+- (void)sendMessage:(NSDictionary *)message {
+    [[ConnectionManager sharedInstance] sendMessage:message];
+}
+
+
+#pragma mark - Photo Data Controller Delegate Methods
+
+- (void)didPhotoDataSourceUpdate:(NSIndexPath *)indexPath {
+    [self reloadDataAtIndexPath:indexPath];
+}
+
+- (void)didPhotoEditInterrupt {
+    if (!self.photoMenu && !self.photoMenu.isHidden) {
+        return;
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
+            return;
+        }
+        
+        [self.photoMenu dismissMenu];
+    }];
+}
+
+
+#pragma mark - Decorate Data Controller Delegate Methods
+
+- (void)didDecorateDataArrayUpdate:(NSUUID *)uuid {
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        [self.decorateDisplayView updateDecorateViewOfUUID:uuid];
+    }];
+}
+
+
+#pragma mark - PhotoDecorateDataDisplayView Delegate Methods
+
+- (void)didSelectDecorateViewOfUUID:(NSUUID *)uuid selected:(BOOL)selected {
+    [self.decorateDataController selectDecorateData:uuid selected:selected];
+    if (selected) {
+        [self sendDecorateSelectMessage:uuid];
+    } else {
+        [self sendDecorateDeselectMessage:uuid];
+    }
+}
+
+- (void)didUpdateDecorateViewOfUUID:(NSUUID *)uuid frame:(CGRect)frame {
+    [self.decorateDataController updateDecorateData:uuid frame:frame];
+    [self sendDecorateUpdateMessage:uuid frame:frame];
+}
+
+- (void)didDeleteDecorateViewOfUUID:(NSUUID *)uuid {
+    [self.decorateDataController deleteDecorateData:uuid];
+    [self sendDecorateDeleteMessage:uuid];
+}
+
+
+#pragma mark - PhotoDrawPenMenuView Delegate Methods
+
+- (void)drawPenMenuViewDidFinished:(DecorateData *)decorateData {
+    [self setMenuVisiblity:MenuVisblityPen visiblity:NO];
+    [self.decorateDataController addDecorateData:decorateData];
+    [self sendDecorateInsertMessage:decorateData];
+}
+
+- (void)drawPenMenuViewDidCancelled {
+    [self setMenuVisiblity:MenuVisblityPen visiblity:NO];
+}
+
+
+#pragma mark - PhotoInputTextMenuView Delegate Methods
+
+- (void)inputTextMenuViewDidFinished:(DecorateData *)decorateData {
+    [self setMenuVisiblity:MenuVisiblityText visiblity:NO];
+    [self.decorateDataController addDecorateData:decorateData];
+    [self sendDecorateInsertMessage:decorateData];
+}
+
+- (void)inputTextMenuViewDidCancelled {
+    [self setMenuVisiblity:MenuVisiblityText visiblity:NO];
+}
+
+
+#pragma mark - PhotoStickerViewController Delegate Methods
+
+- (void)stickerViewControllerDidSelected:(DecorateData *)decorateData {
+    [self.decorateDataController addDecorateData:decorateData];
+    [self sendDecorateInsertMessage:decorateData];
+}
+
+- (void)stickerViewControllerDidClosed {
+    [self setMenuVisiblity:MenuVisiblitySticker visiblity:NO];
+}
+
+
+#pragma mark - ConnectionManager Session Connect Delegate Methods
+
+- (void)receivedPeerConnected {
+    
+}
+
+- (void)receivedPeerDisconnected {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        if (!self) {
+            return;
+        }
+        
+        [AlertHelper showAlertControllerOnViewController:self
+                                                titleKey:@"alert_title_session_disconnected"
+                                              messageKey:@"alert_content_photo_edit_continue"
+                                                  button:@"alert_button_text_no"
+                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                               [[ConnectionManager sharedInstance] disconnectSession];
+                                           }
+                                             otherButton:@"alert_button_text_yes"
+                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                          __strong typeof(weakSelf) self = weakSelf;
+                                          if (!self) {
+                                              return;
+                                          }
+                                          
+                                          [self presentMainViewController];
+                                      }];
+    }];
+}
+
+@end

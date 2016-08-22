@@ -1,24 +1,25 @@
 //
-//  PhotoFrameSelectCellManager.m
+//  PhotoFrameDataController.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 11..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoFrameSelectCellManager.h"
+#import "PhotoFrameDataController.h"
+#import "SelectPhotoFrameViewCell.h"
 #import "ConnectionManager.h"
 #import "ImageUtility.h"
 
 NSInteger const NumberOfPhotoFrameCells = 12;
 
-@interface PhotoFrameSelectCellManager () <ConnectionManagerPhotoFrameDataDelegate>
+@interface PhotoFrameDataController () <UICollectionViewDataSource, ConnectionManagerPhotoFrameDataDelegate>
 
-@property (strong, atomic) NSMutableArray<PhotoFrameSelectCellData *> *cellDatas;
+@property (strong, atomic) NSMutableArray<PhotoFrameData *> *cellDatas;
 
 @end
 
-@implementation PhotoFrameSelectCellManager
+@implementation PhotoFrameDataController
 
 - (instancetype)initWithCollectionViewSize:(CGSize)size {
     self = [super init];
@@ -28,11 +29,20 @@ NSInteger const NumberOfPhotoFrameCells = 12;
         self.cellDatas = [[NSMutableArray alloc] init];
         
         for (int i = 0; i < NumberOfPhotoFrameCells; i++) {
-            [self.cellDatas addObject:[[PhotoFrameSelectCellData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
+            [self.cellDatas addObject:[[PhotoFrameData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
         }
     }
     
     return self;
+}
+
+- (void)clearController {
+    [self.cellDatas removeAllObjects];
+    self.cellDatas = nil;
+    
+    _ownSelectedIndexPath = nil;
+    _otherSelectedIndexPath = nil;
+    self.delegate = nil;
 }
 
 //isOwnSelection으로 내가 발생시킨 이벤트인지, 상대방에 발생시킨 이벤트인지 파악한다.
@@ -40,7 +50,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     if (!indexPath)
         return;
     
-    PhotoFrameSelectCellData *cellData;
+    PhotoFrameData *cellData;
     NSIndexPath *prevIndexPath;
     
     if (isOwnSelection) {
@@ -83,10 +93,6 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
 }
 
-- (NSInteger)numberOfCells {
-    return NumberOfPhotoFrameCells;
-}
-
 - (CGSize)sizeOfCell:(CGSize)size {
     CGFloat cellBetweenSpace = 20.0f * 2.0f;
     CGFloat cellWidth = (size.width - cellBetweenSpace) / 3.0f;
@@ -107,8 +113,8 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 }
 
 - (UIImage *)cellImageAtIndexPath:(NSIndexPath *)indexPath {
-    return [ImageUtility renderImageNamed:[ImageUtility generatePhotoFrameImageWithIndex:indexPath.item]
-                              renderColor:_cellDatas[indexPath.item].stateColor];
+    return [ImageUtility coloredImageNamed:[ImageUtility photoFrameImageWithIndex:indexPath.item]
+                                     color:_cellDatas[indexPath.item].stateColor];
 }
 
 - (BOOL)isEqualBothSelectedIndexPath {
@@ -124,6 +130,20 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 }
 
 
+#pragma mark - CollectionViewController DataDelegate Methods
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return NumberOfPhotoFrameCells;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    SelectPhotoFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([SelectPhotoFrameViewCell class]) forIndexPath:indexPath];
+    cell.frameImageView.image = [self cellImageAtIndexPath:indexPath];
+    
+    return cell;
+}
+
+
 #pragma mark - ConnectionManager Delegate Methods.
 
 - (void)receivedPhotoFrameSelected:(NSIndexPath *)indexPath {
@@ -132,24 +152,8 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     
     [self setSelectedCellAtIndexPath:indexPath isOwnSelection:NO];
     
-    PhotoFrameSelectCellData *cellData = self.cellDatas[indexPath.item];
+    PhotoFrameData *cellData = self.cellDatas[indexPath.item];
     [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
-}
-
-- (void)receivedPhotoFrameRequestConfirm:(NSIndexPath *)confirmIndexPath {
-    if (!confirmIndexPath)
-        return;
-    
-    //승인 Alert 띄우는 부분은 ViewController가 담당하게 넘기고,
-    [self.delegate didRequestConfirmCellWithIndexPath:confirmIndexPath];
-    
-    //승인 요청받은 IndexPath와 내가 선택한 IndexPath가 일치하는지 확인하고,
-    if (self.ownSelectedIndexPath.item != confirmIndexPath.item) {
-        //일치하지 않으면 승인 요청받은 IndexPath를 내가 선택한 IndexPath에 할당한다.
-        [self setSelectedCellAtIndexPath:confirmIndexPath isOwnSelection:YES];
-        //현재 승인 요청 중이므로, Done 버튼은 비활성화시킨다.
-        [self.delegate didUpdateCellStateWithDoneActivate:NO];
-    }
 }
 
 @end

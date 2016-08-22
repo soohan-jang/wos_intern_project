@@ -7,30 +7,28 @@
 //
 
 #import <UIKit/UIView.h>
+#import "DecorateData.h"
 
 /** VALUE_DATA_TYPE으로 시작되는 값과 매칭되는 키 값 **/
 extern NSString *const kDataType;
 
 typedef NS_ENUM(NSInteger, ValueDataType) {
-    vDataTypeScreenSize                   = 100,
+    vDataTypeScreenSize               = 100,
     
-    vDataTypePhotoFrameSelected           = 200,
-    vDataTypePhotoFrameRequestConfirm     = 201,
-    vDataTypePhotoFrameConfirmedAck       = 202,
+    vDataTypePhotoFrameSelected       = 200,
+    vDataTypePhotoFrameRequestConfirm = 201,
+    vDataTypePhotoFrameConfirmedAck   = 202,
     
-    vDataTypeEditorPhotoEdit              = 300,
-    vDataTypeEditorPhotoEditCanceled      = 301,
-    vDataTypeEditorPhotoInsertedAck       = 302,
-    vDataTypeEditorPhotoDeleted           = 303,
+    vDataTypePhotoEdit                = 300,
+    vDataTypePhotoEditCanceled        = 301,
+    vDataTypePhotoInsertedAck         = 302,
+    vDataTypePhotoDeleted             = 303,
     
-    vDataTypeEditorDecorateEdit           = 400,
-    vDataTypeEditorDecorateEditCanceled   = 401,
-    vDataTypeEditorDecorateInserted       = 402,
-    vDataTypeEditorDecorateUpdateMoved    = 403,
-    vDataTypeEditorDecorateUpdateResized  = 404,
-    vDataTypeEditorDecorateUpdateRotated  = 405,
-    vDataTypeEditorDecorateUpdateZOrder   = 406,
-    vDataTypeEditorDecorateDeleted        = 407
+    vDataTypeDecorateEdit             = 400,
+    vDataTypeDecorateEditCanceled     = 401,
+    vDataTypeDecorateInserted         = 402,
+    vDataTypeDecorateUpdated          = 403,
+    vDataTypeDecorateDeleted          = 404
 };
 
 /** 스크린 크기의 너비와 높이 값에 대한 키 값 **/
@@ -47,45 +45,38 @@ extern NSString *const kPhotoFrameConfirmTimestamp;
 extern NSString *const kPhotoFrameConfirmedAck;
 
 /** 사진 입력/삭제, 그림 객체 입력/갱신/삭제에 대한 키 값 **/
-extern NSString *const kEditorPhotoIndexPath;
+extern NSString *const kPhotoIndexPath;
 
-extern NSString *const kEditorPhotoEditTimestamp;
-extern NSString *const kEditorPhotoInsertedDataType;
-extern NSString *const kEditorPhotoInsertedData;
-extern NSString *const kEditorPhotoInsertedAck;
+extern NSString *const kPhotoEditTimestamp;
+extern NSString *const kPhotoInsertedDataType;
+extern NSString *const kPhotoInsertedData;
+extern NSString *const kPhotoInsertedAck;
 
-extern NSString *const kEditorDecorateIndex;
+extern NSString *const kDecorateUUID;
 
-extern NSString *const kEditorDecorateEditTimestamp;
-extern NSString *const kEditorDecorateInsertedData;
-extern NSString *const kEditorDecorateInsertedScale;
-extern NSString *const kEditorDecorateInsertedTimestamp;
-extern NSString *const kEditorDecorateUpdateMovedPoint;
-extern NSString *const kEditorDecorateUpdateResizedRect;
-extern NSString *const kEditorDecorateUpdateRotatedAngle;
-extern NSString *const kEditorDecorateUpdateZOrder;
-extern NSString *const kEditorDecorateDeleteTimestamp;
+extern NSString *const kDecorateEditTimestamp;
+extern NSString *const kDecorateInsertedData;
+extern NSString *const kDEcorateUpdatedFrame;
 
 @interface MessageFactory : NSObject
 
-+ (NSDictionary *)MessageGenerateScreenSize:(CGSize)screenSize;
++ (NSDictionary *)messageGenerateScreenSize:(CGSize)screenSize;
 
-+ (NSDictionary *)MessageGeneratePhotoFrameSelected:(NSIndexPath *)selectedIndexPath;
-+ (NSDictionary *)MessageGeneratePhotoFrameRequestConfirm:(NSIndexPath *)selectedIndexPath;
-+ (NSDictionary *)MessageGeneratePhotoFrameConfirmed:(BOOL)confirm;
++ (NSDictionary *)messageGeneratePhotoFrameSelected:(NSIndexPath *)selectedIndexPath;
++ (NSDictionary *)messageGeneratePhotoFrameRequestConfirm:(NSIndexPath *)selectedIndexPath;
++ (NSDictionary *)messageGeneratePhotoFrameConfirmed:(BOOL)confirm;
 
-+ (NSDictionary *)MessageGeneratePhotoEdit:(NSIndexPath *)editIndexPath;
-+ (NSDictionary *)MessageGeneratePhotoEditCanceled:(NSIndexPath *)editIndexPath;
-+ (NSDictionary *)MessageGeneratePhotoInsertCompleted:(NSIndexPath *)insertIndexPathItem success:(BOOL)success;
-+ (NSDictionary *)MessageGeneratePhotoDeleted:(NSIndexPath *)deleteIndexPath;
++ (NSDictionary *)messageGeneratePhotoEdit:(NSIndexPath *)editIndexPath;
++ (NSDictionary *)messageGeneratePhotoEditCanceled:(NSIndexPath *)editIndexPath;
++ (NSDictionary *)messageGeneratePhotoInsertCompleted:(NSIndexPath *)insertIndexPathItem success:(BOOL)success;
++ (NSDictionary *)messageGeneratePhotoDeleted:(NSIndexPath *)deleteIndexPath;
 
-+ (NSDictionary *)MessageGenerateDecorateDataEdit:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataEditCanceled:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataInserted:(UIImage *)data scale:(CGFloat)scale timestamp:(NSNumber *)timestamp;
-+ (NSDictionary *)MessageGenerateDecorateDataMoved:(NSInteger)index movedPoint:(CGPoint)movedPoint;
-+ (NSDictionary *)MessageGenerateDecorateDataResized:(NSInteger)index resizedRect:(CGRect)resizedRect;
-+ (NSDictionary *)MessageGenerateDecorateDataRotated:(NSInteger)index rotatedAngle:(CGFloat)rotatedAngle;
-+ (NSDictionary *)MessageGenerateDecorateDataChangZOrder:(NSInteger)index;
-+ (NSDictionary *)MessageGenerateDecorateDataDeleted:(NSNumber *)timestamp;
++ (NSDictionary *)messageGenerateDecorateDataEdit:(NSUUID *)uuid;
++ (NSDictionary *)messageGenerateDecorateDataEditCanceled:(NSUUID *)uuid;
++ (NSDictionary *)messageGenerateDecorateDataInserted:(DecorateData *)data;
++ (NSDictionary *)messageGenerateDecorateDataUpdated:(NSUUID *)uuid frame:(CGRect)frame;
+//+ (NSDictionary *)messageGenerateDecorateDataMoved:(NSUUID *)uuid movedRect:(CGRect)movedRect;
+//+ (NSDictionary *)messageGenerateDecorateDataResized:(NSUUID *)uuid resizedRect:(CGRect)resizedRect;
++ (NSDictionary *)messageGenerateDecorateDataDeleted:(NSUUID *)uuid;
 
 @end

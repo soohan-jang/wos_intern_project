@@ -1,16 +1,16 @@
 //
-//  PhotoFrameSelectCellData.m
+//  PhotoFrameData.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 11..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoFrameSelectCellData.h"
+#import "PhotoFrameData.h"
 #import "CommonConstants.h"
 #import "ColorUtility.h"
 
-@interface PhotoFrameSelectCellData ()
+@interface PhotoFrameData ()
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
 
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation PhotoFrameSelectCellData
+@implementation PhotoFrameData
 
 - (instancetype)initWithIndexPath:(NSIndexPath *)indexPath {
     self = [super init];
@@ -28,7 +28,7 @@
         _indexPath = indexPath;
         _ownSelected = NO;
         _otherSelected = NO;
-        _stateColor = [ColorUtility colorWithName:White];
+        _stateColor = [ColorUtility colorWithName:ColorNameWhite];
     }
     
     return self;
@@ -42,13 +42,13 @@
     }
     
     if (_ownSelected && _otherSelected) {
-        _stateColor = [ColorUtility colorWithName:Green];
+        _stateColor = [ColorUtility colorWithName:ColorNameGreen];
     } else if (_ownSelected && !_otherSelected) {
-        _stateColor = [ColorUtility colorWithName:Blue];
+        _stateColor = [ColorUtility colorWithName:ColorNameBlue];
     } else if (!_ownSelected && _otherSelected) {
-        _stateColor = [ColorUtility colorWithName:Orange];
+        _stateColor = [ColorUtility colorWithName:ColorNameOrange];
     } else {
-        _stateColor = [ColorUtility colorWithName:White];
+        _stateColor = [ColorUtility colorWithName:ColorNameWhite];
     }
 }
 
