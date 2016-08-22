@@ -11,8 +11,8 @@
 NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
 NSString *const PrefixImagePhotoSticker                 = @"PhotoSticker";
 
-NSString *const PostfixImageFullscreen                  = @"_fullscreen";
-NSString *const PostfixImageCropped                     = @"_cropped";
-NSString *const SperatorImageName                       = @"+";
+NSString *const IdentifierImageOriginal                 = @"Original";
+NSString *const IdentifierImageCropped                  = @"Cropped";
+NSString *const Sperator                                = @"+";
 
 NSTimeInterval const DelayTime                          = 0.5f;

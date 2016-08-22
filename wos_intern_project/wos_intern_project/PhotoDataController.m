@@ -314,9 +314,9 @@ NSInteger const DefaultMargin   = 5;
         [self updateCellStateAtIndexPath:indexPath state:CellStateDownloading];
         //Data Receive Finished.
     } else {
-        if ([type isEqualToString:PostfixImageCropped]) {
+        if ([type isEqualToString:IdentifierImageCropped]) {
             self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
-        } else if ([type isEqualToString:PostfixImageFullscreen]) {
+        } else if ([type isEqualToString:IdentifierImageOriginal]) {
             self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
             [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
         }

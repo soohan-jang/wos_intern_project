@@ -48,24 +48,24 @@
     self = [super init];
     
     if (self) {
-        _uuid = [aDecoder decodeObjectForKey:@"uuid"];
-        _timestamp = [aDecoder decodeObjectForKey:@"timestamp"];
-        _image = [aDecoder decodeObjectForKey:@"image"];
-        _frame = [aDecoder decodeCGRectForKey:@"frame"];
-        _selected = [aDecoder decodeBoolForKey:@"selected"];
-        _enabled = [aDecoder decodeBoolForKey:@"enabled"];
+        _uuid = [aDecoder decodeObjectForKey:@"_uuid"];
+        _timestamp = [aDecoder decodeObjectForKey:@"_timestamp"];
+        _image = [aDecoder decodeObjectForKey:@"_image"];
+        _frame = [aDecoder decodeCGRectForKey:@"_frame"];
+        _selected = [aDecoder decodeBoolForKey:@"_selected"];
+        _enabled = [aDecoder decodeBoolForKey:@"_enabled"];
     }
     
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:_uuid forKey:@"uuid"];
-    [aCoder encodeObject:_timestamp forKey:@"timestamp"];
-    [aCoder encodeObject:_image forKey:@"image"];
-    [aCoder encodeCGRect:_frame forKey:@"frame"];
-    [aCoder encodeBool:_selected forKey:@"selected"];
-    [aCoder encodeBool:_enabled forKey:@"enabled"];
+    [aCoder encodeObject:_uuid forKey:@"_uuid"];
+    [aCoder encodeObject:_timestamp forKey:@"_timestamp"];
+    [aCoder encodeObject:_image forKey:@"_image"];
+    [aCoder encodeCGRect:_frame forKey:@"_frame"];
+    [aCoder encodeBool:_selected forKey:@"_selected"];
+    [aCoder encodeBool:_enabled forKey:@"_enabled"];
 }
 
 - (DecorateView *)decorateView {

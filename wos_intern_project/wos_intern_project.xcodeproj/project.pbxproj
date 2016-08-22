@@ -12,6 +12,11 @@
 		4A0C93791D3E16830080E9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF371D2B6D2C00BC2FC4 /* Assets.xcassets */; };
 		4A14A5401D5AB69F000C2079 /* MessageFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A53F1D5AB69F000C2079 /* MessageFactory.m */; };
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
+		4A3CB3F61D6AD74D00B324BC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3F51D6AD74D00B324BC /* SessionManager.m */; };
+		4A3CB3F91D6AD76100B324BC /* BluetoothSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3F81D6AD76100B324BC /* BluetoothSession.m */; };
+		4A3CB3FC1D6AE01B00B324BC /* MessageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3FB1D6AE01B00B324BC /* MessageData.m */; };
+		4A3CB4051D6AEC3000B324BC /* GeneralSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4041D6AEC3000B324BC /* GeneralSession.m */; };
+		4A3CB4081D6AF12800B324BC /* MessageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4071D6AF12800B324BC /* MessageBuffer.m */; };
 		4A3EDC111D669A7000A091A8 /* SelectPhotoFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */; };
 		4A3EDC381D672B2600A091A8 /* DecorateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC371D672B2600A091A8 /* DecorateView.m */; };
 		4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */; };
@@ -102,6 +107,16 @@
 		4A14A53F1D5AB69F000C2079 /* MessageFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageFactory.m; sourceTree = "<group>"; };
 		4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchAsyncHelper.h; sourceTree = "<group>"; };
 		4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchAsyncHelper.m; sourceTree = "<group>"; };
+		4A3CB3F41D6AD74D00B324BC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
+		4A3CB3F51D6AD74D00B324BC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
+		4A3CB3F71D6AD76100B324BC /* BluetoothSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothSession.h; sourceTree = "<group>"; };
+		4A3CB3F81D6AD76100B324BC /* BluetoothSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothSession.m; sourceTree = "<group>"; };
+		4A3CB3FA1D6AE01B00B324BC /* MessageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageData.h; sourceTree = "<group>"; };
+		4A3CB3FB1D6AE01B00B324BC /* MessageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageData.m; sourceTree = "<group>"; };
+		4A3CB4031D6AEC3000B324BC /* GeneralSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneralSession.h; sourceTree = "<group>"; };
+		4A3CB4041D6AEC3000B324BC /* GeneralSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneralSession.m; sourceTree = "<group>"; };
+		4A3CB4061D6AF12800B324BC /* MessageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageBuffer.h; sourceTree = "<group>"; };
+		4A3CB4071D6AF12800B324BC /* MessageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBuffer.m; sourceTree = "<group>"; };
 		4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPhotoFrameViewCell.m; sourceTree = "<group>"; };
 		4A3EDC361D672B2600A091A8 /* DecorateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecorateView.h; sourceTree = "<group>"; };
 		4A3EDC371D672B2600A091A8 /* DecorateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecorateView.m; sourceTree = "<group>"; };
@@ -245,6 +260,45 @@
 				4A0C92E21D3754C80080E9A6 /* WMProgressHUD.m */,
 			);
 			name = MBProgressHUD;
+			sourceTree = "<group>";
+		};
+		4A3CB3FD1D6AE0E300B324BC /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				4A3CB3F41D6AD74D00B324BC /* SessionManager.h */,
+				4A3CB3F51D6AD74D00B324BC /* SessionManager.m */,
+				4A3CB4031D6AEC3000B324BC /* GeneralSession.h */,
+				4A3CB4041D6AEC3000B324BC /* GeneralSession.m */,
+				4A3CB3F71D6AD76100B324BC /* BluetoothSession.h */,
+				4A3CB3F81D6AD76100B324BC /* BluetoothSession.m */,
+			);
+			name = Session;
+			sourceTree = "<group>";
+		};
+		4A3CB3FE1D6AE0EC00B324BC /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
+				4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */,
+				4A3F99EC1D647C72007915E1 /* MessageSender.h */,
+				4A3F99ED1D647C72007915E1 /* MessageSender.m */,
+				4A3CB4061D6AF12800B324BC /* MessageBuffer.h */,
+				4A3CB4071D6AF12800B324BC /* MessageBuffer.m */,
+			);
+			name = Message;
+			sourceTree = "<group>";
+		};
+		4A3CB3FF1D6AE0FE00B324BC /* DataController */ = {
+			isa = PBXGroup;
+			children = (
+				4A4105291D5C804200FEEFE9 /* PhotoFrameDataController.h */,
+				4A41052A1D5C804200FEEFE9 /* PhotoFrameDataController.m */,
+				4A0917E51D49CD310028899A /* PhotoDataController.h */,
+				4A0917E61D49CD310028899A /* PhotoDataController.m */,
+				4B44909F1D3A609800E5972F /* DecorateDataController.h */,
+				4B4490A01D3A609800E5972F /* DecorateDataController.m */,
+			);
+			name = DataController;
 			sourceTree = "<group>";
 		};
 		4A3EDC121D66C1E100A091A8 /* DataDisplay */ = {
@@ -440,18 +494,11 @@
 		4A97B60B1D336520003899F7 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				4A3CB3FD1D6AE0E300B324BC /* Session */,
+				4A3CB3FE1D6AE0EC00B324BC /* Message */,
+				4A3CB3FF1D6AE0FE00B324BC /* DataController */,
 				4AD6E64A1D347E8C00C379EF /* ConnectionManager.h */,
 				4AD6E64B1D347E8C00C379EF /* ConnectionManager.m */,
-				4A4105291D5C804200FEEFE9 /* PhotoFrameDataController.h */,
-				4A41052A1D5C804200FEEFE9 /* PhotoFrameDataController.m */,
-				4A0917E51D49CD310028899A /* PhotoDataController.h */,
-				4A0917E61D49CD310028899A /* PhotoDataController.m */,
-				4B44909F1D3A609800E5972F /* DecorateDataController.h */,
-				4B4490A01D3A609800E5972F /* DecorateDataController.m */,
-				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
-				4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */,
-				4A3F99EC1D647C72007915E1 /* MessageSender.h */,
-				4A3F99ED1D647C72007915E1 /* MessageSender.m */,
 			);
 			name = Manager;
 			sourceTree = "<group>";
@@ -459,6 +506,8 @@
 		4A97B60C1D336540003899F7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				4A3CB3FA1D6AE01B00B324BC /* MessageData.h */,
+				4A3CB3FB1D6AE01B00B324BC /* MessageData.m */,
 				4A41052D1D5C8AF800FEEFE9 /* PhotoFrameData.h */,
 				4A41052E1D5C8AF800FEEFE9 /* PhotoFrameData.m */,
 				4A54345A1D62A08F0040C12F /* PhotoData.h */,
@@ -691,11 +740,15 @@
 				4A5448B81D51E69E00883E08 /* EditPhotoViewController.m in Sources */,
 				4A3EDC381D672B2600A091A8 /* DecorateView.m in Sources */,
 				4A3F99E21D63F705007915E1 /* BluetoothAdvertiser.m in Sources */,
+				4A3CB3F91D6AD76100B324BC /* BluetoothSession.m in Sources */,
 				4A3F99EE1D647C72007915E1 /* MessageSender.m in Sources */,
+				4A3CB4081D6AF12800B324BC /* MessageBuffer.m in Sources */,
 				4A5448B91D51E69E00883E08 /* PhotoCropViewController.m in Sources */,
+				4A3CB3FC1D6AE01B00B324BC /* MessageData.m in Sources */,
 				4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */,
 				4A5448BA1D51E69E00883E08 /* DecorateDataDisplayView.m in Sources */,
 				4A3F99EB1D647C6B007915E1 /* MessageReceiver.m in Sources */,
+				4A3CB3F61D6AD74D00B324BC /* SessionManager.m in Sources */,
 				4A5448BB1D51E69E00883E08 /* PhotoDrawPenMenuView.m in Sources */,
 				4A5448BC1D51E69E00883E08 /* PhotoAlbumViewController.m in Sources */,
 				4AC91E671D586A6900DB9E50 /* CanvasPathData.m in Sources */,
@@ -714,6 +767,7 @@
 				4A5448C51D51E69E00883E08 /* DecorateDataController.m in Sources */,
 				4A5448C61D51E69E00883E08 /* AppDelegate.m in Sources */,
 				4A5448C71D51E69E00883E08 /* main.m in Sources */,
+				4A3CB4051D6AEC3000B324BC /* GeneralSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

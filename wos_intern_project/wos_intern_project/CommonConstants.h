@@ -12,8 +12,8 @@
 extern NSString *const PrefixImagePhotoFrame;
 extern NSString *const PrefixImagePhotoSticker;
 
-extern NSString *const PostfixImageFullscreen;
-extern NSString *const PostfixImageCropped;
-extern NSString *const SperatorImageName;
+extern NSString *const IdentifierImageOriginal;
+extern NSString *const IdentifierImageCropped;
+extern NSString *const Sperator;
 
 extern NSTimeInterval const DelayTime;

@@ -94,12 +94,12 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
 
 - (void)sendPhotoDataWithFilename:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL index:(NSInteger)index {
     for (MCPeerID *peer in self.ownSession.connectedPeers) {
-        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SperatorImageName, PostfixImageCropped];
+        NSString *croppedImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], Sperator, IdentifierImageCropped];
         [self.ownSession sendResourceAtURL:croppedImageURL withName:croppedImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
             if (error) {
                 NSLog(@"%@", error.localizedDescription);
             } else {
-                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], SperatorImageName, PostfixImageFullscreen];
+                NSString *fullscreenImageResourceName = [NSString stringWithFormat:@"%@%@%@", [@(index) stringValue], Sperator, IdentifierImageOriginal];
                 
                 [self.ownSession sendResourceAtURL:fullscreenImageURL withName:fullscreenImageResourceName toPeer:peer withCompletionHandler:^(NSError *error) {
                     if (error) {
@@ -331,7 +331,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
         return;
     }
     
-    NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
+    NSArray *array = [resourceName componentsSeparatedByString:Sperator];
     
     if (array == nil || array.count != 2) {
         return;
@@ -340,7 +340,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
     NSInteger photoFrameIndex = [array[0] integerValue];
     NSString *fileType = array[1];
     
-    if ([fileType isEqualToString:PostfixImageCropped]) {
+    if ([fileType isEqualToString:IdentifierImageCropped]) {
         NSLog(@"Receive Start Insert Photo");
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
         [self.photoDataDelegate receivedPhotoInsert:indexPath type:fileType url:nil];
@@ -352,7 +352,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
         return;
     }
     
-    NSArray *array = [resourceName componentsSeparatedByString:SperatorImageName];
+    NSArray *array = [resourceName componentsSeparatedByString:Sperator];
     
     if (array == nil || array.count != 2) {
         return;
@@ -364,7 +364,7 @@ NSString *const ConnectionManagerServiceType = @"Co-PhotoEditor";
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:photoFrameIndex inSection:0];
     [self.photoDataDelegate receivedPhotoInsert:indexPath type:fileType url:localURL];
     
-    if ([fileType isEqualToString:PostfixImageFullscreen]) {
+    if ([fileType isEqualToString:IdentifierImageOriginal]) {
         NSLog(@"Receive Finish Insert Photo");
         [self sendMessage:[MessageFactory messageGeneratePhotoInsertCompleted:indexPath success:YES]];
     }
