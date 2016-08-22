@@ -29,6 +29,7 @@
         _ownSelected = NO;
         _otherSelected = NO;
         _stateColor = [ColorUtility colorWithName:ColorNameWhite];
+        _enabled = YES;
     }
     
     return self;

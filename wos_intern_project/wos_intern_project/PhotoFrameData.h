@@ -11,6 +11,7 @@
 @interface PhotoFrameData : NSObject
 
 @property (strong, nonatomic) UIColor *stateColor;
+@property (assign, nonatomic) BOOL enabled;
 
 /**
  * @brief 객체를 생성한다.

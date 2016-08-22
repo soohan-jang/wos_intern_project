@@ -18,7 +18,8 @@ alert_title_invitation_received      = "Invitation Received";
 alert_title_session_disconnect_ask   = "Session Disconnect";
 alert_title_session_disconnected     = "Session Disconnected";
 alert_title_frame_select_confirm     = "Confirm Request";
-alert_title_album_not_authorized     = "Not Authorized";
+alert_title_album_not_authorized     = "No Album Authorized";
+alert_title_camera_not_authorized    = "No Camera Authorized";
 alert_title_edit_finish              = "Edit Finish";
 
 alert_content_bluetooth_unsupported  = "Your device is not support a bluetooth 4.0.";
@@ -30,6 +31,7 @@ alert_content_frame_select_confirm   = "Do you accept finish a frame selection?"
 alert_content_data_not_save          = "Do you really want to disconnect?\nUnsaved data will be deleted.";
 alert_content_photo_edit_continue    = "Your friend disconnect session.\nDo you want to stop photo edit?";
 alert_content_album_not_authorized   = "This application needs album access authority.\nDo you want to go setting page?";
+alert_content_album_not_authorized   = "This application needs camera access authority.\nDo you want to go setting page?";
 alert_content_edit_finish            = "Unsaved data will delete.\nDo you want to finish photo edit?";
 
 progress_title_connecting            = "Connecting...";

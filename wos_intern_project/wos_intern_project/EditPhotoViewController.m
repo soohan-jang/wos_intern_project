@@ -160,6 +160,18 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
     [self performSegueWithIdentifier:SegueMoveToCropper sender:self];
 }
 
+- (void)presentNotAuthorizedAlertController:(NSString *)titleKey content:(NSString *)contentKey {
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:titleKey
+                                          messageKey:contentKey
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:nil
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                  }];
+}
+
 
 #pragma mark - EventHandling
 
@@ -194,6 +206,11 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
                                          otherButton:@"alert_button_text_yes"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
                                       __strong typeof(weakSelf) self = weakSelf;
+                                      
+                                      if (!self) {
+                                          return;
+                                      }
+                                      
                                       [self presentMainViewController];
                                   }];
 }
@@ -291,37 +308,34 @@ typedef NS_ENUM(NSInteger, MainMenu) {
     
 }
 
-float const WaitUntilMainMenuAnimationFinish = 0.24 + 0.06;
+float const WaitUntilMainMenuAnimationFinish  = 0.24 + 0.06;
 
 - (void)xxxRoundMenuButtonDidSelected:(XXXRoundMenuButton *)menuButton WithSelectedIndex:(NSInteger)index {
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        
-        switch (index) {
-            case MainMenuPen:
-                [self decorateMainMenuPen];
-                break;
-            case MainMenuText:
-                [self decorateMainMenuText];
-                break;
-            case MainMenuSticker:
-                [self decorateMainMenuSticker];
-                break;
-        }
-    } delay:WaitUntilMainMenuAnimationFinish];
+    [NSTimer scheduledTimerWithTimeInterval:WaitUntilMainMenuAnimationFinish
+                                     target:self
+                                   selector:@selector(selectedDecorateMainMenu:)
+                                   userInfo:@(index)
+                                    repeats:NO];
 }
 
-- (void)decorateMainMenuPen {
-    [self setMenuVisiblity:MenuVisblityPen visiblity:YES];
-}
-
-- (void)decorateMainMenuText {
-    [self setMenuVisiblity:MenuVisiblityText visiblity:YES];
-}
-
-- (void)decorateMainMenuSticker {
-    [self setMenuVisiblity:MenuVisiblitySticker visiblity:YES];
+- (void)selectedDecorateMainMenu:(NSTimer *)timer {
+    NSNumber *selectedMainMenu = [timer userInfo];
+    
+    if (!selectedMainMenu) {
+        return;
+    }
+    
+    switch (selectedMainMenu.integerValue) {
+        case MainMenuPen:
+            [self setMenuVisiblity:MenuVisblityPen visiblity:YES];
+            break;
+        case MainMenuText:
+            [self setMenuVisiblity:MenuVisiblityText visiblity:YES];
+            break;
+        case MainMenuSticker:
+            [self setMenuVisiblity:MenuVisiblitySticker visiblity:YES];
+            break;
+    }
 }
 
 
@@ -375,15 +389,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         return NO;
     }
     
-    [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_album_not_authorized"
-                                          messageKey:@"alert_content_album_not_authorized"
-                                              button:@"alert_button_text_no"
-                                       buttonHandler:nil
-                                         otherButton:@"alert_button_text_yes"
-                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                  }];
+    [self presentNotAuthorizedAlertController:@"alert_title_album_not_authorized" content:@"alert_content_album_not_authorized"];
     
     return YES;
 }
@@ -398,16 +404,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         return NO;
     }
     
-    //Alert Text 변경 예정.
-    [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_album_not_authorized"
-                                          messageKey:@"alert_content_album_not_authorized"
-                                              button:@"alert_button_text_no"
-                                       buttonHandler:nil
-                                         otherButton:@"alert_button_text_yes"
-                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-                                  }];
+    [self presentNotAuthorizedAlertController:@"alert_title_camera_not_authorized" content:@"alert_content_camera_not_authorized"];
     
     return YES;
 }
@@ -439,6 +436,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     __weak typeof(self) weakSelf = self;
     [picker dismissViewControllerAnimated:YES completion:^{
         __strong typeof(weakSelf) self = weakSelf;
+        
         if (!self) {
             return;
         }
@@ -448,11 +446,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
             [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
             self.photoDataController.selectedIndexPath = nil;
         } else {
-            [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-                __strong typeof(weakSelf) self = weakSelf;
-                [self presentPhotoCropViewController];
-            }];
-            
+            [self presentPhotoCropViewController];
         }
     }];
 }
@@ -563,6 +557,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
+        
         if (!self)
             return;
         
@@ -628,24 +623,14 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         return;
     }
     
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [self.photoMenu dismissMenu];
-    }];
+    [self.photoMenu dismissMenu];
 }
 
 
 #pragma mark - Decorate Data Controller Delegate Methods
 
 - (void)didDecorateDataArrayUpdate:(NSUUID *)uuid {
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        [self.decorateDisplayView updateDecorateViewOfUUID:uuid];
-    }];
+    [self.decorateDisplayView updateDecorateViewOfUUID:uuid];
 }
 
 
@@ -717,29 +702,23 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)receivedPeerDisconnected {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [AlertHelper showAlertControllerOnViewController:self
-                                                titleKey:@"alert_title_session_disconnected"
-                                              messageKey:@"alert_content_photo_edit_continue"
-                                                  button:@"alert_button_text_no"
-                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                               [[ConnectionManager sharedInstance] disconnectSession];
-                                           }
-                                             otherButton:@"alert_button_text_yes"
-                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                          __strong typeof(weakSelf) self = weakSelf;
-                                          if (!self) {
-                                              return;
-                                          }
-                                          
-                                          [self presentMainViewController];
-                                      }];
-    }];
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_session_disconnected"
+                                          messageKey:@"alert_content_photo_edit_continue"
+                                              button:@"alert_button_text_no"
+                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                           [[ConnectionManager sharedInstance] disconnectSession];
+                                       }
+                                         otherButton:@"alert_button_text_yes"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      __strong typeof(weakSelf) self = weakSelf;
+                                      
+                                      if (!self) {
+                                          return;
+                                      }
+                                      
+                                      [self presentMainViewController];
+                                  }];
 }
 
 @end

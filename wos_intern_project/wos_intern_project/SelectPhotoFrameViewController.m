@@ -150,7 +150,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 #pragma mark - Present Other ViewController Methods
 
-- (void)presentPhotoEditorViewController {
+- (void)presentEditPhotoViewController {
     [self performSegueWithIdentifier:SegueMoveToEditor sender:self];
 }
 
@@ -172,30 +172,44 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                          otherButton:@"alert_button_text_yes"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
                                       __strong typeof(weakSelf) self = weakSelf;
+                                      
+                                      if (!self) {
+                                          return;
+                                      }
+                                      
                                       [self presentMainViewController];
                                   }];
 }
 
 - (IBAction)doneButtonTapped:(id)sender {
-    self.doneButton.enabled = NO;
+    [self.dataController setEnableCells:NO];
+    
+    if (![self.dataController isEqualBothSelectedIndexPath]) {
+        __weak typeof(self) weakSelf = self;
+        [ProgressHelper dismissProgress:self.progressView
+                        dismissTitleKey:@"progress_title_error"
+                            dismissType:DismissWithCancel
+                      completionHandler:^{
+                          __strong typeof(weakSelf) self = weakSelf;
+                          
+                          if (!self) {
+                              return;
+                          }
+                          
+                          [self.dataController setEnableCells:YES];
+                      }
+        ];
+        return;
+    }
     
     if (self.progressView || !self.progressView.isHidden) {
         [ProgressHelper dismissProgress:self.progressView];
         self.progressView = nil;
     }
     
-    self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_confirming"];
-    
-    //0.5초 뒤에 한 번 더 확인한다. Progress가 표시될 때 Animation과 함께 실행되는데, 약간의 딜레이 시간 동안에 다른 액자가 선택될 수 있다.
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        //만약 ProgressView가 띄워진 후에 값이 바뀌었다면, 오류처리하고 Progress를 닫는다.
-        if (![self.dataController isEqualBothSelectedIndexPath]) {
-            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_error" dismissType:DismissWithCancel];
-        } else {
-            //값이 같다면, 승인 메시지를 송신한다.
-            [self sendConfirmRequestMessage];
-        }
-    } delay:0.1];
+    self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view
+                                                   titleKey:@"progress_title_confirming"];
+    [self sendConfirmRequestMessage];
 }
 
 
@@ -217,10 +231,25 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 #pragma mark - PhotoFrameDataController Delegate
 
+- (void)didUpdateCellEnabled:(BOOL)enabled {
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        
+        if (!self) {
+            return;
+        }
+        
+        [self.collectionView reloadData];
+    }];
+    
+}
+
 - (void)didUpdateCellStateWithDoneActivate:(BOOL)activate {
     __weak typeof(self) weakSelf = self;
     [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
         __strong typeof(weakSelf) self = weakSelf;
+        
         if (!self) {
             return;
         }
@@ -240,20 +269,19 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)receivedPeerDisconnected {
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        [AlertHelper showAlertControllerOnViewController:self
-                                                titleKey:@"alert_title_session_disconnected"
-                                              messageKey:@"alert_content_session_disconnected"
-                                                  button:@"alert_button_text_ok"
-                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                               if (!self) {
-                                                   return;
-                                               }
-                                               
-                                               [self presentMainViewController];
-                                           }];
-    }];
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_session_disconnected"
+                                          messageKey:@"alert_content_session_disconnected"
+                                              button:@"alert_button_text_ok"
+                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                           __strong typeof(weakSelf) self = weakSelf;
+                                           
+                                           if (!self) {
+                                               return;
+                                           }
+                                           
+                                           [self presentMainViewController];
+                                       }];
 }
 
 
@@ -263,89 +291,73 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     if (!confirmIndexPath)
         return;
     
+    [self.dataController setEnableCells:NO];
+    
+    //전달받은 사진액자의 인덱스패스와 자신이 선택한 인덱스패스가 다를 경우, 전달받은 사진액자의 인덱스패스로 복원한다.
+    if (![self.dataController isEqualBothSelectedIndexPath]) {
+        [self.dataController setSelectedCellAtIndexPath:confirmIndexPath isOwnSelection:YES];
+    }
+    
     if (self.navigationController.visibleViewController != self) {
         return;
     }
     
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [AlertHelper showAlertControllerOnViewController:self
-                                                titleKey:@"alert_title_frame_select_confirm"
-                                              messageKey:@"alert_content_frame_select_confirm"
-                                                  button:@"alert_button_text_decline"
-                                           buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                               __strong typeof(weakSelf) self = weakSelf;
-                                               if (!self) {
-                                                   return;
-                                               }
-                                               
-                                               [self sendConfirmAckMessage:NO];
-                                               self.doneButton.enabled = YES;
+    [AlertHelper showAlertControllerOnViewController:self
+                                            titleKey:@"alert_title_frame_select_confirm"
+                                          messageKey:@"alert_content_frame_select_confirm"
+                                              button:@"alert_button_text_decline"
+                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                           __strong typeof(weakSelf) self = weakSelf;
+                                           
+                                           if (!self) {
+                                               return;
                                            }
-                                             otherButton:@"alert_button_text_accept"
-                                      otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                          __strong typeof(weakSelf) self = weakSelf;
-                                          if (!self) {
-                                              return;
-                                          }
-                                          
-                                          [self sendConfirmAckMessage:YES];
-                                          [self presentPhotoEditorViewController];
-                                      }];
-    }];
-    
-    if (![self.dataController isEqualBothSelectedIndexPath]) {
-        [self.dataController setSelectedCellAtIndexPath:confirmIndexPath isOwnSelection:YES];
-    }
+                                           
+                                           [self sendConfirmAckMessage:NO];
+                                           //거절한 경우, 각 셀을 다시 선택 가능하게 만든다.
+                                           [self.dataController setEnableCells:YES];
+                                       }
+                                         otherButton:@"alert_button_text_accept"
+                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                      __strong typeof(weakSelf) self = weakSelf;
+                                      
+                                      if (!self) {
+                                          return;
+                                      }
+                                      
+                                      [self sendConfirmAckMessage:YES];
+                                      [self presentEditPhotoViewController];
+                                  }];
 }
 
 - (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck {
-    __weak typeof(self) weakSelf = self;
-    
     if (confirmAck) {
-        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-            __strong typeof(weakSelf) self = weakSelf;
-            if (!self) {
-                return;
-            }
-            
-            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_confirmed" dismissType:DismissWithDone];
-            
-            //여기서 딜레이을 준 이유는, ProgressView에 표시되는 "승인됨" 메시지를 보여준 뒤에 이동시키기 위함이다.
-            [NSTimer scheduledTimerWithTimeInterval:DelayTime
-                                             target:self
-                                           selector:@selector(presentPhotoEditorViewController)
-                                           userInfo:nil
-                                            repeats:NO];
-        }];
+        __weak typeof(self) weakSelf = self;
+        [ProgressHelper dismissProgress:self.progressView
+                        dismissTitleKey:@"progress_title_confirmed"
+                            dismissType:DismissWithDone
+                      completionHandler:^{
+                          __strong typeof(weakSelf) self = weakSelf;
+                          
+                          if (!self) {
+                              return;
+                          }
+                          
+                          [self presentEditPhotoViewController];
+                      }
+         ];
     } else {
-        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-            __strong typeof(weakSelf) self = weakSelf;
-            if (!self) {
-                return;
-            }
-            
-            self.doneButton.enabled = YES;
-            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithCancel];
-        }];
+        //reject된 경우, 각 셀을 다시 선택 가능하게 만든다.
+        [self.dataController setEnableCells:YES];
+        [ProgressHelper dismissProgress:self.progressView
+                        dismissTitleKey:@"progress_title_rejected"
+                            dismissType:DismissWithCancel];
     }
 }
 
 - (void)interruptedPhotoFrameConfirm {
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [ProgressHelper dismissProgress:self.progressView];
-    }];
+    [ProgressHelper dismissProgress:self.progressView];
 }
 
 @end

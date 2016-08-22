@@ -45,6 +45,11 @@ NSInteger const MaximumNumberOfPeers = 1;
     __weak typeof(self) weakSelf = self;
     [parentViewController presentViewController:_browser animated:YES completion:^{
         __strong typeof (weakSelf) self = weakSelf;
+        
+        if (!self) {
+            return;
+        }
+        
         [ConnectionManager sharedInstance].sessionDelegate = self;
     }];
     return YES;
@@ -58,16 +63,14 @@ NS_ENUM(NSInteger, DismissType) {
 - (void)dismissBrowserViewController:(NSInteger)dismissType {
     [ConnectionManager sharedInstance].sessionDelegate = nil;
     
-    __weak typeof(_delegate) weakDelegate = _delegate;
     [_browser dismissViewControllerAnimated:YES completion:^{
-        __strong typeof(weakDelegate) delegate = weakDelegate;
-        if (delegate) {
+        if (_delegate) {
             switch (dismissType) {
                 case DismissTypeConnected:
-                    [delegate browserSessionConnected];
+                    [_delegate browserSessionConnected];
                     break;
                 case DismissTypeNotConnected:
-                    [delegate browserSessionNotConnected];
+                    [_delegate browserSessionNotConnected];
                     break;
             }
         }

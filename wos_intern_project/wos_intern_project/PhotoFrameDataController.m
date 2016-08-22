@@ -129,6 +129,22 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     return NO;
 }
 
+- (void)setEnableCells:(BOOL)enabled {
+    if (enabled) {
+        [ConnectionManager sharedInstance].photoFrameDataDelegate = self;
+    } else {
+        [ConnectionManager sharedInstance].photoFrameDataDelegate = nil;
+    }
+    
+    for (PhotoFrameData *data in _cellDatas) {
+        data.enabled = enabled;
+    }
+    
+    if (self.delegate) {
+        [self.delegate didUpdateCellEnabled:enabled];
+    }
+}
+
 
 #pragma mark - CollectionViewController DataDelegate Methods
 
@@ -138,6 +154,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     SelectPhotoFrameViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([SelectPhotoFrameViewCell class]) forIndexPath:indexPath];
+    cell.userInteractionEnabled = _cellDatas[indexPath.item].enabled;
     cell.frameImageView.image = [self cellImageAtIndexPath:indexPath];
     
     return cell;
@@ -151,9 +168,6 @@ NSInteger const NumberOfPhotoFrameCells = 12;
         return;
     
     [self setSelectedCellAtIndexPath:indexPath isOwnSelection:NO];
-    
-    PhotoFrameData *cellData = self.cellDatas[indexPath.item];
-    [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
 }
 
 @end

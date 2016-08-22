@@ -10,12 +10,14 @@
 
 @implementation DispatchAsyncHelper
 
-+ (void)dispatchAsyncWithBlockOnMainQueue:dispatch_block_t {
-    dispatch_async(dispatch_get_main_queue(), dispatch_block_t);
-}
-
-+ (void)dispatchAsyncWithBlockOnMainQueue:dispatch_block_t delay:(NSTimeInterval)delay {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), dispatch_block_t);
++ (void)dispatchAsyncWithBlockOnMainQueue:(void(^)(void))executeBlock {
+    if ([NSThread isMainThread]) {
+        NSLog(@"Main Thread");
+        executeBlock();
+    } else {
+        NSLog(@"Not Main Thread");
+        dispatch_async(dispatch_get_main_queue(), executeBlock);
+    }
 }
 
 @end

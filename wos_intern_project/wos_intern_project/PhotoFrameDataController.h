@@ -55,16 +55,24 @@
  */
 - (BOOL)isEqualBothSelectedIndexPath;
 
+/**
+ * @brief Cell들의 enabled 속성을 변경한다. userInteractionEnable를 변경하여 이벤트를 받거나 받지 못하게 설정한다.
+ * @param enabled : enable 속성을 결정하는 BOOL 값
+ * @return : void
+ */
+- (void)setEnableCells:(BOOL)enabled;
+
 @end
 
 /**
  * @brief PhotoFrameSelectCellManager의 델리게이트 프로토콜이다.
- *        ConnectionManagerPhotoFrameDataDelegate의 델리게이트 메소드가 호출되었을 때, 이를 외부로 전파하기 위하여 사용한다.
+ *        Cell Data가 갱신되었을 때 호출된다.
+ *        didUpdateCellEnabled               : setEnableCells에 대응된다. 셀의 enabled 속성이 변경되었을 때 호출된다.
  *        didUpdateCellStateWithDoneActivate : receivedPhotoFrameSelected애 대응된다. 상대방이 선택한 셀이 변경되었을 때 호출되며, 상대방과 내가 선택한 셀이 동일한지를 의미하는 activate를 함께 전달한다.
- *        didRequestConfirmCellWithIndexPath : receivedPhotoFrameRequestConfirm애 대응된다. 상대방이 선택한 액자에 대해 승인을 요청할 때 호출된다.
  */
 @protocol PhotoFrameDataControllerDelegate <NSObject>
 @required
+- (void)didUpdateCellEnabled:(BOOL)enabled;
 - (void)didUpdateCellStateWithDoneActivate:(BOOL)activate;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "ProgressHelper.h"
 #import "CommonConstants.h"
+#import "DispatchAsyncHelper.h"
 
 @implementation ProgressHelper
 
@@ -16,6 +17,13 @@
 }
 
 + (void)dismissProgress:(WMProgressHUD *)progress dismissTitleKey:(NSString *)dismissTitleKey dismissType:(NSInteger)type {
+    [ProgressHelper dismissProgress:progress
+                    dismissTitleKey:dismissTitleKey
+                        dismissType:type
+                  completionHandler:nil];
+}
+
++ (void)dismissProgress:(WMProgressHUD *)progress dismissTitleKey:(NSString *)dismissTitleKey dismissType:(NSInteger)type completionHandler:(void(^)(void))completionHandler {
     if (!progress || progress.isHidden) {
         return;
     }
@@ -31,11 +39,39 @@
             break;
     }
     
-    [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:DelayTime];
+    __weak typeof(progress) weakProgress = progress;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakProgress) progress = weakProgress;
+        
+        if (!progress) {
+            return;
+        }
+        
+        [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:DelayTime];
+        
+        if (!completionHandler) {
+            return;
+        }
+        
+        [NSTimer scheduledTimerWithTimeInterval:DelayTime
+                                         target:self
+                                       selector:@selector(completionHandler)
+                                       userInfo:nil
+                                        repeats:NO];
+    }];
 }
 
 + (void)dismissProgress:(WMProgressHUD *)progress {
-    [progress dismissProgress];
+    __weak typeof(progress) weakProgress = progress;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakProgress) progress = weakProgress;
+        
+        if (!progress) {
+            return;
+        }
+        
+        [progress dismissProgress];
+    }];
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "DecorateView.h"
 #import "ImageUtility.h"
 #import "ColorUtility.h"
+#import "DispatchAsyncHelper.h"
 
 @interface DecorateDataDisplayView ()
 
@@ -158,6 +159,7 @@ NSInteger const SubMenuHeight          = 30;
 
 
 #pragma mark - Utility Methods
+
 - (BOOL)hasSubView {
     if (self.subviews.count == 0) {
         return NO;
@@ -250,26 +252,35 @@ NSInteger const SubMenuHeight          = 30;
 #pragma mark - Call DataSource Methods
 
 - (void)updateDecorateViewOfUUID:(NSUUID *)uuid {
-    if (self.dataSource) {
-        DecorateView *newDecorateView = [self.dataSource decorateDisplayView:self decorateViewOfUUID:uuid];
+    __weak typeof(self) weakSelf = self;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakSelf) self = weakSelf;
         
-        //update or delete view
-        if (!newDecorateView) {
+        if (!self) {
             return;
         }
         
-        //insert view
-        for (UIView *view in self.subviews) {
-            if ([view isKindOfClass:[DecorateView class]] && [self compareDecorateView:newDecorateView isSmallerThan:(DecorateView *)view]) {
-                [self addGestureRecognizerOnDecorateView:newDecorateView];
-                [self insertSubview:newDecorateView belowSubview:view];
+        if (self.dataSource) {
+            DecorateView *newDecorateView = [self.dataSource decorateDisplayView:self decorateViewOfUUID:uuid];
+            
+            //update or delete view
+            if (!newDecorateView) {
                 return;
             }
+            
+            //insert view
+            for (UIView *view in self.subviews) {
+                if ([view isKindOfClass:[DecorateView class]] && [self compareDecorateView:newDecorateView isSmallerThan:(DecorateView *)view]) {
+                    [self addGestureRecognizerOnDecorateView:newDecorateView];
+                    [self insertSubview:newDecorateView belowSubview:view];
+                    return;
+                }
+            }
+            
+            [self addGestureRecognizerOnDecorateView:newDecorateView];
+            [self addSubview:newDecorateView];
         }
-        
-        [self addGestureRecognizerOnDecorateView:newDecorateView];
-        [self addSubview:newDecorateView];
-    }
+    }];
 }
 
 @end

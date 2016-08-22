@@ -48,13 +48,13 @@
 #pragma mark - MCNearbyServiceAdvertiserDelegate
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error {
-    if (self.delegate) {
+    if (_delegate) {
         [_delegate didNotStartAdvertising];
     }
 }
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
-    if (self.delegate) {
+    if (_delegate) {
         [_delegate didReceiveInvitationWithPeerId:peerID invitationHandler:invitationHandler];
     }
 }
@@ -63,13 +63,13 @@
 #pragma mark - ConnectionManagerSessionDelegate
 
 - (void)receivedPeerConnected {
-    if (self.delegate) {
+    if (_delegate) {
         [_delegate advertiserSessionConnected];
     }
 }
 
 - (void)receivedPeerDisconnected {
-    if (self.delegate) {
+    if (_delegate) {
         [_delegate advertiserSessionNotConnected];
     }
 }

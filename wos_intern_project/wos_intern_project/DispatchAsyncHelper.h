@@ -8,12 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^dispatch_block_t)(void);
-
 @interface DispatchAsyncHelper : NSObject
 
-+ (void)dispatchAsyncWithBlockOnMainQueue:dispatch_block_t;
-
-+ (void)dispatchAsyncWithBlockOnMainQueue:dispatch_block_t delay:(NSTimeInterval)delay;
++ (void)dispatchAsyncWithBlockOnMainQueue:(void(^)(void))executeBlock;
 
 @end

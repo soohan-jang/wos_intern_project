@@ -19,7 +19,6 @@
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
-#import "DispatchAsyncHelper.h"
 #import "MessageFactory.h"
 
 NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
@@ -154,7 +153,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 /**
  * @brief 사진액자를 선택할 VC를 화면에 표시한다.
  */
-- (void)presentFrameSelectViewController {
+- (void)presentSelectPhotoFrameViewController {
     [self clearBrowser];
     [self clearAdvertiser];
     
@@ -166,14 +165,10 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 }
 
 
-#pragma mark - Bluetooth Browser Methods
+#pragma mark - Bluetooth Browser Delegate Methods
 
 - (void)browserSessionConnected {
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        [self presentFrameSelectViewController];
-    }];
+    [self presentSelectPhotoFrameViewController];
 }
 
 - (void)browserSessionNotConnected {
@@ -181,7 +176,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 }
 
 
-#pragma mark - Bluetooth Advertiser Methods
+#pragma mark - Bluetooth Advertiser Delegate Methods
 
 //Error Handling Method
 - (void)didNotStartAdvertising {
@@ -203,6 +198,11 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                          otherButton:@"alert_button_text_accept"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
                                       __strong typeof(weakSelf) self = weakSelf;
+                                      
+                                      if (!self) {
+                                          return;
+                                      }
+                                      
                                       invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
                                       self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_connecting"];
                                       [self.view setUserInteractionEnabled:NO];
@@ -217,25 +217,29 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         return;
     }
     
+//    [ProgressHelper dismissProgress:self.progressView
+//                    dismissTitleKey:@"progress_title_connected"
+//                        dismissType:DismissWithDone];
+//    
+//    //여기서 딜레이을 준 이유는, ProgressView에 표시되는 "연결됨" 메시지를 보여준 뒤에 이동시키기 위함이다.
+//    [NSTimer scheduledTimerWithTimeInterval:DelayTime
+//                                     target:self
+//                                   selector:@selector(presentFrameSelectViewController)
+//                                   userInfo:nil
+//                                    repeats:NO];
     __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_connected" dismissType:DismissWithDone];
-    }];
-    
-    //ProgressView의 상태가 바뀌어서 사용자에게 보여질정도의 충분한 시간(delay) 뒤에 PhotoFrameSelectViewController를 호출하도록 한다.
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        [self presentFrameSelectViewController];
-    } delay:DelayTime];
+    [ProgressHelper dismissProgress:self.progressView
+                    dismissTitleKey:@"progress_title_connected"
+                        dismissType:DismissWithDone completionHandler:^{
+                            __strong typeof(weakSelf) self = weakSelf;
+                            
+                            if (!self) {
+                                return;
+                            }
+                            
+                            [self presentSelectPhotoFrameViewController];
+                        }
+     ];
 }
 
 - (void)advertiserSessionNotConnected {
@@ -244,19 +248,14 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         return;
     }
     
-    __weak typeof(self) weakSelf = self;
-    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
-        __strong typeof(weakSelf) self = weakSelf;
-        if (!self) {
-            return;
-        }
-        
-        if (!self.progressView.isHidden) {
-            [ProgressHelper dismissProgress:self.progressView dismissTitleKey:@"progress_title_rejected" dismissType:DismissWithDone];
-        }
-        
-        [[ConnectionManager sharedInstance] disconnectSession];
-    }];
+    if (!self.progressView.isHidden) {
+        [ProgressHelper dismissProgress:self.progressView
+                        dismissTitleKey:@"progress_title_rejected"
+                            dismissType:DismissWithDone
+                      completionHandler:nil];
+    }
+    
+    [[ConnectionManager sharedInstance] disconnectSession];
 }
 
 @end

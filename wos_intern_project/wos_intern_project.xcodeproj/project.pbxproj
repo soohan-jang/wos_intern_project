@@ -461,12 +461,12 @@
 			children = (
 				4A41052D1D5C8AF800FEEFE9 /* PhotoFrameData.h */,
 				4A41052E1D5C8AF800FEEFE9 /* PhotoFrameData.m */,
-				4AC91E631D58690800DB9E50 /* CanvasPathData.h */,
-				4AC91E661D586A6900DB9E50 /* CanvasPathData.m */,
 				4A54345A1D62A08F0040C12F /* PhotoData.h */,
 				4A54345B1D62A08F0040C12F /* PhotoData.m */,
 				4B4490931D3A5F6200E5972F /* DecorateData.h */,
 				4A5D86741D4C8445001EB2A9 /* DecorateData.m */,
+				4AC91E631D58690800DB9E50 /* CanvasPathData.h */,
+				4AC91E661D586A6900DB9E50 /* CanvasPathData.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";

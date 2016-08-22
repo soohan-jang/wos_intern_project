@@ -7,6 +7,7 @@
 //
 
 #import "AlertHelper.h"
+#import "DispatchAsyncHelper.h"
 
 @implementation AlertHelper
 
@@ -34,7 +35,7 @@
                                                           handler:otherButtonHandler]];
     }
     
-    [viewController presentViewController:alertController animated:YES completion:nil];
+    [self presentAlertController:viewController alertController:alertController];
 }
 
 + (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
@@ -70,7 +71,7 @@
                                                           handler:handler]];
     }
     
-    [viewController presentViewController:alertController animated:YES completion:nil];
+    [self presentAlertController:viewController alertController:alertController];
 }
 
 + (void)showAlertControllerOnViewController:(UIViewController * _Nonnull)viewController
@@ -84,6 +85,14 @@
                                       message:NSLocalizedString(messageKey, nil)
                                        button:NSLocalizedString(buttonKey, nil)
                                 buttonHandler:handler];
+}
+
++ (void)presentAlertController:(UIViewController *)viewController alertController:(UIAlertController *)alertController {
+    __weak typeof(viewController) weakViewController = viewController;
+    [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:^{
+        __strong typeof(weakViewController) viewController = weakViewController;
+        [viewController presentViewController:alertController animated:YES completion:nil];
+    }];
 }
 
 @end

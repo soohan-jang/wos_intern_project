@@ -67,6 +67,11 @@
         [ImageUtility fullscreenImageAtURL:self.imageUrl
                                resultBlock:^(UIImage *image) {
                                    __strong typeof(weakSelf) self = weakSelf;
+                                   
+                                   if (!self) {
+                                       return;
+                                   }
+                                   
                                    if (image == nil) {
                                        //error
                                    } else {

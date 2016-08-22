@@ -237,7 +237,7 @@
 - (void)buttonClick:(id)sender {
     self.centerButton.selected = NO;
     
-    if ([self.delegate respondsToSelector:@selector(xxxRoundMenuButtonDidSelected:WithSelectedIndex:)]) {
+    if (self.delegate) {
         [self.delegate xxxRoundMenuButtonDidSelected:self WithSelectedIndex:([sender tag] - 9998)];
     }
 }
