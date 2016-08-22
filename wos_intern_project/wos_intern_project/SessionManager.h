@@ -6,14 +6,16 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "BluetoothSession.h"
+#import <Foundation/Foundation.h>
+#import "GeneralSession.h"
 
 @interface SessionManager : NSObject
 
-@property (nonatomic, strong, readonly) BluetoothSession *session;
+@property (nonatomic, strong, readonly) GeneralSession *session;
 
-- (instancetype)initWithSession:(BluetoothSession *)session;
++ (instancetype)sharedInstance;
 
+- (instancetype)initWithSession:(GeneralSession *)session;
 - (void)sessionDisconnect;
 
 @end

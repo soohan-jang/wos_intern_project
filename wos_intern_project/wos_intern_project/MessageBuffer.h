@@ -7,7 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MessageData.h"
 
 @interface MessageBuffer : NSObject
+
+@property (nonatomic, assign) BOOL enabled;
+
++ (instancetype)sharedInstance;
+
+- (void)putMessage:(MessageData *)message;
+- (MessageData *)getMessage;
+- (void)clearMessageBuffer;
+- (BOOL)isMessageBufferEmpty;
 
 @end

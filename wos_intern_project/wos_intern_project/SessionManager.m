@@ -7,14 +7,33 @@
 //
 
 #import "SessionManager.h"
+#import "BluetoothSession.h"
 
 @implementation SessionManager
 
-- (instancetype)initWithSession:(BluetoothSession *)session {
++ (instancetype)sharedInstance {
+    static SessionManager *instance = nil;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if (instance == nil) {
+            instance = [[self alloc] init];
+        }
+    });
+    
+    return instance;
+}
+
+
+- (instancetype)initWithSession:(GeneralSession *)session {
     self = [super init];
     
     if (self) {
-        _session = session;
+        switch (session.sessionType) {
+            case SessionTypeBluetooth:
+                _session = (BluetoothSession *)session;
+                break;
+        }
     }
     
     return self;

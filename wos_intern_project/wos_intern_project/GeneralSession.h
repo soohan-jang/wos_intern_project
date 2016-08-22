@@ -6,6 +6,7 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import "MessageData.h"
 
 typedef NS_ENUM(NSInteger, SessionType) {
