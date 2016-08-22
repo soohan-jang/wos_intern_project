@@ -24,7 +24,6 @@
     return instance;
 }
 
-
 - (instancetype)initWithSession:(GeneralSession *)session {
     self = [super init];
     

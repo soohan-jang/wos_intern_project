@@ -8,9 +8,6 @@
 
 #import "CommonConstants.h"
 
-NSString *const PrefixImagePhotoFrame                   = @"PhotoFrame";
-NSString *const PrefixImagePhotoSticker                 = @"PhotoSticker";
-
 NSString *const IdentifierImageOriginal                 = @"Original";
 NSString *const IdentifierImageCropped                  = @"Cropped";
 NSString *const Sperator                                = @"+";

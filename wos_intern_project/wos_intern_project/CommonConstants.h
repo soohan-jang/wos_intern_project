@@ -9,9 +9,6 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSDate.h>
 
-extern NSString *const PrefixImagePhotoFrame;
-extern NSString *const PrefixImagePhotoSticker;
-
 extern NSString *const IdentifierImageOriginal;
 extern NSString *const IdentifierImageCropped;
 extern NSString *const Sperator;

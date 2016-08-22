@@ -52,6 +52,7 @@
                      error:(&error)];
     
     if (error) {
+        NSLog(@"%@", [error localizedDescription]);
         return NO;
     }
     
@@ -77,6 +78,7 @@
                                        withName:name toPeer:peerID
                           withCompletionHandler:^(NSError * _Nullable error) {
                               if (error) {
+                                  NSLog(@"%@", [error localizedDescription]);
                                   resultHandler(NO);
                               }
                               
@@ -97,6 +99,7 @@
                                withName:name toPeer:peerID
                   withCompletionHandler:^(NSError * _Nullable error) {
                       if (error) {
+                          NSLog(@"%@", [error localizedDescription]);
                           resultHandler(NO);
                       }
                       
@@ -188,6 +191,7 @@
     if ([fileTypeOfPhotoData isEqualToString:IdentifierImageCropped]) {
         if (error) {
             //Error.
+            NSLog(@"%@", [error localizedDescription]);
             return;
         }
         
@@ -213,6 +217,7 @@
     if ([fileTypeOfPhotoData isEqualToString:IdentifierImageOriginal]) {
         if (error) {
             //Error.
+            NSLog(@"%@", [error localizedDescription]);
             return;
         }
         

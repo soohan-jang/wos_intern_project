@@ -120,9 +120,13 @@
     return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageCropped]];
 }
 
+NSString *const PrefixImagePhotoFrame   = @"PhotoFrame";
+
 + (NSString *)photoFrameImageWithIndex:(NSInteger)index {
     return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoFrame, (long)index];
 }
+
+NSString *const PrefixImagePhotoSticker = @"PhotoSticker";
 
 + (NSString *)photoStickerImageWithIndex:(NSInteger)index {
     return [NSString stringWithFormat:@"%@%ld", PrefixImagePhotoSticker, (long)index];

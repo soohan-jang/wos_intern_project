@@ -48,6 +48,10 @@
 #pragma mark - MCNearbyServiceAdvertiserDelegate
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didNotStartAdvertisingPeer:(NSError *)error {
+    if (error) {
+        NSLog(@"%@", [error localizedDescription]);
+    }
+    
     if (_delegate) {
         [_delegate didNotStartAdvertising];
     }
