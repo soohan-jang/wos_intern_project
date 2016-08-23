@@ -10,12 +10,18 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 
 #import "PEBluetoothSession.h"
-#import "CommonConstants.h"
+
+#import "BluetoothBrowser.h"
+#import "BluetoothAdvertiser.h"
+
+NSString *const SessionServiceType = @"Co-PhotoEditor";
 
 @interface PEBluetoothSession () <MCSessionDelegate, CBCentralManagerDelegate>
 
-@property (nonatomic, strong) CBCentralManager *bluetoothManager;
+@property (strong, nonatomic) CBCentralManager *bluetoothManager;
 @property (strong, nonatomic) MCSession *session;
+
+@property (strong, nonatomic) BluetoothAdvertiser *advertiser;
 
 @end
 
@@ -34,6 +40,8 @@
         
         self.availiableState = AvailiableStateUnknown;
         self.sessionState = SessionStateDisconnected;
+        
+        self.advertiser = [[BluetoothAdvertiser alloc] initWithServiceType:SessionServiceType session:self.session];
     }
     
     return self;
@@ -128,8 +136,45 @@
     self.session.delegate = nil;
     self.session = nil;
     
+    [self clearBluetoothAdvertiser];
+    
     self.availiableState = AvailiableStateUnknown;
     self.sessionState = SessionStateDisconnected;
+}
+
+
+#pragma mark - Bluetooth Browser Methods
+
+- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id)delegate {
+    BluetoothBrowser *browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType session:self.session];
+    browser.delegate = delegate;
+    
+    if ([browser presentBrowserViewController:viewController]) {
+        [self.advertiser stopAdvertise];
+        return YES;
+    }
+    
+    return NO;
+}
+
+
+#pragma mark - Bluetooth Advertiser Methods
+
+- (void)setAdvertiserDelegate:(id)delegate {
+    self.advertiser.delegate = delegate;
+}
+
+- (void)startAdvertise {
+    [self.advertiser startAdvertise];
+}
+
+- (void)stopAdvertise {
+    [self.advertiser stopAdvertise];
+}
+
+- (void)clearBluetoothAdvertiser {
+    self.advertiser.delegate = nil;
+    self.advertiser = nil;
 }
 
 

@@ -22,7 +22,6 @@
 #import "PhotoStickerMenuView.h"
 
 #import "SessionManager.h"
-#import "MessageSender.h"
 #import "MessageReceiver.h"
 
 #import "DecorateData.h"
@@ -39,7 +38,7 @@
 NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
 NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 
-@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDataControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, SessionConnectDelegate>
+@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDataControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, MessageReceiverStateChangeDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *decoDataVisibleToggleButton;
 @property (weak, nonatomic) IBOutlet XXXRoundMenuButton *mainMenuButton;
@@ -55,7 +54,6 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 @property (weak, nonatomic) IBOutlet PhotoInputTextMenuView *inputTextMenuView; //텍스트를 작성할 수 있는 뷰
 @property (weak, nonatomic) IBOutlet PhotoStickerMenuView *stickerMenuView; //스티커를 선택할 수 있는 뷰
 
-@property (strong, nonatomic) MessageSender *messageSender;
 @property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 //For CropViewController
@@ -77,9 +75,10 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 }
 
 - (void)dealloc {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.photoDataDelegate = nil;
-    connectionManager.decorateDataDelegate = nil;
+    self.photoMenu = nil;
+    self.photoDataController = nil;
+    self.decorateDataController = nil;
+    self.messageReceiver = nil;
     
     [ImageUtility removeAllTemporaryImages];
 }
@@ -117,8 +116,8 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 }
 
 - (void)setupDelegates {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionDelegate = self;
+    MessageReceiver *messageReceiver = [SessionManager sharedInstance].messageReceiver;
+    messageReceiver.stateChangeDelegate = self;
     
     //Controller's Delegate
     self.photoDataController.delegate = self;
@@ -155,9 +154,7 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 #pragma mark - Present Other ViewController Methods
 
 - (void)presentMainViewController {
-    [[ConnectionManager sharedInstance] disconnectSession];
-    
-    
+    [[SessionManager sharedInstance] disconnectSession];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -187,13 +184,13 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 }
 
 - (IBAction)backButtonTapped:(id)sender {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
+    SessionManager *sessionManager = [SessionManager sharedInstance];
     NSString *alertTitleKey, *alertContentKey;
     
-    if (connectionManager.sessionState == MCSessionStateNotConnected) {
+    if (sessionManager.session.sessionState == SessionStateDisconnected) {
         alertTitleKey = @"alert_title_edit_finish";
         alertContentKey = @"alert_content_edit_finish";
-    } else if (connectionManager.sessionState == MCSessionStateConnected) {
+    } else if (sessionManager.session.sessionState == SessionStateConnected) {
         alertTitleKey = @"alert_title_session_disconnect_ask";
         alertContentKey = @"alert_content_data_not_save";
     }
@@ -376,8 +373,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     }
     
     if (isSendEditCancelMsg) {
-        [self sendPhotoDeselectMessage];
         [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
         self.photoDataController.selectedIndexPath = nil;
     }
     
@@ -422,8 +419,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuPhotoDelete {
-    [self sendPhotoDeleteMessage];
     [self.photoDataController clearCellDataAtSelectedIndexPath];
+    [self.photoDataController.dataSender sendDeletePhotoDataMessage:self.photoDataController.selectedIndexPath];
     self.photoDataController.selectedIndexPath = nil;
     return NO;
 }
@@ -458,8 +455,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
-    [self sendPhotoDeselectMessage];
     [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+    [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
     self.photoDataController.selectedIndexPath = nil;
 }
 
@@ -469,8 +466,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
     if (!fullscreenImage || !croppedImage) {
         //Alert. 사진 가져오지 못함.
-        [self sendPhotoDeselectMessage];
         [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
         self.photoDataController.selectedIndexPath = nil;
         return;
     }
@@ -489,8 +486,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     
     if (!filename) {
         //Alert. 사진 저장 실패.
-        [self sendPhotoDeselectMessage];
         [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+        [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
         self.photoDataController.selectedIndexPath = nil;
         return;
     }
@@ -498,10 +495,11 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     NSURL *fullscreenImageURL = [ImageUtility fullscreenImageURLWithFilename:filename];
     NSURL *croppedImageURL = [ImageUtility croppedImageURLWithFilename:filename];
     
-    [self sendPhotoInsertMessage:filename
-              fullscreenImageURL:fullscreenImageURL
-                 croppedImageURL:croppedImageURL];
     [self.photoDataController setCellDataAtSelectedIndexPath:photoData];
+    [self.photoDataController.dataSender sendInsertPhotoDataMessage:self.photoDataController.selectedIndexPath
+                                                   originalImageURL:fullscreenImageURL
+                                                    croppedImageURL:croppedImageURL
+                                                         filterType:0];
     self.photoDataController.selectedIndexPath = nil;
 }
 
@@ -509,8 +507,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     self.pickedImageURL = nil;
     self.pickedImage = nil;
     
-    [self sendPhotoDeselectMessage];
     [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+    [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
     self.photoDataController.selectedIndexPath = nil;
 }
 
@@ -550,7 +548,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         [self.photoMenu presentMenu];
         
         [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateEditing];
-        [self sendPhotoSelectMessage];
+        [self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath];
     }
 }
 
@@ -571,59 +569,21 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 
-#pragma mark - Send Message
-
-- (void)sendPhotoSelectMessage {
-    [self sendMessage:[MessageFactory messageGeneratePhotoEdit:self.photoDataController.selectedIndexPath]];
-}
-
-- (void)sendPhotoDeselectMessage {
-    [self sendMessage:[MessageFactory messageGeneratePhotoEditCanceled:self.photoDataController.selectedIndexPath]];
-}
-
-- (void)sendPhotoInsertMessage:(NSString *)filename fullscreenImageURL:(NSURL *)fullscreenImageURL croppedImageURL:(NSURL *)croppedImageURL {
-    [[ConnectionManager sharedInstance] sendPhotoDataWithFilename:filename
-                                               fullscreenImageURL:fullscreenImageURL
-                                                  croppedImageURL:croppedImageURL
-                                                            index:self.photoDataController.selectedIndexPath.item];
-}
-
-- (void)sendPhotoDeleteMessage {
-    [self sendMessage:[MessageFactory messageGeneratePhotoDeleted:self.photoDataController.selectedIndexPath]];
-}
-
-- (void)sendDecorateSelectMessage:(NSUUID *)uuid {
-    [self sendMessage:[MessageFactory messageGenerateDecorateDataEdit:uuid]];
-}
-
-- (void)sendDecorateDeselectMessage:(NSUUID *)uuid {
-    [self sendMessage:[MessageFactory messageGenerateDecorateDataEditCanceled:uuid]];
-}
-
-- (void)sendDecorateInsertMessage:(DecorateData *)data {
-    [self sendMessage:[MessageFactory messageGenerateDecorateDataInserted:data]];
-}
-
-- (void)sendDecorateUpdateMessage:(NSUUID *)uuid frame:(CGRect)frame {
-    [self sendMessage:[MessageFactory messageGenerateDecorateDataUpdated:uuid frame:frame]];
-}
-
-- (void)sendDecorateDeleteMessage:(NSUUID *)uuid {
-    [self sendMessage:[MessageFactory messageGenerateDecorateDataDeleted:uuid]];
-}
-
-- (void)sendMessage:(NSDictionary *)message {
-    [[ConnectionManager sharedInstance] sendMessage:message];
-}
-
-
 #pragma mark - Photo Data Controller Delegate Methods
 
-- (void)didPhotoDataSourceUpdate:(NSIndexPath *)indexPath {
+- (void)didUpdatePhotoData:(NSIndexPath *)indexPath {
     [self reloadDataAtIndexPath:indexPath];
 }
 
-- (void)didPhotoEditInterrupt {
+- (void)didFinishReceivePhotoData:(NSIndexPath *)indexPath {
+    [self.photoDataController.dataSender sendPhotoDataAckMessage:indexPath ack:YES];
+}
+
+- (void)didErrorReceivePhotoData:(NSIndexPath *)indexPath {
+    [self.photoDataController.dataSender sendPhotoDataAckMessage:indexPath ack:NO];
+}
+
+- (void)didInterruptPhotoDataSelection:(NSIndexPath *)indexPath {
     if (!self.photoMenu && !self.photoMenu.isHidden) {
         return;
     }
@@ -634,8 +594,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 #pragma mark - Decorate Data Controller Delegate Methods
 
-- (void)didDecorateDataArrayUpdate:(NSUUID *)uuid {
+- (void)didUpdateDecorateData:(NSUUID *)uuid {
     [self.decorateDisplayView updateDecorateViewOfUUID:uuid];
+}
+
+- (void)didInterruptDecorateDataSelection:(NSUUID *)uuid {
+    //Do something?
 }
 
 
@@ -644,20 +608,20 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)didSelectDecorateViewOfUUID:(NSUUID *)uuid selected:(BOOL)selected {
     [self.decorateDataController selectDecorateData:uuid selected:selected];
     if (selected) {
-        [self sendDecorateSelectMessage:uuid];
+        [self.decorateDataController.dataSender sendSelectDecorateDataMessage:uuid];
     } else {
-        [self sendDecorateDeselectMessage:uuid];
+        [self.decorateDataController.dataSender sendDeselectDecorateDataMessage:uuid];
     }
 }
 
 - (void)didUpdateDecorateViewOfUUID:(NSUUID *)uuid frame:(CGRect)frame {
     [self.decorateDataController updateDecorateData:uuid frame:frame];
-    [self sendDecorateUpdateMessage:uuid frame:frame];
+    [self.decorateDataController.dataSender sendUpdateDecorateDataMessage:uuid updateFrame:frame];
 }
 
 - (void)didDeleteDecorateViewOfUUID:(NSUUID *)uuid {
     [self.decorateDataController deleteDecorateData:uuid];
-    [self sendDecorateDeleteMessage:uuid];
+    [self.decorateDataController.dataSender sendDeleteDecorateDataMessage:uuid];
 }
 
 
@@ -666,7 +630,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)drawPenMenuViewDidFinished:(DecorateData *)decorateData {
     [self setMenuVisiblity:MenuVisblityPen visiblity:NO];
     [self.decorateDataController addDecorateData:decorateData];
-    [self sendDecorateInsertMessage:decorateData];
+    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)drawPenMenuViewDidCancelled {
@@ -679,7 +643,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)inputTextMenuViewDidFinished:(DecorateData *)decorateData {
     [self setMenuVisiblity:MenuVisiblityText visiblity:NO];
     [self.decorateDataController addDecorateData:decorateData];
-    [self sendDecorateInsertMessage:decorateData];
+    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)inputTextMenuViewDidCancelled {
@@ -691,7 +655,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)stickerViewControllerDidSelected:(DecorateData *)decorateData {
     [self.decorateDataController addDecorateData:decorateData];
-    [self sendDecorateInsertMessage:decorateData];
+    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)stickerViewControllerDidClosed {
@@ -699,31 +663,36 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 
-#pragma mark - ConnectionManager Session Connect Delegate Methods
+#pragma mark - MessageReceiverStateChangeDelegate Methods
 
-- (void)receivedPeerConnected {
-    
-}
-
-- (void)receivedPeerDisconnected {
+- (void)didReceiveChangeSessionState:(NSInteger)state {
     __weak typeof(self) weakSelf = self;
-    [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_session_disconnected"
-                                          messageKey:@"alert_content_photo_edit_continue"
-                                              button:@"alert_button_text_no"
-                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                           [[ConnectionManager sharedInstance] disconnectSession];
-                                       }
-                                         otherButton:@"alert_button_text_yes"
-                                  otherButtonHandler:^(UIAlertAction * _Nonnull action) {
-                                      __strong typeof(weakSelf) self = weakSelf;
-                                      
-                                      if (!self) {
-                                          return;
-                                      }
-                                      
-                                      [self presentMainViewController];
-                                  }];
+    
+    switch (state) {
+        case SessionStateConnected:
+            //여기선 세션 연결이 일어날 일이 없다.
+            //추후에 세션 연결 끊겼다가 다시 복구되는 경우에나 사용할 것 같다.
+            break;
+        case SessionStateDisconnected:
+            [AlertHelper showAlertControllerOnViewController:self
+                                                    titleKey:@"alert_title_session_disconnected"
+                                                  messageKey:@"alert_content_photo_edit_continue"
+                                                      button:@"alert_button_text_no"
+                                               buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                                   [[SessionManager sharedInstance] disconnectSession];
+                                               }
+                                                 otherButton:@"alert_button_text_yes"
+                                          otherButtonHandler:^(UIAlertAction * _Nonnull action) {
+                                              __strong typeof(weakSelf) self = weakSelf;
+                                              
+                                              if (!self) {
+                                                  return;
+                                              }
+                                              
+                                              [self presentMainViewController];
+                                          }];
+            break;
+    }
 }
 
 @end

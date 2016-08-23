@@ -6,8 +6,10 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "PESession.h"
+#import <UIKit/UIKit.h>
+#import "PEBluetoothSession.h"
+#import "MessageBuffer.h"
+#import "MessageData.h"
 #import "DecorateData.h"
 
 @protocol MessageReceiverStateChangeDelegate;
@@ -23,6 +25,8 @@
 @property (nonatomic, weak) id<MessageReceiverDeviceDataDelegate>      deviceDataDelegate;
 @property (nonatomic, weak) id<MessageReceiverPhotoDataDelegate>       photoDataDelegate;
 @property (nonatomic, weak) id<MessageReceiverDecorateDataDelegate>    decorateDataDelegate;
+
+@property (nonatomic, strong) MessageBuffer *messageBuffer;
 
 - (instancetype)initWithSession:(PESession *)session;
 

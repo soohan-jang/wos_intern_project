@@ -11,9 +11,20 @@
 
 @protocol PhotoFrameDataControllerDelegate;
 
+@interface PhotoFrameDataSender : NSObject
+
+- (BOOL)sendSelectPhotoFrameMessage:(NSIndexPath *)indexPath;
+- (BOOL)sendDeselectPhotoFrameMessage:(NSIndexPath *)indexPath;
+
+- (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath;
+- (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck;
+
+@end
+
 @interface PhotoFrameDataController : NSObject
 
 @property (weak, nonatomic) id<PhotoFrameDataControllerDelegate> delegate;
+@property (strong, nonatomic) PhotoFrameDataSender *dataSender;
 
 @property (strong, nonatomic, readonly) NSIndexPath *ownSelectedIndexPath;
 @property (strong, nonatomic, readonly) NSIndexPath *otherSelectedIndexPath;

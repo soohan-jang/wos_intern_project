@@ -21,17 +21,17 @@
  * @param session : 연결에 사용할 세션 객체
  * @return BluetoothAdvertiser : 생성된 Advertiser 객체
  */
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session;
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session;
 
 /**
  * @brief Advertising를 시작해서 주위에 검색 신호를 발신한다.
  */
-- (void)advertiseStart;
+- (void)startAdvertise;
 
 /**
  * @brief Advertising를 중지한다.
  */
-- (void)advertiseStop;
+- (void)stopAdvertise;
 
 @end
 

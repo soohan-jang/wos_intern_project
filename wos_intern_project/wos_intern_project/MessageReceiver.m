@@ -8,7 +8,6 @@
 
 #import "MessageReceiver.h"
 #import "PEBluetoothSession.h"
-#import "MessageBuffer.h"
 #import "MessageInterrupter.h"
 
 @interface MessageReceiver () <SessionConnectDelegate, SessionDataReceiveDelegate>
@@ -26,6 +25,7 @@
         switch (session.sessionType) {
             case SessionTypeBluetooth:
                 self.session = (PEBluetoothSession *)session;
+                self.messageBuffer = [[MessageBuffer alloc] init];
                 self.session.connectDelegate = self;
                 self.session.dataReceiveDelegate = self;
                 break;
@@ -33,6 +33,10 @@
     }
     
     return self;
+}
+
+- (void)setMessageBufferEnabled:(BOOL)enabled {
+    self.messageBuffer.enabled = enabled;
 }
 
 
@@ -48,6 +52,11 @@
 #pragma mark - Session Data Receive Delegate Methods
 
 - (void)didReceiveData:(MessageData *)message {
+    if (self.messageBuffer.enabled) {
+        [self.messageBuffer putMessage:message];
+        return;
+    }
+    
     MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
     
     if (self.photoFrameDataDelegate) {

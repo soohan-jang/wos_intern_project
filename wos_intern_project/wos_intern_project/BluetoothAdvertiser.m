@@ -19,18 +19,16 @@
 
 @implementation BluetoothAdvertiser
 
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session {
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session {
     self = [super init];
     
     if (self) {
-        MCPeerID *myPeerId = [[MCPeerID alloc] initWithDisplayName:[session displayNameOfSession]];
-        
-        _advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:myPeerId
+        _advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:session.myPeerID
                                                         discoveryInfo:nil
                                                           serviceType:serviceType];
         _advertiser.delegate = self;
         
-        _messageReceiver = [[MessageReceiver alloc] initWithSession:session];
+        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }
     
     return self;
@@ -39,12 +37,12 @@
 
 #pragma mark - Start & Stop Advertising
 
-- (void)advertiseStart {
+- (void)startAdvertise {
     _messageReceiver.stateChangeDelegate = self;
     [_advertiser startAdvertisingPeer];
 }
 
-- (void)advertiseStop {
+- (void)stopAdvertise {
     _messageReceiver.stateChangeDelegate = nil;
     [_advertiser stopAdvertisingPeer];
 }

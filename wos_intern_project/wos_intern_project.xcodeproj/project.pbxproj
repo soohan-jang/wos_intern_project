@@ -268,6 +268,8 @@
 				4A3CB4041D6AEC3000B324BC /* PESession.m */,
 				4A3CB3F71D6AD76100B324BC /* PEBluetoothSession.h */,
 				4A3CB3F81D6AD76100B324BC /* PEBluetoothSession.m */,
+				4A3CB3FE1D6AE0EC00B324BC /* Message */,
+				4A3CB4091D6B2B1900B324BC /* BluetoothConnectAssistant */,
 			);
 			name = Session;
 			sourceTree = "<group>";
@@ -499,8 +501,6 @@
 			isa = PBXGroup;
 			children = (
 				4A3CB3FD1D6AE0E300B324BC /* Session */,
-				4A3CB4091D6B2B1900B324BC /* BluetoothConnectAssistant */,
-				4A3CB3FE1D6AE0EC00B324BC /* Message */,
 				4A3CB3FF1D6AE0FE00B324BC /* DataController */,
 			);
 			name = Manager;

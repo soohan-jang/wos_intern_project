@@ -7,17 +7,22 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "PESession.h"
 
-extern NSString *const SessionServiceType;
+#import "PESession.h"
+#import "MessageSender.h"
+#import "MessageReceiver.h"
 
 @interface SessionManager : NSObject
 
+
 @property (nonatomic, strong) PESession *session;
+@property (nonatomic, strong) MessageSender *messageSender;
+@property (nonatomic, strong) MessageReceiver *messageReceiver;
 
 + (instancetype)sharedInstance;
 
-- (void)setSession:(PESession *)session;
-- (void)sessionDisconnect;
+- (void)initializeWithSessionType:(NSInteger)sessionType;
+- (void)setMessageBufferEnabled:(BOOL)enabled;
+- (void)disconnectSession;
 
 @end

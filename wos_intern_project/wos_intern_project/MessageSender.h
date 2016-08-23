@@ -6,8 +6,8 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "PESession.h"
+#import <UIKit/UIKit.h>
+#import "PEBluetoothSession.h"
 #import "DecorateData.h"
 
 @interface MessageSender : NSObject
@@ -18,7 +18,7 @@
 - (BOOL)sendDeselectPhotoFrameMessage:(NSIndexPath *)indexPath;
 
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath;
-- (BOOL)sendPhotoframeConfirmAckMessage:(BOOL)confrimAck;
+- (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck;
 
 - (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize;
 
@@ -29,8 +29,7 @@
 - (void)sendUpdatePhotoDataMessage:(NSIndexPath *)indexPath croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType;
 - (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath;
 
-- (BOOL)sendInsertPhotoDataAckMessage:(NSIndexPath *)indexPath insertAck:(BOOL)insertAck;
-- (BOOL)sendUpdatePhotoDataAckMessage:(NSIndexPath *)indexPath updateAck:(BOOL)updateAck;
+- (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack;
 
 - (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid;
 - (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid;

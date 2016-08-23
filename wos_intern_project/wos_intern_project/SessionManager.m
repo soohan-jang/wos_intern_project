@@ -9,7 +9,9 @@
 #import "SessionManager.h"
 #import "PEBluetoothSession.h"
 
-NSString *const SessionServiceType = @"Co-PhotoEditor";
+@interface SessionManager ()
+
+@end
 
 @implementation SessionManager
 
@@ -26,15 +28,19 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     return instance;
 }
 
-- (void)setSession:(PESession *)session {
-    switch (session.sessionType) {
+- (void)initializeWithSessionType:(NSInteger)sessionType {
+    switch (sessionType) {
         case SessionTypeBluetooth:
-            _session = (PEBluetoothSession *)session;
+            _session = [[PEBluetoothSession alloc] init];
             break;
     }
 }
 
-- (void)sessionDisconnect {
+- (void)setMessageBufferEnabled:(BOOL)enabled {
+    self.messageReceiver.messageBuffer.enabled = enabled;
+}
+
+- (void)disconnectSession {
     [_session disconnect];
 }
 

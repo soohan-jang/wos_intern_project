@@ -13,9 +13,7 @@
 
 #import "PhotoFrameDataController.h"
 #import "SessionManager.h"
-#import "MessageSender.h"
 #import "MessageReceiver.h"
-#import "MessageBuffer.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
@@ -31,7 +29,6 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 @property (strong, nonatomic) PhotoFrameDataController *dataController;
 @property (strong, nonatomic) WMProgressHUD *progressView;
 
-@property (strong, nonatomic) MessageSender *messageSender;
 @property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
@@ -54,7 +51,6 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     [super viewDidAppear:animated];
     
     [self prepareDataController];
-    [self prepareMessageSender];
     [self prepareMessagerReceiver];
 }
 
@@ -71,10 +67,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:SegueMoveToEditor]) {
-        PESession *session = [SessionManager sharedInstance].session;
-        MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
-        [messageBuffer clearMessageBuffer];
-        [messageBuffer setEnabledMessageBuffer:YES session:[session instanceOfSession]];
+        [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
         
         EditPhotoViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.dataController.ownSelectedIndexPath.item];
@@ -84,6 +77,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 - (void)dealloc {
     self.dataController = nil;
     self.progressView = nil;
+    self.messageReceiver = nil;
 }
 
 
@@ -107,15 +101,9 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     self.collectionView.delegate = self;
 }
 
-- (void)prepareMessageSender {
-    PESession *session = [SessionManager sharedInstance].session;
-    self.messageSender = [[MessageSender alloc] initWithSession:[session instanceOfSession]];
-}
-
 - (void)prepareMessagerReceiver {
-    PESession *session = [SessionManager sharedInstance].session;
-    self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
-    self.messageReceiver.stateChangeDelegate = self;
+    MessageReceiver *messageReceiver = [SessionManager sharedInstance].messageReceiver;
+    messageReceiver.stateChangeDelegate = self;
 }
 
 
@@ -126,7 +114,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (void)presentMainViewController {
-    [[SessionManager sharedInstance] sessionDisconnect];
+    [[SessionManager sharedInstance] disconnectSession];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -181,7 +169,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view
                                                    titleKey:@"progress_title_confirming"];
     
-    [self.messageSender sendPhotoFrameConfrimRequestMessage:self.dataController.ownSelectedIndexPath];
+    [self.dataController.dataSender sendPhotoFrameConfrimRequestMessage:self.dataController.ownSelectedIndexPath];
 }
 
 
@@ -198,10 +186,10 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == self.dataController.ownSelectedIndexPath.item) {
         [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
-        [self.messageSender sendSelectPhotoFrameMessage:indexPath];
+        [self.dataController.dataSender sendSelectPhotoFrameMessage:indexPath];
     } else {
         [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
-        [self.messageSender sendDeselectPhotoFrameMessage:indexPath];
+        [self.dataController.dataSender sendDeselectPhotoFrameMessage:indexPath];
     }
 }
 
@@ -253,7 +241,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                                return;
                                            }
                                            
-                                           [self.messageSender sendPhotoframeConfirmAckMessage:NO];
+                                           [self.dataController.dataSender sendPhotoFrameConfirmAckMessage:NO];
                                            //거절한 경우, 각 셀을 다시 선택 가능하게 만든다.
                                            [self.dataController setEnableCells:YES];
                                        }
@@ -265,7 +253,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                           return;
                                       }
                                       
-                                      [self.messageSender sendPhotoframeConfirmAckMessage:YES];
+                                      [self.dataController.dataSender sendPhotoFrameConfirmAckMessage:YES];
                                       [self presentEditPhotoViewController];
                                   }];
 }

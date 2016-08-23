@@ -21,7 +21,7 @@
  * @param session : 연결에 사용할 세션 객체
  * @return BluetoothBrowser : 생성된 Browser 객체
  */
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session;
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session;
 
 /**
  * @brief 단말을 검색하고 연결을 시도할 수 있는 BrowserVC를 표시한다.
@@ -40,7 +40,7 @@
  */
 @protocol BluetoothBrowserDelegate <NSObject>
 @required
-- (void)browserSessionConnected;
-- (void)browserSessionNotConnected;
+- (void)browserSessionConnected:(BluetoothBrowser *)browser;
+- (void)browserSessionNotConnected:(BluetoothBrowser *)browser;
 
 @end

@@ -10,14 +10,50 @@
 #import "DecorateDataDisplayView.h"
 
 #import "SessionManager.h"
+#import "MessageSender.h"
 #import "MessageReceiver.h"
 #import "MessageInterrupter.h"
 
-@interface DecorateDataController () <DecorateDataDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate>
+@interface DecorateDataSender ()
+
+@property (strong, nonatomic) MessageSender *messageSender;
+
+@end
+
+@implementation DecorateDataSender
+
+- (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize {
+    return [self.messageSender sendScreenSizeDeviceDataMessage:screenSize];
+}
+
+- (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid {
+    return [self.messageSender sendSelectDecorateDataMessage:uuid];
+}
+
+- (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid {
+    return [self.messageSender sendDeselectDecorateDataMessage:uuid];
+}
+
+- (BOOL)sendInsertDecorateDataMessage:(DecorateData *)insertData {
+    return [self.messageSender sendInsertDecorateDataMessage:insertData];
+}
+
+- (BOOL)sendUpdateDecorateDataMessage:(NSUUID *)uuid updateFrame:(CGRect)updateFrame {
+    return [self.messageSender sendUpdateDecorateDataMessage:uuid updateFrame:updateFrame];
+}
+
+- (BOOL)sendDeleteDecorateDataMessage:(NSUUID *)uuid {
+    return [self.messageSender sendDeleteDecorateDataMessage:uuid];
+}
+
+@end
+
+@interface DecorateDataController () <DecorateDataDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate, MessageInterrupterDecorateDataSelectionDelegate>
 
 @property (atomic, strong) NSMutableArray<DecorateData *> *decorateDataArray;
 
 @property (nonatomic, strong) MessageReceiver *messageReceiver;
+@property (nonatomic, assign) CGFloat widthRatio, heightRatio;
 
 @end
 
@@ -192,9 +228,18 @@
 }
 
 
-#pragma mark - ConnectionManager Decorate DataDelegate Methods
+#pragma mark - MessageReceiverDeviceDataDelegate Methods
 
-- (void)receivedDecorateDataEditing:(NSUUID *)uuid {
+- (void)didReceiveDeviceScreenSize:(CGSize)screenSize {
+    CGSize myScreenSize = [UIScreen mainScreen].bounds.size;
+    _widthRatio = screenSize.width / myScreenSize.width;
+    _heightRatio = screenSize.height / myScreenSize.height;
+}
+
+
+#pragma mark - MessageReceiverDecorateDataDelegate Methods
+
+- (void)didReceiveSelectDecorateData:(NSUUID *)uuid {
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {
@@ -206,7 +251,7 @@
     }
 }
 
-- (void)receivedDecorateDataEditCancelled:(NSUUID *)uuid {
+- (void)didReceiveDeselectDecorateData:(NSUUID *)uuid {
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {
@@ -218,25 +263,24 @@
     }
 }
 
-- (void)receivedDecorateDataInsert:(DecorateData *)data {
-    if (!data) {
+- (void)didReceiveInsertDecorateData:(DecorateData *)insertData {
+    if (!insertData) {
         return;
     }
     
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    data.frame = CGRectMake(data.frame.origin.x,
-                            data.frame.origin.y,
-                            data.frame.size.width / connectionManager.widthRatio,
-                            data.frame.size.height / connectionManager.heightRatio);
+    insertData.frame = CGRectMake(insertData.frame.origin.x,
+                                  insertData.frame.origin.y,
+                                  insertData.frame.size.width / self.widthRatio,
+                                  insertData.frame.size.height / self.heightRatio);
     
-    [self addDecorateData:data];
+    [self addDecorateData:insertData];
 }
 
-- (void)receivedDecorateDataUpdate:(NSUUID *)uuid frame:(CGRect)frame {
+- (void)didReceiveUpdateDecorateData:(NSUUID *)uuid updateFrame:(CGRect)updateFrame {
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {
-        data.frame = frame;
+        data.frame = updateFrame;
     }
     
     if (self.delegate) {
@@ -244,7 +288,7 @@
     }
 }
 
-- (void)receivedDecorateDataDeleted:(NSUUID *)uuid {
+- (void)didReceiveDeleteDecorateData:(NSUUID *)uuid {
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {
@@ -252,7 +296,10 @@
     }
 }
 
-- (void)interruptedDecorateDataEditing:(NSUUID *)uuid {
+
+#pragma mark - MessageInterrupterDecorateDataSelectionDelegate Methods
+
+- (void)interruptDecorateDataSelection:(NSUUID *)uuid {
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {

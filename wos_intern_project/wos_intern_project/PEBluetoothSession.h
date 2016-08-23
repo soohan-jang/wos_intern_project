@@ -10,4 +10,16 @@
 
 @interface PEBluetoothSession : PESession
 
+#pragma mark - Bluetooth Browser Methods
+
+- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id)delegate;
+
+
+#pragma mark - Bluetooth Advertiser Methods
+
+- (void)setAdvertiserDelegate:(id)delegate;
+- (void)startAdvertise;
+- (void)stopAdvertise;
+- (void)clearBluetoothAdvertiser;
+
 @end

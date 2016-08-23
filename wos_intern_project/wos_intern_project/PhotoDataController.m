@@ -16,10 +16,50 @@
 #import "PhotoCollectionViewCell.h"
 
 #import "SessionManager.h"
+#import "MessageSender.h"
 #import "MessageReceiver.h"
 #import "MessageInterrupter.h"
 
 NSInteger const DefaultMargin   = 5;
+
+@interface PhotoDataSender ()
+
+@property (strong, nonatomic) MessageSender *messageSender;
+
+@end
+
+@implementation PhotoDataSender
+
+- (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendSelectPhotoDataMessage:indexPath];
+}
+
+- (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendDeselectPhotoDataMessage:indexPath];
+}
+
+- (void)sendInsertPhotoDataMessage:(NSIndexPath *)indexPath originalImageURL:(NSURL *)originalImageURL croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType {
+    [self.messageSender sendInsertPhotoDataMessage:indexPath
+                                  originalImageURL:originalImageURL
+                                   croppedImageURL:croppedImageURL
+                                        filterType:filterType];
+}
+
+- (void)sendUpdatePhotoDataMessage:(NSIndexPath *)indexPath croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType {
+    [self.messageSender sendUpdatePhotoDataMessage:indexPath
+                                   croppedImageURL:croppedImageURL
+                                        filterType:filterType];
+}
+
+- (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendDeletePhotoDataMessage:indexPath];
+}
+
+- (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack {
+    return [self.messageSender sendPhotoDataAckMessage:indexPath ack:ack];
+}
+
+@end
 
 @interface PhotoDataController () <UICollectionViewDataSource, MessageReceiverPhotoDataDelegate, MessageInterrupterPhotoDataSelectionDelegate>
 

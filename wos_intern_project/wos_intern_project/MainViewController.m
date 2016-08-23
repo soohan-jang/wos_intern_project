@@ -12,10 +12,8 @@
 #import "CommonConstants.h"
 
 #import "SessionManager.h"
-#import "PEBluetoothSession.h"
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"
-#import "MessageBuffer.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
@@ -25,9 +23,6 @@
 NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 @interface MainViewController () <BluetoothBrowserDelegate, BluetoothAdvertiserDelegate>
-
-@property (strong, nonatomic) BluetoothBrowser *browser;
-@property (strong, nonatomic) BluetoothAdvertiser *advertiser;
 
 @property (nonatomic, strong) WMProgressHUD *progressView;
 
@@ -47,7 +42,6 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     [super viewDidAppear:animated];
     
     [self prepareSession];
-    [self prepareAdvertiser];
     [self.view setUserInteractionEnabled:YES];
 }
 
@@ -56,12 +50,6 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         [self.view removeGestureRecognizer:recognizer];
     }
     
-    self.browser.delegate = nil;
-    self.browser = nil;
-    
-    self.advertiser.delegate = nil;
-    self.advertiser = nil;
-    
     self.progressView = nil;
 }
 
@@ -69,57 +57,12 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 #pragma mark - Prepare Session
 
 - (void)prepareSession {
-    PEBluetoothSession *session = [[PEBluetoothSession alloc] init];
-    [[SessionManager sharedInstance] setSession:session];
-}
-
-
-#pragma mark - Prepare & Clear Bluetooth Connection
-
-/**
- * @brief 장비를 검색하고 연결을 시도할 때 사용하는 Browser를 생성하고, delegate를 등록한다.
- */
-- (void)prepareBrowser {
-    if (self.browser) {
-        return;
-    }
+    SessionManager *sessionManager = [SessionManager sharedInstance];
+    [sessionManager initializeWithSessionType:SessionTypeBluetooth];
     
-    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
-    self.browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType
-                                                         session:[session instanceOfSession]];
-    self.browser.delegate = self;
-}
-
-/**
- * @brief 장비 검색을 활성화시키는 Advertiser를 생성하고, delegate를 등록한다.
- */
-- (void)prepareAdvertiser {
-    if (self.advertiser) {
-        return;
-    }
-    
-    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
-    self.advertiser = [[BluetoothAdvertiser alloc] initWithServiceType:SessionServiceType
-                                                               session:[session instanceOfSession]];
-    self.advertiser.delegate = self;
-    
-    [self.advertiser advertiseStart];
-}
-
-/**
- * @brief 장비를 검색하고 연결을 시도할 때 사용하는 Browser를 제거한다.
- */
-- (void)clearBrowser {
-    self.browser.delegate = nil;
-    self.browser = nil;
-}
-
-/**
- * @brief 장비 검색을 활성화시키는 Advertiser를 제거한다.
- */
-- (void)clearAdvertiser {
-    self.advertiser.delegate = nil;
-    self.advertiser = nil;
+    PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
+    [session setAdvertiserDelegate:self];
+    [session startAdvertise];
 }
 
 
@@ -144,9 +87,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
  * @brief 장비를 검색하고 연결할 VC를 화면에 표시한다.
  */
 - (void)presentBrowserViewController {
-    [self prepareBrowser];
-    if ([self.browser presentBrowserViewController:self]) {
-        [self.advertiser advertiseStop];
+    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+    if ([session presentBrowserController:self delegate:self]) {
         return;
     }
     
@@ -162,13 +104,11 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
  * @brief 사진액자를 선택할 VC를 화면에 표시한다.
  */
 - (void)presentSelectPhotoFrameViewController {
-    [self clearBrowser];
-    [self clearAdvertiser];
+    SessionManager *sessionManager = [SessionManager sharedInstance];
+    [sessionManager setMessageBufferEnabled:YES];
     
-    PESession *session = [SessionManager sharedInstance].session;
-    MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
-    [messageBuffer clearMessageBuffer];
-    [messageBuffer setEnabledMessageBuffer:YES session:[session instanceOfSession]];
+    PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
+    [session clearBluetoothAdvertiser];
     
     [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];
 }
@@ -176,12 +116,19 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 #pragma mark - Bluetooth Browser Delegate Methods
 
-- (void)browserSessionConnected {
+- (void)browserSessionConnected:(BluetoothBrowser *)browser {
     [self presentSelectPhotoFrameViewController];
+    
+    browser.delegate = nil;
+    browser = nil;
 }
 
-- (void)browserSessionNotConnected {
-    [self.advertiser advertiseStart];
+- (void)browserSessionNotConnected:(BluetoothBrowser *)browser {
+    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+    [session startAdvertise];
+    
+    browser.delegate = nil;
+    browser = nil;
 }
 
 
@@ -224,7 +171,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     //ProgressView가 nil이거나 숨겨진 상태라면, 초대장을 받은 정상적인 Advertiser가 아님.
     //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
     if (!self.progressView || self.progressView.hidden) {
-        [[SessionManager sharedInstance] sessionDisconnect];
+        [[SessionManager sharedInstance] disconnectSession];
         return;
     }
     
@@ -245,7 +192,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)advertiserSessionNotConnected {
     if (!self.progressView || self.progressView.hidden) {
-        [[SessionManager sharedInstance] sessionDisconnect];
+        [[SessionManager sharedInstance] disconnectSession];
         return;
     }
     
@@ -253,7 +200,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                     dismissTitleKey:@"progress_title_rejected"
                         dismissType:DismissWithDone
                   completionHandler:^{
-                      [[SessionManager sharedInstance] sessionDisconnect];
+                      [[SessionManager sharedInstance] disconnectSession];
                   }
      ];
 }

@@ -21,18 +21,17 @@ NSInteger const MaximumNumberOfPeers = 1;
 
 @implementation BluetoothBrowser
 
-
 #pragma mark - Initialize method
 
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session {
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session {
     self = [super init];
     
     if (self) {
-        _browserController = [[MCBrowserViewController alloc] initWithServiceType:serviceType session:[session instanceOfSession]];
+        _browserController = [[MCBrowserViewController alloc] initWithServiceType:serviceType session:session];
         _browserController.maximumNumberOfPeers = MaximumNumberOfPeers;
         _browserController.delegate = self;
         
-        _messageReceiver = [[MessageReceiver alloc] initWithSession:session];
+        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }
     
     return self;
@@ -68,6 +67,7 @@ NS_ENUM(NSInteger, DismissType) {
 - (void)dismissBrowserViewController:(NSInteger)dismissType {
     _messageReceiver.stateChangeDelegate = nil;
     [_browserController.browser stopBrowsingForPeers];
+    _browserController.delegate = nil;
     
     __weak typeof(self) weakSelf = self;
     [_browserController dismissViewControllerAnimated:YES completion:^{
@@ -80,10 +80,10 @@ NS_ENUM(NSInteger, DismissType) {
         if (self.delegate) {
             switch (dismissType) {
                 case DismissTypeConnected:
-                    [self.delegate browserSessionConnected];
+                    [self.delegate browserSessionConnected:self];
                     break;
                 case DismissTypeNotConnected:
-                    [self.delegate browserSessionNotConnected];
+                    [self.delegate browserSessionNotConnected:self];
                     break;
             }
         }
@@ -91,7 +91,7 @@ NS_ENUM(NSInteger, DismissType) {
 }
 
 
-#pragma mark - MCBrowserViewControllerDelegate
+#pragma mark - MCBrowserViewControllerDelegate Methods
 
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController {
     //완료 버튼을 눌러도 닫히지 않게 만든다. 세션 연결이 완료되면 자동으로 다음 화면으로 넘어간다.

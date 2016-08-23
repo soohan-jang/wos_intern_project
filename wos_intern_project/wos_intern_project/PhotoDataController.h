@@ -18,9 +18,24 @@ typedef NS_ENUM(NSInteger, CellState) {
 
 @protocol PhotoDataControllerDelegate;
 
+@interface PhotoDataSender : NSObject
+
+- (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath;
+- (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath;
+
+- (void)sendInsertPhotoDataMessage:(NSIndexPath *)indexPath originalImageURL:(NSURL *)originalImageURL croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType;
+- (void)sendUpdatePhotoDataMessage:(NSIndexPath *)indexPath croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType;
+- (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath;
+
+- (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack;
+
+@end
+
 @interface PhotoDataController : NSObject
 
 @property (weak, nonatomic) id<PhotoDataControllerDelegate> delegate;
+@property (strong, nonatomic) PhotoDataSender *dataSender;
+
 @property (assign, nonatomic) NSIndexPath *selectedIndexPath;
 
 /**

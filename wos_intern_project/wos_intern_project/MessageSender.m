@@ -69,7 +69,7 @@
     return [self.session sendMessage:data];
 }
 
-- (BOOL)sendPhotoframeConfirmAckMessage:(BOOL)confrimAck {
+- (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck {
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirmAck;
     data.photoFrameConfirmAck = confrimAck;
@@ -151,18 +151,10 @@
 
 #pragma mark - Send Insert & Update Photo Data Response Ack Meesage Methods
 
-- (BOOL)sendInsertPhotoDataAckMessage:(NSIndexPath *)indexPath insertAck:(BOOL)insertAck {
+- (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack {
     MessageData *data = [[MessageData alloc] init];
-    data.messageType = MessageTypePhotoDataInsertAck;
-    data.photoDataRecevieAck = insertAck;
-    
-    return [self.session sendMessage:data];
-}
-
-- (BOOL)sendUpdatePhotoDataAckMessage:(NSIndexPath *)indexPath updateAck:(BOOL)updateAck {
-    MessageData *data = [[MessageData alloc] init];
-    data.messageType = MessageTypePhotoDataUpdateAck;
-    data.photoDataRecevieAck = updateAck;
+    data.messageType = MessageTypePhotoDataReceiveAck;
+    data.photoDataRecevieAck = ack;
     
     return [self.session sendMessage:data];
 }

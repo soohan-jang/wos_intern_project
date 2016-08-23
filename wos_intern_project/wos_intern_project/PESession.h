@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MessageSender.h"
-#import "MessageReceiver.h"
+#import "CommonConstants.h"
 #import "MessageData.h"
 
 typedef NS_ENUM(NSInteger, SessionType) {
@@ -42,6 +41,7 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 
 - (id)instanceOfSession;
 - (NSString *)displayNameOfSession;
+
 - (BOOL)sendMessage:(MessageData *)message;
 - (void)sendResource:(MessageData *)message resultBlock:(void (^)(BOOL success))resultHandler;
 

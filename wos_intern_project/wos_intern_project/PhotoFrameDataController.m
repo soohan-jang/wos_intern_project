@@ -10,19 +10,43 @@
 #import "SelectPhotoFrameViewCell.h"
 
 #import "SessionManager.h"
+#import "MessageSender.h"
 #import "MessageReceiver.h"
-#import "MessageBuffer.h"
 #import "MessageInterrupter.h"
 
 #import "ImageUtility.h"
 
 NSInteger const NumberOfPhotoFrameCells = 12;
 
+@interface PhotoFrameDataSender ()
+
+@property (strong, nonatomic) MessageSender *messageSender;
+
+@end
+
+@implementation PhotoFrameDataSender
+
+- (BOOL)sendSelectPhotoFrameMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendSelectPhotoFrameMessage:indexPath];
+}
+
+- (BOOL)sendDeselectPhotoFrameMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendDeselectPhotoFrameMessage:indexPath];
+}
+
+- (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath {
+    return [self.messageSender sendPhotoFrameConfrimRequestMessage:indexPath];
+}
+
+- (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck {
+    return [self.messageSender sendPhotoFrameConfirmAckMessage:confrimAck];
+}
+
+@end
+
 @interface PhotoFrameDataController () <UICollectionViewDataSource, MessageReceiverPhotoFrameDataDelegate, MessageInterrupterConfirmRequestDelegate>
 
 @property (strong, atomic) NSMutableArray<PhotoFrameData *> *cellDatas;
-
-@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -38,25 +62,25 @@ NSInteger const NumberOfPhotoFrameCells = 12;
             [self.cellDatas addObject:[[PhotoFrameData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
         }
         
-        MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
+        SessionManager *sessionManager = [SessionManager sharedInstance];
+        MessageBuffer *messageBuffer = sessionManager.messageReceiver.messageBuffer;
         
-        //동기화 작업을 수행한다.
-        while (![messageBuffer isMessageBufferEnabled]) {
-            MessageData *data = [messageBuffer getMessage];
-            
-            if (data.messageType == MessageTypePhotoFrameSelect) {
-                [self setSelectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
-            } else if (data.messageType == MessageTypePhotoFrameDeselect) {
-                [self setDeselectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
+        if (messageBuffer.enabled && !messageBuffer.isMessageBufferEmpty) {
+            //동기화 작업을 수행한다.
+            while (![messageBuffer isMessageBufferEnabled]) {
+                MessageData *data = [messageBuffer getMessage];
+                
+                if (data.messageType == MessageTypePhotoFrameSelect) {
+                    [self setSelectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
+                } else if (data.messageType == MessageTypePhotoFrameDeselect) {
+                    [self setDeselectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
+                }
             }
         }
         
-        [messageBuffer setEnabledMessageBuffer:NO session:nil];
+        [messageBuffer setEnabled:NO];
         
-        PESession *session = [SessionManager sharedInstance].session;
-        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
-        self.messageReceiver.photoFrameDataDelegate = self;
-        
+        sessionManager.messageReceiver.photoFrameDataDelegate = self;
         [MessageInterrupter sharedInstance].interruptConfirmRequestDelegate = self;
     }
     
@@ -163,9 +187,9 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 - (void)setEnableCells:(BOOL)enabled {
     if (enabled) {
-        self.messageReceiver.photoFrameDataDelegate = self;
+        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = self;
     } else {
-        self.messageReceiver.photoFrameDataDelegate = nil;
+        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = nil;
     }
     
     for (PhotoFrameData *data in _cellDatas) {

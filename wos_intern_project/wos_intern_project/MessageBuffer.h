@@ -12,9 +12,7 @@
 
 @interface MessageBuffer : NSObject
 
-+ (instancetype)sharedInstance;
-
-- (void)setEnabledMessageBuffer:(BOOL)enabled session:(PESession *)session;
+@property (nonatomic, assign, getter=isEnabled) BOOL enabled;
 
 - (void)putMessage:(MessageData *)message;
 - (MessageData *)getMessage;
