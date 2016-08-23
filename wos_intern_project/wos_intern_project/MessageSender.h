@@ -7,20 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneralSession.h"
+#import "PESession.h"
 #import "DecorateData.h"
 
 @interface MessageSender : NSObject
 
-- (instancetype)initWithSession:(GeneralSession *)session;
-
-- (BOOL)sendScreenSizeMessage:(CGSize)screenSize;
+- (instancetype)initWithSession:(PESession *)session;
 
 - (BOOL)sendSelectPhotoFrameMessage:(NSIndexPath *)indexPath;
 - (BOOL)sendDeselectPhotoFrameMessage:(NSIndexPath *)indexPath;
 
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath;
 - (BOOL)sendPhotoframeConfirmAckMessage:(BOOL)confrimAck;
+
+- (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize;
 
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath;
 - (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath;

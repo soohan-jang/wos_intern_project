@@ -1,5 +1,5 @@
 //
-//  GeneralSession.h
+//  PESession.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 22..
@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MessageSender.h"
+#import "MessageReceiver.h"
 #import "MessageData.h"
 
 typedef NS_ENUM(NSInteger, SessionType) {
@@ -15,11 +17,8 @@ typedef NS_ENUM(NSInteger, SessionType) {
 
 typedef NS_ENUM(NSInteger, AvailiableStateType) {
     AvailiableStateUnknown      = 0,
-    AvailiableStateUnsupported,
-    AvailiableStateUnauthorized,
-    AvailiableStateResetting,
-    AvailiableStatePowerOff,
-    AvailiableStatePowerOn
+    AvailiableStateDisable,
+    AvailiableStateEnable
 };
 
 typedef NS_ENUM(NSInteger, SessionStateType) {
@@ -31,7 +30,7 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 @protocol SessionConnectDelegate;
 @protocol SessionDataReceiveDelegate;
 
-@interface GeneralSession : NSObject
+@interface PESession : NSObject
 
 @property (nonatomic, weak) id<SessionConnectDelegate> connectDelegate;
 @property (nonatomic, weak) id<SessionDataReceiveDelegate> dataReceiveDelegate;
@@ -41,6 +40,7 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 @property (nonatomic, assign) NSInteger availiableState;
 @property (nonatomic, assign) NSInteger sessionState;
 
+- (id)instanceOfSession;
 - (NSString *)displayNameOfSession;
 - (BOOL)sendMessage:(MessageData *)message;
 - (void)sendResource:(MessageData *)message resultBlock:(void (^)(BOOL success))resultHandler;
@@ -51,7 +51,6 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 
 @protocol SessionConnectDelegate <NSObject>
 @required
-- (void)didChangeAvailiableState:(NSInteger)state;
 - (void)didChangeSessionState:(NSInteger)state;
 
 @end

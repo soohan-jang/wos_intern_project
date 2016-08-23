@@ -7,12 +7,17 @@
 //
 
 #import "DecorateDataController.h"
-#import "ConnectionManager.h"
 #import "DecorateDataDisplayView.h"
 
-@interface DecorateDataController () <DecorateDataDisplayViewDataSource, ConnectionManagerDecorateDataDelegate>
+#import "SessionManager.h"
+#import "MessageReceiver.h"
+#import "MessageInterrupter.h"
+
+@interface DecorateDataController () <DecorateDataDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate>
 
 @property (atomic, strong) NSMutableArray<DecorateData *> *decorateDataArray;
+
+@property (nonatomic, strong) MessageReceiver *messageReceiver;
 
 @end
 
@@ -25,7 +30,11 @@
     self = [super init];
     
     if (self) {
-        [ConnectionManager sharedInstance].decorateDataDelegate = self;
+        PESession *session = [SessionManager sharedInstance].session;
+        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
+        self.messageReceiver.decorateDataDelegate = self;
+        
+        [MessageInterrupter sharedInstance].interruptDecorateDataSelectionDelegate = self;
     }
     
     return self;
@@ -47,7 +56,7 @@
     [self sortDecorateDataArray];
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:decorateData.uuid];
+        [self.delegate didUpdateDecorateData:decorateData.uuid];
     }
 }
 
@@ -61,7 +70,7 @@
     data.selected = selected;
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -75,7 +84,7 @@
     data.frame = frame;
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -89,7 +98,7 @@
     [self.decorateDataArray removeObject:data];
         
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -193,7 +202,7 @@
     }
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -205,7 +214,7 @@
     }
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -231,7 +240,7 @@
     }
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 
@@ -251,7 +260,7 @@
     }
     
     if (self.delegate) {
-        [self.delegate didDecorateDataArrayUpdate:uuid];
+        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 

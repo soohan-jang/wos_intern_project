@@ -7,19 +7,20 @@
 //
 
 #import "MainViewController.h"
+#import "SelectPhotoFrameViewController.h"
 
 #import "CommonConstants.h"
 
-#import "ConnectionManager.h"
+#import "SessionManager.h"
+#import "PEBluetoothSession.h"
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"
-#import "ValidateCheckUtility.h"
-
-#import "SelectPhotoFrameViewController.h"
+#import "MessageBuffer.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
-#import "MessageFactory.h"
+
+#import "ValidateCheckUtility.h"
 
 NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
@@ -45,6 +46,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    [self prepareSession];
     [self prepareAdvertiser];
     [self.view setUserInteractionEnabled:YES];
 }
@@ -64,6 +66,14 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 }
 
 
+#pragma mark - Prepare Session
+
+- (void)prepareSession {
+    PEBluetoothSession *session = [[PEBluetoothSession alloc] init];
+    [[SessionManager sharedInstance] setSession:session];
+}
+
+
 #pragma mark - Prepare & Clear Bluetooth Connection
 
 /**
@@ -74,10 +84,9 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         return;
     }
     
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    self.browser = [[BluetoothBrowser alloc] initWithServiceType:ConnectionManagerServiceType
-                                                     session:connectionManager.ownSession];
+    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+    self.browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType
+                                                         session:[session instanceOfSession]];
     self.browser.delegate = self;
 }
 
@@ -89,10 +98,9 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         return;
     }
     
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    
-    self.advertiser = [[BluetoothAdvertiser alloc] initWithServiceType:ConnectionManagerServiceType
-                                                            peerId:connectionManager.ownPeerId];
+    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+    self.advertiser = [[BluetoothAdvertiser alloc] initWithServiceType:SessionServiceType
+                                                               session:[session instanceOfSession]];
     self.advertiser.delegate = self;
     
     [self.advertiser advertiseStart];
@@ -157,9 +165,10 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     [self clearBrowser];
     [self clearAdvertiser];
     
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    [connectionManager clearMessageQueue];
-    [connectionManager setMessageQueueEnabled:YES];
+    PESession *session = [SessionManager sharedInstance].session;
+    MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
+    [messageBuffer clearMessageBuffer];
+    [messageBuffer setEnabledMessageBuffer:YES session:[session instanceOfSession]];
     
     [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];
 }
@@ -183,8 +192,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     //Alert 표시하고, 확인 누르면 Assert.
 }
 
-- (void)didReceiveInvitationWithPeerId:(MCPeerID *)peerID invitationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
-    NSString *message = [NSString stringWithFormat:@"\"%@\" %@", peerID.displayName,
+- (void)didReceiveInvitationWithPeerName:(NSString *)peerName invitationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
+    NSString *message = [NSString stringWithFormat:@"\"%@\" %@", peerName,
                                                                  NSLocalizedString(@"alert_content_invitation_received", nil)];
     
     __weak typeof(self) weakSelf = self;
@@ -193,7 +202,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                              message:message
                                               button:@"alert_button_text_decline"
                                        buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                           invitationHandler(NO, [ConnectionManager sharedInstance].ownSession);
+                                           PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+                                           invitationHandler(NO, [session instanceOfSession]);
                                        }
                                          otherButton:@"alert_button_text_accept"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
@@ -203,7 +213,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                           return;
                                       }
                                       
-                                      invitationHandler(YES, [ConnectionManager sharedInstance].ownSession);
+                                      PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+                                      invitationHandler(YES, [session instanceOfSession]);
                                       self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_connecting"];
                                       [self.view setUserInteractionEnabled:NO];
                                   }];
@@ -213,20 +224,10 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     //ProgressView가 nil이거나 숨겨진 상태라면, 초대장을 받은 정상적인 Advertiser가 아님.
     //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
     if (!self.progressView || self.progressView.hidden) {
-        [[ConnectionManager sharedInstance] disconnectSession];
+        [[SessionManager sharedInstance] sessionDisconnect];
         return;
     }
     
-//    [ProgressHelper dismissProgress:self.progressView
-//                    dismissTitleKey:@"progress_title_connected"
-//                        dismissType:DismissWithDone];
-//    
-//    //여기서 딜레이을 준 이유는, ProgressView에 표시되는 "연결됨" 메시지를 보여준 뒤에 이동시키기 위함이다.
-//    [NSTimer scheduledTimerWithTimeInterval:DelayTime
-//                                     target:self
-//                                   selector:@selector(presentFrameSelectViewController)
-//                                   userInfo:nil
-//                                    repeats:NO];
     __weak typeof(self) weakSelf = self;
     [ProgressHelper dismissProgress:self.progressView
                     dismissTitleKey:@"progress_title_connected"
@@ -243,19 +244,18 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 }
 
 - (void)advertiserSessionNotConnected {
-    if (!_progressView || _progressView.hidden) {
-        [[ConnectionManager sharedInstance] disconnectSession];
+    if (!self.progressView || self.progressView.hidden) {
+        [[SessionManager sharedInstance] sessionDisconnect];
         return;
     }
     
-    if (!self.progressView.isHidden) {
-        [ProgressHelper dismissProgress:self.progressView
-                        dismissTitleKey:@"progress_title_rejected"
-                            dismissType:DismissWithDone
-                      completionHandler:nil];
-    }
-    
-    [[ConnectionManager sharedInstance] disconnectSession];
+    [ProgressHelper dismissProgress:self.progressView
+                    dismissTitleKey:@"progress_title_rejected"
+                        dismissType:DismissWithDone
+                  completionHandler:^{
+                      [[SessionManager sharedInstance] sessionDisconnect];
+                  }
+     ];
 }
 
 @end

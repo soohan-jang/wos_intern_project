@@ -8,8 +8,10 @@
 
 #import "MessageBuffer.h"
 
-@interface MessageBuffer ()
+@interface MessageBuffer () <SessionDataReceiveDelegate>
 
+@property (nonatomic, assign) BOOL enabled;
+@property (nonatomic, strong) PESession *session;
 @property (atomic, strong) NSMutableArray<MessageData *> *messageBuffer;
 
 @end
@@ -27,6 +29,15 @@
     });
     
     return instance;
+}
+
+- (void)setEnabledMessageBuffer:(BOOL)enabled session:(PESession *)session {
+    self.enabled = enabled;
+    self.session = session;
+    
+    if (self.enabled) {
+        _session.dataReceiveDelegate = self;
+    }
 }
 
 - (void)putMessage:(MessageData *)message {
@@ -56,12 +67,27 @@
     [self.messageBuffer removeAllObjects];
 }
 
+- (BOOL)isMessageBufferEnabled {
+    return self.enabled;
+}
+
 - (BOOL)isMessageBufferEmpty {
     if (!self.messageBuffer || self.messageBuffer.count == 0) {
         return YES;
     }
     
     return NO;
+}
+
+
+#pragma mark - Session Data Received Delegate
+
+- (void)didReceiveData:(MessageData *)message {
+    if (![self isMessageBufferEnabled]) {
+        return;
+    }
+    
+    [self putMessage:message];
 }
 
 @end

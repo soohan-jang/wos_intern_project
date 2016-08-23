@@ -7,6 +7,7 @@
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "PEBluetoothSession.h"
 
 @protocol BluetoothBrowserDelegate;
 
@@ -20,7 +21,7 @@
  * @param session : 연결에 사용할 세션 객체
  * @return BluetoothBrowser : 생성된 Browser 객체
  */
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session;
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session;
 
 /**
  * @brief 단말을 검색하고 연결을 시도할 수 있는 BrowserVC를 표시한다.
@@ -28,20 +29,6 @@
  * @return BOOL : 현재 블루투스의 상태를 확인한 뒤, 정상적으로 표시가 되면 YES를 리턴한다. 아닐 경우 NO를 리턴한다.
  */
 - (BOOL)presentBrowserViewController:(UIViewController *)parentViewController;
-
-/**
- * @brief 표시된 BrowserVC에서 완료 버튼을 눌렀을 때 호출되는 델리게이트 메소드이다.
- * @param browserViewController : 타겟 BrowserVC
- * @return void
- */
-- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController;
-
-/**
- * @brief 표시된 BrowserVC에서 취소 버튼을 눌렀을 때 호출되는 델리게이트 메소드이다.
- * @param browserViewController : 타겟 BrowserVC
- * @return void
- */
-- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController;
 
 @end
 

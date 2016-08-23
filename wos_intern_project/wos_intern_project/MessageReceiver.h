@@ -7,66 +7,67 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneralSession.h"
+#import "PESession.h"
 #import "DecorateData.h"
 
-@protocol StateChangeDelegate;
-@protocol PhotoFrameDataDelegate;
-@protocol PhotoDataDelegate;
-@protocol DecorateDataDelegate;
+@protocol MessageReceiverStateChangeDelegate;
+@protocol MessageReceiverPhotoFrameDataDelegate;
+@protocol MessageReceiverDeviceDataDelegate;
+@protocol MessageReceiverPhotoDataDelegate;
+@protocol MessageReceiverDecorateDataDelegate;
 
 @interface MessageReceiver : NSObject
 
-@property (nonatomic, weak) id<StateChangeDelegate>     stateChangeDelegate;
-@property (nonatomic, weak) id<PhotoFrameDataDelegate>  photoFrameDataDelegate;
-@property (nonatomic, weak) id<PhotoDataDelegate>       photoDataDelegate;
-@property (nonatomic, weak) id<DecorateDataDelegate>    decorateDataDelegate;
+@property (nonatomic, weak) id<MessageReceiverStateChangeDelegate>     stateChangeDelegate;
+@property (nonatomic, weak) id<MessageReceiverPhotoFrameDataDelegate>  photoFrameDataDelegate;
+@property (nonatomic, weak) id<MessageReceiverDeviceDataDelegate>      deviceDataDelegate;
+@property (nonatomic, weak) id<MessageReceiverPhotoDataDelegate>       photoDataDelegate;
+@property (nonatomic, weak) id<MessageReceiverDecorateDataDelegate>    decorateDataDelegate;
 
-- (instancetype)initWithSession:(GeneralSession *)session;
+- (instancetype)initWithSession:(PESession *)session;
 
 @end
 
-@protocol StateChangeDelegate <NSObject>
+@protocol MessageReceiverStateChangeDelegate <NSObject>
 @required
-- (void)didReceiveChangeAvailiableState:(NSInteger)state;
 - (void)didReceiveChangeSessionState:(NSInteger)state;
 
 @end
 
-@protocol PhotoFrameDataDelegate <NSObject>
+@protocol MessageReceiverPhotoFrameDataDelegate <NSObject>
 @required
-- (void)didReceiveScreenSize:(CGSize)screenSize;
-
 - (void)didReceiveSelectPhotoFrame:(NSIndexPath *)indexPath;
 - (void)didReceiveDeselectPhotoFrame:(NSIndexPath *)indexPath;
 
 - (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath;
 - (void)didReceiveReceivePhotoFrameConfirmAck:(BOOL)confirmAck;
 
-- (void)didReceiveRequestInterruptPhotoFrameConfirm;
+@end
+
+@protocol MessageReceiverDeviceDataDelegate <NSObject>
+@required
+- (void)didReceiveDeviceScreenSize:(CGSize)screenSize;
 
 @end
 
-@protocol PhotoDataDelegate <NSObject>
+@protocol MessageReceiverPhotoDataDelegate <NSObject>
 @required
 - (void)didReceiveSelectPhotoData:(NSIndexPath *)indexPath;
 - (void)didReceiveDeselectPhotoData:(NSIndexPath *)indexPath;
 
-- (void)didReceiveStartInsertPhotoData:(NSIndexPath *)indexPath;
-- (void)didReceiveFinishInsertPhotoData:(NSIndexPath *)indexPath;
+- (void)didReceiveStartReceivePhotoData:(NSIndexPath *)indexPath;
+- (void)didReceiveFinishReceivePhotoData:(NSIndexPath *)indexPath;
+- (void)didReceiveErrorReceivePhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType;
 
-- (void)didReceiveInsertPhotoData:(NSIndexPath *)indexPath insertDataURL:(NSURL *)insertDataURL filterType:(NSInteger)filterType;
+- (void)didReceiveInsertPhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType insertDataURL:(NSURL *)insertDataURL filterType:(NSInteger)filterType;
 - (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType;
 - (void)didReceiveDeletePhotoData:(NSIndexPath *)indexPath;
 
-- (void)didReceiveInsertPhotoDataAck:(NSIndexPath *)indexPath;
-- (void)didReceiveUpdatePhotoDataAck:(NSIndexPath *)indexPath;
-
-- (void)didReceiveSelectInterruptPhotoData:(NSIndexPath *)indexPath;
+- (void)didReceivePhotoDataAck:(NSIndexPath *)indexPath ack:(BOOL)ack;
 
 @end
 
-@protocol DecorateDataDelegate <NSObject>
+@protocol MessageReceiverDecorateDataDelegate <NSObject>
 @required
 - (void)didReceiveSelectDecorateData:(NSUUID *)uuid;
 - (void)didReceiveDeselectDecorateData:(NSUUID *)uuid;
@@ -74,7 +75,5 @@
 - (void)didReceiveInsertDecorateData:(DecorateData *)insertData;
 - (void)didReceiveUpdateDecorateData:(NSUUID *)uuid updateFrame:(CGRect)updateFrame;
 - (void)didReceiveDeleteDecorateData:(NSUUID *)uuid;
-
-- (void)didReceiveSelectInterruptDecorateData:(NSUUID *)uuid;
 
 @end

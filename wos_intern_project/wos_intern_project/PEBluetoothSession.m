@@ -1,24 +1,25 @@
 //
-//  BluetoothSession.m
+//  PEBluetoothSession.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 22..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "BluetoothSession.h"
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+
+#import "PEBluetoothSession.h"
 #import "CommonConstants.h"
 
-@interface BluetoothSession () <MCSessionDelegate, CBCentralManagerDelegate>
+@interface PEBluetoothSession () <MCSessionDelegate, CBCentralManagerDelegate>
 
 @property (nonatomic, strong) CBCentralManager *bluetoothManager;
 @property (strong, nonatomic) MCSession *session;
 
 @end
 
-@implementation BluetoothSession
+@implementation PEBluetoothSession
 
 - (instancetype)init {
     self = [super init];
@@ -36,6 +37,10 @@
     }
     
     return self;
+}
+
+- (id)instanceOfSession {
+    return self.session;
 }
 
 - (NSString *)displayNameOfSession {
@@ -163,7 +168,7 @@
         //didReceivedData : receive start photo data
         
         MessageData *data = [[MessageData alloc] init];
-        data.messageType = MessageTypePhotoDataInsertStart;
+        data.messageType = MessageTypePhotoDataReceiveStart;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         
         [self.dataReceiveDelegate didReceiveData:data];
@@ -192,6 +197,12 @@
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
+            MessageData *data = [[MessageData alloc] init];
+            data.messageType = MessageTypePhotoDataReceiveError;
+            data.photoDataType = fileTypeOfPhotoData;
+            data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+            
+            [self.dataReceiveDelegate didReceiveData:data];
             return;
         }
         
@@ -199,6 +210,7 @@
         MessageData *data = [[MessageData alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+        data.photoDataType = fileTypeOfPhotoData;
         data.photoDataCroppedImageURL = fileURLOfPhotoData;
         data.photoDataFilterType = filterTypeOfPhotoData;
         
@@ -207,8 +219,8 @@
         if (messageTypeOfPhotoData == MessageTypePhotoDataUpdate) {
             //didReceivedData : receive finish photo data
             data = [[MessageData alloc] init];
-            data.messageType = MessageTypePhotoDataInsertFinish;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+            data.messageType = MessageTypePhotoDataReceiveFinish;
         }
         
         return;
@@ -218,6 +230,12 @@
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
+            MessageData *data = [[MessageData alloc] init];
+            data.messageType = MessageTypePhotoDataReceiveError;
+            data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+            data.photoDataType = fileTypeOfPhotoData;
+            
+            [self.dataReceiveDelegate didReceiveData:data];
             return;
         }
         
@@ -225,6 +243,7 @@
         MessageData *data = [[MessageData alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+        data.photoDataType = fileTypeOfPhotoData;
         data.photoDataOriginalImageURL = fileURLOfPhotoData;
         data.photoDataFilterType = filterTypeOfPhotoData;
         
@@ -232,7 +251,7 @@
         
         //didReceivedData : receive finish photo data
         data = [[MessageData alloc] init];
-        data.messageType = MessageTypePhotoDataInsertFinish;
+        data.messageType = MessageTypePhotoDataReceiveFinish;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         
         [self.dataReceiveDelegate didReceiveData:data];
@@ -273,27 +292,15 @@
             self.availiableState = AvailiableStateUnknown;
             break;
         case CBCentralManagerStateUnsupported:
-            self.availiableState = AvailiableStateUnsupported;
-            break;
         case CBCentralManagerStateUnauthorized:
-            self.availiableState = AvailiableStateUnauthorized;
-            break;
         case CBCentralManagerStateResetting:
-            self.availiableState = AvailiableStateResetting;
-            break;
         case CBCentralManagerStatePoweredOff:
-            self.availiableState = AvailiableStatePowerOff;
+            self.availiableState = AvailiableStateDisable;
             break;
         case CBCentralManagerStatePoweredOn:
-            self.availiableState = AvailiableStatePowerOn;
+            self.availiableState = AvailiableStateEnable;
             break;
     }
-    
-    if (!self.connectDelegate) {
-        return;
-    }
-    
-    [self.connectDelegate didChangeAvailiableState:self.availiableState];
 }
 
 @end

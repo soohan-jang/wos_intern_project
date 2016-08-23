@@ -6,24 +6,30 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "PhotoDataController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 
+#import "PhotoDataController.h"
+
 #import "CommonConstants.h"
 
-#import "ConnectionManager.h"
 #import "PhotoCollectionViewCell.h"
+
+#import "SessionManager.h"
+#import "MessageReceiver.h"
+#import "MessageInterrupter.h"
 
 NSInteger const DefaultMargin   = 5;
 
-@interface PhotoDataController () <UICollectionViewDataSource, ConnectionManagerPhotoDataDelegate>
+@interface PhotoDataController () <UICollectionViewDataSource, MessageReceiverPhotoDataDelegate, MessageInterrupterPhotoDataSelectionDelegate>
 
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
 @property (atomic, strong) NSArray<PhotoData *> *cellDatas;
+
+@property (nonatomic, strong) MessageReceiver *messageReceiver;
 
 @end
 
@@ -51,7 +57,11 @@ NSInteger const DefaultMargin   = 5;
         [cellInitArray removeAllObjects];
         cellInitArray = nil;
         
-        [ConnectionManager sharedInstance].photoDataDelegate = self;
+        PESession *session = [SessionManager sharedInstance].session;
+        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
+        self.messageReceiver.photoDataDelegate = self;
+        
+        [MessageInterrupter sharedInstance].interruptPhotoDataSelectionDelegate = self;
     }
     
     return self;
@@ -177,7 +187,7 @@ NSInteger const DefaultMargin   = 5;
     self.cellDatas[indexPath.item].croppedImage = photoData.croppedImage;
     
     if (self.delegate) {
-        [self.delegate didPhotoDataSourceUpdate:indexPath];
+        [self.delegate didUpdatePhotoData:indexPath];
     }
 }
 
@@ -193,7 +203,7 @@ NSInteger const DefaultMargin   = 5;
     self.cellDatas[indexPath.item].state = state;
     
     if (self.delegate) {
-        [self.delegate didPhotoDataSourceUpdate:indexPath];
+        [self.delegate didUpdatePhotoData:indexPath];
     }
 }
 
@@ -242,7 +252,7 @@ NSInteger const DefaultMargin   = 5;
     self.cellDatas[indexPath.item].croppedImage = nil;
     
     if (self.delegate) {
-        [self.delegate didPhotoDataSourceUpdate:indexPath];
+        [self.delegate didUpdatePhotoData:indexPath];
     }
 }
 
@@ -298,46 +308,66 @@ NSInteger const DefaultMargin   = 5;
 }
 
 
-#pragma mark - ConnectionManager PhotoDataSource Methods
+#pragma mark - MessageReceiverPhotoDataDelegate Methods
 
-- (void)receivedPhotoEditing:(NSIndexPath *)indexPath {
+- (void)didReceiveSelectPhotoData:(NSIndexPath *)indexPath {
     [self updateCellStateAtIndexPath:indexPath state:CellStateEditing];
 }
 
-- (void)receivedPhotoEditingCancelled:(NSIndexPath *)indexPath {
+- (void)didReceiveDeselectPhotoData:(NSIndexPath *)indexPath {
     [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
 }
 
-- (void)receivedPhotoInsert:(NSIndexPath *)indexPath type:(NSString *)type url:(NSURL *)url {
-    //Data Receive Started.
-    if (url == nil) {
-        [self updateCellStateAtIndexPath:indexPath state:CellStateDownloading];
-        //Data Receive Finished.
-    } else {
-        if ([type isEqualToString:IdentifierImageCropped]) {
-            self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
-        } else if ([type isEqualToString:IdentifierImageOriginal]) {
-            self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
-            [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
-        }
+- (void)didReceiveStartReceivePhotoData:(NSIndexPath *)indexPath {
+    [self updateCellStateAtIndexPath:indexPath state:CellStateDownloading];
+}
+
+- (void)didReceiveFinishReceivePhotoData:(NSIndexPath *)indexPath {
+    [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
+    
+    if (self.delegate) {
+        [self.delegate didFinishReceivePhotoData:indexPath];
     }
 }
 
-- (void)receivedPhotoInsertAck:(NSIndexPath *)indexPath ack:(BOOL)insertAck {
-    if (insertAck) {
-        [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
-    } else {
-        //error
+- (void)didReceiveErrorReceivePhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType {
+    //Do Something, about error fixing.
+    
+    if (self.delegate) {
+        [self.delegate didErrorReceivePhotoData:indexPath];
     }
 }
 
-- (void)receivedPhotoDeleted:(NSIndexPath *)indexPath {
+- (void)didReceiveInsertPhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType insertDataURL:(NSURL *)insertDataURL filterType:(NSInteger)filterType {
+    if ([dataType isEqualToString:IdentifierImageCropped]) {
+        self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
+    } else if ([dataType isEqualToString:IdentifierImageOriginal]) {
+        self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
+    }
+}
+
+- (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType {
+    self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:updateDataURL]];
+}
+
+- (void)didReceiveDeletePhotoData:(NSIndexPath *)indexPath {
     [self clearCellDataAtIndexPath:indexPath];
 }
 
-- (void)interruptedPhotoEditing:(NSIndexPath *)indexPath {
+- (void)didReceivePhotoDataAck:(NSIndexPath *)indexPath ack:(BOOL)ack {
+    [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
+    
+    if (!ack) {
+        //Do Something, about error fixing.
+    }
+}
+
+
+#pragma mark - MessageInterrupterPhotoDataSelectionDelegate Methods
+
+- (void)interruptPhotoDataSelction:(NSIndexPath *)indexPath {
     if (self.delegate) {
-        [self.delegate didPhotoEditInterrupt];
+        [self.delegate didInterruptPhotoDataSelection:indexPath];
     }
 }
 

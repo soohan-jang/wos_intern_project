@@ -7,25 +7,30 @@
 //
 
 #import "BluetoothAdvertiser.h"
-#import "ConnectionManager.h"
+#import "SessionManager.h"
+#import "MessageReceiver.h"
 
-@interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, ConnectionManagerSessionDelegate>
+@interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, MessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCNearbyServiceAdvertiser *advertiser;
-@property (strong, nonatomic) id invitationHandler;
+@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
 @implementation BluetoothAdvertiser
 
-- (instancetype)initWithServiceType:(NSString *)serviceType peerId:(MCPeerID *)myPeerId {
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session {
     self = [super init];
     
     if (self) {
+        MCPeerID *myPeerId = [[MCPeerID alloc] initWithDisplayName:[session displayNameOfSession]];
+        
         _advertiser = [[MCNearbyServiceAdvertiser alloc] initWithPeer:myPeerId
                                                         discoveryInfo:nil
                                                           serviceType:serviceType];
         _advertiser.delegate = self;
+        
+        _messageReceiver = [[MessageReceiver alloc] initWithSession:session];
     }
     
     return self;
@@ -35,12 +40,12 @@
 #pragma mark - Start & Stop Advertising
 
 - (void)advertiseStart {
-    [ConnectionManager sharedInstance].sessionDelegate = self;
+    _messageReceiver.stateChangeDelegate = self;
     [_advertiser startAdvertisingPeer];
 }
 
 - (void)advertiseStop {
-    [ConnectionManager sharedInstance].sessionDelegate = nil;
+    _messageReceiver.stateChangeDelegate = nil;
     [_advertiser stopAdvertisingPeer];
 }
 
@@ -59,22 +64,22 @@
 
 - (void)advertiser:(MCNearbyServiceAdvertiser *)advertiser didReceiveInvitationFromPeer:(MCPeerID *)peerID withContext:(NSData *)context invitationHandler:(void (^)(BOOL, MCSession * _Nonnull))invitationHandler {
     if (_delegate) {
-        [_delegate didReceiveInvitationWithPeerId:peerID invitationHandler:invitationHandler];
+        [_delegate didReceiveInvitationWithPeerName:peerID.displayName
+                                  invitationHandler:invitationHandler];
     }
 }
 
 
-#pragma mark - ConnectionManagerSessionDelegate
+#pragma mark - Message Receiver State Change Delegate Methods
 
-- (void)receivedPeerConnected {
-    if (_delegate) {
-        [_delegate advertiserSessionConnected];
-    }
-}
-
-- (void)receivedPeerDisconnected {
-    if (_delegate) {
-        [_delegate advertiserSessionNotConnected];
+- (void)didReceiveChangeSessionState:(NSInteger)state {
+    switch (state) {
+        case SessionStateConnected:
+            [_delegate advertiserSessionConnected];
+            break;
+        case SessionStateDisconnected:
+            [_delegate advertiserSessionNotConnected];
+            break;
     }
 }
 

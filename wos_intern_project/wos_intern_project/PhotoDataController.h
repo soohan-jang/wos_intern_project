@@ -72,7 +72,9 @@ typedef NS_ENUM(NSInteger, CellState) {
 
 @protocol PhotoDataControllerDelegate <NSObject>
 @required
-- (void)didPhotoDataSourceUpdate:(NSIndexPath *)indexPath;
-- (void)didPhotoEditInterrupt;
+- (void)didUpdatePhotoData:(NSIndexPath *)indexPath;
+- (void)didFinishReceivePhotoData:(NSIndexPath *)indexPath;
+- (void)didErrorReceivePhotoData:(NSIndexPath *)indexPath;
+- (void)didInterruptPhotoDataSelection:(NSIndexPath *)indexPath;
 
 @end

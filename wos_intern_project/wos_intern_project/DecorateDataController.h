@@ -24,6 +24,7 @@
 
 @protocol DecorateDataControllerDelegate <NSObject>
 @required
-- (void)didDecorateDataArrayUpdate:(NSUUID *)uuid;
+- (void)didUpdateDecorateData:(NSUUID *)uuid;
+- (void)didInterruptDecorateDataSelection:(NSUUID *)uuid;
 
 @end

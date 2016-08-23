@@ -7,12 +7,13 @@
 //
 
 #import "MessageSender.h"
-#import "BluetoothSession.h"
+#import "PEBluetoothSession.h"
+#import "MessageInterrupter.h"
 #import "MessageData.h"
 
 @interface MessageSender ()
 
-@property (nonatomic, strong) GeneralSession *session;
+@property (nonatomic, strong) PESession *session;
 
 @end
 
@@ -21,13 +22,13 @@
 
 #pragma mark - Init Method
 
-- (instancetype)initWithSession:(GeneralSession *)session {
+- (instancetype)initWithSession:(PESession *)session {
     self = [super init];
     
     if (self) {
         switch (session.sessionType) {
             case SessionTypeBluetooth:
-                self.session = (BluetoothSession *)session;
+                self.session = (PEBluetoothSession *)session;
                 break;
         }
         
@@ -35,17 +36,6 @@
     }
     
     return self;
-}
-
-
-#pragma mark - Send My Device's Screen Size Method
-
-- (BOOL)sendScreenSizeMessage:(CGSize)screenSize {
-    MessageData *data = [[MessageData alloc] init];
-    data.messageType = MessageTypeScreenSize;
-    data.screenSize = screenSize;
-    
-    return [self.session sendMessage:data];
 }
 
 
@@ -73,6 +63,7 @@
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath {
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirm;
+    data.messageTimestamp = [self timestamp];
     data.photoFrameIndexPath = indexPath;
     
     return [self.session sendMessage:data];
@@ -87,11 +78,23 @@
 }
 
 
+#pragma mark - Send My Device's Screen Size Method
+
+- (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize {
+    MessageData *data = [[MessageData alloc] init];
+    data.messageType = MessageTypeDeviceDataScreenSize;
+    data.deviceDataScreenSize = screenSize;
+    
+    return [self.session sendMessage:data];
+}
+
+
 #pragma mark - Send Select & Deselect Photo Data Message Methods
 
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataSelect;
+    data.messageTimestamp = [self timestamp];
     data.photoDataIndexPath = indexPath;
     
     return [self.session sendMessage:data];
@@ -118,7 +121,7 @@
     
     [self.session sendResource:data resultBlock:^(BOOL success) {
         if (!success) {
-            
+            //error
         }
     }];
 }
@@ -132,7 +135,7 @@
     
     [self.session sendResource:data resultBlock:^(BOOL success) {
         if (!success) {
-            
+            //error
         }
     }];
 }
@@ -170,6 +173,7 @@
 - (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid {
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypeDecorateDataSelect;
+    data.messageTimestamp = [self timestamp];
     data.decorateDataUUID = uuid;
     
     return [self.session sendMessage:data];
@@ -209,6 +213,13 @@
     data.decorateDataUUID = uuid;
     
     return [self.session sendMessage:data];
+}
+
+
+#pragma mark - Utility Methods
+
+- (NSTimeInterval)timestamp {
+    return [[NSDate date] timeIntervalSince1970] * 1000;
 }
 
 @end

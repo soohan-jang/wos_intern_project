@@ -7,6 +7,7 @@
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
+#import "PEBluetoothSession.h"
 
 @protocol BluetoothAdvertiserDelegate;
 
@@ -17,10 +18,10 @@
 /**
  * @brief Advertiser 객체를 초기화한다.
  * @param serviceType : 검색 신호 발신 시, 사용할 서비스타입 문자열
- * @param myPeerId : 상대방에게 표시될 자신의 피어 ID
+ * @param session : 연결에 사용할 세션 객체
  * @return BluetoothAdvertiser : 생성된 Advertiser 객체
  */
-- (instancetype)initWithServiceType:(NSString *)serviceType peerId:(MCPeerID *)myPeerId;
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session;
 
 /**
  * @brief Advertising를 시작해서 주위에 검색 신호를 발신한다.
@@ -47,7 +48,7 @@
 @protocol BluetoothAdvertiserDelegate <NSObject>
 @required
 - (void)didNotStartAdvertising;
-- (void)didReceiveInvitationWithPeerId:(MCPeerID *)peerID
+- (void)didReceiveInvitationWithPeerName:(NSString *)peerName
                      invitationHandler:(void (^)(BOOL, MCSession *))invitationHandler;
 - (void)advertiserSessionConnected;
 - (void)advertiserSessionNotConnected;

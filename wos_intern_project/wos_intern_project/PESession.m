@@ -1,14 +1,18 @@
 //
-//  GeneralSession.m
+//  PESession.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 22..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "GeneralSession.h"
+#import "PESession.h"
 
-@implementation GeneralSession
+@implementation PESession
+
+- (id)instanceOfSession {
+    return nil;
+}
 
 - (NSString *)displayNameOfSession {
     return nil;

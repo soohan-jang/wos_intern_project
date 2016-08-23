@@ -7,13 +7,15 @@
 //
 
 #import "BluetoothBrowser.h"
-#import "ConnectionManager.h"
+#import "SessionManager.h"
+#import "MessageReceiver.h"
 
 NSInteger const MaximumNumberOfPeers = 1;
 
-@interface BluetoothBrowser () <MCBrowserViewControllerDelegate, ConnectionManagerSessionDelegate>
+@interface BluetoothBrowser () <MCBrowserViewControllerDelegate, MessageReceiverStateChangeDelegate>
 
-@property (strong, nonatomic) MCBrowserViewController *browser;
+@property (strong, nonatomic) MCBrowserViewController *browserController;
+@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -22,13 +24,15 @@ NSInteger const MaximumNumberOfPeers = 1;
 
 #pragma mark - Initialize method
 
-- (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session {
+- (instancetype)initWithServiceType:(NSString *)serviceType session:(PEBluetoothSession *)session {
     self = [super init];
     
     if (self) {
-        _browser = [[MCBrowserViewController alloc] initWithServiceType:serviceType session:session];
-        _browser.maximumNumberOfPeers = MaximumNumberOfPeers;
-        _browser.delegate = self;
+        _browserController = [[MCBrowserViewController alloc] initWithServiceType:serviceType session:[session instanceOfSession]];
+        _browserController.maximumNumberOfPeers = MaximumNumberOfPeers;
+        _browserController.delegate = self;
+        
+        _messageReceiver = [[MessageReceiver alloc] initWithSession:session];
     }
     
     return self;
@@ -38,19 +42,20 @@ NSInteger const MaximumNumberOfPeers = 1;
 #pragma mark - Present & Dismiss Methods
 
 - (BOOL)presentBrowserViewController:(UIViewController *)parentViewController {
-    if (![[ConnectionManager sharedInstance] isBluetoothAvailable]) {
+    if ([SessionManager sharedInstance].session.availiableState != AvailiableStateEnable) {
         return NO;
     }
     
     __weak typeof(self) weakSelf = self;
-    [parentViewController presentViewController:_browser animated:YES completion:^{
+    [parentViewController presentViewController:_browserController animated:YES completion:^{
         __strong typeof (weakSelf) self = weakSelf;
         
         if (!self) {
             return;
         }
         
-        [ConnectionManager sharedInstance].sessionDelegate = self;
+        self.messageReceiver.stateChangeDelegate = self;
+        [self.browserController.browser startBrowsingForPeers];
     }];
     return YES;
 }
@@ -61,16 +66,24 @@ NS_ENUM(NSInteger, DismissType) {
 };
 
 - (void)dismissBrowserViewController:(NSInteger)dismissType {
-    [ConnectionManager sharedInstance].sessionDelegate = nil;
+    _messageReceiver.stateChangeDelegate = nil;
+    [_browserController.browser stopBrowsingForPeers];
     
-    [_browser dismissViewControllerAnimated:YES completion:^{
-        if (_delegate) {
+    __weak typeof(self) weakSelf = self;
+    [_browserController dismissViewControllerAnimated:YES completion:^{
+        __strong typeof (weakSelf) self = weakSelf;
+        
+        if (!self) {
+            return;
+        }
+        
+        if (self.delegate) {
             switch (dismissType) {
                 case DismissTypeConnected:
-                    [_delegate browserSessionConnected];
+                    [self.delegate browserSessionConnected];
                     break;
                 case DismissTypeNotConnected:
-                    [_delegate browserSessionNotConnected];
+                    [self.delegate browserSessionNotConnected];
                     break;
             }
         }
@@ -86,7 +99,7 @@ NS_ENUM(NSInteger, DismissType) {
 
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
     //현재 상태가 연결 중이면, Browser VC를 닫지 않는다.
-    if ([ConnectionManager sharedInstance].sessionState == MCSessionStateConnecting) {
+    if ([SessionManager sharedInstance].session.sessionState == SessionStateConnecting) {
         return;
     }
     
@@ -94,14 +107,17 @@ NS_ENUM(NSInteger, DismissType) {
 }
 
 
-#pragma mark - ConnectionManagerSessionDelegate
+#pragma mark - Message Receiver State Change Delegate Methods
 
-- (void)receivedPeerConnected {
-    [self dismissBrowserViewController:DismissTypeConnected];
-}
-
-- (void)receivedPeerDisconnected {
-    
+- (void)didReceiveChangeSessionState:(NSInteger)state {
+    switch (state) {
+        case SessionStateConnected:
+            [self dismissBrowserViewController:DismissTypeConnected];
+            break;
+        case SessionStateDisconnected:
+            [_browserController.browser startBrowsingForPeers];
+            break;
+    }
 }
 
 @end

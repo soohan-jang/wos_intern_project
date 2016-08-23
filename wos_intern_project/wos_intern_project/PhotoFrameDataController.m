@@ -8,14 +8,21 @@
 
 #import "PhotoFrameDataController.h"
 #import "SelectPhotoFrameViewCell.h"
-#import "ConnectionManager.h"
+
+#import "SessionManager.h"
+#import "MessageReceiver.h"
+#import "MessageBuffer.h"
+#import "MessageInterrupter.h"
+
 #import "ImageUtility.h"
 
 NSInteger const NumberOfPhotoFrameCells = 12;
 
-@interface PhotoFrameDataController () <UICollectionViewDataSource, ConnectionManagerPhotoFrameDataDelegate>
+@interface PhotoFrameDataController () <UICollectionViewDataSource, MessageReceiverPhotoFrameDataDelegate, MessageInterrupterConfirmRequestDelegate>
 
 @property (strong, atomic) NSMutableArray<PhotoFrameData *> *cellDatas;
+
+@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -25,12 +32,32 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     self = [super init];
     
     if (self) {
-        [ConnectionManager sharedInstance].photoFrameDataDelegate = self;
         self.cellDatas = [[NSMutableArray alloc] init];
         
         for (int i = 0; i < NumberOfPhotoFrameCells; i++) {
             [self.cellDatas addObject:[[PhotoFrameData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
         }
+        
+        MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
+        
+        //동기화 작업을 수행한다.
+        while (![messageBuffer isMessageBufferEnabled]) {
+            MessageData *data = [messageBuffer getMessage];
+            
+            if (data.messageType == MessageTypePhotoFrameSelect) {
+                [self setSelectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
+            } else if (data.messageType == MessageTypePhotoFrameDeselect) {
+                [self setDeselectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
+            }
+        }
+        
+        [messageBuffer setEnabledMessageBuffer:NO session:nil];
+        
+        PESession *session = [SessionManager sharedInstance].session;
+        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
+        self.messageReceiver.photoFrameDataDelegate = self;
+        
+        [MessageInterrupter sharedInstance].interruptConfirmRequestDelegate = self;
     }
     
     return self;
@@ -59,38 +86,43 @@ NSInteger const NumberOfPhotoFrameCells = 12;
         prevIndexPath = self.otherSelectedIndexPath;
     }
     
-    if (prevIndexPath) {
-        if (prevIndexPath.item == indexPath.item) {
-            //기존에 선택된 것과 같으면, 선택 취소로 간주한다.
-            cellData = self.cellDatas[indexPath.item];
-            [cellData updateCellState:NO isOwnSelection:isOwnSelection];
-            
-            prevIndexPath = nil;
-        } else {
-            //다르면, 기존의 것을 선택해제하고 현재의 것을 선택한다.
-            cellData = self.cellDatas[prevIndexPath.item];
-            [cellData updateCellState:NO isOwnSelection:isOwnSelection];
-            
-            cellData = self.cellDatas[indexPath.item];
-            [cellData updateCellState:YES isOwnSelection:isOwnSelection];
-            
-            prevIndexPath = indexPath;
-        }
-    } else {
-        //기존에 선택된 것이 없으므로, 현재 인덱스패스에 대해서만 선택처리한다.
+    if (prevIndexPath && prevIndexPath.item != indexPath.item) {
+        cellData = self.cellDatas[prevIndexPath.item];
+        [cellData updateCellState:NO isOwnSelection:isOwnSelection];
+        
         cellData = self.cellDatas[indexPath.item];
         [cellData updateCellState:YES isOwnSelection:isOwnSelection];
-        
-        prevIndexPath = indexPath;
+    } else {
+        cellData = self.cellDatas[indexPath.item];
+        [cellData updateCellState:YES isOwnSelection:isOwnSelection];
     }
     
     if (isOwnSelection) {
-        _ownSelectedIndexPath = prevIndexPath;
+        _ownSelectedIndexPath = indexPath;
     } else {
-        _otherSelectedIndexPath = prevIndexPath;
+        _otherSelectedIndexPath = indexPath;
     }
     
     [self.delegate didUpdateCellStateWithDoneActivate:[cellData isBothSelected]];
+}
+
+- (void)setDeselectedCellAtIndexPath:(NSIndexPath *)indexPath isOwnSelection:(BOOL)isOwnSelection {
+    if (!indexPath)
+        return;
+    
+    PhotoFrameData *cellData;
+
+    cellData = self.cellDatas[indexPath.item];
+    [cellData updateCellState:NO isOwnSelection:isOwnSelection];
+    
+    if (isOwnSelection) {
+        _ownSelectedIndexPath = nil;
+    } else {
+        _otherSelectedIndexPath = nil;
+    }
+    
+    [self.delegate didUpdateCellStateWithDoneActivate:NO];
+    
 }
 
 - (CGSize)sizeOfCell:(CGSize)size {
@@ -131,9 +163,9 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 - (void)setEnableCells:(BOOL)enabled {
     if (enabled) {
-        [ConnectionManager sharedInstance].photoFrameDataDelegate = self;
+        self.messageReceiver.photoFrameDataDelegate = self;
     } else {
-        [ConnectionManager sharedInstance].photoFrameDataDelegate = nil;
+        self.messageReceiver.photoFrameDataDelegate = nil;
     }
     
     for (PhotoFrameData *data in _cellDatas) {
@@ -161,13 +193,51 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 }
 
 
-#pragma mark - ConnectionManager Delegate Methods.
+#pragma mark - MessageReceiverPhotoFrameDataDelegate Methods
 
-- (void)receivedPhotoFrameSelected:(NSIndexPath *)indexPath {
+- (void)didReceiveSelectPhotoFrame:(NSIndexPath *)indexPath {
     if (!indexPath)
         return;
     
     [self setSelectedCellAtIndexPath:indexPath isOwnSelection:NO];
+}
+
+- (void)didReceiveDeselectPhotoFrame:(NSIndexPath *)indexPath {
+    if (!indexPath)
+        return;
+    
+    [self setDeselectedCellAtIndexPath:indexPath isOwnSelection:NO];
+}
+
+- (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath {
+    if (!indexPath)
+        return;
+    
+    [self setEnableCells:NO];
+    
+    //전달받은 사진액자의 인덱스패스와 자신이 선택한 인덱스패스가 다를 경우, 전달받은 사진액자의 인덱스패스로 복원한다.
+    if (![self isEqualBothSelectedIndexPath]) {
+        [self setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+    }
+    
+    if (self.delegate) {
+        [self.delegate didReceiveRequestPhotoFrameConfirm:indexPath];
+    }
+}
+
+- (void)didReceiveReceivePhotoFrameConfirmAck:(BOOL)confirmAck {
+    if (self.delegate) {
+        [self.delegate didReceivePhotoFrameConfirmAck:confirmAck];
+    }
+}
+
+
+#pragma mark - MessagetInterrupterConfirmRequestDelegate Methods
+
+- (void)interruptConfirmRequest {
+    if (self.delegate) {
+        [self.delegate didInterruptRequestConfirm];
+    }
 }
 
 @end

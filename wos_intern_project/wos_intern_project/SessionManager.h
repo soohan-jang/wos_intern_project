@@ -7,15 +7,17 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneralSession.h"
+#import "PESession.h"
+
+extern NSString *const SessionServiceType;
 
 @interface SessionManager : NSObject
 
-@property (nonatomic, strong, readonly) GeneralSession *session;
+@property (nonatomic, strong) PESession *session;
 
 + (instancetype)sharedInstance;
 
-- (instancetype)initWithSession:(GeneralSession *)session;
+- (void)setSession:(PESession *)session;
 - (void)sessionDisconnect;
 
 @end

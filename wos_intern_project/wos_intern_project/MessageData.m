@@ -19,11 +19,12 @@
     
     if (self) {
         _messageType = [aDecoder decodeIntegerForKey:@"_messageType"];
-        
-        _screenSize = [aDecoder decodeCGSizeForKey:@"_screenSize"];
+        _messageTimestamp = [aDecoder decodeDoubleForKey:@"_messageTimestamp"];
         
         _photoFrameIndexPath = [aDecoder decodeObjectForKey:@"_photoFrameIndexPath"];
         _photoFrameConfirmAck = [aDecoder decodeBoolForKey:@"_photoFrameConfirmAck"];
+        
+        _deviceDataScreenSize = [aDecoder decodeCGSizeForKey:@"_deviceDataScreenSize"];
         
         _photoDataIndexPath = [aDecoder decodeObjectForKey:@"_photoDataIndexPath"];
         _photoDataRecevieAck = [aDecoder decodeBoolForKey:@"_photoDataRecevieAck"];
@@ -38,11 +39,12 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:_messageType forKey:@"_messageType"];
-    
-    [aCoder encodeCGSize:_screenSize forKey:@"_screenSize"];
+    [aCoder encodeDouble:_messageTimestamp forKey:@"_messageTimestamp"];
     
     [aCoder encodeObject:_photoFrameIndexPath forKey:@"_photoFrameIndexPath"];
     [aCoder encodeBool:_photoFrameConfirmAck forKey:@"_photoFrameConfirmAck"];
+    
+    [aCoder encodeCGSize:_deviceDataScreenSize forKey:@"_deviceDataScreenSize"];
     
     [aCoder encodeObject:_photoDataIndexPath forKey:@"_photoDataIndexPath"];
     [aCoder encodeBool:_photoDataRecevieAck forKey:@"_photoDataRecevieAck"];

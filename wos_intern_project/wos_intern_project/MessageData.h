@@ -6,30 +6,30 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "DecorateData.h"
 
 typedef NS_ENUM(NSInteger, MessageType) {
-    MessageTypeScreenSize          = 0,
-    
-    MessageTypePhotoFrameSelect,
+    MessageTypePhotoFrameSelect = 0,
     MessageTypePhotoFrameDeselect,
     
     MessageTypePhotoFrameRequestConfirm,
     MessageTypePhotoFrameRequestConfirmAck,
     
+    MessageTypeDeviceDataScreenSize,
+    
     MessageTypePhotoDataSelect,
     MessageTypePhotoDataDeselect,
     
     MessageTypePhotoDataInsert,
-    MessageTypePhotoDataInsertStart,
-    MessageTypePhotoDataInsertFinish,
+    MessageTypePhotoDataReceiveStart,
+    MessageTypePhotoDataReceiveFinish,
+    MessageTypePhotoDataReceiveError,
     
     MessageTypePhotoDataUpdate,
     MessageTypePhotoDataDelete,
     
-    MessageTypePhotoDataInsertAck,
-    MessageTypePhotoDataUpdateAck,
+    MessageTypePhotoDataReceiveAck,
     
     MessageTypeDecorateDataSelect,
     MessageTypeDecorateDataDeselect,
@@ -42,15 +42,17 @@ typedef NS_ENUM(NSInteger, MessageType) {
 @interface MessageData : NSObject
 
 @property (nonatomic, assign) NSInteger messageType;
-
-@property (nonatomic, assign) CGSize screenSize;
+@property (nonatomic, assign) NSTimeInterval messageTimestamp;
 
 @property (nonatomic, strong) NSIndexPath *photoFrameIndexPath;
 @property (nonatomic, assign) BOOL photoFrameConfirmAck;
 
+@property (nonatomic, assign) CGSize deviceDataScreenSize;
+
 @property (nonatomic, strong) NSIndexPath *photoDataIndexPath;
 @property (nonatomic, assign) BOOL photoDataRecevieAck;
 
+@property (nonatomic, strong) NSString *photoDataType;
 @property (nonatomic, strong) NSURL *photoDataOriginalImageURL;
 @property (nonatomic, strong) NSURL *photoDataCroppedImageURL;
 @property (nonatomic, assign) NSInteger photoDataFilterType;

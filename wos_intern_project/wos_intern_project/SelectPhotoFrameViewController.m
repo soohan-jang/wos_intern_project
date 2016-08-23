@@ -7,27 +7,32 @@
 //
 
 #import "SelectPhotoFrameViewController.h"
+#import "EditPhotoViewController.h"
 
 #import "CommonConstants.h"
-#import "ConnectionManager.h"
-#import "PhotoFrameDataController.h"
 
-#import "EditPhotoViewController.h"
+#import "PhotoFrameDataController.h"
+#import "SessionManager.h"
+#import "MessageSender.h"
+#import "MessageReceiver.h"
+#import "MessageBuffer.h"
 
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
-#import "MessageFactory.h"
 
 NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
-@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, ConnectionManagerSessionDelegate, ConnectionManagerPhotoFrameDelegate, PhotoFrameDataControllerDelegate>
+@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PhotoFrameDataControllerDelegate, MessageReceiverStateChangeDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
 @property (strong, nonatomic) PhotoFrameDataController *dataController;
 @property (strong, nonatomic) WMProgressHUD *progressView;
+
+@property (strong, nonatomic) MessageSender *messageSender;
+@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -40,22 +45,17 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     [super viewDidLoad];
     
     if (![self checkConnectionState]) {
-        [self receivedPeerDisconnected];
+        [self didReceiveChangeSessionState:SessionStateDisconnected];
         return;
     }
-    
-    [self prepareDataController];
-    [self prepareConnectionManager];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    //View가 화면에 표시된 이후에 동기화하여, 동기화할 내용이 화면에 제대로 표시될 수 있도록 한다.
-    [self startMessageSynchronize];
-    
-    //동기화 종료 이후, 스크린 정보를 상대방에게 보낸다.
-    [self sendScreenSizeMessage];
+    [self prepareDataController];
+    [self prepareMessageSender];
+    [self prepareMessagerReceiver];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -65,13 +65,17 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     self.dataController.delegate = nil;
     self.dataController = nil;
     
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.photoFrameDelegate = nil;
-    connectionManager.photoFrameDataDelegate = nil;
+    self.messageReceiver.stateChangeDelegate = nil;
+    self.messageReceiver = nil;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:SegueMoveToEditor]) {
+        PESession *session = [SessionManager sharedInstance].session;
+        MessageBuffer *messageBuffer = [MessageBuffer sharedInstance];
+        [messageBuffer clearMessageBuffer];
+        [messageBuffer setEnabledMessageBuffer:YES session:[session instanceOfSession]];
+        
         EditPhotoViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.dataController.ownSelectedIndexPath.item];
     }
@@ -86,7 +90,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 #pragma mark - Check Session State
 
 - (BOOL)checkConnectionState {
-    if ([ConnectionManager sharedInstance].sessionState == MCSessionStateConnected) {
+    if ([SessionManager sharedInstance].session.sessionState == SessionStateConnected) {
         return YES;
     }
     
@@ -103,48 +107,15 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     self.collectionView.delegate = self;
 }
 
-- (void)prepareConnectionManager {
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    connectionManager.sessionDelegate = self;
-    connectionManager.photoFrameDelegate = self;
+- (void)prepareMessageSender {
+    PESession *session = [SessionManager sharedInstance].session;
+    self.messageSender = [[MessageSender alloc] initWithSession:[session instanceOfSession]];
 }
 
-
-#pragma mark - Message Synchronize Methods
-
-- (void)startMessageSynchronize {
-    //동기화 큐를 사용하지 않음으로 변경하고, 동기화 작업을 수행한다.
-    ConnectionManager *connectionManager = [ConnectionManager sharedInstance];
-    [connectionManager setMessageQueueEnabled:NO];
-    
-    while (![connectionManager isMessageQueueEmpty]) {
-        NSDictionary *message = [connectionManager getMessage];
-        [self.dataController setSelectedCellAtIndexPath:message[kPhotoFrameIndexPath] isOwnSelection:NO];
-    }
-}
-
-
-#pragma mark - Send Screen Size Method
-//이 부분은 ConnectionManager의 MessageSender로 분리할 예정.
-
-- (void)sendScreenSizeMessage {
-    NSDictionary *message = [MessageFactory messageGenerateScreenSize:[UIScreen mainScreen].bounds.size];
-    [[ConnectionManager sharedInstance] sendMessage:message];
-}
-
-- (void)sendSelectedFrameMessage:(NSIndexPath *)indexPath {
-    NSDictionary *message = [MessageFactory messageGeneratePhotoFrameSelected:indexPath];
-    [[ConnectionManager sharedInstance] sendMessage:message];
-}
-
-- (void)sendConfirmRequestMessage {
-    NSDictionary *message = [MessageFactory messageGeneratePhotoFrameRequestConfirm:self.dataController.ownSelectedIndexPath];
-    [[ConnectionManager sharedInstance] sendMessage:message];
-}
-
-- (void)sendConfirmAckMessage:(BOOL)ack {
-    NSDictionary *message = [MessageFactory messageGeneratePhotoFrameConfirmed:ack];
-    [[ConnectionManager sharedInstance] sendMessage:message];
+- (void)prepareMessagerReceiver {
+    PESession *session = [SessionManager sharedInstance].session;
+    self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
+    self.messageReceiver.stateChangeDelegate = self;
 }
 
 
@@ -155,7 +126,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (void)presentMainViewController {
-    [[ConnectionManager sharedInstance] disconnectSession];
+    [[SessionManager sharedInstance] sessionDisconnect];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -209,7 +180,8 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     
     self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view
                                                    titleKey:@"progress_title_confirming"];
-    [self sendConfirmRequestMessage];
+    
+    [self.messageSender sendPhotoFrameConfrimRequestMessage:self.dataController.ownSelectedIndexPath];
 }
 
 
@@ -224,8 +196,13 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
-    [self sendSelectedFrameMessage:indexPath];
+    if (indexPath.item == self.dataController.ownSelectedIndexPath.item) {
+        [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+        [self.messageSender sendSelectPhotoFrameMessage:indexPath];
+    } else {
+        [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+        [self.messageSender sendDeselectPhotoFrameMessage:indexPath];
+    }
 }
 
 
@@ -259,45 +236,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     }];
 }
 
-
-#pragma mark - ConnectionManager Session Connect Delegate Methods
-
-- (void)receivedPeerConnected {
-    //여기선 세션 연결이 일어날 일이 없다.
-    //추후에 세션 연결 끊겼다가 다시 복구되는 경우에나 사용할 것 같다.
-}
-
-- (void)receivedPeerDisconnected {
-    __weak typeof(self) weakSelf = self;
-    [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_session_disconnected"
-                                          messageKey:@"alert_content_session_disconnected"
-                                              button:@"alert_button_text_ok"
-                                       buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                           __strong typeof(weakSelf) self = weakSelf;
-                                           
-                                           if (!self) {
-                                               return;
-                                           }
-                                           
-                                           [self presentMainViewController];
-                                       }];
-}
-
-
-#pragma mark - ConnectionManager Photo Frame Control Delegate Methods
-
-- (void)receivedPhotoFrameConfirmRequest:(NSIndexPath *)confirmIndexPath {
-    if (!confirmIndexPath)
-        return;
-    
-    [self.dataController setEnableCells:NO];
-    
-    //전달받은 사진액자의 인덱스패스와 자신이 선택한 인덱스패스가 다를 경우, 전달받은 사진액자의 인덱스패스로 복원한다.
-    if (![self.dataController isEqualBothSelectedIndexPath]) {
-        [self.dataController setSelectedCellAtIndexPath:confirmIndexPath isOwnSelection:YES];
-    }
-    
+- (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath {
     if (self.navigationController.visibleViewController != self) {
         return;
     }
@@ -314,7 +253,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                                return;
                                            }
                                            
-                                           [self sendConfirmAckMessage:NO];
+                                           [self.messageSender sendPhotoframeConfirmAckMessage:NO];
                                            //거절한 경우, 각 셀을 다시 선택 가능하게 만든다.
                                            [self.dataController setEnableCells:YES];
                                        }
@@ -326,12 +265,12 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                           return;
                                       }
                                       
-                                      [self sendConfirmAckMessage:YES];
+                                      [self.messageSender sendPhotoframeConfirmAckMessage:YES];
                                       [self presentEditPhotoViewController];
                                   }];
 }
 
-- (void)receivedPhotoFrameConfirmAck:(BOOL)confirmAck {
+- (void)didReceivePhotoFrameConfirmAck:(BOOL)confirmAck {
     if (confirmAck) {
         __weak typeof(self) weakSelf = self;
         [ProgressHelper dismissProgress:self.progressView
@@ -356,8 +295,37 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     }
 }
 
-- (void)interruptedPhotoFrameConfirm {
+- (void)didInterruptRequestConfirm {
     [ProgressHelper dismissProgress:self.progressView];
+}
+
+
+#pragma mark - Message Receiver State Change Delegate Methods
+
+- (void)didReceiveChangeSessionState:(NSInteger)state {
+    __weak typeof(self) weakSelf = self;
+    
+    switch (state) {
+        case SessionStateConnected:
+            //여기선 세션 연결이 일어날 일이 없다.
+            //추후에 세션 연결 끊겼다가 다시 복구되는 경우에나 사용할 것 같다.
+            break;
+        case SessionStateDisconnected:
+            [AlertHelper showAlertControllerOnViewController:self
+                                                    titleKey:@"alert_title_session_disconnected"
+                                                  messageKey:@"alert_content_session_disconnected"
+                                                      button:@"alert_button_text_ok"
+                                               buttonHandler:^(UIAlertAction * _Nonnull action) {
+                                                   __strong typeof(weakSelf) self = weakSelf;
+                                                   
+                                                   if (!self) {
+                                                       return;
+                                                   }
+                                                   
+                                                   [self presentMainViewController];
+                                               }];
+            break;
+    }
 }
 
 @end

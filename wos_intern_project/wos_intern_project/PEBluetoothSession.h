@@ -1,13 +1,13 @@
 //
-//  BluetoothSession.h
+//  PEBluetoothSession.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 22..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "GeneralSession.h"
+#import "PESession.h"
 
-@interface BluetoothSession : GeneralSession
+@interface PEBluetoothSession : PESession
 
 @end

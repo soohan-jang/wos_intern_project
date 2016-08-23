@@ -7,24 +7,27 @@
 //
 
 #import "EditPhotoViewController.h"
+#import "PhotoCropViewController.h"
 
 #import "CommonConstants.h"
-#import "ConnectionManager.h"
-
-#import "DecorateData.h"
-#import "PhotoDataController.h"
-#import "DecorateDataController.h"
 
 #import "XXXRoundMenuButton.h"
 #import "SphereMenu.h"
 
 #import "PhotoCollectionViewCell.h"
 #import "DecorateDataDisplayView.h"
-#import "PhotoCropViewController.h"
 
 #import "PhotoDrawPenMenuView.h"
 #import "PhotoInputTextMenuView.h"
 #import "PhotoStickerMenuView.h"
+
+#import "SessionManager.h"
+#import "MessageSender.h"
+#import "MessageReceiver.h"
+
+#import "DecorateData.h"
+#import "PhotoDataController.h"
+#import "DecorateDataController.h"
 
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
@@ -32,12 +35,11 @@
 #import "ImageUtility.h"
 #import "ColorUtility.h"
 #import "ValidateCheckUtility.h"
-#import "MessageFactory.h"
 
 NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
 NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 
-@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDataControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, ConnectionManagerSessionDelegate>
+@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, PhotoCropViewControllerDelegate, PhotoDataControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDataDisplayViewDelegate, DecorateDataControllerDelegate, PhotoDrawPenMenuViewDelegate, PhotoInputTextMenuViewDelegate, PhotoStickerMenuViewDelegate, SessionConnectDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *decoDataVisibleToggleButton;
 @property (weak, nonatomic) IBOutlet XXXRoundMenuButton *mainMenuButton;
@@ -52,6 +54,9 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 @property (weak, nonatomic) IBOutlet PhotoDrawPenMenuView *drawPenMenuView; //그려질 객체들이 위치하는 뷰(실제로 그림을 그리는 뷰)
 @property (weak, nonatomic) IBOutlet PhotoInputTextMenuView *inputTextMenuView; //텍스트를 작성할 수 있는 뷰
 @property (weak, nonatomic) IBOutlet PhotoStickerMenuView *stickerMenuView; //스티커를 선택할 수 있는 뷰
+
+@property (strong, nonatomic) MessageSender *messageSender;
+@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 //For CropViewController
 @property (strong, nonatomic) NSURL *pickedImageURL;

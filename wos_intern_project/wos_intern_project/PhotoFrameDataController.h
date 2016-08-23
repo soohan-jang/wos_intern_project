@@ -37,6 +37,7 @@
  * @return void
  */
 - (void)setSelectedCellAtIndexPath:(NSIndexPath *)indexPath isOwnSelection:(BOOL)isOwnSelection;
+- (void)setDeselectedCellAtIndexPath:(NSIndexPath *)indexPath isOwnSelection:(BOOL)isOwnSelection;
 
 - (CGSize)sizeOfCell:(CGSize)size;
 
@@ -74,5 +75,8 @@
 @required
 - (void)didUpdateCellEnabled:(BOOL)enabled;
 - (void)didUpdateCellStateWithDoneActivate:(BOOL)activate;
+- (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath;
+- (void)didReceivePhotoFrameConfirmAck:(BOOL)confirmAck;
+- (void)didInterruptRequestConfirm;
 
 @end

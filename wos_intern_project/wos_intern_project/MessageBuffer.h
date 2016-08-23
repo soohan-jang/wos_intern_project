@@ -7,17 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "PESession.h"
 #import "MessageData.h"
 
 @interface MessageBuffer : NSObject
 
-@property (nonatomic, assign) BOOL enabled;
-
 + (instancetype)sharedInstance;
+
+- (void)setEnabledMessageBuffer:(BOOL)enabled session:(PESession *)session;
 
 - (void)putMessage:(MessageData *)message;
 - (MessageData *)getMessage;
+
 - (void)clearMessageBuffer;
+
 - (BOOL)isMessageBufferEmpty;
+- (BOOL)isMessageBufferEnabled;
 
 @end
