@@ -70,6 +70,9 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    
+    
     [self setupDelegates];
     [self setupMainMenu];
 }

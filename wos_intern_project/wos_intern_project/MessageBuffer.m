@@ -8,7 +8,7 @@
 
 #import "MessageBuffer.h"
 
-@interface MessageBuffer () <SessionDataReceiveDelegate>
+@interface MessageBuffer ()
 
 @property (atomic, strong) NSMutableArray<MessageData *> *messageBuffer;
 
@@ -58,17 +58,6 @@
     }
     
     return NO;
-}
-
-
-#pragma mark - Session Data Received Delegate
-
-- (void)didReceiveData:(MessageData *)message {
-    if (![self isMessageBufferEnabled]) {
-        return;
-    }
-    
-    [self putMessage:message];
 }
 
 @end

@@ -39,13 +39,9 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if (![self checkConnectionState]) {
-        [self didReceiveChangeSessionState:SessionStateDisconnected];
-        return;
-    }
-    
-    [self prepareMessagerReceiver];
     [self prepareDataController];
+    [self prepareMessagerReceiver];
+    [self startSynchronizeMessage];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -93,6 +89,13 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)prepareMessagerReceiver {
     [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
+}
+
+
+#pragma mark - Start Synchronize Message Methods
+
+- (void)startSynchronizeMessage {
+    [[SessionManager sharedInstance].messageReceiver startSynchronizeMessage];
 }
 
 

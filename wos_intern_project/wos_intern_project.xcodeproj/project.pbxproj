@@ -274,10 +274,10 @@
 		4A3CB3FE1D6AE0EC00B324BC /* MessageHelper */ = {
 			isa = PBXGroup;
 			children = (
-				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
-				4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */,
 				4A3F99EC1D647C72007915E1 /* MessageSender.h */,
 				4A3F99ED1D647C72007915E1 /* MessageSender.m */,
+				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
+				4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */,
 				4A3CB4061D6AF12800B324BC /* MessageBuffer.h */,
 				4A3CB4071D6AF12800B324BC /* MessageBuffer.m */,
 				4A46AE291D6BD7EA0070182D /* MessageInterrupter.h */,

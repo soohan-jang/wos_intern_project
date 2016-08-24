@@ -72,26 +72,8 @@ NSInteger const NumberOfPhotoFrameCells = 12;
             [self.cellDatas addObject:[[PhotoFrameData alloc] initWithIndexPath:[NSIndexPath indexPathForItem:i inSection:0]]];
         }
         
-        SessionManager *sessionManager = [SessionManager sharedInstance];
-        MessageBuffer *messageBuffer = sessionManager.messageReceiver.messageBuffer;
-        
-        if (messageBuffer.enabled && !messageBuffer.isMessageBufferEmpty) {
-            //동기화 작업을 수행한다.
-            while (![messageBuffer isMessageBufferEnabled]) {
-                MessageData *data = [messageBuffer getMessage];
-                
-                if (data.messageType == MessageTypePhotoFrameSelect) {
-                    [self setSelectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
-                } else if (data.messageType == MessageTypePhotoFrameDeselect) {
-                    [self setDeselectedCellAtIndexPath:data.photoFrameIndexPath isOwnSelection:NO];
-                }
-            }
-        }
-        
-        [messageBuffer setEnabled:NO];
-        
         self.dataSender = [[PhotoFrameDataSender alloc] init];
-        sessionManager.messageReceiver.photoFrameDataDelegate = self;
+        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = self;
     }
     
     return self;

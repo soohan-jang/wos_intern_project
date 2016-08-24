@@ -29,6 +29,7 @@
 @property (nonatomic, strong) MessageBuffer *messageBuffer;
 
 - (instancetype)initWithSession:(PESession *)session;
+- (void)startSynchronizeMessage;
 
 @end
 

@@ -39,25 +39,17 @@
     self.messageBuffer.enabled = enabled;
 }
 
-
-#pragma mark - Session Connect Delegate Methods
-
-- (void)didChangeSessionState:(NSInteger)state {
-    NSLog(@"Change Session State : %ld", (long)state);
-    if (self.stateChangeDelegate) {
-        [self.stateChangeDelegate didReceiveChangeSessionState:state];
+- (void)startSynchronizeMessage {
+    if ([self.messageBuffer isMessageBufferEnabled] && ![self.messageBuffer isMessageBufferEmpty]) {
+        while (![self.messageBuffer isMessageBufferEmpty]) {
+            [self dispatchMessage:[self.messageBuffer getMessage]];
+        }
+        
+        self.messageBuffer.enabled = NO;
     }
 }
 
-
-#pragma mark - Session Data Receive Delegate Methods
-
-- (void)didReceiveData:(MessageData *)message {
-    if (self.messageBuffer.enabled) {
-        [self.messageBuffer putMessage:message];
-        return;
-    }
-    
+- (void)dispatchMessage:(MessageData *)message {
     MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
     
     if (self.photoFrameDataDelegate) {
@@ -177,9 +169,31 @@
                 NSLog(@"Receive MessageTypeDecorateDataDelete");
                 [self.decorateDataDelegate didReceiveDeleteDecorateData:message.decorateDataUUID];
                 return;
-
+                
         }
     }
+}
+
+
+#pragma mark - Session Connect Delegate Methods
+
+- (void)didChangeSessionState:(NSInteger)state {
+    NSLog(@"Change Session State : %ld", (long)state);
+    if (self.stateChangeDelegate) {
+        [self.stateChangeDelegate didReceiveChangeSessionState:state];
+    }
+}
+
+
+#pragma mark - Session Data Receive Delegate Methods
+
+- (void)didReceiveData:(MessageData *)message {
+    if (self.messageBuffer.enabled) {
+        [self.messageBuffer putMessage:message];
+        return;
+    }
+    
+    [self dispatchMessage:message];
 }
 
 @end

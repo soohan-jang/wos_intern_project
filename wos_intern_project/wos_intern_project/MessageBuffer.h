@@ -16,7 +16,6 @@
 
 - (void)putMessage:(MessageData *)message;
 - (MessageData *)getMessage;
-
 - (void)clearMessageBuffer;
 
 - (BOOL)isMessageBufferEmpty;
