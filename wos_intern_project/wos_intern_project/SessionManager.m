@@ -32,16 +32,30 @@
     switch (sessionType) {
         case SessionTypeBluetooth:
             _session = [[PEBluetoothSession alloc] init];
+            _messageSender = [[MessageSender alloc] initWithSession:_session];
+            _messageReceiver = [[MessageReceiver alloc] initWithSession:_session];
             break;
     }
 }
 
 - (void)setMessageBufferEnabled:(BOOL)enabled {
-    self.messageReceiver.messageBuffer.enabled = enabled;
+    _messageReceiver.messageBuffer.enabled = enabled;
 }
 
 - (void)disconnectSession {
     [_session disconnect];
+    
+    _session = nil;
+    _messageSender = nil;
+    _messageReceiver = nil;
+}
+
+- (BOOL)isSessionNil {
+    if (_session && _messageSender && _messageReceiver) {
+        return NO;
+    }
+    
+    return YES;
 }
 
 @end

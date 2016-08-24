@@ -14,7 +14,6 @@
 
 @interface SessionManager : NSObject
 
-
 @property (nonatomic, strong) PESession *session;
 @property (nonatomic, strong) MessageSender *messageSender;
 @property (nonatomic, strong) MessageReceiver *messageReceiver;
@@ -24,5 +23,7 @@
 - (void)initializeWithSessionType:(NSInteger)sessionType;
 - (void)setMessageBufferEnabled:(BOOL)enabled;
 - (void)disconnectSession;
+
+- (BOOL)isSessionNil;
 
 @end

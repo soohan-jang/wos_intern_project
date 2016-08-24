@@ -30,6 +30,13 @@
  */
 - (BOOL)presentBrowserViewController:(UIViewController *)parentViewController;
 
+/**
+ * @brief 단말을 검색하고 연결을 시도할 수 있는 BrowserVC를 닫는다.
+ * @param completion : 닫힌 이후에 실행될 Block 구문
+ * @return void
+ */
+- (void)dismissBrowserViewController:(void (^)(void))completion;
+
 @end
 
 /**
@@ -41,6 +48,6 @@
 @protocol BluetoothBrowserDelegate <NSObject>
 @required
 - (void)browserSessionConnected:(BluetoothBrowser *)browser;
-- (void)browserSessionNotConnected:(BluetoothBrowser *)browser;
+- (void)browserSessionConnectCancel:(BluetoothBrowser *)browser;
 
 @end

@@ -12,7 +12,6 @@
 #import "SessionManager.h"
 #import "MessageSender.h"
 #import "MessageReceiver.h"
-#import "MessageInterrupter.h"
 
 #import "ImageUtility.h"
 
@@ -25,6 +24,16 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 @end
 
 @implementation PhotoFrameDataSender
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.messageSender = [SessionManager sharedInstance].messageSender;
+    }
+    
+    return self;
+}
 
 - (BOOL)sendSelectPhotoFrameMessage:(NSIndexPath *)indexPath {
     return [self.messageSender sendSelectPhotoFrameMessage:indexPath];
@@ -44,9 +53,10 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 @end
 
-@interface PhotoFrameDataController () <UICollectionViewDataSource, MessageReceiverPhotoFrameDataDelegate, MessageInterrupterConfirmRequestDelegate>
+@interface PhotoFrameDataController () <UICollectionViewDataSource, MessageReceiverPhotoFrameDataDelegate>
 
 @property (strong, atomic) NSMutableArray<PhotoFrameData *> *cellDatas;
+@property (assign, nonatomic) BOOL messageIngnore;
 
 @end
 
@@ -80,8 +90,8 @@ NSInteger const NumberOfPhotoFrameCells = 12;
         
         [messageBuffer setEnabled:NO];
         
+        self.dataSender = [[PhotoFrameDataSender alloc] init];
         sessionManager.messageReceiver.photoFrameDataDelegate = self;
-        [MessageInterrupter sharedInstance].interruptConfirmRequestDelegate = self;
     }
     
     return self;
@@ -186,11 +196,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 }
 
 - (void)setEnableCells:(BOOL)enabled {
-    if (enabled) {
-        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = self;
-    } else {
-        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = nil;
-    }
+    self.messageIngnore = !enabled;
     
     for (PhotoFrameData *data in _cellDatas) {
         data.enabled = enabled;
@@ -220,14 +226,14 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 #pragma mark - MessageReceiverPhotoFrameDataDelegate Methods
 
 - (void)didReceiveSelectPhotoFrame:(NSIndexPath *)indexPath {
-    if (!indexPath)
+    if (!indexPath || self.messageIngnore)
         return;
     
     [self setSelectedCellAtIndexPath:indexPath isOwnSelection:NO];
 }
 
 - (void)didReceiveDeselectPhotoFrame:(NSIndexPath *)indexPath {
-    if (!indexPath)
+    if (!indexPath || self.messageIngnore)
         return;
     
     [self setDeselectedCellAtIndexPath:indexPath isOwnSelection:NO];
@@ -249,18 +255,9 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     }
 }
 
-- (void)didReceiveReceivePhotoFrameConfirmAck:(BOOL)confirmAck {
+- (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck {
     if (self.delegate) {
-        [self.delegate didReceivePhotoFrameConfirmAck:confirmAck];
-    }
-}
-
-
-#pragma mark - MessagetInterrupterConfirmRequestDelegate Methods
-
-- (void)interruptConfirmRequest {
-    if (self.delegate) {
-        [self.delegate didInterruptRequestConfirm];
+        [self.delegate didReceiveRequestPhotoFrameConfirmAck:confirmAck];
     }
 }
 

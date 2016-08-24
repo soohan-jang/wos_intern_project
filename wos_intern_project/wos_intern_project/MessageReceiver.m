@@ -43,6 +43,7 @@
 #pragma mark - Session Connect Delegate Methods
 
 - (void)didChangeSessionState:(NSInteger)state {
+    NSLog(@"Change Session State : %ld", (long)state);
     if (self.stateChangeDelegate) {
         [self.stateChangeDelegate didReceiveChangeSessionState:state];
     }
@@ -62,50 +63,64 @@
     if (self.photoFrameDataDelegate) {
         switch (message.messageType) {
             case MessageTypePhotoFrameSelect:
+                NSLog(@"Receive MessageTypePhotoFrameSelect");
                 [self.photoFrameDataDelegate didReceiveSelectPhotoFrame:message.photoFrameIndexPath];
-                break;
+                return;
             case MessageTypePhotoFrameDeselect:
+                NSLog(@"Receive MessageTypePhotoFrameDeselect");
                 [self.photoFrameDataDelegate didReceiveDeselectPhotoFrame:message.photoFrameIndexPath];
-                break;
+                return;
             case MessageTypePhotoFrameRequestConfirm:
+                NSLog(@"Receive MessageTypePhotoFrameRequestConfirm");
+                if ([messageInterrupter isMessageRecvInterrupt:message.messageTimestamp]) {
+                    NSLog(@"Interrupted MessageTypePhotoFrameRequestConfirm");
+                    return;
+                }
+                
                 [self.photoFrameDataDelegate didReceiveRequestPhotoFrameConfirm:message.photoFrameIndexPath];
-                [messageInterrupter setReceivedTimestamp:message.messageTimestamp];
-                break;
+                return;
             case MessageTypePhotoFrameRequestConfirmAck:
-                [self.photoFrameDataDelegate didReceiveReceivePhotoFrameConfirmAck:message.photoFrameConfirmAck];
-                [messageInterrupter setReceivedTimestamp:0];
-                break;
+                NSLog(@"Receive MessageTypePhotoFrameRequestConfirmAck");
+                messageInterrupter.sendMessageTimestamp = 0;
+                messageInterrupter.recvMessageTimestamp = 0;
+                [self.photoFrameDataDelegate didReceiveRequestPhotoFrameConfirmAck:message.photoFrameConfirmAck];
+                return;
         }
     }
     
     if (self.deviceDataDelegate) {
         switch (message.messageType) {
             case MessageTypeDeviceDataScreenSize:
+                NSLog(@"Receive MessageTypeDeviceDataScreenSize");
                 [self.deviceDataDelegate didReceiveDeviceScreenSize:message.deviceDataScreenSize];
-                break;
+                return;
         }
     }
     
     if (self.photoDataDelegate) {
         switch (message.messageType) {
             case MessageTypePhotoDataSelect:
+                NSLog(@"Receive MessageTypePhotoDataSelect");
                 [self.photoDataDelegate didReceiveSelectPhotoData:message.photoDataIndexPath];
-                [messageInterrupter setReceivedTimestamp:message.messageTimestamp indexPath:message.photoDataIndexPath];
-                break;
+                return;
             case MessageTypePhotoDataDeselect:
+                NSLog(@"Receive MessageTypePhotoDataDeselect");
                 [self.photoDataDelegate didReceiveDeselectPhotoData:message.photoDataIndexPath];
-                [messageInterrupter setReceivedTimestamp:0 indexPath:nil];
-                break;
+                return;
             case MessageTypePhotoDataReceiveStart:
+                NSLog(@"Receive MessageTypePhotoDataReceiveStart");
                 [self.photoDataDelegate didReceiveStartReceivePhotoData:message.photoDataIndexPath];
-                break;
+                return;
             case MessageTypePhotoDataReceiveFinish:
+                NSLog(@"Receive MessageTypePhotoDataReceiveFinish");
                 [self.photoDataDelegate didReceiveFinishReceivePhotoData:message.photoDataIndexPath];
-                break;
+                return;
             case MessageTypePhotoDataReceiveError:
+                NSLog(@"Receive MessageTypePhotoDataReceiveError");
                 [self.photoDataDelegate didReceiveErrorReceivePhotoData:message.photoDataIndexPath dataType:message.photoDataType];
-                break;
+                return;
             case MessageTypePhotoDataInsert:
+                NSLog(@"Receive MessageTypePhotoDataInsert");
                 if (message.photoDataCroppedImageURL) {
                     [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
                                                              dataType:message.photoDataType
@@ -120,44 +135,48 @@
                                                         insertDataURL:message.photoDataOriginalImageURL
                                                            filterType:message.photoDataFilterType];
                 }
-                break;
+                return;
             case MessageTypePhotoDataUpdate:
+                NSLog(@"Receive MessageTypePhotoDataUpdate");
                 [self.photoDataDelegate didReceiveUpdatePhotoData:message.photoDataIndexPath
                                                     updateDataURL:message.photoDataCroppedImageURL
                                                        filterType:message.photoDataFilterType];
-                break;
+                return;
             case MessageTypePhotoDataDelete:
+                NSLog(@"Receive MessageTypePhotoDataDelete");
                 [self.photoDataDelegate didReceiveDeletePhotoData:message.photoDataIndexPath];
-                [messageInterrupter setReceivedTimestamp:0 uuid:nil];
-                break;
+                return;
             case MessageTypePhotoDataReceiveAck:
+                NSLog(@"Receive MessageTypePhotoDataReceiveAck");
                 [self.photoDataDelegate didReceivePhotoDataAck:message.photoDataIndexPath
                                                            ack:message.photoDataRecevieAck];
-                break;
+                return;
         }
     }
     
     if (self.decorateDataDelegate) {
         switch (message.messageType) {
             case MessageTypeDecorateDataSelect:
+                NSLog(@"Receive MessageTypeDecorateDataSelect");
                 [self.decorateDataDelegate didReceiveSelectDecorateData:message.decorateDataUUID];
-                [messageInterrupter setReceivedTimestamp:message.messageTimestamp uuid:message.decorateDataUUID];
-                break;
+                return;
             case MessageTypeDecorateDataDeselect:
+                NSLog(@"Receive MessageTypeDecorateDataDeselect");
                 [self.decorateDataDelegate didReceiveDeselectDecorateData:message.decorateDataUUID];
-                [messageInterrupter setReceivedTimestamp:0 uuid:nil];
-                break;
+                return;
             case MessageTypeDecorateDataInsert:
+                NSLog(@"Receive MessageTypeDecorateDataInsert");
                 [self.decorateDataDelegate didReceiveInsertDecorateData:message.decorateData];
-                break;
+                return;
             case MessageTypeDecorateDataUpdate:
+                NSLog(@"Receive MessageTypeDecorateDataUpdate");
                 [self.decorateDataDelegate didReceiveUpdateDecorateData:message.decorateDataUUID
                                                             updateFrame:message.decorateDataFrame];
-                break;
+                return;
             case MessageTypeDecorateDataDelete:
+                NSLog(@"Receive MessageTypeDecorateDataDelete");
                 [self.decorateDataDelegate didReceiveDeleteDecorateData:message.decorateDataUUID];
-                [messageInterrupter setReceivedTimestamp:0 uuid:nil];
-                break;
+                return;
 
         }
     }

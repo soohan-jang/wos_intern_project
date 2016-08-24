@@ -53,11 +53,7 @@
             return;
         }
         
-        [NSTimer scheduledTimerWithTimeInterval:DelayTime
-                                         target:self
-                                       selector:@selector(completionHandler)
-                                       userInfo:nil
-                                        repeats:NO];
+        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:completionHandler delayTime:DelayTime];
     }];
 }
 

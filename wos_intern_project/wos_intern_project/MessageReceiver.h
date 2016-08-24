@@ -44,7 +44,7 @@
 - (void)didReceiveDeselectPhotoFrame:(NSIndexPath *)indexPath;
 
 - (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath;
-- (void)didReceiveReceivePhotoFrameConfirmAck:(BOOL)confirmAck;
+- (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck;
 
 @end
 

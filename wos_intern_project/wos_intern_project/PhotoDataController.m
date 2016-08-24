@@ -18,7 +18,6 @@
 #import "SessionManager.h"
 #import "MessageSender.h"
 #import "MessageReceiver.h"
-#import "MessageInterrupter.h"
 
 NSInteger const DefaultMargin   = 5;
 
@@ -29,6 +28,16 @@ NSInteger const DefaultMargin   = 5;
 @end
 
 @implementation PhotoDataSender
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.messageSender = [SessionManager sharedInstance].messageSender;
+    }
+    
+    return self;
+}
 
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
     return [self.messageSender sendSelectPhotoDataMessage:indexPath];
@@ -61,15 +70,13 @@ NSInteger const DefaultMargin   = 5;
 
 @end
 
-@interface PhotoDataController () <UICollectionViewDataSource, MessageReceiverPhotoDataDelegate, MessageInterrupterPhotoDataSelectionDelegate>
+@interface PhotoDataController () <UICollectionViewDataSource, MessageReceiverPhotoDataDelegate>
 
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
 @property (atomic, strong) NSArray<PhotoData *> *cellDatas;
-
-@property (nonatomic, strong) MessageReceiver *messageReceiver;
 
 @end
 
@@ -97,11 +104,8 @@ NSInteger const DefaultMargin   = 5;
         [cellInitArray removeAllObjects];
         cellInitArray = nil;
         
-        PESession *session = [SessionManager sharedInstance].session;
-        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
-        self.messageReceiver.photoDataDelegate = self;
-        
-        [MessageInterrupter sharedInstance].interruptPhotoDataSelectionDelegate = self;
+        self.dataSender = [[PhotoDataSender alloc] init];
+        [SessionManager sharedInstance].messageReceiver.photoDataDelegate = self;
     }
     
     return self;
@@ -399,15 +403,6 @@ NSInteger const DefaultMargin   = 5;
     
     if (!ack) {
         //Do Something, about error fixing.
-    }
-}
-
-
-#pragma mark - MessageInterrupterPhotoDataSelectionDelegate Methods
-
-- (void)interruptPhotoDataSelction:(NSIndexPath *)indexPath {
-    if (self.delegate) {
-        [self.delegate didInterruptPhotoDataSelection:indexPath];
     }
 }
 

@@ -21,6 +21,8 @@
         _messageType = [aDecoder decodeIntegerForKey:@"_messageType"];
         _messageTimestamp = [aDecoder decodeDoubleForKey:@"_messageTimestamp"];
         
+        _inviteAck = [aDecoder decodeBoolForKey:@"_inviteAck"];
+        
         _photoFrameIndexPath = [aDecoder decodeObjectForKey:@"_photoFrameIndexPath"];
         _photoFrameConfirmAck = [aDecoder decodeBoolForKey:@"_photoFrameConfirmAck"];
         
@@ -40,6 +42,8 @@
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeInteger:_messageType forKey:@"_messageType"];
     [aCoder encodeDouble:_messageTimestamp forKey:@"_messageTimestamp"];
+    
+    [aCoder encodeBool:_inviteAck forKey:@"_inviteAck"];
     
     [aCoder encodeObject:_photoFrameIndexPath forKey:@"_photoFrameIndexPath"];
     [aCoder encodeBool:_photoFrameConfirmAck forKey:@"_photoFrameConfirmAck"];

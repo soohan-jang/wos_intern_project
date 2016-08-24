@@ -41,7 +41,18 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self prepareSession];
+    SessionManager *sessionManager = [SessionManager sharedInstance];
+    
+    if ([sessionManager isSessionNil]) {
+        [self prepareSession];
+    }
+    
+    if (sessionManager.session.sessionType == SessionTypeBluetooth) {
+        PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
+        [session setAdvertiserDelegate:self];
+        [session startAdvertise];
+    }
+    
     [self.view setUserInteractionEnabled:YES];
 }
 
@@ -59,10 +70,6 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 - (void)prepareSession {
     SessionManager *sessionManager = [SessionManager sharedInstance];
     [sessionManager initializeWithSessionType:SessionTypeBluetooth];
-    
-    PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
-    [session setAdvertiserDelegate:self];
-    [session startAdvertise];
 }
 
 
@@ -108,6 +115,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     [sessionManager setMessageBufferEnabled:YES];
     
     PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
+    [session clearBluetoothBrowser];
     [session clearBluetoothAdvertiser];
     
     [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];
@@ -117,18 +125,23 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 #pragma mark - Bluetooth Browser Delegate Methods
 
 - (void)browserSessionConnected:(BluetoothBrowser *)browser {
-    [self presentSelectPhotoFrameViewController];
-    
-    browser.delegate = nil;
-    browser = nil;
+    __weak typeof(self) weakSelf = self;
+    [browser dismissBrowserViewController:^{
+        __strong typeof(weakSelf) self = weakSelf;
+        
+        if (!self) {
+            return;
+        }
+        
+        [self presentSelectPhotoFrameViewController];
+    }];
 }
 
-- (void)browserSessionNotConnected:(BluetoothBrowser *)browser {
-    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
-    [session startAdvertise];
-    
-    browser.delegate = nil;
-    browser = nil;
+- (void)browserSessionConnectCancel:(BluetoothBrowser *)browser {
+    [browser dismissBrowserViewController:^{
+        PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+        [session startAdvertise];
+    }];
 }
 
 
@@ -162,6 +175,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                       
                                       PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
                                       invitationHandler(YES, [session instanceOfSession]);
+                                      
                                       self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_connecting"];
                                       [self.view setUserInteractionEnabled:NO];
                                   }];

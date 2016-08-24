@@ -12,7 +12,6 @@
 #import "SessionManager.h"
 #import "MessageSender.h"
 #import "MessageReceiver.h"
-#import "MessageInterrupter.h"
 
 @interface DecorateDataSender ()
 
@@ -21,6 +20,16 @@
 @end
 
 @implementation DecorateDataSender
+
+- (instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.messageSender = [SessionManager sharedInstance].messageSender;
+    }
+    
+    return self;
+}
 
 - (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize {
     return [self.messageSender sendScreenSizeDeviceDataMessage:screenSize];
@@ -48,11 +57,9 @@
 
 @end
 
-@interface DecorateDataController () <DecorateDataDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate, MessageInterrupterDecorateDataSelectionDelegate>
+@interface DecorateDataController () <DecorateDataDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate>
 
 @property (atomic, strong) NSMutableArray<DecorateData *> *decorateDataArray;
-
-@property (nonatomic, strong) MessageReceiver *messageReceiver;
 @property (nonatomic, assign) CGFloat widthRatio, heightRatio;
 
 @end
@@ -66,11 +73,10 @@
     self = [super init];
     
     if (self) {
-        PESession *session = [SessionManager sharedInstance].session;
-        self.messageReceiver = [[MessageReceiver alloc] initWithSession:[session instanceOfSession]];
-        self.messageReceiver.decorateDataDelegate = self;
-        
-        [MessageInterrupter sharedInstance].interruptDecorateDataSelectionDelegate = self;
+        self.dataSender = [[DecorateDataSender alloc] init];
+        SessionManager *sessionManager = [SessionManager sharedInstance];
+        sessionManager.messageReceiver.deviceDataDelegate = self;
+        sessionManager.messageReceiver.decorateDataDelegate = self;
     }
     
     return self;
@@ -293,21 +299,6 @@
     
     if (data) {
         [self deleteDecorateData:uuid];
-    }
-}
-
-
-#pragma mark - MessageInterrupterDecorateDataSelectionDelegate Methods
-
-- (void)interruptDecorateDataSelection:(NSUUID *)uuid {
-    DecorateData *data = [self decorateDataOfUUID:uuid];
-    
-    if (data) {
-        data.selected = NO;
-    }
-    
-    if (self.delegate) {
-        [self.delegate didUpdateDecorateData:uuid];
     }
 }
 

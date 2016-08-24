@@ -15,7 +15,7 @@ NSInteger const MaximumNumberOfPeers = 1;
 @interface BluetoothBrowser () <MCBrowserViewControllerDelegate, MessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCBrowserViewController *browserController;
-@property (strong, nonatomic) MessageReceiver *messageReceiver;
+//@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -30,11 +30,15 @@ NSInteger const MaximumNumberOfPeers = 1;
         _browserController = [[MCBrowserViewController alloc] initWithServiceType:serviceType session:session];
         _browserController.maximumNumberOfPeers = MaximumNumberOfPeers;
         _browserController.delegate = self;
-        
-        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }
     
     return self;
+}
+
+- (void)dealloc {
+    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
+    _browserController.delegate = nil;
+    _browserController = nil;
 }
 
 
@@ -53,41 +57,13 @@ NSInteger const MaximumNumberOfPeers = 1;
             return;
         }
         
-        self.messageReceiver.stateChangeDelegate = self;
-        [self.browserController.browser startBrowsingForPeers];
+        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }];
     return YES;
 }
 
-NS_ENUM(NSInteger, DismissType) {
-    DismissTypeConnected = 0,
-    DismissTypeNotConnected
-};
-
-- (void)dismissBrowserViewController:(NSInteger)dismissType {
-    _messageReceiver.stateChangeDelegate = nil;
-    [_browserController.browser stopBrowsingForPeers];
-    _browserController.delegate = nil;
-    
-    __weak typeof(self) weakSelf = self;
-    [_browserController dismissViewControllerAnimated:YES completion:^{
-        __strong typeof (weakSelf) self = weakSelf;
-        
-        if (!self) {
-            return;
-        }
-        
-        if (self.delegate) {
-            switch (dismissType) {
-                case DismissTypeConnected:
-                    [self.delegate browserSessionConnected:self];
-                    break;
-                case DismissTypeNotConnected:
-                    [self.delegate browserSessionNotConnected:self];
-                    break;
-            }
-        }
-    }];
+- (void)dismissBrowserViewController:(void (^)(void))completion {
+    [_browserController dismissViewControllerAnimated:YES completion:completion];
 }
 
 
@@ -103,7 +79,9 @@ NS_ENUM(NSInteger, DismissType) {
         return;
     }
     
-    [self dismissBrowserViewController:DismissTypeNotConnected];
+    if (_delegate) {
+        [_delegate browserSessionConnectCancel:self];
+    }
 }
 
 
@@ -112,10 +90,12 @@ NS_ENUM(NSInteger, DismissType) {
 - (void)didReceiveChangeSessionState:(NSInteger)state {
     switch (state) {
         case SessionStateConnected:
-            [self dismissBrowserViewController:DismissTypeConnected];
+            if (_delegate) {
+                [_delegate browserSessionConnected:self];
+            }
             break;
         case SessionStateDisconnected:
-            [_browserController.browser startBrowsingForPeers];
+            //Do Nothing.
             break;
     }
 }

@@ -87,7 +87,7 @@
 - (void)didUpdateCellEnabled:(BOOL)enabled;
 - (void)didUpdateCellStateWithDoneActivate:(BOOL)activate;
 - (void)didReceiveRequestPhotoFrameConfirm:(NSIndexPath *)indexPath;
-- (void)didReceivePhotoFrameConfirmAck:(BOOL)confirmAck;
-- (void)didInterruptRequestConfirm;
+- (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck;
+- (void)didInterruptRequestConfirm:(BOOL)interrupt;
 
 @end

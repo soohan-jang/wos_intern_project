@@ -11,5 +11,6 @@
 @interface DispatchAsyncHelper : NSObject
 
 + (void)dispatchAsyncWithBlockOnMainQueue:(void(^)(void))executeBlock;
++ (void)dispatchAsyncWithBlockOnMainQueue:(void(^)(void))executeBlock delayTime:(NSTimeInterval)delayTime;
 
 @end

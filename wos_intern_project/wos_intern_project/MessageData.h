@@ -10,7 +10,10 @@
 #import "DecorateData.h"
 
 typedef NS_ENUM(NSInteger, MessageType) {
-    MessageTypePhotoFrameSelect = 0,
+    MessageTypeInviteCancel     = 0,
+    MessageTypeInviteAck,
+    
+    MessageTypePhotoFrameSelect,
     MessageTypePhotoFrameDeselect,
     
     MessageTypePhotoFrameRequestConfirm,
@@ -43,6 +46,8 @@ typedef NS_ENUM(NSInteger, MessageType) {
 
 @property (nonatomic, assign) NSInteger messageType;
 @property (nonatomic, assign) NSTimeInterval messageTimestamp;
+
+@property (nonatomic, assign) BOOL inviteAck;
 
 @property (nonatomic, strong) NSIndexPath *photoFrameIndexPath;
 @property (nonatomic, assign) BOOL photoFrameConfirmAck;

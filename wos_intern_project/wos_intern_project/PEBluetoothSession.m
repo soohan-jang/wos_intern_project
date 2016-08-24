@@ -10,6 +10,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 
 #import "PEBluetoothSession.h"
+#import "MessageReceiver.h"
 
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"
@@ -21,6 +22,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
 @property (strong, nonatomic) CBCentralManager *bluetoothManager;
 @property (strong, nonatomic) MCSession *session;
 
+@property (strong, nonatomic) BluetoothBrowser *browser;
 @property (strong, nonatomic) BluetoothAdvertiser *advertiser;
 
 @end
@@ -146,15 +148,23 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
 #pragma mark - Bluetooth Browser Methods
 
 - (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id)delegate {
-    BluetoothBrowser *browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType session:self.session];
-    browser.delegate = delegate;
+    self.browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType session:self.session];
+    self.browser.delegate = delegate;
     
-    if ([browser presentBrowserViewController:viewController]) {
+    if ([self.browser presentBrowserViewController:viewController]) {
         [self.advertiser stopAdvertise];
         return YES;
     }
     
+    self.browser.delegate = nil;
+    self.browser = nil;
+    
     return NO;
+}
+
+- (void)clearBluetoothBrowser {
+    self.browser.delegate = nil;
+    self.browser = nil;
 }
 
 

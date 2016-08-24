@@ -61,15 +61,26 @@
 #pragma mark - Send Photo Frame Confrim & Response Message Methods
 
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath {
+    NSTimeInterval timestamp = [self timestamp];
+    
+    if ([[MessageInterrupter sharedInstance] isMessageSendInterrupt:timestamp]) {
+        NSLog(@"Interrupted sendSelectPhotoDataMessage");
+        return NO;
+    }
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirm;
-    data.messageTimestamp = [self timestamp];
+    data.messageTimestamp = timestamp;
     data.photoFrameIndexPath = indexPath;
     
     return [self.session sendMessage:data];
 }
 
 - (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck {
+    MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
+    messageInterrupter.sendMessageTimestamp = 0;
+    messageInterrupter.recvMessageTimestamp = 0;
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirmAck;
     data.photoFrameConfirmAck = confrimAck;
@@ -92,9 +103,11 @@
 #pragma mark - Send Select & Deselect Photo Data Message Methods
 
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
+    NSTimeInterval timestamp = [self timestamp];
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataSelect;
-    data.messageTimestamp = [self timestamp];
+    data.messageTimestamp = timestamp;
     data.photoDataIndexPath = indexPath;
     
     return [self.session sendMessage:data];

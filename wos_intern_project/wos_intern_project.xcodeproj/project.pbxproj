@@ -259,22 +259,19 @@
 			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
-		4A3CB3FD1D6AE0E300B324BC /* Session */ = {
+		4A3CB3FD1D6AE0E300B324BC /* SessionManager */ = {
 			isa = PBXGroup;
 			children = (
 				4A3CB3F41D6AD74D00B324BC /* SessionManager.h */,
 				4A3CB3F51D6AD74D00B324BC /* SessionManager.m */,
-				4A3CB4031D6AEC3000B324BC /* PESession.h */,
-				4A3CB4041D6AEC3000B324BC /* PESession.m */,
-				4A3CB3F71D6AD76100B324BC /* PEBluetoothSession.h */,
-				4A3CB3F81D6AD76100B324BC /* PEBluetoothSession.m */,
-				4A3CB3FE1D6AE0EC00B324BC /* Message */,
+				4AF78C751D6D678000FD3FB7 /* Session */,
+				4A3CB3FE1D6AE0EC00B324BC /* MessageHelper */,
 				4A3CB4091D6B2B1900B324BC /* BluetoothConnectAssistant */,
 			);
-			name = Session;
+			name = SessionManager;
 			sourceTree = "<group>";
 		};
-		4A3CB3FE1D6AE0EC00B324BC /* Message */ = {
+		4A3CB3FE1D6AE0EC00B324BC /* MessageHelper */ = {
 			isa = PBXGroup;
 			children = (
 				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
@@ -286,7 +283,7 @@
 				4A46AE291D6BD7EA0070182D /* MessageInterrupter.h */,
 				4A46AE2A1D6BD7EA0070182D /* MessageInterrupter.m */,
 			);
-			name = Message;
+			name = MessageHelper;
 			sourceTree = "<group>";
 		};
 		4A3CB3FF1D6AE0FE00B324BC /* DataController */ = {
@@ -500,7 +497,7 @@
 		4A97B60B1D336520003899F7 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				4A3CB3FD1D6AE0E300B324BC /* Session */,
+				4A3CB3FD1D6AE0E300B324BC /* SessionManager */,
 				4A3CB3FF1D6AE0FE00B324BC /* DataController */,
 			);
 			name = Manager;
@@ -521,6 +518,17 @@
 				4AC91E661D586A6900DB9E50 /* CanvasPathData.m */,
 			);
 			name = Data;
+			sourceTree = "<group>";
+		};
+		4AF78C751D6D678000FD3FB7 /* Session */ = {
+			isa = PBXGroup;
+			children = (
+				4A3CB4031D6AEC3000B324BC /* PESession.h */,
+				4A3CB4041D6AEC3000B324BC /* PESession.m */,
+				4A3CB3F71D6AD76100B324BC /* PEBluetoothSession.h */,
+				4A3CB3F81D6AD76100B324BC /* PEBluetoothSession.m */,
+			);
+			name = Session;
 			sourceTree = "<group>";
 		};
 		4B4490B01D46661F00E5972F /* PEPhotoCropEditor */ = {

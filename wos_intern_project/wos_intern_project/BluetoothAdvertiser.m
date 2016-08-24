@@ -13,7 +13,6 @@
 @interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, MessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCNearbyServiceAdvertiser *advertiser;
-@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 
@@ -27,23 +26,27 @@
                                                         discoveryInfo:nil
                                                           serviceType:serviceType];
         _advertiser.delegate = self;
-        
-        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }
     
     return self;
+}
+
+- (void)dealloc {
+    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
+    _advertiser.delegate = nil;
+    _advertiser = nil;
 }
 
 
 #pragma mark - Start & Stop Advertising
 
 - (void)startAdvertise {
-    _messageReceiver.stateChangeDelegate = self;
+    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     [_advertiser startAdvertisingPeer];
 }
 
 - (void)stopAdvertise {
-    _messageReceiver.stateChangeDelegate = nil;
+    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
     [_advertiser stopAdvertisingPeer];
 }
 
