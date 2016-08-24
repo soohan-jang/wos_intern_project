@@ -70,11 +70,9 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    
-    
     [self setupDelegates];
     [self setupMainMenu];
+    [self startSynchronizeMessage];
 }
 
 - (void)dealloc {
@@ -151,6 +149,13 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
     [self.mainMenuButton setCenterIcon:[UIImage imageNamed:@"MenuMain"]];
     [self.mainMenuButton setCenterIconType:XXXIconTypeCustomImage];
     [self.mainMenuButton setDelegate:self];
+}
+
+
+#pragma mark - Start Synchronize Message Methods
+
+- (void)startSynchronizeMessage {
+    [[SessionManager sharedInstance].messageReceiver startSynchronizeMessage];
 }
 
 

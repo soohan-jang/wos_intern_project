@@ -44,9 +44,9 @@
         while (![self.messageBuffer isMessageBufferEmpty]) {
             [self dispatchMessage:[self.messageBuffer getMessage]];
         }
-        
-        self.messageBuffer.enabled = NO;
     }
+    
+    [self setMessageBufferEnabled:NO];
 }
 
 - (void)dispatchMessage:(MessageData *)message {
