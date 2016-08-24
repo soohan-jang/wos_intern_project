@@ -41,18 +41,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    SessionManager *sessionManager = [SessionManager sharedInstance];
-    
-    if ([sessionManager isSessionNil]) {
-        [self prepareSession];
-    }
-    
-    if (sessionManager.session.sessionType == SessionTypeBluetooth) {
-        PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
-        [session setAdvertiserDelegate:self];
-        [session startAdvertise];
-    }
-    
+    [self prepareSession];
     [self.view setUserInteractionEnabled:YES];
 }
 
@@ -69,7 +58,16 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)prepareSession {
     SessionManager *sessionManager = [SessionManager sharedInstance];
-    [sessionManager initializeWithSessionType:SessionTypeBluetooth];
+    
+    if ([sessionManager isSessionNil]) {
+        [sessionManager initializeWithSessionType:SessionTypeBluetooth];
+        
+        if (sessionManager.session.sessionType == SessionTypeBluetooth) {
+            PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
+            [session setAdvertiserDelegate:self];
+            [session startAdvertise];
+        }
+    }
 }
 
 
@@ -139,8 +137,9 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)browserSessionConnectCancel:(BluetoothBrowser *)browser {
     [browser dismissBrowserViewController:^{
-        PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
-        [session startAdvertise];
+        SessionManager *sessionManager = [SessionManager sharedInstance];
+        [sessionManager disconnectSession];
+        [self prepareSession];
     }];
 }
 
@@ -186,6 +185,9 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
     if (!self.progressView || self.progressView.hidden) {
         [[SessionManager sharedInstance] disconnectSession];
+        
+        [self prepareSession];
+        [self.view setUserInteractionEnabled:YES];
         return;
     }
     
@@ -199,6 +201,10 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                 return;
                             }
                             
+                            if ([SessionManager sharedInstance].session.sessionState != SessionStateConnected) {
+                                return;
+                            }
+                            
                             [self presentSelectPhotoFrameViewController];
                         }
      ];
@@ -207,14 +213,21 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 - (void)advertiserSessionNotConnected {
     if (!self.progressView || self.progressView.hidden) {
         [[SessionManager sharedInstance] disconnectSession];
+        
+        [self prepareSession];
+        [self.view setUserInteractionEnabled:YES];
         return;
     }
     
     [ProgressHelper dismissProgress:self.progressView
-                    dismissTitleKey:@"progress_title_rejected"
+                    dismissTitleKey:@"progress_title_cancelled"
                         dismissType:DismissWithDone
                   completionHandler:^{
-                      [[SessionManager sharedInstance] disconnectSession];
+                      SessionManager *sessionManager = [SessionManager sharedInstance];
+                      [sessionManager disconnectSession];
+                      
+                      [self prepareSession];
+                      [self.view setUserInteractionEnabled:YES];
                   }
      ];
 }

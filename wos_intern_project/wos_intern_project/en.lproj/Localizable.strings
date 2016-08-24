@@ -38,6 +38,7 @@ progress_title_connecting            = "Connecting...";
 progress_title_connected             = "Connected!";
 progress_title_confirming            = "Confirming...";
 progress_title_confirmed             = "Confirmed!";
+progress_title_cancelled             = "Canelled!";
 progress_title_rejected              = "Rejected!";
 progress_title_loadding              = "Loadding...";
 progress_title_saving                = "Saving...";

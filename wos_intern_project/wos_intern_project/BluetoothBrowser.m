@@ -15,7 +15,6 @@ NSInteger const MaximumNumberOfPeers = 1;
 @interface BluetoothBrowser () <MCBrowserViewControllerDelegate, MessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCBrowserViewController *browserController;
-//@property (strong, nonatomic) MessageReceiver *messageReceiver;
 
 @end
 

@@ -138,9 +138,9 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     self.session.delegate = nil;
     self.session = nil;
     
+    [self clearBluetoothBrowser];
     [self clearBluetoothAdvertiser];
     
-    self.availiableState = AvailiableStateUnknown;
     self.sessionState = SessionStateDisconnected;
 }
 
