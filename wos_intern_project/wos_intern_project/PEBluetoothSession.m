@@ -1,3 +1,4 @@
+
 //
 //  PEBluetoothSession.m
 //  wos_intern_project
@@ -243,21 +244,40 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     
     NSInteger messageTypeOfPhotoData = [array[0] integerValue];
     NSInteger indexOfPhotoData = [array[1] integerValue];
-    NSString *fileTypeOfPhotoData = array[2];
+    NSString *dataTypeOfPhotoData = array[2];
     NSInteger filterTypeOfPhotoData = [array[3] integerValue];
     
     NSURL *fileURLOfPhotoData = localURL;
     
-    if ([fileTypeOfPhotoData isEqualToString:IdentifierImageCropped]) {
+    if ([dataTypeOfPhotoData isEqualToString:IdentifierImageCropped]) {
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
             MessageData *data = [[MessageData alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
-            data.photoDataType = fileTypeOfPhotoData;
+            data.photoDataType = dataTypeOfPhotoData;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
             
             [self.dataReceiveDelegate didReceiveData:data];
+            return;
+        }
+        
+        if (messageTypeOfPhotoData == MessageTypePhotoDataUpdate) {
+            MessageData *data = [[MessageData alloc] init];
+            data.messageType = MessageTypePhotoDataUpdate;
+            data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+            data.photoDataType = dataTypeOfPhotoData;
+            data.photoDataCroppedImageURL = fileURLOfPhotoData;
+            data.photoDataFilterType = filterTypeOfPhotoData;
+            
+            [self.dataReceiveDelegate didReceiveData:data];
+            
+            data = [[MessageData alloc] init];
+            data.messageType = MessageTypePhotoDataReceiveFinish;
+            data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
+            
+            [self.dataReceiveDelegate didReceiveData:data];
+            
             return;
         }
         
@@ -265,30 +285,23 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         MessageData *data = [[MessageData alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
-        data.photoDataType = fileTypeOfPhotoData;
+        data.photoDataType = dataTypeOfPhotoData;
         data.photoDataCroppedImageURL = fileURLOfPhotoData;
         data.photoDataFilterType = filterTypeOfPhotoData;
         
         [self.dataReceiveDelegate didReceiveData:data];
         
-        if (messageTypeOfPhotoData == MessageTypePhotoDataUpdate) {
-            //didReceivedData : receive finish photo data
-            data = [[MessageData alloc] init];
-            data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
-            data.messageType = MessageTypePhotoDataReceiveFinish;
-        }
-        
         return;
     }
     
-    if ([fileTypeOfPhotoData isEqualToString:IdentifierImageOriginal]) {
+    if ([dataTypeOfPhotoData isEqualToString:IdentifierImageOriginal]) {
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
             MessageData *data = [[MessageData alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
-            data.photoDataType = fileTypeOfPhotoData;
+            data.photoDataType = dataTypeOfPhotoData;
             
             [self.dataReceiveDelegate didReceiveData:data];
             return;
@@ -298,7 +311,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         MessageData *data = [[MessageData alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
-        data.photoDataType = fileTypeOfPhotoData;
+        data.photoDataType = dataTypeOfPhotoData;
         data.photoDataOriginalImageURL = fileURLOfPhotoData;
         data.photoDataFilterType = filterTypeOfPhotoData;
         

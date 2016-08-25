@@ -73,10 +73,15 @@
     self = [super init];
     
     if (self) {
-        self.dataSender = [[DecorateDataSender alloc] init];
         SessionManager *sessionManager = [SessionManager sharedInstance];
         sessionManager.messageReceiver.deviceDataDelegate = self;
         sessionManager.messageReceiver.decorateDataDelegate = self;
+        
+        self.dataSender = [[DecorateDataSender alloc] init];
+        
+        if (![self.dataSender sendScreenSizeDeviceDataMessage:[UIScreen mainScreen].bounds.size]) {
+            //스크린 사이즈 송신 실패 시, Alert 표시하고 MainVC로 돌아간다.
+        }
     }
     
     return self;
@@ -194,9 +199,9 @@
         view.enabled = data.enabled;
         
         //enabled가 NO로 설정된 객체에 대해선 선택을 수행할 수 없으므로, 선택관련 로직을 무시한다.
-        if (!view.enabled) {
-            return nil;
-        }
+//        if (!view.enabled) {
+//            return nil;
+//        }
         
         //선택해제된 경우
         if (view.selected && !data.selected) {
@@ -208,9 +213,8 @@
         if (data.selected) {
             view.selected = data.selected;
             [decorateDisplayView drawControlButtonsOnSelectedDecorateView];
+            return nil;
         }
-        
-        return nil;
     }
     
     //Delete
@@ -238,8 +242,12 @@
 
 - (void)didReceiveDeviceScreenSize:(CGSize)screenSize {
     CGSize myScreenSize = [UIScreen mainScreen].bounds.size;
-    _widthRatio = screenSize.width / myScreenSize.width;
-    _heightRatio = screenSize.height / myScreenSize.height;
+    _widthRatio = myScreenSize.width / screenSize.width;
+    _heightRatio = myScreenSize.height / screenSize.height;
+    
+    if (self.delegate) {
+        [self.delegate didReceiveScreenSize];
+    }
 }
 
 
@@ -247,6 +255,10 @@
 
 - (void)didReceiveSelectDecorateData:(NSUUID *)uuid {
     DecorateData *data = [self decorateDataOfUUID:uuid];
+    
+    if (data.selected && self.delegate) {
+        [self.delegate didInterruptDecorateDataSelection:uuid];
+    }
     
     if (data) {
         data.enabled = NO;
@@ -276,8 +288,8 @@
     
     insertData.frame = CGRectMake(insertData.frame.origin.x,
                                   insertData.frame.origin.y,
-                                  insertData.frame.size.width / self.widthRatio,
-                                  insertData.frame.size.height / self.heightRatio);
+                                  insertData.frame.size.width * self.widthRatio,
+                                  insertData.frame.size.height * self.heightRatio);
     
     [self addDecorateData:insertData];
 }
@@ -286,7 +298,10 @@
     DecorateData *data = [self decorateDataOfUUID:uuid];
     
     if (data) {
-        data.frame = updateFrame;
+        data.frame = CGRectMake(updateFrame.origin.x * self.widthRatio,
+                                updateFrame.origin.y * self.heightRatio,
+                                updateFrame.size.width * self.widthRatio,
+                                updateFrame.size.height * self.heightRatio);
     }
     
     if (self.delegate) {

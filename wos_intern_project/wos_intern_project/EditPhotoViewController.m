@@ -60,6 +60,8 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 @property (strong, nonatomic) NSURL *pickedImageURL;
 @property (strong, nonatomic) UIImage *pickedImage;
 
+@property (assign, nonatomic) BOOL isEnteredOtherPeer;
+
 @end
 
 @implementation EditPhotoViewController
@@ -72,6 +74,12 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
     
     [self setupDelegates];
     [self setupMainMenu];
+    
+    self.isEnteredOtherPeer = NO;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self startSynchronizeMessage];
 }
 
@@ -108,21 +116,20 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 //이 함수는 EditPhotoVC를 호출하는 VC에서 값을 전달하기 위해 호출하는 함수이다.
 //내부적으로 setupControllers를 호출하여, EditPhotoVC에서 사용하는 DataController를 생성한다.
 - (void)setPhotoFrameNumber:(NSInteger)selectPhotoFrame {
-    [self setupControllers:selectPhotoFrame];
+    [self prepareDataControllers:selectPhotoFrame];
 }
 
-- (void)setupControllers:(NSInteger)selectPhotoFrame {
+- (void)prepareDataControllers:(NSInteger)selectPhotoFrame {
     self.photoDataController = [[PhotoDataController alloc] initWithFrameNumber:selectPhotoFrame];
+    self.photoDataController.delegate = self;
+    
     self.decorateDataController = [[DecorateDataController alloc] init];
+    self.decorateDataController.delegate = self;
 }
 
 - (void)setupDelegates {
     MessageReceiver *messageReceiver = [SessionManager sharedInstance].messageReceiver;
     messageReceiver.stateChangeDelegate = self;
-    
-    //Controller's Delegate
-    self.photoDataController.delegate = self;
-    self.decorateDataController.delegate = self;
     
     //DisplayView's Datasource & Delegate
     self.photoDisplayCollectionView.dataSource = (id<UICollectionViewDataSource>)self.photoDataController;
@@ -381,8 +388,10 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     }
     
     if (isSendEditCancelMsg) {
-        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
-        [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
+        if (![self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath]) {
+            return;
+        }
+        
         self.photoDataController.selectedIndexPath = nil;
     }
     
@@ -427,10 +436,15 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuPhotoDelete {
+    if (![self.photoDataController.dataSender sendDeletePhotoDataMessage:self.photoDataController.selectedIndexPath]) {
+        //삭제 실패 시, Alert를 띄우는 방식으로 처리하고 - 메뉴는 닫는다.
+        return YES;
+    }
+    
     [self.photoDataController clearCellDataAtSelectedIndexPath];
-    [self.photoDataController.dataSender sendDeletePhotoDataMessage:self.photoDataController.selectedIndexPath];
     self.photoDataController.selectedIndexPath = nil;
-    return NO;
+    
+    return YES;
 }
 
 
@@ -508,7 +522,6 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
                                                    originalImageURL:fullscreenImageURL
                                                     croppedImageURL:croppedImageURL
                                                          filterType:0];
-    self.photoDataController.selectedIndexPath = nil;
 }
 
 - (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
@@ -528,36 +541,45 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (!self.photoMenu.hidden) {
-        if (self.mainMenuButton.isOpened) {
-            [self.mainMenuButton dismissMenuButton];
-        }
-        
-        self.photoDataController.selectedIndexPath = indexPath;
-        
-        NSArray *images;
-        if ([self.photoDataController hasImageAtSelectedIndexPath]) {
-            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
-        } else {
-            images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
-        }
-        
-        if (self.photoMenu)
-            self.photoMenu = nil;
-        
-        CGRect cellFrame = [collectionView cellForItemAtIndexPath:indexPath].frame;
-        CGPoint centerPoint = CGPointMake(collectionView.superview.frame.origin.x + collectionView.frame.origin.x + cellFrame.origin.x + cellFrame.size.width / 2.0f,
-                                          collectionView.superview.frame.origin.y + collectionView.frame.origin.y + cellFrame.origin.y + cellFrame.size.height / 2.0f);
-        
-        self.photoMenu = [[SphereMenu alloc] initWithRootView:self.navigationController.view
-                                                       Center:centerPoint
-                                                   CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
-        self.photoMenu.delegate = self;
-        [self.photoMenu presentMenu];
-        
-        [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateEditing];
-        [self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath];
+    if (!self.isEnteredOtherPeer) {
+        //Alert 표시. 상대방이 들어오기 전까지는 사진 메뉴를 사용할 수 없다.
+        [AlertHelper showAlertControllerOnViewController:self
+                                                titleKey:@"alert_title_other_peer_not_entered"
+                                              messageKey:@"alert_content_other_peer_not_entered"
+                                                  button:@"alert_button_text_ok"
+                                           buttonHandler:nil];
+        return;
     }
+    
+    if (self.mainMenuButton.isOpened) {
+        [self.mainMenuButton dismissMenuButton];
+    }
+    
+    if (![self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath]) {
+        return;
+    }
+    
+    self.photoDataController.selectedIndexPath = indexPath;
+    
+    NSArray *images;
+    if ([self.photoDataController hasImageAtSelectedIndexPath]) {
+        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"], [UIImage imageNamed:@"CircleFilter"], [UIImage imageNamed:@"CircleDelete"]];
+    } else {
+        images = @[[UIImage imageNamed:@"CircleAlbum"], [UIImage imageNamed:@"CircleCamera"]];
+    }
+    
+    if (self.photoMenu)
+        self.photoMenu = nil;
+    
+    CGRect cellFrame = [collectionView cellForItemAtIndexPath:indexPath].frame;
+    CGPoint centerPoint = CGPointMake(collectionView.superview.frame.origin.x + collectionView.frame.origin.x + cellFrame.origin.x + cellFrame.size.width / 2.0f,
+                                      collectionView.superview.frame.origin.y + collectionView.frame.origin.y + cellFrame.origin.y + cellFrame.size.height / 2.0f);
+    
+    self.photoMenu = [[SphereMenu alloc] initWithRootView:self.navigationController.view
+                                                   Center:centerPoint
+                                               CloseImage:[UIImage imageNamed:@"CircleClose"] MenuImages:images];
+    self.photoMenu.delegate = self;
+    [self.photoMenu presentMenu];
 }
 
 /**
@@ -584,52 +606,67 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (void)didFinishReceivePhotoData:(NSIndexPath *)indexPath {
+    //Ack 전송 실패시 어떻게 할 것인가...?
     [self.photoDataController.dataSender sendPhotoDataAckMessage:indexPath ack:YES];
 }
 
 - (void)didErrorReceivePhotoData:(NSIndexPath *)indexPath {
+    //Ack 전송 실패시 어떻게 할 것인가...?
     [self.photoDataController.dataSender sendPhotoDataAckMessage:indexPath ack:NO];
 }
 
 - (void)didInterruptPhotoDataSelection:(NSIndexPath *)indexPath {
-    if (!self.photoMenu && !self.photoMenu.isHidden) {
-        return;
-    }
-    
+    [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
+    self.photoDataController.selectedIndexPath = nil;
+    [self.photoMenu setHidden:YES];
     [self.photoMenu dismissMenu];
 }
 
 
 #pragma mark - Decorate Data Controller Delegate Methods
 
+- (void)didReceiveScreenSize {
+    self.isEnteredOtherPeer = YES;
+}
+
 - (void)didUpdateDecorateData:(NSUUID *)uuid {
     [self.decorateDisplayView updateDecorateViewOfUUID:uuid];
 }
 
 - (void)didInterruptDecorateDataSelection:(NSUUID *)uuid {
-    //Do something?
+    [self.decorateDataController selectDecorateData:uuid selected:NO];
 }
 
 
 #pragma mark - PhotoDecorateDataDisplayView Delegate Methods
 
 - (void)didSelectDecorateViewOfUUID:(NSUUID *)uuid selected:(BOOL)selected {
-    [self.decorateDataController selectDecorateData:uuid selected:selected];
     if (selected) {
-        [self.decorateDataController.dataSender sendSelectDecorateDataMessage:uuid];
+        if (![self.decorateDataController.dataSender sendSelectDecorateDataMessage:uuid]) {
+            return;
+        }
     } else {
-        [self.decorateDataController.dataSender sendDeselectDecorateDataMessage:uuid];
+        if (![self.decorateDataController.dataSender sendDeselectDecorateDataMessage:uuid]) {
+            return;
+        }
     }
+    
+    [self.decorateDataController selectDecorateData:uuid selected:selected];
 }
 
 - (void)didUpdateDecorateViewOfUUID:(NSUUID *)uuid frame:(CGRect)frame {
+    if (![self.decorateDataController.dataSender sendUpdateDecorateDataMessage:uuid updateFrame:frame]) {
+        return;
+    }
+    
     [self.decorateDataController updateDecorateData:uuid frame:frame];
-    [self.decorateDataController.dataSender sendUpdateDecorateDataMessage:uuid updateFrame:frame];
+    
 }
 
 - (void)didDeleteDecorateViewOfUUID:(NSUUID *)uuid {
-    [self.decorateDataController deleteDecorateData:uuid];
-    [self.decorateDataController.dataSender sendDeleteDecorateDataMessage:uuid];
+    if (![self.decorateDataController.dataSender sendDeleteDecorateDataMessage:uuid]) {
+        [self.decorateDataController deleteDecorateData:uuid];
+    }
 }
 
 
@@ -637,8 +674,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)drawPenMenuViewDidFinished:(DecorateData *)decorateData {
     [self setMenuVisiblity:MenuVisblityPen visiblity:NO];
+    
+    if (![self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+        return;
+    }
+    
     [self.decorateDataController addDecorateData:decorateData];
-    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)drawPenMenuViewDidCancelled {
@@ -650,8 +691,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)inputTextMenuViewDidFinished:(DecorateData *)decorateData {
     [self setMenuVisiblity:MenuVisiblityText visiblity:NO];
+    
+    if (![self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+        return;
+    }
+    
     [self.decorateDataController addDecorateData:decorateData];
-    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)inputTextMenuViewDidCancelled {
@@ -662,8 +707,11 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 #pragma mark - PhotoStickerViewController Delegate Methods
 
 - (void)stickerViewControllerDidSelected:(DecorateData *)decorateData {
+    if (![self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+        return;
+    }
+    
     [self.decorateDataController addDecorateData:decorateData];
-    [self.decorateDataController.dataSender sendInsertDecorateDataMessage:decorateData];
 }
 
 - (void)stickerViewControllerDidClosed {

@@ -38,6 +38,7 @@
 
 @protocol DecorateDataControllerDelegate <NSObject>
 @required
+- (void)didReceiveScreenSize;
 - (void)didUpdateDecorateData:(NSUUID *)uuid;
 - (void)didInterruptDecorateDataSelection:(NSUUID *)uuid;
 

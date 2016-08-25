@@ -169,7 +169,7 @@ static const float kSphereDamping = 0.3;
 }
 
 - (void)removeFromSuperview {
-    for (int i = 0; i < self.count; i++) {
+    for (int i = 0; i < self.items.count; i++) {
         [self.items[i] removeFromSuperview];
         for (UIGestureRecognizer *recongnizer in ((UIButton *)self.items[i]).gestureRecognizers) {
             [self.items[i] removeGestureRecognizer:recongnizer];

@@ -41,6 +41,10 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     
     [self prepareDataController];
     [self prepareMessagerReceiver];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self startSynchronizeMessage];
 }
 
@@ -54,8 +58,6 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:SegueMoveToEditor]) {
-        [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
-        
         EditPhotoViewController *viewController = [segue destinationViewController];
         [viewController setPhotoFrameNumber:self.dataController.ownSelectedIndexPath.item];
     }
@@ -277,14 +279,18 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                       //가령 몇 회 이상 실패하면, 작업을 진행할 수 없는 심각한 상황으로 보고 강제종료시킨다든가.
                                       if (![self.dataController.dataSender sendPhotoFrameConfirmAckMessage:YES]) {
                                           [self didReceiveRequestPhotoFrameConfirm:indexPath];
+                                          return;
                                       }
                                       
+                                      [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
                                       [self presentEditPhotoViewController];
                                   }];
 }
 
 - (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck {
     if (confirmAck) {
+        [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
+        
         __weak typeof(self) weakSelf = self;
         [ProgressHelper dismissProgress:self.progressView
                         dismissTitleKey:@"progress_title_confirmed"

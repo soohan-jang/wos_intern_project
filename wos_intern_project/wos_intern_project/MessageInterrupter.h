@@ -21,12 +21,14 @@
 
 + (instancetype)sharedInstance;
 
-- (BOOL)isMessageSendInterrupt:(NSTimeInterval)timestamp;
-- (BOOL)isMessageSendInterrupt:(NSTimeInterval)timestamp indexPath:(NSIndexPath *)indexPath;
-- (BOOL)isMessageSendInterrupt:(NSTimeInterval)timestamp uuid:(NSUUID *)uuid;
+- (BOOL)isInterruptSendMessage:(NSTimeInterval)timestamp;
+- (BOOL)isInterruptSendMessage:(NSTimeInterval)timestamp indexPath:(NSIndexPath *)indexPath;
+- (BOOL)isInterruptSendMessage:(NSTimeInterval)timestamp uuid:(NSUUID *)uuid;
 
-- (BOOL)isMessageRecvInterrupt:(NSTimeInterval)timestamp;
-- (BOOL)isMessageRecvInterrupt:(NSTimeInterval)timestamp indexPath:(NSIndexPath *)indexPath;
-- (BOOL)isMessageRecvInterrupt:(NSTimeInterval)timestamp uuid:(NSUUID *)uuid;
+- (BOOL)isInterruptRecvMessage:(NSTimeInterval)timestamp;
+- (BOOL)isInterruptRecvMessage:(NSTimeInterval)timestamp indexPath:(NSIndexPath *)indexPath;
+- (BOOL)isInterruptRecvMessage:(NSTimeInterval)timestamp uuid:(NSUUID *)uuid;
+
+- (void)clearInterrupter;
 
 @end

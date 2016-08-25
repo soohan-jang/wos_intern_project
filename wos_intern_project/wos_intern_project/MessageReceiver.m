@@ -64,7 +64,7 @@
                 return;
             case MessageTypePhotoFrameRequestConfirm:
                 NSLog(@"Receive MessageTypePhotoFrameRequestConfirm");
-                if ([messageInterrupter isMessageRecvInterrupt:message.messageTimestamp]) {
+                if ([messageInterrupter isInterruptRecvMessage:message.messageTimestamp]) {
                     NSLog(@"Interrupted MessageTypePhotoFrameRequestConfirm");
                     return;
                 }
@@ -73,8 +73,7 @@
                 return;
             case MessageTypePhotoFrameRequestConfirmAck:
                 NSLog(@"Receive MessageTypePhotoFrameRequestConfirmAck");
-                messageInterrupter.sendMessageTimestamp = 0;
-                messageInterrupter.recvMessageTimestamp = 0;
+                [messageInterrupter clearInterrupter];
                 [self.photoFrameDataDelegate didReceiveRequestPhotoFrameConfirmAck:message.photoFrameConfirmAck];
                 return;
         }
@@ -93,10 +92,17 @@
         switch (message.messageType) {
             case MessageTypePhotoDataSelect:
                 NSLog(@"Receive MessageTypePhotoDataSelect");
+                messageInterrupter.recvMessageTimestamp = message.messageTimestamp;
+                if ([messageInterrupter isInterruptRecvMessage:message.messageTimestamp indexPath:message.photoDataIndexPath]) {
+                    NSLog(@"Interrupted MessageTypePhotoDataSelect");
+                    return;
+                }
+                
                 [self.photoDataDelegate didReceiveSelectPhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataDeselect:
                 NSLog(@"Receive MessageTypePhotoDataDeselect");
+                [messageInterrupter clearInterrupter];
                 [self.photoDataDelegate didReceiveDeselectPhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataReceiveStart:
@@ -105,6 +111,7 @@
                 return;
             case MessageTypePhotoDataReceiveFinish:
                 NSLog(@"Receive MessageTypePhotoDataReceiveFinish");
+                [messageInterrupter clearInterrupter];
                 [self.photoDataDelegate didReceiveFinishReceivePhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataReceiveError:
@@ -113,20 +120,18 @@
                 return;
             case MessageTypePhotoDataInsert:
                 NSLog(@"Receive MessageTypePhotoDataInsert");
-                if (message.photoDataCroppedImageURL) {
-                    [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
-                                                             dataType:message.photoDataType
-                                                        insertDataURL:message.photoDataCroppedImageURL
-                                                           filterType:message.photoDataFilterType];
-                    
-                }
-                
-                if (message.photoDataOriginalImageURL) {
+                if ([message.photoDataType isEqualToString:IdentifierImageOriginal]) {
                     [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
                                                              dataType:message.photoDataType
                                                         insertDataURL:message.photoDataOriginalImageURL
                                                            filterType:message.photoDataFilterType];
+                } else if ([message.photoDataType isEqualToString:IdentifierImageCropped]) {
+                    [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
+                                                             dataType:message.photoDataType
+                                                        insertDataURL:message.photoDataCroppedImageURL
+                                                           filterType:message.photoDataFilterType];
                 }
+                
                 return;
             case MessageTypePhotoDataUpdate:
                 NSLog(@"Receive MessageTypePhotoDataUpdate");
@@ -136,10 +141,12 @@
                 return;
             case MessageTypePhotoDataDelete:
                 NSLog(@"Receive MessageTypePhotoDataDelete");
+                [messageInterrupter clearInterrupter];
                 [self.photoDataDelegate didReceiveDeletePhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataReceiveAck:
                 NSLog(@"Receive MessageTypePhotoDataReceiveAck");
+                [messageInterrupter clearInterrupter];
                 [self.photoDataDelegate didReceivePhotoDataAck:message.photoDataIndexPath
                                                            ack:message.photoDataRecevieAck];
                 return;
@@ -150,10 +157,16 @@
         switch (message.messageType) {
             case MessageTypeDecorateDataSelect:
                 NSLog(@"Receive MessageTypeDecorateDataSelect");
+                if ([messageInterrupter isInterruptRecvMessage:message.messageTimestamp uuid:message.decorateDataUUID]) {
+                    NSLog(@"Interrupted MessageTypeDecorateDataSelect");
+                    return;
+                }
+                
                 [self.decorateDataDelegate didReceiveSelectDecorateData:message.decorateDataUUID];
                 return;
             case MessageTypeDecorateDataDeselect:
                 NSLog(@"Receive MessageTypeDecorateDataDeselect");
+                [messageInterrupter clearInterrupter];
                 [self.decorateDataDelegate didReceiveDeselectDecorateData:message.decorateDataUUID];
                 return;
             case MessageTypeDecorateDataInsert:
@@ -167,6 +180,7 @@
                 return;
             case MessageTypeDecorateDataDelete:
                 NSLog(@"Receive MessageTypeDecorateDataDelete");
+                [messageInterrupter clearInterrupter];
                 [self.decorateDataDelegate didReceiveDeleteDecorateData:message.decorateDataUUID];
                 return;
                 

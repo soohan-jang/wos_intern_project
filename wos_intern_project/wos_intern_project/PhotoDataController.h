@@ -36,7 +36,7 @@ typedef NS_ENUM(NSInteger, CellState) {
 @property (weak, nonatomic) id<PhotoDataControllerDelegate> delegate;
 @property (strong, nonatomic) PhotoDataSender *dataSender;
 
-@property (assign, nonatomic) NSIndexPath *selectedIndexPath;
+@property (strong, nonatomic) NSIndexPath *selectedIndexPath;
 
 /**
  Framenumber를 토대로 CellManager를 초기화한 뒤 반환한다.

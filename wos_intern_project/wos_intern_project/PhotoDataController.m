@@ -355,6 +355,10 @@ NSInteger const DefaultMargin   = 5;
 #pragma mark - MessageReceiverPhotoDataDelegate Methods
 
 - (void)didReceiveSelectPhotoData:(NSIndexPath *)indexPath {
+    if (self.selectedIndexPath.item == indexPath.item && self.delegate) {
+        [self.delegate didInterruptPhotoDataSelection:indexPath];
+    }
+    
     [self updateCellStateAtIndexPath:indexPath state:CellStateEditing];
 }
 
@@ -388,10 +392,18 @@ NSInteger const DefaultMargin   = 5;
     } else if ([dataType isEqualToString:IdentifierImageOriginal]) {
         self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     }
+    
+    if (self.delegate) {
+        [self.delegate didUpdatePhotoData:indexPath];
+    }
 }
 
 - (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType {
     self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:updateDataURL]];
+    
+    if (self.delegate) {
+        [self.delegate didUpdatePhotoData:indexPath];
+    }
 }
 
 - (void)didReceiveDeletePhotoData:(NSIndexPath *)indexPath {

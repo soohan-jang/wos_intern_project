@@ -63,8 +63,8 @@
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath {
     NSTimeInterval timestamp = [self timestamp];
     
-    if ([[MessageInterrupter sharedInstance] isMessageSendInterrupt:timestamp]) {
-        NSLog(@"Interrupted sendSelectPhotoDataMessage");
+    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp]) {
+        NSLog(@"Interrupted sendPhotoFrameConfrimRequestMessage");
         return NO;
     }
     
@@ -105,6 +105,11 @@
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
     NSTimeInterval timestamp = [self timestamp];
     
+    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp indexPath:indexPath]) {
+        NSLog(@"Interrupted sendSelectPhotoDataMessage");
+        return NO;
+    }
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataSelect;
     data.messageTimestamp = timestamp;
@@ -114,6 +119,8 @@
 }
 
 - (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath {
+    [[MessageInterrupter sharedInstance] clearInterrupter];
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataDeselect;
     data.photoDataIndexPath = indexPath;
@@ -154,6 +161,8 @@
 }
 
 - (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath {
+    [[MessageInterrupter sharedInstance] clearInterrupter];
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataDelete;
     data.photoDataIndexPath = indexPath;
@@ -167,6 +176,7 @@
 - (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack {
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypePhotoDataReceiveAck;
+    data.photoDataIndexPath = indexPath;
     data.photoDataRecevieAck = ack;
     
     return [self.session sendMessage:data];
@@ -176,15 +186,24 @@
 #pragma mark - Send Select & Deselect Decorate Data Message Methods
 
 - (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid {
+    NSTimeInterval timestamp = [self timestamp];
+    
+    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp uuid:uuid]) {
+        NSLog(@"Interrupted sendSelectDecorateDataMessage");
+        return NO;
+    }
+
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypeDecorateDataSelect;
-    data.messageTimestamp = [self timestamp];
+    data.messageTimestamp = timestamp;
     data.decorateDataUUID = uuid;
     
     return [self.session sendMessage:data];
 }
 
 - (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid {
+    [[MessageInterrupter sharedInstance] clearInterrupter];
+    
     MessageData *data = [[MessageData alloc] init];
     data.messageType = MessageTypeDecorateDataDeselect;
     data.decorateDataUUID = uuid;
