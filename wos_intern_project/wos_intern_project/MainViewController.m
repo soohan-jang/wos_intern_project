@@ -18,8 +18,6 @@
 #import "ProgressHelper.h"
 #import "AlertHelper.h"
 
-#import "ValidateCheckUtility.h"
-
 NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 @interface MainViewController () <BluetoothBrowserDelegate, BluetoothAdvertiserDelegate>

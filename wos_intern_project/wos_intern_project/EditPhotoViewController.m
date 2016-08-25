@@ -33,7 +33,7 @@
 #import "ProgressHelper.h"
 #import "ImageUtility.h"
 #import "ColorUtility.h"
-#import "ValidateCheckUtility.h"
+#import "AuthorityCheckUtility.h"
 
 NSString *const SegueMoveToCropper                      = @"moveToPhotoCrop";
 NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
@@ -399,7 +399,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuPhotoAlbum {
-    if ([ValidateCheckUtility checkPhotoAlbumAccessAuthority]) {
+    if ([AuthorityCheckUtility checkPhotoAlbumAccessAuthority]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         picker.delegate = self;
@@ -414,7 +414,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuCamera {
-    if ([ValidateCheckUtility checkPhotoCameraAccessAuthority]) {
+    if ([AuthorityCheckUtility checkPhotoCameraAccessAuthority]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.delegate = self;

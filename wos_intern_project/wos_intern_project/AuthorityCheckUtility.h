@@ -1,14 +1,14 @@
 //
-//  ValidateCheckUtility.h
+//  AuthorityCheckUtility.h
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 8..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-@interface ValidateCheckUtility : NSObject
+@interface AuthorityCheckUtility : NSObject
 
 + (BOOL)checkPhotoAlbumAccessAuthority;
 + (BOOL)checkPhotoCameraAccessAuthority;

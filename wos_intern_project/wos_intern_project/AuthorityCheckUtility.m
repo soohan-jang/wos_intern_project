@@ -1,17 +1,17 @@
 //
-//  ValidateCheckUtility.m
+//  AuthorityCheckUtility.m
 //  wos_intern_project
 //
 //  Created by Naver on 2016. 8. 8..
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "ValidateCheckUtility.h"
+#import "AuthorityCheckUtility.h"
 
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
 
-@implementation ValidateCheckUtility
+@implementation AuthorityCheckUtility
 
 #pragma mark - Authority & Validate Check Methods
 

@@ -30,7 +30,7 @@
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
 		4A4ACF511D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF501D2B6D2C00BC2FC4 /* wos_intern_projectUITests.m */; };
-		4A525B441D581461006183C7 /* ValidateCheckUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A525B431D581461006183C7 /* ValidateCheckUtility.m */; };
+		4A525B441D581461006183C7 /* AuthorityCheckUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A525B431D581461006183C7 /* AuthorityCheckUtility.m */; };
 		4A54345C1D62A08F0040C12F /* PhotoData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A54345B1D62A08F0040C12F /* PhotoData.m */; };
 		4A5434611D62CCDB0040C12F /* ColorUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5434601D62CCDB0040C12F /* ColorUtility.m */; };
 		4A5434641D62DF140040C12F /* PhotoStickerMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A5434631D62DF140040C12F /* PhotoStickerMenuView.m */; };
@@ -153,8 +153,8 @@
 		4A4E28BC1D4ED8FA0014F162 /* PhotoDrawPenMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoDrawPenMenuView.m; sourceTree = "<group>"; };
 		4A4E28BE1D4F54ED0014F162 /* DecorateDataDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecorateDataDisplayView.h; sourceTree = "<group>"; };
 		4A4E28BF1D4F54ED0014F162 /* DecorateDataDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecorateDataDisplayView.m; sourceTree = "<group>"; };
-		4A525B421D581461006183C7 /* ValidateCheckUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ValidateCheckUtility.h; sourceTree = "<group>"; };
-		4A525B431D581461006183C7 /* ValidateCheckUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ValidateCheckUtility.m; sourceTree = "<group>"; };
+		4A525B421D581461006183C7 /* AuthorityCheckUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthorityCheckUtility.h; sourceTree = "<group>"; };
+		4A525B431D581461006183C7 /* AuthorityCheckUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthorityCheckUtility.m; sourceTree = "<group>"; };
 		4A54345A1D62A08F0040C12F /* PhotoData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoData.h; sourceTree = "<group>"; };
 		4A54345B1D62A08F0040C12F /* PhotoData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoData.m; sourceTree = "<group>"; };
 		4A54345D1D62AFC30040C12F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
@@ -374,8 +374,8 @@
 			children = (
 				4B4490A91D426E2800E5972F /* ImageUtility.h */,
 				4B4490AA1D426E2800E5972F /* ImageUtility.m */,
-				4A525B421D581461006183C7 /* ValidateCheckUtility.h */,
-				4A525B431D581461006183C7 /* ValidateCheckUtility.m */,
+				4A525B421D581461006183C7 /* AuthorityCheckUtility.h */,
+				4A525B431D581461006183C7 /* AuthorityCheckUtility.m */,
 				4A54345F1D62CCDB0040C12F /* ColorUtility.h */,
 				4A5434601D62CCDB0040C12F /* ColorUtility.m */,
 			);
@@ -432,7 +432,8 @@
 				4A0C92DF1D374D4C0080E9A6 /* ExternalLib */,
 				4A5448A01D51CFD900883E08 /* Constants */,
 				4A97B60A1D336514003899F7 /* View */,
-				4A97B60B1D336520003899F7 /* Manager */,
+				4A3CB3FD1D6AE0E300B324BC /* SessionManager */,
+				4A3CB3FF1D6AE0FE00B324BC /* DataController */,
 				4A4105241D5C158A00FEEFE9 /* Utility */,
 				4A4105251D5C15DD00FEEFE9 /* Helper */,
 				4A97B60C1D336540003899F7 /* Data */,
@@ -492,15 +493,6 @@
 				4A3F99D61D63F5EA007915E1 /* NoneDev */,
 			);
 			name = View;
-			sourceTree = "<group>";
-		};
-		4A97B60B1D336520003899F7 /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-				4A3CB3FD1D6AE0E300B324BC /* SessionManager */,
-				4A3CB3FF1D6AE0FE00B324BC /* DataController */,
-			);
-			name = Manager;
 			sourceTree = "<group>";
 		};
 		4A97B60C1D336540003899F7 /* Data */ = {
@@ -736,7 +728,7 @@
 				4A5448A91D51E69E00883E08 /* SphereMenu.m in Sources */,
 				4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */,
 				4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */,
-				4A525B441D581461006183C7 /* ValidateCheckUtility.m in Sources */,
+				4A525B441D581461006183C7 /* AuthorityCheckUtility.m in Sources */,
 				0A23C6FD1D54EA30007A7996 /* PhotoDrawCanvasView.m in Sources */,
 				4A5434611D62CCDB0040C12F /* ColorUtility.m in Sources */,
 				4A41052F1D5C8AF800FEEFE9 /* PhotoFrameData.m in Sources */,
