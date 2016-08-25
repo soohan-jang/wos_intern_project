@@ -16,6 +16,7 @@
 		4A3CB3FC1D6AE01B00B324BC /* MessageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3FB1D6AE01B00B324BC /* MessageData.m */; };
 		4A3CB4051D6AEC3000B324BC /* PESession.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4041D6AEC3000B324BC /* PESession.m */; };
 		4A3CB4081D6AF12800B324BC /* MessageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4071D6AF12800B324BC /* MessageBuffer.m */; };
+		4A3E4CE31D6F17F600CE8204 /* PhotoCropFilterViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3E4CE21D6F17F600CE8204 /* PhotoCropFilterViewCell.m */; };
 		4A3EDC111D669A7000A091A8 /* SelectPhotoFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */; };
 		4A3EDC381D672B2600A091A8 /* DecorateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC371D672B2600A091A8 /* DecorateView.m */; };
 		4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */; };
@@ -114,6 +115,8 @@
 		4A3CB4041D6AEC3000B324BC /* PESession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PESession.m; sourceTree = "<group>"; };
 		4A3CB4061D6AF12800B324BC /* MessageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageBuffer.h; sourceTree = "<group>"; };
 		4A3CB4071D6AF12800B324BC /* MessageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBuffer.m; sourceTree = "<group>"; };
+		4A3E4CE11D6F17F600CE8204 /* PhotoCropFilterViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoCropFilterViewCell.h; sourceTree = "<group>"; };
+		4A3E4CE21D6F17F600CE8204 /* PhotoCropFilterViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoCropFilterViewCell.m; sourceTree = "<group>"; };
 		4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPhotoFrameViewCell.m; sourceTree = "<group>"; };
 		4A3EDC361D672B2600A091A8 /* DecorateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecorateView.h; sourceTree = "<group>"; };
 		4A3EDC371D672B2600A091A8 /* DecorateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecorateView.m; sourceTree = "<group>"; };
@@ -310,6 +313,17 @@
 			name = BluetoothConnectAssistant;
 			sourceTree = "<group>";
 		};
+		4A3E4CE01D6F17D400CE8204 /* CropView */ = {
+			isa = PBXGroup;
+			children = (
+				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
+				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
+				4A3E4CE11D6F17F600CE8204 /* PhotoCropFilterViewCell.h */,
+				4A3E4CE21D6F17F600CE8204 /* PhotoCropFilterViewCell.m */,
+			);
+			name = CropView;
+			sourceTree = "<group>";
+		};
 		4A3EDC121D66C1E100A091A8 /* DataDisplay */ = {
 			isa = PBXGroup;
 			children = (
@@ -348,8 +362,7 @@
 			children = (
 				4A97B6011D33649A003899F7 /* EditPhotoViewController.h */,
 				4A97B6021D33649A003899F7 /* EditPhotoViewController.m */,
-				4A0F100B1D45DDE800BF4EFC /* PhotoCropViewController.h */,
-				4A0F100C1D45DDE800BF4EFC /* PhotoCropViewController.m */,
+				4A3E4CE01D6F17D400CE8204 /* CropView */,
 				4A3EDC121D66C1E100A091A8 /* DataDisplay */,
 				4A41052C1D5C804B00FEEFE9 /* DrawMenuView */,
 				4B7C16311D61FD96000266EE /* TextMenuView */,
@@ -729,6 +742,7 @@
 				4A5448AA1D51E69E00883E08 /* PECropRectView.m in Sources */,
 				4A5448AB1D51E69E00883E08 /* PECropView.m in Sources */,
 				4A525B441D581461006183C7 /* AuthorityCheckUtility.m in Sources */,
+				4A3E4CE31D6F17F600CE8204 /* PhotoCropFilterViewCell.m in Sources */,
 				0A23C6FD1D54EA30007A7996 /* PhotoDrawCanvasView.m in Sources */,
 				4A5434611D62CCDB0040C12F /* ColorUtility.m in Sources */,
 				4A41052F1D5C8AF800FEEFE9 /* PhotoFrameData.m in Sources */,

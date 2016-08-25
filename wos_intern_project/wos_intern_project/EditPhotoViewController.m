@@ -72,10 +72,12 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self setPhotoFrameNumber:7];
     [self setupDelegates];
     [self setupMainMenu];
     
-    self.isEnteredOtherPeer = NO;
+//    self.isEnteredOtherPeer = NO;
+    self.isEnteredOtherPeer = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -555,9 +557,9 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         [self.mainMenuButton dismissMenuButton];
     }
     
-    if (![self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath]) {
-        return;
-    }
+//    if (![self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath]) {
+//        return;
+//    }
     
     self.photoDataController.selectedIndexPath = indexPath;
     

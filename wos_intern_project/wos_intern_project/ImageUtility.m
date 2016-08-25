@@ -184,4 +184,101 @@ CGFloat const CaptureScale = 4.0f;
     return mergedImage;
 }
 
+typedef NS_ENUM(NSInteger, ImageFilterType) {
+    ImageFilterNone     = 0,
+    ImageFilterChrome,
+    ImageFilterFade,
+    ImageFilterInstant,
+    ImageFilterMono,
+    ImageFilterNoir,
+    ImageFilterProcess,
+    ImageFilterTonal,
+    ImageFilterTransfer
+};
+
++ (UIImage *)filteredImage:(UIImage *)image filterType:(NSInteger)filterType {
+    NSString *filterName;
+    
+    switch (filterType) {
+        case ImageFilterNone:
+            return image;
+        case ImageFilterChrome:
+            filterName = @"CIPhotoEffectChrome";
+            break;
+        case ImageFilterFade:
+            filterName = @"CIPhotoEffectFade";
+            break;
+        case ImageFilterInstant:
+            filterName = @"CIPhotoEffectInstant";
+            break;
+        case ImageFilterMono:
+            filterName = @"CIPhotoEffectMono";
+            break;
+        case ImageFilterNoir:
+            filterName = @"CIPhotoEffectNoir";
+            break;
+        case ImageFilterProcess:
+            filterName = @"CIPhotoEffectProcess";
+            break;
+        case ImageFilterTonal:
+            filterName = @"CIPhotoEffectTonal";
+            break;
+        case ImageFilterTransfer:
+            filterName = @"CIPhotoEffectTransfer";
+            break;
+    }
+    
+    if (!filterName) {
+        return image;
+    }
+    
+    CIImage *originImage = [CIImage imageWithCGImage:[image CGImage]];
+    CIContext *context = [CIContext contextWithOptions:nil];
+    
+    CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, originImage, nil];
+    CIImage *outputImage = [filter outputImage];
+    
+    CGImageRef cgFilteredImage = [context createCGImage:outputImage fromRect:[outputImage extent]];
+    UIImage *filteredImage = [UIImage imageWithCGImage:cgFilteredImage];
+    
+    CGImageRelease(cgFilteredImage);
+    
+    return filteredImage;
+}
+
+NSString *const ImageFilterNameNone         = @"None";
+NSString *const ImageFilterNameChrome       = @"Chrome";
+NSString *const ImageFilterNameFade         = @"Fade";
+NSString *const ImageFilterNameInstant      = @"Instant";
+NSString *const ImageFilterNameMono         = @"Mono";
+NSString *const ImageFilterNameNoir         = @"Noir";
+NSString *const ImageFilterNameProcess      = @"Process";
+NSString *const ImageFilterNameTonal        = @"Tonal";
+NSString *const ImageFilterNameTransfer     = @"Transfer";
+
++ (NSString *)nameOfFilterType:(NSInteger)filterType {
+    switch (filterType) {
+        case  ImageFilterNone:
+            return ImageFilterNameNone;
+        case ImageFilterChrome:
+            return ImageFilterNameChrome;
+        case ImageFilterFade:
+            return ImageFilterNameFade;
+        case ImageFilterInstant:
+            return ImageFilterNameInstant;
+        case ImageFilterMono:
+            return ImageFilterNameMono;
+        case ImageFilterNoir:
+            return ImageFilterNameNoir;
+        case ImageFilterProcess:
+            return ImageFilterNameProcess;
+        case ImageFilterTonal:
+            return ImageFilterNameTonal;
+        case ImageFilterTransfer:
+            return ImageFilterNameTransfer;
+    }
+    
+    return @"";
+}
+
 @end

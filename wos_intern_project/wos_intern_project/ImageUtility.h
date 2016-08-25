@@ -60,4 +60,7 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
 + (UIImage *)viewCaptureImage:(UIView *)view;
 + (UIImage *)mergeImage:(UIImage *)imageA imageB:(UIImage *)imageB;
 
++ (UIImage *)filteredImage:(UIImage *)image filterType:(NSInteger)filterType;
++ (NSString *)nameOfFilterType:(NSInteger)filterType;
+
 @end

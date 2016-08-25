@@ -13,7 +13,6 @@
 #import "ColorUtility.h"
 
 NSInteger const StickerItemNumber = 40;
-NSString *const ReuseCellSticker  = @"stickerCell";
 
 typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
     StickerColorBlack  = 0,
@@ -104,7 +103,7 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
 #pragma mark - CollectionView DataSource Delegate Methods
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    PhotoStickerViewCell *cell = (PhotoStickerViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:ReuseCellSticker
+    PhotoStickerViewCell *cell = (PhotoStickerViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([PhotoStickerViewCell class])
                                                                                                    forIndexPath:indexPath];
     
     UIImage *image = [UIImage imageNamed:[ImageUtility photoStickerImageWithIndex:indexPath.item]];

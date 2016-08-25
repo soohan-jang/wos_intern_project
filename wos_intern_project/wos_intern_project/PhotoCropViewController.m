@@ -9,21 +9,19 @@
 #import "PhotoCropViewController.h"
 
 #import "PECropView.h"
+#import "PhotoCropFilterViewCell.h"
 
 #import "ImageUtility.h"
 #import "ProgressHelper.h"
 
-@interface PhotoCropViewController ()
+@interface PhotoCropViewController () <UICollectionViewDelegateFlowLayout, UICollectionViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UIView *cropAreaView;
 @property (weak, nonatomic) IBOutlet UIScrollView *filterListScrollView;
 
 @property (strong, nonatomic) PECropView *cropView;
 @property (strong, nonatomic) UIImage *croppedImage;
-
-@end
-
-@interface PhotoCropViewController ()
+@property (weak, nonatomic) IBOutlet UICollectionView *filterCollectionView;
 
 @property (nonatomic, strong) WMProgressHUD *progressView;
 
@@ -37,6 +35,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupImage];
+    
+    [self.filterCollectionView reloadData];
 }
 
 - (void)dealloc {
@@ -107,6 +107,33 @@
             [self.navigationController popViewControllerAnimated:YES];
         }
     }
+}
+
+
+#pragma mark - UICollectionViewDelegateFlowLayout Delegate Methods
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    PhotoCropFilterViewCell *cell = (PhotoCropFilterViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self.cropView setImage:cell.imageView.image];
+}
+
+                      
+#pragma mark - UICollectionView DataSource Methods
+
+NSInteger const NumberOfFilterViewCell = 9;
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return NumberOfFilterViewCell;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    PhotoCropFilterViewCell *cell = (PhotoCropFilterViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([PhotoCropFilterViewCell class])
+                                                                              forIndexPath:indexPath];
+    NSInteger filterType = indexPath.item;
+    [cell.imageView setImage:[ImageUtility filteredImage:self.fullscreenImage filterType:filterType]];
+    [cell.filterLabel setText:[ImageUtility nameOfFilterType:filterType]];
+    
+     return cell;
 }
 
 @end
