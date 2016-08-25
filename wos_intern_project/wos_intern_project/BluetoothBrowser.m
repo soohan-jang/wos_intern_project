@@ -48,6 +48,8 @@ NSInteger const MaximumNumberOfPeers = 1;
         return NO;
     }
     
+    [_browserController.browser stopBrowsingForPeers];
+    
     __weak typeof(self) weakSelf = self;
     [parentViewController presentViewController:_browserController animated:YES completion:^{
         __strong typeof (weakSelf) self = weakSelf;
@@ -56,6 +58,7 @@ NSInteger const MaximumNumberOfPeers = 1;
             return;
         }
         
+        [self.browserController.browser startBrowsingForPeers];
         [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }];
     return YES;

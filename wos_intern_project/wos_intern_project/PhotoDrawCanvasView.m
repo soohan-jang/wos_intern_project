@@ -28,7 +28,7 @@ CGFloat const DefaultLineWidth = 4;
     self = [super initWithCoder:aDecoder];
     
     if (self) {
-        self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
+        self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent4f];
         self.pathDatas = [[NSMutableArray alloc] init];
         
         self.lineColor = [ColorUtility colorWithName:ColorNameBlack];

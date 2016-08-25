@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, StickerColorMenuItem) {
 
 - (void)initialize {
     self.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent];
-    self.collectionView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
+    self.collectionView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent4f];
     
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;

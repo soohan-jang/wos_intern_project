@@ -58,9 +58,11 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
         return;
     
     //hidden NO가 되어 화면에 나타날 때, DrawPenView를 초기화한다.
+    self.textSize = DefaultFontSize;
+    
     self.textView.text = @"";
     self.textView.textColor = [ColorUtility colorWithName:ColorNameDarkGray];
-    self.textView.font = [UIFont systemFontOfSize:DefaultFontSize];
+    self.textView.font = [UIFont systemFontOfSize:self.textSize];
     
     [self.textSizeSlider setValue:DefaultFontSize];
     [self.textSizeLabel setText:@(DefaultFontSize).stringValue];
@@ -71,7 +73,7 @@ typedef NS_ENUM(NSInteger, TextColorMenuItem) {
 }
 
 - (void)initialize {
-    self.backgroundView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent2f];
+    self.backgroundView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent4f];
     self.textView.backgroundColor = [ColorUtility colorWithName:ColorNameTransparent];
 }
 

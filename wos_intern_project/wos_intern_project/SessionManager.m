@@ -8,6 +8,7 @@
 
 #import "SessionManager.h"
 #import "PEBluetoothSession.h"
+#import "MessageInterrupter.h"
 
 @interface SessionManager ()
 
@@ -48,6 +49,7 @@
     _session = nil;
     _messageSender = nil;
     _messageReceiver = nil;
+    [[MessageInterrupter sharedInstance] clearInterrupter];
 }
 
 - (BOOL)isSessionNil {

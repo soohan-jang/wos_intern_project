@@ -148,7 +148,7 @@ static const float kSphereDamping = 0.3;
     self.collision.translatesReferenceBoundsIntoBoundary = YES;
     self.collision.collisionDelegate = self;
     
-    for (int i = 0; i < self.count; i++) {
+    for (int i = 0; i < self.items.count; i++) {
         UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[i] snapToPoint:self.center];
         snap.damping = self.sphereDamping;
         [self.snaps addObject:snap];
@@ -271,6 +271,10 @@ static const float kSphereDamping = 0.3;
 }
 
 - (void)snapToStartWithIndex:(NSUInteger)index {
+    if (self.items.count == 0 || self.items.count <= index) {
+        return;
+    }
+    
     UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:self.start.center];
     snap.damping = self.sphereDamping;
     UISnapBehavior *snapToRemove = self.snaps[index];
@@ -280,6 +284,10 @@ static const float kSphereDamping = 0.3;
 }
 
 - (void)snapToPostionsWithIndex:(NSUInteger)index {
+    if (self.items.count == 0 || self.items.count <= index) {
+        return;
+    }
+    
     id positionValue = self.positions[index];
     CGPoint position = [positionValue CGPointValue];
     UISnapBehavior *snap = [[UISnapBehavior alloc] initWithItem:self.items[index] snapToPoint:position];

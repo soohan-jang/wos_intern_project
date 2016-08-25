@@ -221,7 +221,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     
     [ProgressHelper dismissProgress:self.progressView
                     dismissTitleKey:@"progress_title_cancelled"
-                        dismissType:DismissWithDone
+                        dismissType:DismissWithCancel
                   completionHandler:^{
                       SessionManager *sessionManager = [SessionManager sharedInstance];
                       [sessionManager disconnectSession];

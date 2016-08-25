@@ -665,8 +665,10 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)didDeleteDecorateViewOfUUID:(NSUUID *)uuid {
     if (![self.decorateDataController.dataSender sendDeleteDecorateDataMessage:uuid]) {
-        [self.decorateDataController deleteDecorateData:uuid];
+        return;
     }
+    
+    [self.decorateDataController deleteDecorateData:uuid];
 }
 
 
