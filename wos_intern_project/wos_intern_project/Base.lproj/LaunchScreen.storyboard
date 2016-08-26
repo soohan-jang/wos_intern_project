@@ -16,7 +16,36 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copyright(c)2016 WorksMobile All rights reserved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FRT-59-80E">
+                                <rect key="frame" x="180" y="578" width="241" height="12"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BluetoothIcon" translatesAutoresizingMaskIntoConstraints="NO" id="nhO-6A-Tfo">
+                                <rect key="frame" x="210" y="210" width="180" height="180"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="Cob-0D-qsw"/>
+                                    <constraint firstAttribute="height" constant="180" id="OtL-Pc-DrU"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Application Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qXF-C4-qhS">
+                                <rect key="frame" x="233" y="399" width="135" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="qXF-C4-qhS" firstAttribute="bottom" secondItem="nhO-6A-Tfo" secondAttribute="bottom" constant="30" id="gmg-eE-75s"/>
+                            <constraint firstItem="FRT-59-80E" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hI8-VX-ofH"/>
+                            <constraint firstItem="qXF-C4-qhS" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qUZ-ru-RvQ"/>
+                            <constraint firstItem="nhO-6A-Tfo" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="stw-hy-GY2"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="FRT-59-80E" secondAttribute="bottom" constant="10" id="u4b-ne-ceX"/>
+                            <constraint firstItem="nhO-6A-Tfo" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="vbY-kS-ZN8"/>
+                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -24,4 +53,7 @@
             <point key="canvasLocation" x="53" y="375"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="BluetoothIcon" width="512" height="512"/>
+    </resources>
 </document>

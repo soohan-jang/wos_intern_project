@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="친구를 찾으시려면" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DEH-eO-hnO">
-                                <rect key="frame" x="0.0" y="400" width="600" height="20"/>
+                                <rect key="frame" x="0.0" y="390" width="600" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="YcW-Z9-1xA"/>
                                     <constraint firstAttribute="width" constant="130" id="c4Y-07-xS9"/>
@@ -35,22 +35,22 @@
                                 </variation>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="화면을 탭해주세요." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uh2-bE-put">
-                                <rect key="frame" x="0.0" y="440" width="600" height="20"/>
+                                <rect key="frame" x="0.0" y="430" width="600" height="20"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="휴대폰을 흔들거나" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dHD-TJ-yiL">
-                                <rect key="frame" x="0.0" y="416" width="600" height="24"/>
+                                <rect key="frame" x="0.0" y="406" width="600" height="24"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BluetoothIcon" translatesAutoresizingMaskIntoConstraints="NO" id="pwz-xa-jVz">
-                                <rect key="frame" x="200" y="200" width="200" height="200"/>
+                                <rect key="frame" x="210" y="210" width="180" height="180"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="aK9-g7-42F"/>
-                                    <constraint firstAttribute="height" constant="200" id="wSd-cQ-fab"/>
+                                    <constraint firstAttribute="width" constant="180" id="aK9-g7-42F"/>
+                                    <constraint firstAttribute="height" constant="180" id="wSd-cQ-fab"/>
                                 </constraints>
                                 <edgeInsets key="layoutMargins" top="8" left="8" bottom="8" right="8"/>
                             </imageView>
@@ -1036,7 +1036,7 @@
     </scenes>
     <resources>
         <image name="Back" width="48" height="48"/>
-        <image name="BluetoothIcon" width="181" height="243"/>
+        <image name="BluetoothIcon" width="512" height="512"/>
         <image name="Close" width="50" height="50"/>
         <image name="CloseSubMenu" width="40" height="40"/>
         <image name="ColorPickBlack" width="40" height="40"/>
