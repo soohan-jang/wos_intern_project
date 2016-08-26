@@ -71,6 +71,13 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 #pragma mark - EventHandling
 
+- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
+    if (motion == UIEventSubtypeMotionShake) {
+        [self.view setUserInteractionEnabled:NO];
+        [self presentBrowserViewController];
+    }
+}
+
 /**
  * @brief 백그라운드 뷰(self.view)를 탭했을 때 대응할 EventHandler를 등록한다.
  */
