@@ -344,7 +344,7 @@ NSInteger const DefaultMargin   = 5;
     //Cell Initialize
     [cell initializeCell];
     
-    [cell setStrokeBorder];
+    [cell drawStrokeBorder];
     [cell setImage:self.cellDatas[indexPath.item].croppedImage];
     [cell setLoadingImage:self.cellDatas[indexPath.item].state];
     

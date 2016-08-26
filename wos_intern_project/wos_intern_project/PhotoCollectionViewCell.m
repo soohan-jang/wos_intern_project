@@ -41,7 +41,7 @@
 
 #pragma mark - Draw Border Methods
 
-- (void)setStrokeBorder {
+- (void)drawStrokeBorder {
     CGFloat defaultMargin = 5.0f;
     CGFloat strokeLineWitdth = 3.0f;
     

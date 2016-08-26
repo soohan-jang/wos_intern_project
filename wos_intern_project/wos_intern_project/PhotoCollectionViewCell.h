@@ -18,7 +18,7 @@
 /**
  * @brief 사진 액자에 스트로크 처리된 테두리를 표시한다.
  */
-- (void)setStrokeBorder;
+- (void)drawStrokeBorder;
 
 /**
  * @brief 사진 액자에 그려진 테두리를 제거한다.

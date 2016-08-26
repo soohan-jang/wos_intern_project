@@ -274,7 +274,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
     
     //이미지 캡쳐 후에, 셀들의 경계선을 다시 그린다.
     for (PhotoCollectionViewCell *cell in cells) {
-        [cell setStrokeBorder];
+        [cell drawStrokeBorder];
     }
     
     return capturedImage;
