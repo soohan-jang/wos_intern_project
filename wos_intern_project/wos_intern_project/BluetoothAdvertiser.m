@@ -41,6 +41,19 @@
 }
 
 
+#pragma mark - Set Delegate Methods
+
+- (BOOL)prepareBluetoothAdvertiser:(id<BluetoothAdvertiserDelegate>)delegate {
+    NSLog(@"%ld", (long)[PESessionManager sharedInstance].session.availiableState);
+    if ([PESessionManager sharedInstance].session.availiableState == AvailiableStateDisable) {
+        return NO;
+    }
+    
+    _delegate = delegate;
+    return YES;
+}
+
+
 #pragma mark - Start & Stop Advertising
 
 - (void)startAdvertise {

@@ -132,7 +132,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     }
 }
 
-- (void)disconnect {
+- (void)disconnectSession {
     [self.session disconnect];
     
     self.bluetoothManager.delegate = nil;
@@ -150,7 +150,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
 
 #pragma mark - Bluetooth Browser Methods
 
-- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id)delegate {
+- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id<BluetoothBrowserDelegate>)delegate {
     self.browser = [[BluetoothBrowser alloc] initWithServiceType:SessionServiceType session:self.session];
     self.browser.delegate = delegate;
     
@@ -173,15 +173,15 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
 
 #pragma mark - Bluetooth Advertiser Methods
 
-- (void)setAdvertiserDelegate:(id)delegate {
-    self.advertiser.delegate = delegate;
+- (BOOL)prepareAdvertiser:(id<BluetoothAdvertiserDelegate>)delegate {
+    return [self.advertiser prepareBluetoothAdvertiser:delegate];
 }
 
-- (void)startAdvertise {
+- (void)startBluetoothAdvertise {
     [self.advertiser startAdvertise];
 }
 
-- (void)stopAdvertise {
+- (void)stopBluetoothAdvertise {
     [self.advertiser stopAdvertise];
 }
 

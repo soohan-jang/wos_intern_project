@@ -13,7 +13,7 @@ alert_button_text_decline            = "거절";
 alert_button_text_accept             = "승인";
 
 alert_title_bluetooth_unsupported    = "블루투스 지원안됨";
-alert_title_bluetooth_off            = "블루투스 전원꺼짐";
+alert_title_bluetooth_disabled       = "블루투스 사용불가";
 alert_title_invitation_received      = "초대장 도착";
 alert_title_session_disconnect_ask   = "연결 끊김";
 alert_title_session_disconnected     = "연결이 끊어짐";
@@ -24,7 +24,7 @@ alert_title_camera_not_authorized    = "카메라 권한 없음";
 alert_title_edit_finish              = "편집 종료";
 
 alert_content_bluetooth_unsupported  = "스마트폰이 블루투스 4.0을 지원하지 않습니다.";
-alert_content_bluetooth_off          = "이 어플리케이션은 블루투스를 사용합니다.\n블루투스를 켜주세요.";
+alert_content_bluetooth_disabled     = "블루투스를 사용할 수 없습니다.\n블루투스의 상태를 확인해주세요.";
 alert_content_inviation_received     = "이 연결을 요청합니다.";
 alert_content_session_disconnect_ask = "정말 연결을 끊으시겠습니까?";
 alert_content_session_disconnected   = "친구와의 연결이 끊어졌습니다.";

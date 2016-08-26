@@ -55,6 +55,15 @@
 - (void)dispatchMessage:(PEMessage *)message {
     PEMessageInterrupter *messageInterrupter = [PEMessageInterrupter sharedInstance];
     
+    if (self.syncTimestampDelegate) {
+        switch (message.messageType) {
+            case MessageTypeSyncTimestamp:
+                NSLog(@"Receive MessageTypeSyncTimestamp");
+                [self.syncTimestampDelegate didReceiveStandardTimestamp:message.messageTimestamp];
+                return;
+        }
+    }
+    
     if (self.photoFrameDataDelegate) {
         switch (message.messageType) {
             case MessageTypePhotoFrameSelect:

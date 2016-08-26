@@ -39,13 +39,15 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 @property (nonatomic, assign) NSInteger availiableState;
 @property (nonatomic, assign) NSInteger sessionState;
 
+@property (nonatomic, assign) NSTimeInterval differenceTimestamp;
+
 - (id)instanceOfSession;
 - (NSString *)displayNameOfSession;
 
 - (BOOL)sendMessage:(PEMessage *)message;
 - (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler;
 
-- (void)disconnect;
+- (void)disconnectSession;
 
 @end
 

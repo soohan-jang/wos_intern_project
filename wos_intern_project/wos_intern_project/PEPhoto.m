@@ -15,7 +15,7 @@
     
     if (self) {
         self.state = 0;
-        self.fullscreenImage = nil;
+        self.originalImage = nil;
         self.croppedImage = nil;
         self.filterType = 0;
     }

@@ -82,8 +82,8 @@ NSString *const Sperator                                = @"+";
     UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
 }
 
-+ (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
-    NSData *fullscreenImageData = UIImagePNGRepresentation(fullscreenImage);
++ (NSString *)saveImageAtTemporaryDirectoryWithOriginalImage:(UIImage *)originalImage croppedImage:(UIImage *)croppedImage {
+    NSData *fullscreenImageData = UIImagePNGRepresentation(originalImage);
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
     NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];

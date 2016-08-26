@@ -31,7 +31,7 @@ typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
  파일 생성 및 저장에 성공하면, 파일명을 반환한다. 경로는 NSTemporaryDirectory이다.
  생성 및 저장에 실패하면, nil을 반환한다.
  */
-+ (NSString *)saveImageAtTemporaryDirectoryWithFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage;
++ (NSString *)saveImageAtTemporaryDirectoryWithOriginalImage:(UIImage *)originalImage croppedImage:(UIImage *)croppedImage;
 
 /**
  파일명에 해당하는 임시파일을 삭제한다.

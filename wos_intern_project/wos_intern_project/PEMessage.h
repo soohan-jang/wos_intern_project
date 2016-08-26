@@ -13,6 +13,8 @@ typedef NS_ENUM(NSInteger, MessageType) {
     MessageTypeInviteCancel     = 0,
     MessageTypeInviteAck,
     
+    MessageTypeSyncTimestamp,
+    
     MessageTypePhotoFrameSelect,
     MessageTypePhotoFrameDeselect,
     

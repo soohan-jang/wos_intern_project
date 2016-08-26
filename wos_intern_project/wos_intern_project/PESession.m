@@ -26,7 +26,7 @@
     return;
 }
 
-- (void)disconnect {
+- (void)disconnectSession {
     return;
 }
 

@@ -109,7 +109,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
         
         PEPhoto *photoData = [self.photoController photoDataOfCellAtSelectedIndexPath];
         if (photoData) {
-            [viewController setImage:photoData.fullscreenImage filiterType:photoData.filterType];
+            [viewController setImage:photoData.originalImage filiterType:photoData.filterType];
             return;
         }
     }
@@ -489,8 +489,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 #pragma mark - PhotoCropViewController Delegate Methods
 
-- (void)cropViewControllerDidFinished:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType {
-    if (!fullscreenImage || !croppedImage) {
+- (void)cropViewControllerDidFinished:(UIImage *)originalImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType {
+    if (!originalImage || !croppedImage) {
         //Alert. 사진 가져오지 못함.
         [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
         [self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath];
@@ -501,7 +501,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     //CropViewController에서 Fullscreen Img, Cropped Img를 받은 후 저장한다.
     PEPhoto *photoData = [[PEPhoto alloc] init];
     photoData.state = CellStateUploading;
-    photoData.fullscreenImage = fullscreenImage;
+    photoData.originalImage = originalImage;
     photoData.croppedImage = croppedImage;
     photoData.filterType = filterType;
     
@@ -509,7 +509,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     self.takePhotoImage = nil;
     
     //임시로 전달받은 두개의 파일을 저장한다.
-    NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
+    NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithOriginalImage:originalImage croppedImage:croppedImage];
     
     if (!filename) {
         //Alert. 사진 저장 실패.
@@ -542,7 +542,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 #pragma mark - CollectionViewController Delegate Flowlayout Methods
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.photoController sizeOfCell:indexPath collectionViewSize:collectionView.bounds.size];
+    return [self.photoController cellSizeOfIndexPath:indexPath collectionViewSize:collectionView.bounds.size];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

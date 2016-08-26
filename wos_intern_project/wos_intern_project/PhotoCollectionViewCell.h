@@ -10,8 +10,6 @@
 
 @interface PhotoCollectionViewCell : UICollectionViewCell
 
-@property (strong, nonatomic) NSIndexPath *indexPath;
-
 /**
  * @brief 샐을 초기화한다.
  */

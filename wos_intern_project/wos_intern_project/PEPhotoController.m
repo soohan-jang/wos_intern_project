@@ -137,7 +137,7 @@ NSInteger const DefaultMargin   = 5;
     }
 }
 
-- (CGSize)sizeOfCell:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize {
+- (CGSize)cellSizeOfIndexPath:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize {
     CGFloat containerWidth = collectionViewSize.width;
     CGFloat containerHeight = collectionViewSize.height;
     CGFloat cellWidth;
@@ -227,7 +227,7 @@ NSInteger const DefaultMargin   = 5;
     }
     
     [self updateCellStateAtIndexPath:indexPath state:photoData.state];
-    self.cellDatas[indexPath.item].fullscreenImage = photoData.fullscreenImage;
+    self.cellDatas[indexPath.item].originalImage = photoData.originalImage;
     self.cellDatas[indexPath.item].croppedImage = photoData.croppedImage;
     self.cellDatas[indexPath.item].filterType = photoData.filterType;
     
@@ -293,7 +293,7 @@ NSInteger const DefaultMargin   = 5;
     }
     
     self.cellDatas[indexPath.item].state = CellStateNone;
-    self.cellDatas[indexPath.item].fullscreenImage = nil;
+    self.cellDatas[indexPath.item].originalImage = nil;
     self.cellDatas[indexPath.item].croppedImage = nil;
     
     if (self.delegate) {
@@ -344,7 +344,6 @@ NSInteger const DefaultMargin   = 5;
     //Cell Initialize
     [cell initializeCell];
     
-    [cell setIndexPath:indexPath];
     [cell setStrokeBorder];
     [cell setImage:self.cellDatas[indexPath.item].croppedImage];
     [cell setLoadingImage:self.cellDatas[indexPath.item].state];
@@ -391,7 +390,7 @@ NSInteger const DefaultMargin   = 5;
     if ([dataType isEqualToString:PhotoTypeCropped]) {
         self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     } else if ([dataType isEqualToString:PhotoTypeOriginal]) {
-        self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
+        self.cellDatas[indexPath.item].originalImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     }
     
     self.cellDatas[indexPath.item].filterType = filterType;

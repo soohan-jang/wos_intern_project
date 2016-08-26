@@ -11,7 +11,7 @@
 @interface PEPhoto : NSObject
 
 @property (nonatomic, assign) NSInteger state;
-@property (nonatomic, strong) UIImage *fullscreenImage;
+@property (nonatomic, strong) UIImage *originalImage;
 @property (nonatomic, strong) UIImage *croppedImage;
 @property (nonatomic, assign) NSInteger filterType;
 

@@ -30,7 +30,7 @@
 /**
  편집이 완료된 후에 원본 이미지와 편집된 이미지를 전달한다.
  */
-- (void)cropViewControllerDidFinished:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType;
+- (void)cropViewControllerDidFinished:(UIImage *)originalImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType;
 /**
  편집이 취소되었음을 알린다.
  */

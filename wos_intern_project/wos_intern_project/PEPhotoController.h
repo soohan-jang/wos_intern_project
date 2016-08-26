@@ -46,7 +46,7 @@ typedef NS_ENUM(NSInteger, CellState) {
 /**
  인덱스에 위치한 사진 액자의 크기를 반환한다.
  */
-- (CGSize)sizeOfCell:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize;
+- (CGSize)cellSizeOfIndexPath:(NSIndexPath *)indexPath collectionViewSize:(CGSize)collectionViewSize;
 
 /**
  인덱스에 위치한 사진 액자에 상태값, Fullscreen Image, Cropped Image 모두를 설정한다. 이 함수는 새로운 사진을 입력했을 때 호출한다.
@@ -59,17 +59,6 @@ typedef NS_ENUM(NSInteger, CellState) {
  */
 - (void)updateCellStateAtIndexPath:(NSIndexPath *)indexPath state:(NSInteger)state;
 - (void)updateCellStateAtSelectedIndexPath:(NSInteger)state;
-
-///**
-// 인덱스에 위치한 사진 액자의 상태 정보를 가져온다. 상태값은 None, Uploading, Downloading, Editing이 있다.
-// */
-//- (NSInteger)getCellStateAtIndexPath:(NSIndexPath *)indexPath;
-//
-/**
- 인덱스에 해당하는 사진 액자와 연결된 Fullscreen Image를 가져온다.
- */
-//- (UIImage *)fullscreenImageOfCellAtIndexPath:(NSIndexPath *)indexPath;
-//- (UIImage *)fullscreenImageOfCellAtSelectedIndexPath;
 
 - (PEPhoto *)photoDataOfCellAtIndexPath:(NSIndexPath *)indexPath;
 - (PEPhoto *)photoDataOfCellAtSelectedIndexPath;

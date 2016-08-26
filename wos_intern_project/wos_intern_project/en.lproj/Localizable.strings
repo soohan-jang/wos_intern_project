@@ -13,7 +13,7 @@ alert_button_text_decline            = "Decline";
 alert_button_text_accept             = "Accept";
 
 alert_title_bluetooth_unsupported    = "Bluetooth Unsupported";
-alert_title_bluetooth_off            = "Bluetooth Off";
+alert_title_bluetooth_disabled       = "Bluetooth Disabled";
 alert_title_invitation_received      = "Invitation Received";
 alert_title_session_disconnect_ask   = "Session Disconnect";
 alert_title_session_disconnected     = "Session Disconnected";
@@ -24,7 +24,7 @@ alert_title_camera_not_authorized    = "No Camera Authorized";
 alert_title_edit_finish              = "Edit Finish";
 
 alert_content_bluetooth_unsupported  = "Your device is not support a bluetooth 4.0.";
-alert_content_bluetooth_off          = "This application use a bluetooth.\nPlz, turn on bluetooth.";
+alert_content_bluetooth_disabled     = "Can not use a bluetooth.\nPlease check bluetooth status.";
 alert_content_invitation_received    = "wants to connect.";
 alert_content_session_disconnect_ask = "Do you really want to disconnect?";
 alert_content_session_disconnected   = "Your friend disconnect session.";

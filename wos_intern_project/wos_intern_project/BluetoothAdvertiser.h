@@ -22,6 +22,8 @@
  */
 - (instancetype)initWithServiceType:(NSString *)serviceType session:(MCSession *)session;
 
+- (BOOL)prepareBluetoothAdvertiser:(id<BluetoothAdvertiserDelegate>)delegate;
+
 /**
  * @brief Advertising를 시작해서 주위에 검색 신호를 발신한다.
  */

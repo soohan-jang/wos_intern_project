@@ -22,7 +22,6 @@
 @implementation PhotoCollectionViewCell
 
 - (void)initializeCell {
-    self.indexPath = 0;
     self.photoLoadingView.image = nil;
     self.photoImageView.image = nil;
     

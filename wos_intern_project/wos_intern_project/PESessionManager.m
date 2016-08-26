@@ -45,7 +45,7 @@
 }
 
 - (void)disconnectSession {
-    [_session disconnect];
+    [_session disconnectSession];
     
     _session = nil;
     _messageSender = nil;

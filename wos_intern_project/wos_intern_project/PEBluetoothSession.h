@@ -8,19 +8,22 @@
 
 #import "PESession.h"
 
+#import "BluetoothBrowser.h"
+#import "BluetoothAdvertiser.h"
+
 @interface PEBluetoothSession : PESession
 
 
 #pragma mark - Bluetooth Browser Methods
 
-- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id)delegate;
+- (BOOL)presentBrowserController:(UIViewController *)viewController delegate:(id<BluetoothBrowserDelegate>)delegate;
 - (void)clearBluetoothBrowser;
 
 #pragma mark - Bluetooth Advertiser Methods
 
-- (void)setAdvertiserDelegate:(id)delegate;
-- (void)startAdvertise;
-- (void)stopAdvertise;
+- (BOOL)prepareAdvertiser:(id<BluetoothAdvertiserDelegate>)delegate;
+- (void)startBluetoothAdvertise;
+- (void)stopBluetoothAdvertise;
 - (void)clearBluetoothAdvertiser;
 
 @end

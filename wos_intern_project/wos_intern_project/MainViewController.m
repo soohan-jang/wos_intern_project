@@ -62,8 +62,18 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
         
         if (sessionManager.session.sessionType == SessionTypeBluetooth) {
             PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
-            [session setAdvertiserDelegate:self];
-            [session startAdvertise];
+            
+            if ([session prepareAdvertiser:self]) {
+                [session startBluetoothAdvertise];
+                return;
+            }
+            
+            //블루투스가 비활성화된 경우 NO를 리턴하며, 이에 대한 처리가 필요하다.
+            [AlertHelper showAlertControllerOnViewController:self
+                                                    titleKey:@"alert_title_bluetooth_disabled"
+                                                  messageKey:@"alert_content_bluetooth_disabled"
+                                                      button:@"alert_button_text_ok"
+                                               buttonHandler:nil];
         }
     }
 }
@@ -104,8 +114,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     
     //블루투스가 비활성화된 경우 NO를 리턴하며, 이에 대한 처리가 필요하다.
     [AlertHelper showAlertControllerOnViewController:self
-                                            titleKey:@"alert_title_bluetooth_off"
-                                          messageKey:@"alert_content_bluetooth_off"
+                                            titleKey:@"alert_title_bluetooth_disabled"
+                                          messageKey:@"alert_content_bluetooth_disabled"
                                               button:@"alert_button_text_ok"
                                        buttonHandler:nil];
 }
@@ -119,6 +129,8 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     
     PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
     [session clearBluetoothBrowser];
+    
+    [session stopBluetoothAdvertise];
     [session clearBluetoothAdvertiser];
     
     [self performSegueWithIdentifier:SegueMoveToFrameSelect sender:self];

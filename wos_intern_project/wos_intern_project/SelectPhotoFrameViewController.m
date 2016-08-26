@@ -20,7 +20,7 @@
 
 NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
-@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PEPhotoFrameControllerDelegate, PEMessageReceiverStateChangeDelegate>
+@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PEPhotoFrameControllerDelegate, PEMessageReceiverStateChangeDelegate, PEMessageReceiverSyncTimestampDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -90,6 +90,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)prepareMessagerReceiver {
     [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
+    [PESessionManager sharedInstance].messageReceiver.syncTimestampDelegate = self;
 }
 
 
@@ -341,6 +342,13 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                                }];
             break;
     }
+}
+
+
+#pragma mark - Message Receiver Sync Time Delegate Methods
+
+- (void)didReceiveStandardTimestamp:(NSTimeInterval)timestamp {
+    
 }
 
 @end

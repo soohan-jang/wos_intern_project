@@ -15,6 +15,7 @@
 #import "PEDecorate.h"
 
 @protocol PEMessageReceiverStateChangeDelegate;
+@protocol PEMessageReceiverSyncTimestampDelegate;
 @protocol PEMessageReceiverPhotoFrameDataDelegate;
 @protocol PEMessageReceiverDeviceDataDelegate;
 @protocol PEMessageReceiverPhotoDataDelegate;
@@ -23,6 +24,7 @@
 @interface PEMessageReceiver : NSObject
 
 @property (nonatomic, weak) id<PEMessageReceiverStateChangeDelegate>     stateChangeDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverSyncTimestampDelegate>   syncTimestampDelegate;
 @property (nonatomic, weak) id<PEMessageReceiverPhotoFrameDataDelegate>  photoFrameDataDelegate;
 @property (nonatomic, weak) id<PEMessageReceiverDeviceDataDelegate>      deviceDataDelegate;
 @property (nonatomic, weak) id<PEMessageReceiverPhotoDataDelegate>       photoDataDelegate;
@@ -38,6 +40,12 @@
 @protocol PEMessageReceiverStateChangeDelegate <NSObject>
 @required
 - (void)didReceiveChangeSessionState:(NSInteger)state;
+
+@end
+
+@protocol PEMessageReceiverSyncTimestampDelegate <NSObject>
+@required
+- (void)didReceiveStandardTimestamp:(NSTimeInterval)timestamp;
 
 @end
 
