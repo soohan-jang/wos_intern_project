@@ -7,6 +7,7 @@
 //
 
 #import "DecorateView.h"
+
 #import "ColorUtility.h"
 
 @interface DecorateView ()

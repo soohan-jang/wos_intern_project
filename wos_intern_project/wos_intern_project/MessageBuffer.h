@@ -7,15 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+
 #import "PESession.h"
-#import "MessageData.h"
+#import "PEMessage.h"
 
 @interface MessageBuffer : NSObject
 
 @property (nonatomic, assign, getter=isEnabled) BOOL enabled;
 
-- (void)putMessage:(MessageData *)message;
-- (MessageData *)getMessage;
+- (void)putMessage:(PEMessage *)message;
+- (PEMessage *)getMessage;
 - (void)clearMessageBuffer;
 
 - (BOOL)isMessageBufferEmpty;

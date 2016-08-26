@@ -79,66 +79,6 @@
             </objects>
             <point key="canvasLocation" x="167.5" y="317.5"/>
         </scene>
-        <!--Photo Album View Controller-->
-        <scene sceneID="Bz6-me-S0T">
-            <objects>
-                <viewController storyboardIdentifier="photoAlbumViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="zGW-6d-CIL" customClass="PhotoAlbumViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="iDi-HQ-5yM"/>
-                        <viewControllerLayoutGuide type="bottom" id="Pqw-Da-Iha"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="JAj-dl-1aa">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Icf-Gm-nhu">
-                                <rect key="frame" x="20" y="20" width="560" height="580"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1K3-4n-4S5">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="temp" id="Rwc-aO-h25">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
-                        </subviews>
-                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="Icf-Gm-nhu" secondAttribute="trailing" id="8Zo-cf-zyc"/>
-                            <constraint firstItem="Icf-Gm-nhu" firstAttribute="top" secondItem="iDi-HQ-5yM" secondAttribute="bottom" id="JyW-mO-NtH"/>
-                            <constraint firstItem="Pqw-Da-Iha" firstAttribute="top" secondItem="Icf-Gm-nhu" secondAttribute="bottom" id="Qdo-jK-7xe"/>
-                            <constraint firstItem="Icf-Gm-nhu" firstAttribute="leading" secondItem="JAj-dl-1aa" secondAttribute="leadingMargin" id="mHN-Lp-mFt"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="STk-VL-fg6">
-                        <barButtonItem key="leftBarButtonItem" image="Back" id="jef-44-CXD">
-                            <inset key="imageInsets" minX="-10" minY="7" maxX="25" maxY="7"/>
-                            <connections>
-                                <action selector="backButtonTapped:" destination="zGW-6d-CIL" id="bwS-ko-N65"/>
-                            </connections>
-                        </barButtonItem>
-                        <connections>
-                            <outlet property="leftBarButtonItem" destination="jef-44-CXD" id="tfa-af-WM4"/>
-                        </connections>
-                    </navigationItem>
-                    <connections>
-                        <segue destination="8sl-Ob-37b" kind="show" identifier="moveToPhotoViewer" id="dki-sD-qdI"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KSx-bx-YEc" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="167" y="1118"/>
-        </scene>
         <!--Edit Photo View Controller-->
         <scene sceneID="0Y7-60-VnB">
             <objects>
@@ -219,7 +159,7 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
-                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="DecorateDataDisplayView">
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lUZ-73-XTC" customClass="DecorateDisplayView">
                                         <rect key="frame" x="20" y="-12" width="560" height="560"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
@@ -265,10 +205,10 @@
                                     <constraint firstAttribute="width" constant="200" id="sX9-AL-VTz"/>
                                 </constraints>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh5-Kc-cgB" customClass="PhotoDrawPenMenuView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zh5-Kc-cgB" customClass="DecoratePenMenuView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="PhotoDrawCanvasView">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsE-tO-utS" customClass="DecoratePenCanvasView">
                                         <rect key="frame" x="10" y="-22" width="580" height="580"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -459,7 +399,7 @@
                                     <outlet property="lineWidthSubMenu" destination="Dgt-wX-GiS" id="Cmo-Af-pPG"/>
                                 </connections>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QXE-r0-ypx" customClass="PhotoInputTextMenuView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QXE-r0-ypx" customClass="DecorateTextMenuView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uxw-G8-WEe">
@@ -672,7 +612,7 @@
                                     <outlet property="textView" destination="AQv-mz-qID" id="OFA-jp-xT3"/>
                                 </connections>
                             </view>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ctq-RX-Q09" customClass="PhotoStickerMenuView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ctq-RX-Q09" customClass="DecorateStickerMenuView">
                                 <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="ntC-89-P4v">
@@ -688,7 +628,7 @@
                                             <inset key="sectionInset" minX="10" minY="10" maxX="10" maxY="10"/>
                                         </collectionViewFlowLayout>
                                         <cells>
-                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="PhotoStickerViewCell" id="tfF-vD-wzH" customClass="PhotoStickerViewCell">
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="DecorateStickerViewCell" id="tfF-vD-wzH" customClass="DecorateStickerViewCell">
                                                 <rect key="frame" x="10" y="10" width="50" height="50"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -868,13 +808,13 @@
                         </connections>
                     </navigationItem>
                     <connections>
-                        <outlet property="decoDataVisibleToggleButton" destination="uJv-y5-Fa3" id="fUw-ck-rQa"/>
+                        <outlet property="decorateDisplayToggleButton" destination="uJv-y5-Fa3" id="6S1-c4-3p6"/>
                         <outlet property="decorateDisplayView" destination="lUZ-73-XTC" id="LQa-7i-EzU"/>
-                        <outlet property="drawPenMenuView" destination="Zh5-Kc-cgB" id="0qR-xq-fGh"/>
-                        <outlet property="inputTextMenuView" destination="QXE-r0-ypx" id="eKl-kS-pqN"/>
                         <outlet property="mainMenuButton" destination="Wfh-aY-Vx8" id="jyR-Nh-r1a"/>
+                        <outlet property="penMenuView" destination="Zh5-Kc-cgB" id="Ew5-iF-1Ni"/>
                         <outlet property="photoDisplayCollectionView" destination="7vD-hf-90M" id="aOF-y0-HpT"/>
                         <outlet property="stickerMenuView" destination="Ctq-RX-Q09" id="K02-3S-UVW"/>
+                        <outlet property="textMenuView" destination="QXE-r0-ypx" id="NgQ-Dc-OwI"/>
                         <segue destination="Xwq-Eq-fPd" kind="show" identifier="moveToPhotoCrop" id="0Xx-6d-1lz"/>
                     </connections>
                 </viewController>
@@ -882,10 +822,10 @@
             </objects>
             <point key="canvasLocation" x="1642" y="317"/>
         </scene>
-        <!--Photo Crop View Controller-->
+        <!--Crop Photo View Controller-->
         <scene sceneID="R8X-vd-KNR">
             <objects>
-                <viewController id="Xwq-Eq-fPd" customClass="PhotoCropViewController" sceneMemberID="viewController">
+                <viewController id="Xwq-Eq-fPd" customClass="CropPhotoViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="yTB-Fy-n3e"/>
                         <viewControllerLayoutGuide type="bottom" id="EZj-xj-WEl"/>
@@ -911,7 +851,7 @@
                                     <inset key="sectionInset" minX="10" minY="5" maxX="10" maxY="5"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PhotoCropFilterViewCell" reuseIdentifier="PhotoCropFilterViewCell" id="PTN-cB-FAJ" customClass="PhotoCropFilterViewCell">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="PhotoCropFilterViewCell" reuseIdentifier="CropPhotoFilterImageViewCell" id="PTN-cB-FAJ" customClass="CropPhotoFilterImageViewCell">
                                         <rect key="frame" x="10" y="5" width="90" height="90"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1075,91 +1015,6 @@
             </objects>
             <point key="canvasLocation" x="910" y="317"/>
         </scene>
-        <!--Photo Viewer View Controller-->
-        <scene sceneID="dcj-Ec-Osl">
-            <objects>
-                <viewController storyboardIdentifier="photoViewerViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="8sl-Ob-37b" customClass="PhotoViewerViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="7bE-Ks-BaM"/>
-                        <viewControllerLayoutGuide type="bottom" id="f3i-FF-r35"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="eJ2-8Y-MIZ">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Xb-EN-itS">
-                                <rect key="frame" x="-1" y="20" width="601" height="580"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WUW-dQ-HAl">
-                                <rect key="frame" x="283" y="545" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="Gfz-hL-qBX"/>
-                                    <constraint firstAttribute="width" constant="35" id="f8i-Fj-7az"/>
-                                </constraints>
-                                <state key="normal" image="Share"/>
-                                <connections>
-                                    <action selector="shareAction:" destination="8sl-Ob-37b" eventType="touchUpInside" id="4BK-9S-y1S"/>
-                                    <action selector="sharedButtonTapped:" destination="8sl-Ob-37b" eventType="touchUpInside" id="Mxm-JZ-WvF"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ik2-9a-mGw">
-                                <rect key="frame" x="353" y="545" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="tpu-cG-9AL"/>
-                                    <constraint firstAttribute="width" constant="35" id="zND-ya-OHr"/>
-                                </constraints>
-                                <state key="normal" image="Delete"/>
-                                <connections>
-                                    <action selector="deleteAction:" destination="8sl-Ob-37b" eventType="touchUpInside" id="OMC-J8-Ld4"/>
-                                    <action selector="deleteButtonTapped:" destination="8sl-Ob-37b" eventType="touchUpInside" id="gQE-o5-HN6"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v8d-JB-iHY">
-                                <rect key="frame" x="213" y="545" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="glu-yw-ARZ"/>
-                                    <constraint firstAttribute="width" constant="35" id="hVk-yk-q7E"/>
-                                </constraints>
-                                <state key="normal" image="Modify"/>
-                                <connections>
-                                    <action selector="modifyAction:" destination="8sl-Ob-37b" eventType="touchUpInside" id="4E5-uA-Wta"/>
-                                    <action selector="modifyButtonTapped:" destination="8sl-Ob-37b" eventType="touchUpInside" id="9Tt-Tw-6lP"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="8Xb-EN-itS" firstAttribute="top" secondItem="7bE-Ks-BaM" secondAttribute="bottom" id="7A6-kd-ShA"/>
-                            <constraint firstItem="f3i-FF-r35" firstAttribute="top" secondItem="WUW-dQ-HAl" secondAttribute="bottom" constant="20" id="AyA-Kp-I53"/>
-                            <constraint firstItem="f3i-FF-r35" firstAttribute="top" secondItem="8Xb-EN-itS" secondAttribute="bottom" id="IS6-dF-81R"/>
-                            <constraint firstItem="f3i-FF-r35" firstAttribute="top" secondItem="v8d-JB-iHY" secondAttribute="bottom" constant="20" id="KbP-ba-S4e"/>
-                            <constraint firstItem="8Xb-EN-itS" firstAttribute="width" secondItem="eJ2-8Y-MIZ" secondAttribute="width" id="S4W-Ue-84T"/>
-                            <constraint firstItem="v8d-JB-iHY" firstAttribute="trailing" secondItem="WUW-dQ-HAl" secondAttribute="trailing" constant="-70" id="SVV-tN-JcZ"/>
-                            <constraint firstItem="Ik2-9a-mGw" firstAttribute="leading" secondItem="WUW-dQ-HAl" secondAttribute="leading" constant="70" id="ZCX-DM-l7R"/>
-                            <constraint firstItem="f3i-FF-r35" firstAttribute="top" secondItem="Ik2-9a-mGw" secondAttribute="bottom" constant="20" id="fc9-Yk-D38"/>
-                            <constraint firstItem="8Xb-EN-itS" firstAttribute="centerX" secondItem="eJ2-8Y-MIZ" secondAttribute="centerX" id="oJl-LU-j9b"/>
-                            <constraint firstItem="WUW-dQ-HAl" firstAttribute="centerX" secondItem="eJ2-8Y-MIZ" secondAttribute="centerX" id="sS0-Aq-lev"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="e2S-oN-p6u">
-                        <barButtonItem key="leftBarButtonItem" image="Back" id="jXO-Kj-0Vo">
-                            <inset key="imageInsets" minX="-10" minY="7" maxX="25" maxY="7"/>
-                            <connections>
-                                <action selector="backButtonTapped:" destination="8sl-Ob-37b" id="o27-l6-dzA"/>
-                            </connections>
-                        </barButtonItem>
-                        <connections>
-                            <outlet property="leftBarButtonItem" destination="jXO-Kj-0Vo" id="xCp-ow-TW1"/>
-                        </connections>
-                    </navigationItem>
-                    <connections>
-                        <outlet property="shareAction" destination="sS0-Aq-lev" id="SN5-VW-rAh"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="8Zk-08-MVq" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="910" y="1118"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="Z8K-Fq-5WU">
             <objects>
@@ -1196,15 +1051,12 @@
         <image name="ColorPickYellowCheck" width="40" height="40"/>
         <image name="DecorateOff" width="64" height="64"/>
         <image name="DecorateOn" width="64" height="64"/>
-        <image name="Delete" width="50" height="50"/>
         <image name="Done" width="50" height="50"/>
         <image name="Eraser" width="50" height="50"/>
         <image name="FontSize" width="50" height="50"/>
         <image name="FontStyle" width="50" height="50"/>
         <image name="LineWidth" width="50" height="50"/>
-        <image name="Modify" width="50" height="50"/>
         <image name="Palette" width="50" height="50"/>
         <image name="Save" width="50" height="50"/>
-        <image name="Share" width="50" height="50"/>
     </resources>
 </document>

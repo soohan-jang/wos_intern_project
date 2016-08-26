@@ -7,9 +7,11 @@
 //
 
 #import "MessageSender.h"
+
 #import "PEBluetoothSession.h"
 #import "MessageInterrupter.h"
-#import "MessageData.h"
+
+#import "PEMessage.h"
 
 @interface MessageSender ()
 
@@ -42,7 +44,7 @@
 #pragma mark - Send Select & Deselect Photo Frame Message Methods
 
 - (BOOL)sendSelectPhotoFrameMessage:(NSIndexPath *)indexPath {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoFrameSelect;
     data.photoFrameIndexPath = indexPath;
     
@@ -50,7 +52,7 @@
 }
 
 - (BOOL)sendDeselectPhotoFrameMessage:(NSIndexPath *)indexPath {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoFrameDeselect;
     data.photoFrameIndexPath = indexPath;
     
@@ -68,7 +70,7 @@
         return NO;
     }
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirm;
     data.messageTimestamp = timestamp;
     data.photoFrameIndexPath = indexPath;
@@ -81,7 +83,7 @@
     messageInterrupter.sendMessageTimestamp = 0;
     messageInterrupter.recvMessageTimestamp = 0;
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoFrameRequestConfirmAck;
     data.photoFrameConfirmAck = confrimAck;
     
@@ -92,7 +94,7 @@
 #pragma mark - Send My Device's Screen Size Method
 
 - (BOOL)sendScreenSizeDeviceDataMessage:(CGSize)screenSize {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDeviceDataScreenSize;
     data.deviceDataScreenSize = screenSize;
     
@@ -110,7 +112,7 @@
         return NO;
     }
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataSelect;
     data.messageTimestamp = timestamp;
     data.photoDataIndexPath = indexPath;
@@ -121,7 +123,7 @@
 - (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath {
     [[MessageInterrupter sharedInstance] clearInterrupter];
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataDeselect;
     data.photoDataIndexPath = indexPath;
     
@@ -132,7 +134,7 @@
 #pragma mark - Send Insert & Update & Delete Photo Data Message Methods
 
 - (void)sendInsertPhotoDataMessage:(NSIndexPath *)indexPath originalImageURL:(NSURL *)originalImageURL croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataInsert;
     data.photoDataIndexPath = indexPath;
     data.photoDataOriginalImageURL = originalImageURL;
@@ -147,7 +149,7 @@
 }
 
 - (void)sendUpdatePhotoDataMessage:(NSIndexPath *)indexPath croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataUpdate;
     data.photoDataIndexPath = indexPath;
     data.photoDataCroppedImageURL = croppedImageURL;
@@ -163,7 +165,7 @@
 - (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath {
     [[MessageInterrupter sharedInstance] clearInterrupter];
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataDelete;
     data.photoDataIndexPath = indexPath;
     
@@ -174,7 +176,7 @@
 #pragma mark - Send Insert & Update Photo Data Response Ack Meesage Methods
 
 - (BOOL)sendPhotoDataAckMessage:(NSIndexPath *)indexPath ack:(BOOL)ack {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataReceiveAck;
     data.photoDataIndexPath = indexPath;
     data.photoDataRecevieAck = ack;
@@ -193,7 +195,7 @@
         return NO;
     }
 
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataSelect;
     data.messageTimestamp = timestamp;
     data.decorateDataUUID = uuid;
@@ -204,7 +206,7 @@
 - (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid {
     [[MessageInterrupter sharedInstance] clearInterrupter];
     
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataDeselect;
     data.decorateDataUUID = uuid;
     
@@ -214,8 +216,8 @@
 
 #pragma mark - Insert & Update & Delete Decorate Data Message Methods
 
-- (BOOL)sendInsertDecorateDataMessage:(DecorateData *)insertData {
-    MessageData *data = [[MessageData alloc] init];
+- (BOOL)sendInsertDecorateDataMessage:(PEDecorate *)insertData {
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataInsert;
     data.decorateData = insertData;
     
@@ -223,7 +225,7 @@
 }
 
 - (BOOL)sendUpdateDecorateDataMessage:(NSUUID *)uuid updateFrame:(CGRect)updateFrame {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataUpdate;
     data.decorateDataUUID = uuid;
     data.decorateDataFrame = updateFrame;
@@ -232,7 +234,7 @@
 }
 
 - (BOOL)sendDeleteDecorateDataMessage:(NSUUID *)uuid {
-    MessageData *data = [[MessageData alloc] init];
+    PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataDelete;
     data.decorateDataUUID = uuid;
     

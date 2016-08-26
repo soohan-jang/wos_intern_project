@@ -7,8 +7,11 @@
 //
 
 #import "MessageReceiver.h"
+
 #import "PEBluetoothSession.h"
 #import "MessageInterrupter.h"
+
+#import "ImageUtility.h"
 
 @interface MessageReceiver () <SessionConnectDelegate, SessionDataReceiveDelegate>
 
@@ -49,7 +52,7 @@
     [self setMessageBufferEnabled:NO];
 }
 
-- (void)dispatchMessage:(MessageData *)message {
+- (void)dispatchMessage:(PEMessage *)message {
     MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
     
     if (self.photoFrameDataDelegate) {
@@ -120,12 +123,12 @@
                 return;
             case MessageTypePhotoDataInsert:
                 NSLog(@"Receive MessageTypePhotoDataInsert");
-                if ([message.photoDataType isEqualToString:IdentifierImageOriginal]) {
+                if ([message.photoDataType isEqualToString:PhotoTypeOriginal]) {
                     [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
                                                              dataType:message.photoDataType
                                                         insertDataURL:message.photoDataOriginalImageURL
                                                            filterType:message.photoDataFilterType];
-                } else if ([message.photoDataType isEqualToString:IdentifierImageCropped]) {
+                } else if ([message.photoDataType isEqualToString:PhotoTypeCropped]) {
                     [self.photoDataDelegate didReceiveInsertPhotoData:message.photoDataIndexPath
                                                              dataType:message.photoDataType
                                                         insertDataURL:message.photoDataCroppedImageURL
@@ -201,7 +204,7 @@
 
 #pragma mark - Session Data Receive Delegate Methods
 
-- (void)didReceiveData:(MessageData *)message {
+- (void)didReceiveData:(PEMessage *)message {
     if (self.messageBuffer.enabled) {
         [self.messageBuffer putMessage:message];
         return;

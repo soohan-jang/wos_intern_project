@@ -7,7 +7,10 @@
 //
 
 #import "BluetoothAdvertiser.h"
+
 #import "SessionManager.h"
+#import "PEBluetoothSession.h"
+
 #import "MessageReceiver.h"
 
 @interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, MessageReceiverStateChangeDelegate>

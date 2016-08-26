@@ -7,7 +7,10 @@
 //
 
 #import "BluetoothBrowser.h"
+
 #import "SessionManager.h"
+#import "PEBluetoothSession.h"
+
 #import "MessageReceiver.h"
 
 NSInteger const MaximumNumberOfPeers = 1;

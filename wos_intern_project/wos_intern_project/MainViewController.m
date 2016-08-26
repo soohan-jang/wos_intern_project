@@ -9,14 +9,14 @@
 #import "MainViewController.h"
 #import "SelectPhotoFrameViewController.h"
 
-#import "CommonConstants.h"
-
 #import "SessionManager.h"
+#import "PEBluetoothSession.h"
+
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"
 
-#import "ProgressHelper.h"
 #import "AlertHelper.h"
+#import "ProgressHelper.h"
 
 NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 

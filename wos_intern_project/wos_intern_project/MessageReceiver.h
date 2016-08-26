@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PEBluetoothSession.h"
+
+#import "PESession.h"
 #import "MessageBuffer.h"
-#import "MessageData.h"
-#import "DecorateData.h"
+
+#import "PEMessage.h"
+#import "PEDecorate.h"
 
 @protocol MessageReceiverStateChangeDelegate;
 @protocol MessageReceiverPhotoFrameDataDelegate;
@@ -77,7 +79,7 @@
 - (void)didReceiveSelectDecorateData:(NSUUID *)uuid;
 - (void)didReceiveDeselectDecorateData:(NSUUID *)uuid;
 
-- (void)didReceiveInsertDecorateData:(DecorateData *)insertData;
+- (void)didReceiveInsertDecorateData:(PEDecorate *)insertData;
 - (void)didReceiveUpdateDecorateData:(NSUUID *)uuid updateFrame:(CGRect)updateFrame;
 - (void)didReceiveDeleteDecorateData:(NSUUID *)uuid;
 

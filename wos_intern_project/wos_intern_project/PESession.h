@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CommonConstants.h"
-#import "MessageData.h"
+
+#import "PEMessage.h"
 
 typedef NS_ENUM(NSInteger, SessionType) {
     SessionTypeBluetooth        = 0
@@ -42,8 +42,8 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 - (id)instanceOfSession;
 - (NSString *)displayNameOfSession;
 
-- (BOOL)sendMessage:(MessageData *)message;
-- (void)sendResource:(MessageData *)message resultBlock:(void (^)(BOOL success))resultHandler;
+- (BOOL)sendMessage:(PEMessage *)message;
+- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler;
 
 - (void)disconnect;
 
@@ -57,6 +57,6 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 
 @protocol SessionDataReceiveDelegate <NSObject>
 @required
-- (void)didReceiveData:(MessageData *)message;
+- (void)didReceiveData:(PEMessage *)message;
 
 @end

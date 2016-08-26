@@ -7,8 +7,9 @@
 //
 
 #import "ProgressHelper.h"
-#import "CommonConstants.h"
 #import "DispatchAsyncHelper.h"
+
+NSTimeInterval const ProgressDismissDelayTime = 0.5f;
 
 @implementation ProgressHelper
 
@@ -47,13 +48,13 @@
             return;
         }
         
-        [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:DelayTime];
+        [progress dismissProgressWithTitle:NSLocalizedString(dismissTitleKey, nil) image:image delay:ProgressDismissDelayTime];
         
         if (!completionHandler) {
             return;
         }
         
-        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:completionHandler delayTime:DelayTime];
+        [DispatchAsyncHelper dispatchAsyncWithBlockOnMainQueue:completionHandler delayTime:ProgressDismissDelayTime];
     }];
 }
 

@@ -7,8 +7,12 @@
 //
 
 #import "ImageUtility.h"
+
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "CommonConstants.h"
+
+NSString *const PhotoTypeOriginal                 = @"Original";
+NSString *const PhotoTypeCropped                  = @"Cropped";
+NSString *const Sperator                                = @"+";
 
 @implementation ImageUtility
 
@@ -83,8 +87,8 @@
     NSData *croppedImageData = UIImagePNGRepresentation(croppedImage);
     
     NSString *filename = [@([[NSDate date] timeIntervalSince1970]) stringValue];
-    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageOriginal];
-    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageCropped];
+    NSString *fullscreenImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeOriginal];
+    NSString *croppedImageDirectory = [NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeCropped];
     
     BOOL isSaved = [fullscreenImageData writeToFile:fullscreenImageDirectory atomically:YES] && [croppedImageData writeToFile:croppedImageDirectory atomically:YES];
     
@@ -100,8 +104,8 @@
 + (void)removeTemporaryImageWithFilename:(NSString *)filename {
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageOriginal]];
-    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageCropped]];
+    NSURL *fullscreenImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeOriginal]];
+    NSURL *croppedImageURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeCropped]];
     
     [fileManager removeItemAtURL:fullscreenImageURL error:nil];
     [fileManager removeItemAtURL:croppedImageURL error:nil];
@@ -113,11 +117,11 @@
 }
 
 + (NSURL *)fullscreenImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageOriginal]];
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeOriginal]];
 }
 
 + (NSURL *)croppedImageURLWithFilename:(NSString *)filename {
-    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, IdentifierImageCropped]];
+    return [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@%@%@", NSTemporaryDirectory(), filename, PhotoTypeCropped]];
 }
 
 NSString *const PrefixImagePhotoFrame   = @"PhotoFrame";

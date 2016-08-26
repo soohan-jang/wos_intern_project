@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PEBluetoothSession.h"
-#import "DecorateData.h"
+
+#import "PESession.h"
+#import "PEDecorate.h"
 
 @interface MessageSender : NSObject
 
@@ -34,7 +35,7 @@
 - (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid;
 - (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid;
 
-- (BOOL)sendInsertDecorateDataMessage:(DecorateData *)insertData;
+- (BOOL)sendInsertDecorateDataMessage:(PEDecorate *)insertData;
 - (BOOL)sendUpdateDecorateDataMessage:(NSUUID *)uuid updateFrame:(CGRect)updateFrame;
 - (BOOL)sendDeleteDecorateDataMessage:(NSUUID *)uuid;
 

@@ -16,6 +16,8 @@
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"
 
+#import "ImageUtility.h"
+
 NSString *const SessionServiceType = @"Co-PhotoEditor";
 
 @interface PEBluetoothSession () <MCSessionDelegate, CBCentralManagerDelegate>
@@ -58,7 +60,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     return self.session.myPeerID.displayName;
 }
 
-- (BOOL)sendMessage:(MessageData *)message {
+- (BOOL)sendMessage:(PEMessage *)message {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:message];
     NSError *error;
     
@@ -75,7 +77,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     return YES;
 }
 
-- (void)sendResource:(MessageData *)message resultBlock:(void (^)(BOOL success))resultHandler {
+- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler {
     if (message.messageType != MessageTypePhotoDataInsert && message.messageType != MessageTypePhotoDataUpdate) {
         return;
     }
@@ -86,7 +88,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         sendOriginalImageBlock = ^{
             NSString *name = [self makeResourceName:message.messageType
                                               index:message.photoDataIndexPath.item
-                                          imageType:IdentifierImageOriginal
+                                          imageType:PhotoTypeOriginal
                                          filterType:message.photoDataFilterType];
             
             for (MCPeerID *peerID in self.session.connectedPeers) {
@@ -107,7 +109,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     
     NSString *name = [self makeResourceName:message.messageType
                                       index:message.photoDataIndexPath.item
-                                  imageType:IdentifierImageCropped
+                                  imageType:PhotoTypeCropped
                                  filterType:message.photoDataFilterType];
     
     for (MCPeerID *peerID in self.session.connectedPeers) {
@@ -203,7 +205,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         return;
     }
     
-    [self.dataReceiveDelegate didReceiveData:(MessageData *)[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+    [self.dataReceiveDelegate didReceiveData:(PEMessage *)[NSKeyedUnarchiver unarchiveObjectWithData:data]];
 }
 
 - (void)session:(MCSession *)session didStartReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID withProgress:(NSProgress *)progress {
@@ -220,10 +222,10 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     NSInteger indexOfPhotoData = [array[1] integerValue];
     NSString *fileTypeOfPhotoData = array[2];
     
-    if ([fileTypeOfPhotoData isEqualToString:IdentifierImageCropped]) {
+    if ([fileTypeOfPhotoData isEqualToString:PhotoTypeCropped]) {
         //didReceivedData : receive start photo data
         
-        MessageData *data = [[MessageData alloc] init];
+        PEMessage *data = [[PEMessage alloc] init];
         data.messageType = MessageTypePhotoDataReceiveStart;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         
@@ -249,11 +251,11 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     
     NSURL *fileURLOfPhotoData = localURL;
     
-    if ([dataTypeOfPhotoData isEqualToString:IdentifierImageCropped]) {
+    if ([dataTypeOfPhotoData isEqualToString:PhotoTypeCropped]) {
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
-            MessageData *data = [[MessageData alloc] init];
+            PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataType = dataTypeOfPhotoData;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
@@ -263,7 +265,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         }
         
         if (messageTypeOfPhotoData == MessageTypePhotoDataUpdate) {
-            MessageData *data = [[MessageData alloc] init];
+            PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataUpdate;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
             data.photoDataType = dataTypeOfPhotoData;
@@ -272,7 +274,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
             
             [self.dataReceiveDelegate didReceiveData:data];
             
-            data = [[MessageData alloc] init];
+            data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveFinish;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
             
@@ -282,7 +284,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         }
         
         //didReceivedData : receive photo data - CroppedImage
-        MessageData *data = [[MessageData alloc] init];
+        PEMessage *data = [[PEMessage alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         data.photoDataType = dataTypeOfPhotoData;
@@ -294,11 +296,11 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         return;
     }
     
-    if ([dataTypeOfPhotoData isEqualToString:IdentifierImageOriginal]) {
+    if ([dataTypeOfPhotoData isEqualToString:PhotoTypeOriginal]) {
         if (error) {
             //Error.
             NSLog(@"%@", [error localizedDescription]);
-            MessageData *data = [[MessageData alloc] init];
+            PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
             data.photoDataType = dataTypeOfPhotoData;
@@ -308,7 +310,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         }
         
         //didReceivedData : receive photo data - Original Image
-        MessageData *data = [[MessageData alloc] init];
+        PEMessage *data = [[PEMessage alloc] init];
         data.messageType = MessageTypePhotoDataInsert;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         data.photoDataType = dataTypeOfPhotoData;
@@ -318,7 +320,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
         [self.dataReceiveDelegate didReceiveData:data];
         
         //didReceivedData : receive finish photo data
-        data = [[MessageData alloc] init];
+        data = [[PEMessage alloc] init];
         data.messageType = MessageTypePhotoDataReceiveFinish;
         data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
         

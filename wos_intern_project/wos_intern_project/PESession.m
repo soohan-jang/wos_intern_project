@@ -18,11 +18,11 @@
     return nil;
 }
 
-- (BOOL)sendMessage:(MessageData *)message {
+- (BOOL)sendMessage:(PEMessage *)message {
     return NO;
 }
 
-- (void)sendResource:(MessageData *)message resultBlock:(void (^)(BOOL success))resultHandler {
+- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler {
     return;
 }
 

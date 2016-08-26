@@ -10,13 +10,13 @@
 
 @interface MessageBuffer ()
 
-@property (atomic, strong) NSMutableArray<MessageData *> *messageBuffer;
+@property (atomic, strong) NSMutableArray<PEMessage *> *messageBuffer;
 
 @end
 
 @implementation MessageBuffer
 
-- (void)putMessage:(MessageData *)message {
+- (void)putMessage:(PEMessage *)message {
     if (!self.messageBuffer) {
         self.messageBuffer = [[NSMutableArray alloc] init];
     }
@@ -24,12 +24,12 @@
     [self.messageBuffer addObject:message];
 }
 
-- (MessageData *)getMessage {
+- (PEMessage *)getMessage {
     if ([self isMessageBufferEmpty]) {
         return nil;
     }
     
-    MessageData *message = self.messageBuffer[0];
+    PEMessage *message = self.messageBuffer[0];
     [self.messageBuffer removeObjectAtIndex:0];
      
      return message;

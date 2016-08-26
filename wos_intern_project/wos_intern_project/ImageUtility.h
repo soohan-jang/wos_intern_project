@@ -8,6 +8,10 @@
 
 #import <UIKit/UIkit.h>
 
+extern NSString *const PhotoTypeOriginal;
+extern NSString *const PhotoTypeCropped;
+extern NSString *const Sperator;
+
 typedef void (^ImageUtilityForGetFullScreenImageBlock)(UIImage *image);
 
 /**

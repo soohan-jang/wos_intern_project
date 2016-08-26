@@ -9,24 +9,23 @@
 #import "SelectPhotoFrameViewController.h"
 #import "EditPhotoViewController.h"
 
-#import "CommonConstants.h"
-
-#import "PhotoFrameDataController.h"
 #import "SessionManager.h"
 #import "MessageReceiver.h"
 
-#import "ProgressHelper.h"
+#import "PEPhotoFrameController.h"
+
 #import "AlertHelper.h"
 #import "DispatchAsyncHelper.h"
+#import "ProgressHelper.h"
 
 NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
-@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PhotoFrameDataControllerDelegate, MessageReceiverStateChangeDelegate>
+@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PEPhotoFrameControllerDelegate, MessageReceiverStateChangeDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 
-@property (strong, nonatomic) PhotoFrameDataController *dataController;
+@property (strong, nonatomic) PEPhotoFrameController *photoFrameController;
 @property (strong, nonatomic) WMProgressHUD *progressView;
 
 @end
@@ -51,20 +50,20 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    [self.dataController clearController];
-    self.dataController.delegate = nil;
-    self.dataController = nil;
+    [self.photoFrameController clearController];
+    self.photoFrameController.delegate = nil;
+    self.photoFrameController = nil;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:SegueMoveToEditor]) {
         EditPhotoViewController *viewController = [segue destinationViewController];
-        [viewController setPhotoFrameNumber:self.dataController.ownSelectedIndexPath.item];
+        [viewController setPhotoFrame:self.photoFrameController.ownSelectedIndexPath.item];
     }
 }
 
 - (void)dealloc {
-    self.dataController = nil;
+    self.photoFrameController = nil;
     self.progressView = nil;
 }
 
@@ -83,9 +82,9 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 #pragma mark - Prepare Methods
 
 - (void)prepareDataController {
-    self.dataController = [[PhotoFrameDataController alloc] initWithCollectionViewSize:self.collectionView.bounds.size];
-    self.dataController.delegate = self;
-    self.collectionView.dataSource = (id<UICollectionViewDataSource>)self.dataController;
+    self.photoFrameController = [[PEPhotoFrameController alloc] initWithCollectionViewSize:self.collectionView.bounds.size];
+    self.photoFrameController.delegate = self;
+    self.collectionView.dataSource = (id<UICollectionViewDataSource>)self.photoFrameController;
     self.collectionView.delegate = self;
 }
 
@@ -135,7 +134,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (IBAction)doneButtonTapped:(id)sender {
-    [self.dataController setEnableCells:NO];
+    [self.photoFrameController setEnableCells:NO];
     
     if (!self.progressView.hidden) {
         [ProgressHelper dismissProgress:self.progressView];
@@ -148,7 +147,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
     self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view
                                                    titleKey:@"progress_title_confirming"];
     
-    if (![self.dataController isEqualBothSelectedIndexPath]) {
+    if (![self.photoFrameController isEqualBothSelectedIndexPath]) {
         __weak typeof(self) weakSelf = self;
         [ProgressHelper dismissProgress:self.progressView
                         dismissTitleKey:@"progress_title_error"
@@ -160,14 +159,14 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                               return;
                           }
                           
-                          [self.dataController setEnableCells:YES];
+                          [self.photoFrameController setEnableCells:YES];
                       }
         ];
         return;
     }
     
     //에러 혹은 인터럽트 발생 시, 위에서 표시했던 ProgressView를 닫는다.
-    if (![self.dataController.dataSender sendPhotoFrameConfrimRequestMessage:self.dataController.ownSelectedIndexPath]) {
+    if (![self.photoFrameController.dataSender sendPhotoFrameConfrimRequestMessage:self.photoFrameController.ownSelectedIndexPath]) {
         [ProgressHelper dismissProgress:self.progressView];
     }
 }
@@ -176,32 +175,32 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 #pragma mark - CollectionViewController Delegate Flowlayout Methods
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.dataController sizeOfCell:self.collectionView.bounds.size];
+    return [self.photoFrameController sizeOfCell:self.collectionView.bounds.size];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return [self.dataController edgeInsets:self.collectionView.bounds.size];
+    return [self.photoFrameController edgeInsets:self.collectionView.bounds.size];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.dataController.ownSelectedIndexPath.item != indexPath.item) {
-        NSIndexPath *prevSelectedIndexPath = self.dataController.ownSelectedIndexPath;
-        [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+    if (self.photoFrameController.ownSelectedIndexPath.item != indexPath.item) {
+        NSIndexPath *prevSelectedIndexPath = self.photoFrameController.ownSelectedIndexPath;
+        [self.photoFrameController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
         
         //에러 발생 시, 이전 값으로 복원한다.
-        if (![self.dataController.dataSender sendSelectPhotoFrameMessage:indexPath]) {
+        if (![self.photoFrameController.dataSender sendSelectPhotoFrameMessage:indexPath]) {
             if (!prevSelectedIndexPath) {
-                [self.dataController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
+                [self.photoFrameController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
             } else {
-                [self.dataController setSelectedCellAtIndexPath:prevSelectedIndexPath isOwnSelection:YES];
+                [self.photoFrameController setSelectedCellAtIndexPath:prevSelectedIndexPath isOwnSelection:YES];
             }
         }
     } else {
-        [self.dataController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
+        [self.photoFrameController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
         
         //에러 발생 시, 이전 값으로 복원한다.
-        if (![self.dataController.dataSender sendDeselectPhotoFrameMessage:indexPath]) {
-            [self.dataController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+        if (![self.photoFrameController.dataSender sendDeselectPhotoFrameMessage:indexPath]) {
+            [self.photoFrameController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
         }
     }
 }
@@ -260,12 +259,12 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                            
                                            //에러 발생 시, 다시 창을 표시한다. - 근데 계속 에러나면 계속 창이 표시되는데, 다른 방법을 생각해봐야할 듯.
                                            //가령 몇 회 이상 실패하면, 작업을 진행할 수 없는 심각한 상황으로 보고 강제종료시킨다든가.
-                                           if (![self.dataController.dataSender sendPhotoFrameConfirmAckMessage:NO]) {
+                                           if (![self.photoFrameController.dataSender sendPhotoFrameConfirmAckMessage:NO]) {
                                                [self didReceiveRequestPhotoFrameConfirm:indexPath];
                                            }
                                            
                                            //거절한 경우, 각 셀을 다시 선택 가능하게 만든다.
-                                           [self.dataController setEnableCells:YES];
+                                           [self.photoFrameController setEnableCells:YES];
                                        }
                                          otherButton:@"alert_button_text_accept"
                                   otherButtonHandler:^(UIAlertAction * _Nonnull action) {
@@ -277,7 +276,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                       
                                       //에러 발생 시, 다시 창을 표시한다. - 근데 계속 에러나면 계속 창이 표시되는데, 다른 방법을 생각해봐야할 듯.
                                       //가령 몇 회 이상 실패하면, 작업을 진행할 수 없는 심각한 상황으로 보고 강제종료시킨다든가.
-                                      if (![self.dataController.dataSender sendPhotoFrameConfirmAckMessage:YES]) {
+                                      if (![self.photoFrameController.dataSender sendPhotoFrameConfirmAckMessage:YES]) {
                                           [self didReceiveRequestPhotoFrameConfirm:indexPath];
                                           return;
                                       }
@@ -307,7 +306,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
          ];
     } else {
         //reject된 경우, 각 셀을 다시 선택 가능하게 만든다.
-        [self.dataController setEnableCells:YES];
+        [self.photoFrameController setEnableCells:YES];
         
         [ProgressHelper dismissProgress:self.progressView
                         dismissTitleKey:@"progress_title_rejected"

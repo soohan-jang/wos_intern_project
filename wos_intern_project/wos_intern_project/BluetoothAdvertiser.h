@@ -7,7 +7,6 @@
 //
 
 #import <MultipeerConnectivity/MultipeerConnectivity.h>
-#import "PEBluetoothSession.h"
 
 @protocol BluetoothAdvertiserDelegate;
 
