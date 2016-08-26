@@ -10,8 +10,9 @@
 
 @interface PhotoData : NSObject
 
-@property (atomic, assign) NSInteger state;
-@property (atomic, strong) UIImage *fullscreenImage;
-@property (atomic, strong) UIImage *croppedImage;
+@property (nonatomic, assign) NSInteger state;
+@property (nonatomic, strong) UIImage *fullscreenImage;
+@property (nonatomic, strong) UIImage *croppedImage;
+@property (nonatomic, assign) NSInteger filterType;
 
 @end

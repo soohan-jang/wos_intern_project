@@ -58,7 +58,7 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 
 //For CropViewController
 @property (strong, nonatomic) NSURL *pickedImageURL;
-@property (strong, nonatomic) UIImage *pickedImage;
+@property (strong, nonatomic) UIImage *takePhotoImage;
 
 @property (assign, nonatomic) BOOL isEnteredOtherPeer;
 
@@ -72,12 +72,10 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self setPhotoFrameNumber:7];
     [self setupDelegates];
     [self setupMainMenu];
     
-//    self.isEnteredOtherPeer = NO;
-    self.isEnteredOtherPeer = YES;
+    self.isEnteredOtherPeer = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -100,13 +98,22 @@ NSString *const SeguePopupSticker                       = @"popupPhotoSticker";
         PhotoCropViewController *viewController = [segue destinationViewController];
         viewController.delegate = self;
         
+        UICollectionViewCell *cell = [self.photoDisplayCollectionView cellForItemAtIndexPath:self.photoDataController.selectedIndexPath];
+        [viewController setCropAreaSize:cell.bounds.size];
+        
         if (self.pickedImageURL) {
-            viewController.imageUrl = self.pickedImageURL;
+            [viewController setImageUrl:self.pickedImageURL];
             return;
         }
         
-        if (self.pickedImage) {
-            viewController.fullscreenImage = self.pickedImage;
+        if (self.takePhotoImage) {
+            [viewController setImage:self.takePhotoImage];
+            return;
+        }
+        
+        PhotoData *photoData = [self.photoDataController photoDataOfCellAtSelectedIndexPath];
+        if (photoData) {
+            [viewController setImage:photoData.fullscreenImage filiterType:photoData.filterType];
             return;
         }
     }
@@ -431,7 +438,6 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuPhotoEdit {
-    self.pickedImage = [self.photoDataController fullscreenImageOfCellAtSelectedIndexPath];
     [self presentPhotoCropViewController];
     
     return NO;
@@ -456,7 +462,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     if (picker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
         self.pickedImageURL = (NSURL *)info[UIImagePickerControllerReferenceURL];
     } else if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
-        self.pickedImage = [ImageUtility resizeImage:(UIImage *)info[UIImagePickerControllerOriginalImage]];
+        self.takePhotoImage = [ImageUtility resizeImage:(UIImage *)info[UIImagePickerControllerOriginalImage]];
     }
     
     __weak typeof(self) weakSelf = self;
@@ -467,7 +473,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
             return;
         }
         
-        if (!self.pickedImageURL && !self.pickedImage) {
+        if (!self.pickedImageURL && !self.takePhotoImage) {
             //Error Alert.
             [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
             self.photoDataController.selectedIndexPath = nil;
@@ -487,7 +493,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 #pragma mark - PhotoCropViewController Delegate Methods
 
-- (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage {
+- (void)cropViewControllerDidFinished:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType {
     if (!fullscreenImage || !croppedImage) {
         //Alert. 사진 가져오지 못함.
         [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
@@ -501,9 +507,10 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     photoData.state = CellStateUploading;
     photoData.fullscreenImage = fullscreenImage;
     photoData.croppedImage = croppedImage;
+    photoData.filterType = filterType;
     
     self.pickedImageURL = nil;
-    self.pickedImage = nil;
+    self.takePhotoImage = nil;
     
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithFullscreenImage:fullscreenImage withCroppedImage:croppedImage];
@@ -523,12 +530,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     [self.photoDataController.dataSender sendInsertPhotoDataMessage:self.photoDataController.selectedIndexPath
                                                    originalImageURL:fullscreenImageURL
                                                     croppedImageURL:croppedImageURL
-                                                         filterType:0];
+                                                         filterType:filterType];
 }
 
-- (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller {
+- (void)cropViewControllerDidCancelled {
     self.pickedImageURL = nil;
-    self.pickedImage = nil;
+    self.takePhotoImage = nil;
     
     [self.photoDataController updateCellStateAtSelectedIndexPath:CellStateNone];
     [self.photoDataController.dataSender sendDeselectPhotoDataMessage:self.photoDataController.selectedIndexPath];
@@ -557,9 +564,10 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         [self.mainMenuButton dismissMenuButton];
     }
     
-//    if (![self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath]) {
-//        return;
-//    }
+    //사진 선택 메시지 송신에 실패하면 메뉴를 띄우지 않는다.
+    if (![self.photoDataController.dataSender sendSelectPhotoDataMessage:indexPath]) {
+        return;
+    }
     
     self.photoDataController.selectedIndexPath = indexPath;
     

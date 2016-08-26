@@ -229,6 +229,7 @@ NSInteger const DefaultMargin   = 5;
     [self updateCellStateAtIndexPath:indexPath state:photoData.state];
     self.cellDatas[indexPath.item].fullscreenImage = photoData.fullscreenImage;
     self.cellDatas[indexPath.item].croppedImage = photoData.croppedImage;
+    self.cellDatas[indexPath.item].filterType = photoData.filterType;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
@@ -251,16 +252,16 @@ NSInteger const DefaultMargin   = 5;
     }
 }
 
-- (UIImage *)fullscreenImageOfCellAtSelectedIndexPath {
-    return [self fullscreenImageOfCellAtIndexPath:self.selectedIndexPath];
+- (PhotoData *)photoDataOfCellAtSelectedIndexPath {
+    return [self photoDataOfCellAtIndexPath:self.selectedIndexPath];
 }
 
-- (UIImage *)fullscreenImageOfCellAtIndexPath:(NSIndexPath *)indexPath {
+- (PhotoData *)photoDataOfCellAtIndexPath:(NSIndexPath *)indexPath {
     if ([self isOutBoundIndex:indexPath]) {
         return nil;
     }
     
-    return self.cellDatas[indexPath.item].fullscreenImage;
+    return self.cellDatas[indexPath.item];
 }
 
 - (BOOL)hasImageAtSelectedIndexPath {
@@ -393,6 +394,8 @@ NSInteger const DefaultMargin   = 5;
         self.cellDatas[indexPath.item].fullscreenImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     }
     
+    self.cellDatas[indexPath.item].filterType = filterType;
+    
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
     }
@@ -400,6 +403,7 @@ NSInteger const DefaultMargin   = 5;
 
 - (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType {
     self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:updateDataURL]];
+    self.cellDatas[indexPath.item].filterType = filterType;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];

@@ -14,9 +14,10 @@
 
 @property (weak, nonatomic) id<PhotoCropViewControllerDelegate> delegate;
 
-@property (assign, nonatomic) CGSize cropAreaSize;
-@property (strong, nonatomic) NSURL *imageUrl;
-@property (strong, nonatomic) UIImage *fullscreenImage;
+- (void)setCropAreaSize:(CGSize)size;
+- (void)setImageUrl:(NSURL *)url;
+- (void)setImage:(UIImage *)image;
+- (void)setImage:(UIImage *)image filiterType:(NSInteger)filterType;
 
 @end
 
@@ -29,10 +30,10 @@
 /**
  편집이 완료된 후에 원본 이미지와 편집된 이미지를 전달한다.
  */
-- (void)cropViewControllerDidFinished:(PhotoCropViewController *)controller withFullscreenImage:(UIImage *)fullscreenImage withCroppedImage:(UIImage *)croppedImage;
+- (void)cropViewControllerDidFinished:(UIImage *)fullscreenImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType;
 /**
  편집이 취소되었음을 알린다.
  */
-- (void)cropViewControllerDidCancelled:(PhotoCropViewController *)controller;
+- (void)cropViewControllerDidCancelled;
 
 @end

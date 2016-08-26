@@ -68,8 +68,11 @@ typedef NS_ENUM(NSInteger, CellState) {
 /**
  인덱스에 해당하는 사진 액자와 연결된 Fullscreen Image를 가져온다.
  */
-- (UIImage *)fullscreenImageOfCellAtIndexPath:(NSIndexPath *)indexPath;
-- (UIImage *)fullscreenImageOfCellAtSelectedIndexPath;
+//- (UIImage *)fullscreenImageOfCellAtIndexPath:(NSIndexPath *)indexPath;
+//- (UIImage *)fullscreenImageOfCellAtSelectedIndexPath;
+
+- (PhotoData *)photoDataOfCellAtIndexPath:(NSIndexPath *)indexPath;
+- (PhotoData *)photoDataOfCellAtSelectedIndexPath;
 
 /**
  인덱스에 해당하는 사진 액자에 사진 정보가 있는지 확인한다.
