@@ -8,15 +8,15 @@
 
 #import "PEDecorateController.h"
 
-#import "SessionManager.h"
-#import "MessageSender.h"
-#import "MessageReceiver.h"
+#import "PESessionManager.h"
+#import "PEMessageSender.h"
+#import "PEMessageReceiver.h"
 
 #import "DecorateDisplayView.h"
 
 @interface PEDecorateMessageSender ()
 
-@property (strong, nonatomic) MessageSender *messageSender;
+@property (strong, nonatomic) PEMessageSender *messageSender;
 
 @end
 
@@ -26,7 +26,7 @@
     self = [super init];
     
     if (self) {
-        self.messageSender = [SessionManager sharedInstance].messageSender;
+        self.messageSender = [PESessionManager sharedInstance].messageSender;
     }
     
     return self;
@@ -58,7 +58,7 @@
 
 @end
 
-@interface PEDecorateController () <DecorateDisplayViewDataSource, MessageReceiverDeviceDataDelegate, MessageReceiverDecorateDataDelegate>
+@interface PEDecorateController () <DecorateDisplayViewDataSource, PEMessageReceiverDeviceDataDelegate, PEMessageReceiverDecorateDataDelegate>
 
 @property (atomic, strong) NSMutableArray<PEDecorate *> *decorateDataArray;
 @property (nonatomic, assign) CGFloat widthRatio, heightRatio;
@@ -74,7 +74,7 @@
     self = [super init];
     
     if (self) {
-        SessionManager *sessionManager = [SessionManager sharedInstance];
+        PESessionManager *sessionManager = [PESessionManager sharedInstance];
         sessionManager.messageReceiver.deviceDataDelegate = self;
         sessionManager.messageReceiver.decorateDataDelegate = self;
         

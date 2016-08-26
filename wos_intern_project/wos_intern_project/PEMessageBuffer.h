@@ -11,7 +11,7 @@
 #import "PESession.h"
 #import "PEMessage.h"
 
-@interface MessageBuffer : NSObject
+@interface PEMessageBuffer : NSObject
 
 @property (nonatomic, assign, getter=isEnabled) BOOL enabled;
 

@@ -8,12 +8,12 @@
 
 #import "BluetoothAdvertiser.h"
 
-#import "SessionManager.h"
+#import "PESessionManager.h"
 #import "PEBluetoothSession.h"
 
-#import "MessageReceiver.h"
+#import "PEMessageReceiver.h"
 
-@interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, MessageReceiverStateChangeDelegate>
+@interface BluetoothAdvertiser () <MCNearbyServiceAdvertiserDelegate, PEMessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCNearbyServiceAdvertiser *advertiser;
 
@@ -35,7 +35,7 @@
 }
 
 - (void)dealloc {
-    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
+    [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
     _advertiser.delegate = nil;
     _advertiser = nil;
 }
@@ -44,12 +44,12 @@
 #pragma mark - Start & Stop Advertising
 
 - (void)startAdvertise {
-    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
+    [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     [_advertiser startAdvertisingPeer];
 }
 
 - (void)stopAdvertise {
-    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
+    [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
     [_advertiser stopAdvertisingPeer];
 }
 

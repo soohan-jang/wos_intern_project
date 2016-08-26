@@ -11,7 +11,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 
 #import "PEBluetoothSession.h"
-#import "MessageReceiver.h"
+#import "PEMessageReceiver.h"
 
 #import "BluetoothBrowser.h"
 #import "BluetoothAdvertiser.h"

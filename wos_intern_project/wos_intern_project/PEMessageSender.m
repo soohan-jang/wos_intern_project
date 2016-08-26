@@ -6,20 +6,20 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "MessageSender.h"
+#import "PEMessageSender.h"
 
 #import "PEBluetoothSession.h"
-#import "MessageInterrupter.h"
+#import "PEMessageInterrupter.h"
 
 #import "PEMessage.h"
 
-@interface MessageSender ()
+@interface PEMessageSender ()
 
 @property (nonatomic, strong) PESession *session;
 
 @end
 
-@implementation MessageSender
+@implementation PEMessageSender
 
 
 #pragma mark - Init Method
@@ -65,7 +65,7 @@
 - (BOOL)sendPhotoFrameConfrimRequestMessage:(NSIndexPath *)indexPath {
     NSTimeInterval timestamp = [self timestamp];
     
-    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp]) {
+    if ([[PEMessageInterrupter sharedInstance] isInterruptSendMessage:timestamp]) {
         NSLog(@"Interrupted sendPhotoFrameConfrimRequestMessage");
         return NO;
     }
@@ -79,7 +79,7 @@
 }
 
 - (BOOL)sendPhotoFrameConfirmAckMessage:(BOOL)confrimAck {
-    MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
+    PEMessageInterrupter *messageInterrupter = [PEMessageInterrupter sharedInstance];
     messageInterrupter.sendMessageTimestamp = 0;
     messageInterrupter.recvMessageTimestamp = 0;
     
@@ -107,7 +107,7 @@
 - (BOOL)sendSelectPhotoDataMessage:(NSIndexPath *)indexPath {
     NSTimeInterval timestamp = [self timestamp];
     
-    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp indexPath:indexPath]) {
+    if ([[PEMessageInterrupter sharedInstance] isInterruptSendMessage:timestamp indexPath:indexPath]) {
         NSLog(@"Interrupted sendSelectPhotoDataMessage");
         return NO;
     }
@@ -121,7 +121,7 @@
 }
 
 - (BOOL)sendDeselectPhotoDataMessage:(NSIndexPath *)indexPath {
-    [[MessageInterrupter sharedInstance] clearInterrupter];
+    [[PEMessageInterrupter sharedInstance] clearInterrupter];
     
     PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataDeselect;
@@ -163,7 +163,7 @@
 }
 
 - (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath {
-    [[MessageInterrupter sharedInstance] clearInterrupter];
+    [[PEMessageInterrupter sharedInstance] clearInterrupter];
     
     PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypePhotoDataDelete;
@@ -190,7 +190,7 @@
 - (BOOL)sendSelectDecorateDataMessage:(NSUUID *)uuid {
     NSTimeInterval timestamp = [self timestamp];
     
-    if ([[MessageInterrupter sharedInstance] isInterruptSendMessage:timestamp uuid:uuid]) {
+    if ([[PEMessageInterrupter sharedInstance] isInterruptSendMessage:timestamp uuid:uuid]) {
         NSLog(@"Interrupted sendSelectDecorateDataMessage");
         return NO;
     }
@@ -204,7 +204,7 @@
 }
 
 - (BOOL)sendDeselectDecorateDataMessage:(NSUUID *)uuid {
-    [[MessageInterrupter sharedInstance] clearInterrupter];
+    [[PEMessageInterrupter sharedInstance] clearInterrupter];
     
     PEMessage *data = [[PEMessage alloc] init];
     data.messageType = MessageTypeDecorateDataDeselect;

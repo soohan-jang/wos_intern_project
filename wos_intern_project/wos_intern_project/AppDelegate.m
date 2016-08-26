@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "SessionManager.h"
+#import "PESessionManager.h"
 #import "ImageUtility.h"
 
 @interface AppDelegate ()
@@ -48,7 +48,7 @@
 //내부에서 clearResources를 호출하면 되는데, 어떻게 호출하나?
 void uncaughtExceptionHandler(NSException *exception) {
     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-    SessionManager *sessionManager = [SessionManager sharedInstance];
+    PESessionManager *sessionManager = [PESessionManager sharedInstance];
     [sessionManager disconnectSession];
     sessionManager = nil;
     
@@ -58,7 +58,7 @@ void uncaughtExceptionHandler(NSException *exception) {
 
 - (void)clearResources {
     //세션 종료 시, 커넥션매니저와 메시지큐를 정리한다.
-    SessionManager *sessionManager = [SessionManager sharedInstance];
+    PESessionManager *sessionManager = [PESessionManager sharedInstance];
     [sessionManager disconnectSession];
     sessionManager = nil;
     

@@ -9,7 +9,7 @@
 #import "MainViewController.h"
 #import "SelectPhotoFrameViewController.h"
 
-#import "SessionManager.h"
+#import "PESessionManager.h"
 #import "PEBluetoothSession.h"
 
 #import "BluetoothBrowser.h"
@@ -55,7 +55,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 #pragma mark - Prepare Session
 
 - (void)prepareSession {
-    SessionManager *sessionManager = [SessionManager sharedInstance];
+    PESessionManager *sessionManager = [PESessionManager sharedInstance];
     
     if ([sessionManager isSessionNil]) {
         [sessionManager initializeWithSessionType:SessionTypeBluetooth];
@@ -90,7 +90,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
  * @brief 장비를 검색하고 연결할 VC를 화면에 표시한다.
  */
 - (void)presentBrowserViewController {
-    PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+    PEBluetoothSession *session = (PEBluetoothSession *)[PESessionManager sharedInstance].session;
     if ([session presentBrowserController:self delegate:self]) {
         return;
     }
@@ -107,7 +107,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
  * @brief 사진액자를 선택할 VC를 화면에 표시한다.
  */
 - (void)presentSelectPhotoFrameViewController {
-    SessionManager *sessionManager = [SessionManager sharedInstance];
+    PESessionManager *sessionManager = [PESessionManager sharedInstance];
     [sessionManager setMessageBufferEnabled:YES];
     
     PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
@@ -135,7 +135,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)browserSessionConnectCancel:(BluetoothBrowser *)browser {
     [browser dismissBrowserViewController:^{
-        SessionManager *sessionManager = [SessionManager sharedInstance];
+        PESessionManager *sessionManager = [PESessionManager sharedInstance];
         [sessionManager disconnectSession];
         [self prepareSession];
     }];
@@ -159,7 +159,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                              message:message
                                               button:@"alert_button_text_decline"
                                        buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                           PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+                                           PEBluetoothSession *session = (PEBluetoothSession *)[PESessionManager sharedInstance].session;
                                            invitationHandler(NO, [session instanceOfSession]);
                                        }
                                          otherButton:@"alert_button_text_accept"
@@ -170,7 +170,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                           return;
                                       }
                                       
-                                      PEBluetoothSession *session = (PEBluetoothSession *)[SessionManager sharedInstance].session;
+                                      PEBluetoothSession *session = (PEBluetoothSession *)[PESessionManager sharedInstance].session;
                                       invitationHandler(YES, [session instanceOfSession]);
                                       
                                       self.progressView = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_connecting"];
@@ -182,7 +182,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
     //ProgressView가 nil이거나 숨겨진 상태라면, 초대장을 받은 정상적인 Advertiser가 아님.
     //BrowserVC 진입 후, 초대장 발송한 뒤 바로 취소버튼을 눌러 MainVC로 돌아온 뒤에 상대방에게 보냈던 초대장에 대한 응답을 받은 경우에 해당함.
     if (!self.progressView || self.progressView.hidden) {
-        [[SessionManager sharedInstance] disconnectSession];
+        [[PESessionManager sharedInstance] disconnectSession];
         
         [self prepareSession];
         [self.view setUserInteractionEnabled:YES];
@@ -199,7 +199,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                                 return;
                             }
                             
-                            if ([SessionManager sharedInstance].session.sessionState != SessionStateConnected) {
+                            if ([PESessionManager sharedInstance].session.sessionState != SessionStateConnected) {
                                 return;
                             }
                             
@@ -210,7 +210,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)advertiserSessionNotConnected {
     if (!self.progressView || self.progressView.hidden) {
-        [[SessionManager sharedInstance] disconnectSession];
+        [[PESessionManager sharedInstance] disconnectSession];
         
         [self prepareSession];
         [self.view setUserInteractionEnabled:YES];
@@ -221,7 +221,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
                     dismissTitleKey:@"progress_title_cancelled"
                         dismissType:DismissWithCancel
                   completionHandler:^{
-                      SessionManager *sessionManager = [SessionManager sharedInstance];
+                      PESessionManager *sessionManager = [PESessionManager sharedInstance];
                       [sessionManager disconnectSession];
                       
                       [self prepareSession];

@@ -11,9 +11,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <ImageIO/ImageIO.h>
 
-#import "SessionManager.h"
-#import "MessageSender.h"
-#import "MessageReceiver.h"
+#import "PESessionManager.h"
+#import "PEMessageSender.h"
+#import "PEMessageReceiver.h"
 
 #import "PhotoCollectionViewCell.h"
 
@@ -23,7 +23,7 @@ NSInteger const DefaultMargin   = 5;
 
 @interface PEPhotoMessageSender ()
 
-@property (strong, nonatomic) MessageSender *messageSender;
+@property (strong, nonatomic) PEMessageSender *messageSender;
 
 @end
 
@@ -33,7 +33,7 @@ NSInteger const DefaultMargin   = 5;
     self = [super init];
     
     if (self) {
-        self.messageSender = [SessionManager sharedInstance].messageSender;
+        self.messageSender = [PESessionManager sharedInstance].messageSender;
     }
     
     return self;
@@ -70,7 +70,7 @@ NSInteger const DefaultMargin   = 5;
 
 @end
 
-@interface PEPhotoController () <UICollectionViewDataSource, MessageReceiverPhotoDataDelegate>
+@interface PEPhotoController () <UICollectionViewDataSource, PEMessageReceiverPhotoDataDelegate>
 
 /**
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
@@ -105,7 +105,7 @@ NSInteger const DefaultMargin   = 5;
         cellInitArray = nil;
         
         self.dataSender = [[PEPhotoMessageSender alloc] init];
-        [SessionManager sharedInstance].messageReceiver.photoDataDelegate = self;
+        [PESessionManager sharedInstance].messageReceiver.photoDataDelegate = self;
     }
     
     return self;

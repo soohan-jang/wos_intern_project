@@ -6,19 +6,19 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "SessionManager.h"
+#import "PESessionManager.h"
 
 #import "PEBluetoothSession.h"
-#import "MessageInterrupter.h"
+#import "PEMessageInterrupter.h"
 
-@interface SessionManager ()
+@interface PESessionManager ()
 
 @end
 
-@implementation SessionManager
+@implementation PESessionManager
 
 + (instancetype)sharedInstance {
-    static SessionManager *instance = nil;
+    static PESessionManager *instance = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -34,8 +34,8 @@
     switch (sessionType) {
         case SessionTypeBluetooth:
             _session = [[PEBluetoothSession alloc] init];
-            _messageSender = [[MessageSender alloc] initWithSession:_session];
-            _messageReceiver = [[MessageReceiver alloc] initWithSession:_session];
+            _messageSender = [[PEMessageSender alloc] initWithSession:_session];
+            _messageReceiver = [[PEMessageReceiver alloc] initWithSession:_session];
             break;
     }
 }
@@ -50,7 +50,7 @@
     _session = nil;
     _messageSender = nil;
     _messageReceiver = nil;
-    [[MessageInterrupter sharedInstance] clearInterrupter];
+    [[PEMessageInterrupter sharedInstance] clearInterrupter];
 }
 
 - (BOOL)isSessionNil {

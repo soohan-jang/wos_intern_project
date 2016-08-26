@@ -6,15 +6,15 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "MessageBuffer.h"
+#import "PEMessageBuffer.h"
 
-@interface MessageBuffer ()
+@interface PEMessageBuffer ()
 
 @property (atomic, strong) NSMutableArray<PEMessage *> *messageBuffer;
 
 @end
 
-@implementation MessageBuffer
+@implementation PEMessageBuffer
 
 - (void)putMessage:(PEMessage *)message {
     if (!self.messageBuffer) {

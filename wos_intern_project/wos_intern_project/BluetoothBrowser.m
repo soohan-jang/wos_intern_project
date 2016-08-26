@@ -8,14 +8,14 @@
 
 #import "BluetoothBrowser.h"
 
-#import "SessionManager.h"
+#import "PESessionManager.h"
 #import "PEBluetoothSession.h"
 
-#import "MessageReceiver.h"
+#import "PEMessageReceiver.h"
 
 NSInteger const MaximumNumberOfPeers = 1;
 
-@interface BluetoothBrowser () <MCBrowserViewControllerDelegate, MessageReceiverStateChangeDelegate>
+@interface BluetoothBrowser () <MCBrowserViewControllerDelegate, PEMessageReceiverStateChangeDelegate>
 
 @property (strong, nonatomic) MCBrowserViewController *browserController;
 
@@ -38,7 +38,7 @@ NSInteger const MaximumNumberOfPeers = 1;
 }
 
 - (void)dealloc {
-    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
+    [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = nil;
     _browserController.delegate = nil;
     _browserController = nil;
 }
@@ -47,7 +47,7 @@ NSInteger const MaximumNumberOfPeers = 1;
 #pragma mark - Present & Dismiss Methods
 
 - (BOOL)presentBrowserViewController:(UIViewController *)parentViewController {
-    if ([SessionManager sharedInstance].session.availiableState != AvailiableStateEnable) {
+    if ([PESessionManager sharedInstance].session.availiableState != AvailiableStateEnable) {
         return NO;
     }
     
@@ -62,7 +62,7 @@ NSInteger const MaximumNumberOfPeers = 1;
         }
         
         [self.browserController.browser startBrowsingForPeers];
-        [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
+        [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
     }];
     return YES;
 }
@@ -80,7 +80,7 @@ NSInteger const MaximumNumberOfPeers = 1;
 
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController {
     //현재 상태가 연결 중이면, Browser VC를 닫지 않는다.
-    if ([SessionManager sharedInstance].session.sessionState == SessionStateConnecting) {
+    if ([PESessionManager sharedInstance].session.sessionState == SessionStateConnecting) {
         return;
     }
     

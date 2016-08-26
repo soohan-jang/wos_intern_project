@@ -11,7 +11,7 @@
 #import "PESession.h"
 #import "PEDecorate.h"
 
-@interface MessageSender : NSObject
+@interface PEMessageSender : NSObject
 
 - (instancetype)initWithSession:(PESession *)session;
 

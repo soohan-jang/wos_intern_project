@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MessageInterrupter : NSObject
+@interface PEMessageInterrupter : NSObject
 
 @property (nonatomic, assign) NSTimeInterval sendMessageTimestamp;
 @property (nonatomic, assign) NSTimeInterval recvMessageTimestamp;

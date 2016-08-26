@@ -10,22 +10,22 @@
 		0A23C6FD1D54EA30007A7996 /* DecoratePenCanvasView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A23C6FC1D54EA30007A7996 /* DecoratePenCanvasView.m */; };
 		4A0C935B1D3DC3630080E9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4A0C935D1D3DC3630080E9A6 /* Localizable.strings */; };
 		4A14A5431D5B3E83000C2079 /* DispatchAsyncHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */; };
-		4A3CB3F61D6AD74D00B324BC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3F51D6AD74D00B324BC /* SessionManager.m */; };
+		4A3CB3F61D6AD74D00B324BC /* PESessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3F51D6AD74D00B324BC /* PESessionManager.m */; };
 		4A3CB3F91D6AD76100B324BC /* PEBluetoothSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3F81D6AD76100B324BC /* PEBluetoothSession.m */; };
 		4A3CB3FC1D6AE01B00B324BC /* PEMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB3FB1D6AE01B00B324BC /* PEMessage.m */; };
 		4A3CB4051D6AEC3000B324BC /* PESession.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4041D6AEC3000B324BC /* PESession.m */; };
-		4A3CB4081D6AF12800B324BC /* MessageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4071D6AF12800B324BC /* MessageBuffer.m */; };
+		4A3CB4081D6AF12800B324BC /* PEMessageBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3CB4071D6AF12800B324BC /* PEMessageBuffer.m */; };
 		4A3E4CE81D6F265000CE8204 /* CropPhotoFilterImageViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3E4CE71D6F265000CE8204 /* CropPhotoFilterImageViewCell.m */; };
 		4A3EDC111D669A7000A091A8 /* SelectPhotoFrameViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */; };
 		4A3EDC381D672B2600A091A8 /* DecorateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3EDC371D672B2600A091A8 /* DecorateView.m */; };
 		4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */; };
 		4A3F99E21D63F705007915E1 /* BluetoothAdvertiser.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99E11D63F705007915E1 /* BluetoothAdvertiser.m */; };
-		4A3F99EB1D647C6B007915E1 /* MessageReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */; };
-		4A3F99EE1D647C72007915E1 /* MessageSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99ED1D647C72007915E1 /* MessageSender.m */; };
+		4A3F99EB1D647C6B007915E1 /* PEMessageReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99EA1D647C6B007915E1 /* PEMessageReceiver.m */; };
+		4A3F99EE1D647C72007915E1 /* PEMessageSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A3F99ED1D647C72007915E1 /* PEMessageSender.m */; };
 		4A4105281D5C16C700FEEFE9 /* DecorateTextMenuView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4105271D5C16C700FEEFE9 /* DecorateTextMenuView.m */; };
 		4A41052B1D5C804200FEEFE9 /* PEPhotoFrameController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052A1D5C804200FEEFE9 /* PEPhotoFrameController.m */; };
 		4A41052F1D5C8AF800FEEFE9 /* PEPhotoFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A41052E1D5C8AF800FEEFE9 /* PEPhotoFrame.m */; };
-		4A46AE2B1D6BD7EA0070182D /* MessageInterrupter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A46AE2A1D6BD7EA0070182D /* MessageInterrupter.m */; };
+		4A46AE2B1D6BD7EA0070182D /* PEMessageInterrupter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A46AE2A1D6BD7EA0070182D /* PEMessageInterrupter.m */; };
 		4A4ACF361D2B6D2C00BC2FC4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF341D2B6D2C00BC2FC4 /* Main.storyboard */; };
 		4A4ACF3B1D2B6D2C00BC2FC4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A4ACF391D2B6D2C00BC2FC4 /* LaunchScreen.storyboard */; };
 		4A4ACF461D2B6D2C00BC2FC4 /* wos_intern_projectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A4ACF451D2B6D2C00BC2FC4 /* wos_intern_projectTests.m */; };
@@ -102,16 +102,16 @@
 		4A0F100C1D45DDE800BF4EFC /* CropPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CropPhotoViewController.m; sourceTree = "<group>"; };
 		4A14A5411D5B3E83000C2079 /* DispatchAsyncHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DispatchAsyncHelper.h; sourceTree = "<group>"; };
 		4A14A5421D5B3E83000C2079 /* DispatchAsyncHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DispatchAsyncHelper.m; sourceTree = "<group>"; };
-		4A3CB3F41D6AD74D00B324BC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
-		4A3CB3F51D6AD74D00B324BC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
+		4A3CB3F41D6AD74D00B324BC /* PESessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PESessionManager.h; sourceTree = "<group>"; };
+		4A3CB3F51D6AD74D00B324BC /* PESessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PESessionManager.m; sourceTree = "<group>"; };
 		4A3CB3F71D6AD76100B324BC /* PEBluetoothSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEBluetoothSession.h; sourceTree = "<group>"; };
 		4A3CB3F81D6AD76100B324BC /* PEBluetoothSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEBluetoothSession.m; sourceTree = "<group>"; };
 		4A3CB3FA1D6AE01B00B324BC /* PEMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEMessage.h; sourceTree = "<group>"; };
 		4A3CB3FB1D6AE01B00B324BC /* PEMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEMessage.m; sourceTree = "<group>"; };
 		4A3CB4031D6AEC3000B324BC /* PESession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PESession.h; sourceTree = "<group>"; };
 		4A3CB4041D6AEC3000B324BC /* PESession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PESession.m; sourceTree = "<group>"; };
-		4A3CB4061D6AF12800B324BC /* MessageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageBuffer.h; sourceTree = "<group>"; };
-		4A3CB4071D6AF12800B324BC /* MessageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageBuffer.m; sourceTree = "<group>"; };
+		4A3CB4061D6AF12800B324BC /* PEMessageBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEMessageBuffer.h; sourceTree = "<group>"; };
+		4A3CB4071D6AF12800B324BC /* PEMessageBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEMessageBuffer.m; sourceTree = "<group>"; };
 		4A3E4CE61D6F265000CE8204 /* CropPhotoFilterImageViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CropPhotoFilterImageViewCell.h; sourceTree = "<group>"; };
 		4A3E4CE71D6F265000CE8204 /* CropPhotoFilterImageViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CropPhotoFilterImageViewCell.m; sourceTree = "<group>"; };
 		4A3EDC101D669A7000A091A8 /* SelectPhotoFrameViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectPhotoFrameViewCell.m; sourceTree = "<group>"; };
@@ -121,18 +121,18 @@
 		4A3F99DE1D63F6FD007915E1 /* BluetoothBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothBrowser.m; sourceTree = "<group>"; };
 		4A3F99E01D63F705007915E1 /* BluetoothAdvertiser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothAdvertiser.h; sourceTree = "<group>"; };
 		4A3F99E11D63F705007915E1 /* BluetoothAdvertiser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BluetoothAdvertiser.m; sourceTree = "<group>"; };
-		4A3F99E91D647C6B007915E1 /* MessageReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageReceiver.h; sourceTree = "<group>"; };
-		4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageReceiver.m; sourceTree = "<group>"; };
-		4A3F99EC1D647C72007915E1 /* MessageSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageSender.h; sourceTree = "<group>"; };
-		4A3F99ED1D647C72007915E1 /* MessageSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageSender.m; sourceTree = "<group>"; };
+		4A3F99E91D647C6B007915E1 /* PEMessageReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEMessageReceiver.h; sourceTree = "<group>"; };
+		4A3F99EA1D647C6B007915E1 /* PEMessageReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEMessageReceiver.m; sourceTree = "<group>"; };
+		4A3F99EC1D647C72007915E1 /* PEMessageSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEMessageSender.h; sourceTree = "<group>"; };
+		4A3F99ED1D647C72007915E1 /* PEMessageSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEMessageSender.m; sourceTree = "<group>"; };
 		4A4105261D5C16C700FEEFE9 /* DecorateTextMenuView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DecorateTextMenuView.h; sourceTree = "<group>"; };
 		4A4105271D5C16C700FEEFE9 /* DecorateTextMenuView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DecorateTextMenuView.m; sourceTree = "<group>"; };
 		4A4105291D5C804200FEEFE9 /* PEPhotoFrameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEPhotoFrameController.h; sourceTree = "<group>"; };
 		4A41052A1D5C804200FEEFE9 /* PEPhotoFrameController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEPhotoFrameController.m; sourceTree = "<group>"; };
 		4A41052D1D5C8AF800FEEFE9 /* PEPhotoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEPhotoFrame.h; sourceTree = "<group>"; };
 		4A41052E1D5C8AF800FEEFE9 /* PEPhotoFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEPhotoFrame.m; sourceTree = "<group>"; };
-		4A46AE291D6BD7EA0070182D /* MessageInterrupter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageInterrupter.h; sourceTree = "<group>"; };
-		4A46AE2A1D6BD7EA0070182D /* MessageInterrupter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageInterrupter.m; sourceTree = "<group>"; };
+		4A46AE291D6BD7EA0070182D /* PEMessageInterrupter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PEMessageInterrupter.h; sourceTree = "<group>"; };
+		4A46AE2A1D6BD7EA0070182D /* PEMessageInterrupter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PEMessageInterrupter.m; sourceTree = "<group>"; };
 		4A4ACF281D2B6D2C00BC2FC4 /* wos_intern_project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wos_intern_project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A4ACF2C1D2B6D2C00BC2FC4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		4A4ACF2E1D2B6D2C00BC2FC4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -256,8 +256,8 @@
 		4A3CB3FD1D6AE0E300B324BC /* SessionManager */ = {
 			isa = PBXGroup;
 			children = (
-				4A3CB3F41D6AD74D00B324BC /* SessionManager.h */,
-				4A3CB3F51D6AD74D00B324BC /* SessionManager.m */,
+				4A3CB3F41D6AD74D00B324BC /* PESessionManager.h */,
+				4A3CB3F51D6AD74D00B324BC /* PESessionManager.m */,
 				4AF78C751D6D678000FD3FB7 /* Session */,
 				4A3CB3FE1D6AE0EC00B324BC /* MessageHelper */,
 				4A3CB4091D6B2B1900B324BC /* BluetoothConnectAssistant */,
@@ -268,14 +268,14 @@
 		4A3CB3FE1D6AE0EC00B324BC /* MessageHelper */ = {
 			isa = PBXGroup;
 			children = (
-				4A3F99EC1D647C72007915E1 /* MessageSender.h */,
-				4A3F99ED1D647C72007915E1 /* MessageSender.m */,
-				4A3F99E91D647C6B007915E1 /* MessageReceiver.h */,
-				4A3F99EA1D647C6B007915E1 /* MessageReceiver.m */,
-				4A3CB4061D6AF12800B324BC /* MessageBuffer.h */,
-				4A3CB4071D6AF12800B324BC /* MessageBuffer.m */,
-				4A46AE291D6BD7EA0070182D /* MessageInterrupter.h */,
-				4A46AE2A1D6BD7EA0070182D /* MessageInterrupter.m */,
+				4A3F99EC1D647C72007915E1 /* PEMessageSender.h */,
+				4A3F99ED1D647C72007915E1 /* PEMessageSender.m */,
+				4A3F99E91D647C6B007915E1 /* PEMessageReceiver.h */,
+				4A3F99EA1D647C6B007915E1 /* PEMessageReceiver.m */,
+				4A3CB4061D6AF12800B324BC /* PEMessageBuffer.h */,
+				4A3CB4071D6AF12800B324BC /* PEMessageBuffer.m */,
+				4A46AE291D6BD7EA0070182D /* PEMessageInterrupter.h */,
+				4A46AE2A1D6BD7EA0070182D /* PEMessageInterrupter.m */,
 			);
 			name = MessageHelper;
 			sourceTree = "<group>";
@@ -710,7 +710,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A46AE2B1D6BD7EA0070182D /* MessageInterrupter.m in Sources */,
+				4A46AE2B1D6BD7EA0070182D /* PEMessageInterrupter.m in Sources */,
 				4A5448A71D51E69E00883E08 /* MBProgressHUD.m in Sources */,
 				4B7C162F1D61FC3B000266EE /* DecorateStickerViewCell.m in Sources */,
 				4A5434641D62DF140040C12F /* DecorateStickerMenuView.m in Sources */,
@@ -734,14 +734,14 @@
 				4A3EDC381D672B2600A091A8 /* DecorateView.m in Sources */,
 				4A3F99E21D63F705007915E1 /* BluetoothAdvertiser.m in Sources */,
 				4A3CB3F91D6AD76100B324BC /* PEBluetoothSession.m in Sources */,
-				4A3F99EE1D647C72007915E1 /* MessageSender.m in Sources */,
-				4A3CB4081D6AF12800B324BC /* MessageBuffer.m in Sources */,
+				4A3F99EE1D647C72007915E1 /* PEMessageSender.m in Sources */,
+				4A3CB4081D6AF12800B324BC /* PEMessageBuffer.m in Sources */,
 				4A5448B91D51E69E00883E08 /* CropPhotoViewController.m in Sources */,
 				4A3CB3FC1D6AE01B00B324BC /* PEMessage.m in Sources */,
 				4A3F99DF1D63F6FD007915E1 /* BluetoothBrowser.m in Sources */,
 				4A5448BA1D51E69E00883E08 /* DecorateDisplayView.m in Sources */,
-				4A3F99EB1D647C6B007915E1 /* MessageReceiver.m in Sources */,
-				4A3CB3F61D6AD74D00B324BC /* SessionManager.m in Sources */,
+				4A3F99EB1D647C6B007915E1 /* PEMessageReceiver.m in Sources */,
+				4A3CB3F61D6AD74D00B324BC /* PESessionManager.m in Sources */,
 				4A5448BB1D51E69E00883E08 /* DecoratePenMenuView.m in Sources */,
 				4AC91E671D586A6900DB9E50 /* PECanvasPath.m in Sources */,
 				4A5448BE1D51E69E00883E08 /* PEDecorate.m in Sources */,

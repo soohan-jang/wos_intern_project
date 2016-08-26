@@ -6,20 +6,20 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "MessageReceiver.h"
+#import "PEMessageReceiver.h"
 
 #import "PEBluetoothSession.h"
-#import "MessageInterrupter.h"
+#import "PEMessageInterrupter.h"
 
 #import "ImageUtility.h"
 
-@interface MessageReceiver () <SessionConnectDelegate, SessionDataReceiveDelegate>
+@interface PEMessageReceiver () <SessionConnectDelegate, SessionDataReceiveDelegate>
 
 @property (nonatomic, strong) PESession *session;
 
 @end
 
-@implementation MessageReceiver
+@implementation PEMessageReceiver
 
 - (instancetype)initWithSession:(PESession *)session {
     self = [super init];
@@ -28,7 +28,7 @@
         switch (session.sessionType) {
             case SessionTypeBluetooth:
                 self.session = (PEBluetoothSession *)session;
-                self.messageBuffer = [[MessageBuffer alloc] init];
+                self.messageBuffer = [[PEMessageBuffer alloc] init];
                 self.session.connectDelegate = self;
                 self.session.dataReceiveDelegate = self;
                 break;
@@ -53,7 +53,7 @@
 }
 
 - (void)dispatchMessage:(PEMessage *)message {
-    MessageInterrupter *messageInterrupter = [MessageInterrupter sharedInstance];
+    PEMessageInterrupter *messageInterrupter = [PEMessageInterrupter sharedInstance];
     
     if (self.photoFrameDataDelegate) {
         switch (message.messageType) {

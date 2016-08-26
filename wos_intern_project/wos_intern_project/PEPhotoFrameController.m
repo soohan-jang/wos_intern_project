@@ -8,9 +8,9 @@
 
 #import "PEPhotoFrameController.h"
 
-#import "SessionManager.h"
-#import "MessageSender.h"
-#import "MessageReceiver.h"
+#import "PESessionManager.h"
+#import "PEMessageSender.h"
+#import "PEMessageReceiver.h"
 
 #import "PEPhotoFrame.h"
 #import "SelectPhotoFrameViewCell.h"
@@ -21,7 +21,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 @interface PEPhotoFrameMessageSender ()
 
-@property (strong, nonatomic) MessageSender *messageSender;
+@property (strong, nonatomic) PEMessageSender *messageSender;
 
 @end
 
@@ -31,7 +31,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
     self = [super init];
     
     if (self) {
-        self.messageSender = [SessionManager sharedInstance].messageSender;
+        self.messageSender = [PESessionManager sharedInstance].messageSender;
     }
     
     return self;
@@ -55,7 +55,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
 
 @end
 
-@interface PEPhotoFrameController () <UICollectionViewDataSource, MessageReceiverPhotoFrameDataDelegate>
+@interface PEPhotoFrameController () <UICollectionViewDataSource, PEMessageReceiverPhotoFrameDataDelegate>
 
 @property (strong, atomic) NSMutableArray<PEPhotoFrame *> *cellDatas;
 @property (assign, nonatomic) BOOL messageIngnore;
@@ -75,7 +75,7 @@ NSInteger const NumberOfPhotoFrameCells = 12;
         }
         
         self.dataSender = [[PEPhotoFrameMessageSender alloc] init];
-        [SessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = self;
+        [PESessionManager sharedInstance].messageReceiver.photoFrameDataDelegate = self;
     }
     
     return self;

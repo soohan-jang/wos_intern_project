@@ -6,16 +6,16 @@
 //  Copyright © 2016년 worksmobile. All rights reserved.
 //
 
-#import "MessageInterrupter.h"
+#import "PEMessageInterrupter.h"
 
-@interface MessageInterrupter ()
+@interface PEMessageInterrupter ()
 
 @end
 
-@implementation MessageInterrupter
+@implementation PEMessageInterrupter
 
 + (instancetype)sharedInstance {
-    static MessageInterrupter *instance = nil;
+    static PEMessageInterrupter *instance = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

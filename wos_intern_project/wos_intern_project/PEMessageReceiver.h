@@ -9,39 +9,39 @@
 #import <UIKit/UIKit.h>
 
 #import "PESession.h"
-#import "MessageBuffer.h"
+#import "PEMessageBuffer.h"
 
 #import "PEMessage.h"
 #import "PEDecorate.h"
 
-@protocol MessageReceiverStateChangeDelegate;
-@protocol MessageReceiverPhotoFrameDataDelegate;
-@protocol MessageReceiverDeviceDataDelegate;
-@protocol MessageReceiverPhotoDataDelegate;
-@protocol MessageReceiverDecorateDataDelegate;
+@protocol PEMessageReceiverStateChangeDelegate;
+@protocol PEMessageReceiverPhotoFrameDataDelegate;
+@protocol PEMessageReceiverDeviceDataDelegate;
+@protocol PEMessageReceiverPhotoDataDelegate;
+@protocol PEMessageReceiverDecorateDataDelegate;
 
-@interface MessageReceiver : NSObject
+@interface PEMessageReceiver : NSObject
 
-@property (nonatomic, weak) id<MessageReceiverStateChangeDelegate>     stateChangeDelegate;
-@property (nonatomic, weak) id<MessageReceiverPhotoFrameDataDelegate>  photoFrameDataDelegate;
-@property (nonatomic, weak) id<MessageReceiverDeviceDataDelegate>      deviceDataDelegate;
-@property (nonatomic, weak) id<MessageReceiverPhotoDataDelegate>       photoDataDelegate;
-@property (nonatomic, weak) id<MessageReceiverDecorateDataDelegate>    decorateDataDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverStateChangeDelegate>     stateChangeDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverPhotoFrameDataDelegate>  photoFrameDataDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverDeviceDataDelegate>      deviceDataDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverPhotoDataDelegate>       photoDataDelegate;
+@property (nonatomic, weak) id<PEMessageReceiverDecorateDataDelegate>    decorateDataDelegate;
 
-@property (nonatomic, strong) MessageBuffer *messageBuffer;
+@property (nonatomic, strong) PEMessageBuffer *messageBuffer;
 
 - (instancetype)initWithSession:(PESession *)session;
 - (void)startSynchronizeMessage;
 
 @end
 
-@protocol MessageReceiverStateChangeDelegate <NSObject>
+@protocol PEMessageReceiverStateChangeDelegate <NSObject>
 @required
 - (void)didReceiveChangeSessionState:(NSInteger)state;
 
 @end
 
-@protocol MessageReceiverPhotoFrameDataDelegate <NSObject>
+@protocol PEMessageReceiverPhotoFrameDataDelegate <NSObject>
 @required
 - (void)didReceiveSelectPhotoFrame:(NSIndexPath *)indexPath;
 - (void)didReceiveDeselectPhotoFrame:(NSIndexPath *)indexPath;
@@ -51,13 +51,13 @@
 
 @end
 
-@protocol MessageReceiverDeviceDataDelegate <NSObject>
+@protocol PEMessageReceiverDeviceDataDelegate <NSObject>
 @required
 - (void)didReceiveDeviceScreenSize:(CGSize)screenSize;
 
 @end
 
-@protocol MessageReceiverPhotoDataDelegate <NSObject>
+@protocol PEMessageReceiverPhotoDataDelegate <NSObject>
 @required
 - (void)didReceiveSelectPhotoData:(NSIndexPath *)indexPath;
 - (void)didReceiveDeselectPhotoData:(NSIndexPath *)indexPath;
@@ -74,7 +74,7 @@
 
 @end
 
-@protocol MessageReceiverDecorateDataDelegate <NSObject>
+@protocol PEMessageReceiverDecorateDataDelegate <NSObject>
 @required
 - (void)didReceiveSelectDecorateData:(NSUUID *)uuid;
 - (void)didReceiveDeselectDecorateData:(NSUUID *)uuid;

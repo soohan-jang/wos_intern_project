@@ -9,8 +9,8 @@
 #import "EditPhotoViewController.h"
 #import "CropPhotoViewController.h"
 
-#import "SessionManager.h"
-#import "MessageReceiver.h"
+#import "PESessionManager.h"
+#import "PEMessageReceiver.h"
 
 #import "PEPhotoController.h"
 #import "PEDecorateController.h"
@@ -34,7 +34,7 @@
 NSString *const SegueMoveToCropper  = @"moveToPhotoCrop";
 NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 
-@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CropPhotoViewControllerDelegate, PEPhotoControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDisplayViewDelegate, PEDecorateControllerDelegate, DecoratePenMenuViewDelegate, DecorateTextMenuViewDelegate, DecorateStickerMenuViewDelegate, MessageReceiverStateChangeDelegate>
+@interface EditPhotoViewController () <XXXRoundMenuButtonDelegate, SphereMenuDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, CropPhotoViewControllerDelegate, PEPhotoControllerDelegate, UICollectionViewDelegateFlowLayout, DecorateDisplayViewDelegate, PEDecorateControllerDelegate, DecoratePenMenuViewDelegate, DecorateTextMenuViewDelegate, DecorateStickerMenuViewDelegate, PEMessageReceiverStateChangeDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *decorateDisplayToggleButton;
 @property (weak, nonatomic) IBOutlet XXXRoundMenuButton *mainMenuButton;
@@ -50,7 +50,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 @property (weak, nonatomic) IBOutlet DecorateTextMenuView *textMenuView; //텍스트를 작성할 수 있는 뷰
 @property (weak, nonatomic) IBOutlet DecorateStickerMenuView *stickerMenuView; //스티커를 선택할 수 있는 뷰
 
-@property (strong, nonatomic) MessageReceiver *messageReceiver;
+@property (strong, nonatomic) PEMessageReceiver *messageReceiver;
 
 //For CropViewController
 @property (strong, nonatomic) NSURL *pickedImageURL;
@@ -133,7 +133,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 }
 
 - (void)setupDelegates {
-    MessageReceiver *messageReceiver = [SessionManager sharedInstance].messageReceiver;
+    PEMessageReceiver *messageReceiver = [PESessionManager sharedInstance].messageReceiver;
     messageReceiver.stateChangeDelegate = self;
     
     //DisplayView's Datasource & Delegate
@@ -167,14 +167,14 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 #pragma mark - Start Synchronize Message Methods
 
 - (void)startSynchronizeMessage {
-    [[SessionManager sharedInstance].messageReceiver startSynchronizeMessage];
+    [[PESessionManager sharedInstance].messageReceiver startSynchronizeMessage];
 }
 
 
 #pragma mark - Present Other ViewController Methods
 
 - (void)presentMainViewController {
-    [[SessionManager sharedInstance] disconnectSession];
+    [[PESessionManager sharedInstance] disconnectSession];
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -204,7 +204,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 }
 
 - (IBAction)backButtonTapped:(id)sender {
-    SessionManager *sessionManager = [SessionManager sharedInstance];
+    PESessionManager *sessionManager = [PESessionManager sharedInstance];
     NSString *alertTitleKey, *alertContentKey;
     
     if (sessionManager.session.sessionState == SessionStateDisconnected) {
@@ -743,7 +743,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
                                                   messageKey:@"alert_content_photo_edit_continue"
                                                       button:@"alert_button_text_no"
                                                buttonHandler:^(UIAlertAction * _Nonnull action) {
-                                                   [[SessionManager sharedInstance] disconnectSession];
+                                                   [[PESessionManager sharedInstance] disconnectSession];
                                                }
                                                  otherButton:@"alert_button_text_yes"
                                           otherButtonHandler:^(UIAlertAction * _Nonnull action) {

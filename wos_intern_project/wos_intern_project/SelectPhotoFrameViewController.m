@@ -9,8 +9,8 @@
 #import "SelectPhotoFrameViewController.h"
 #import "EditPhotoViewController.h"
 
-#import "SessionManager.h"
-#import "MessageReceiver.h"
+#import "PESessionManager.h"
+#import "PEMessageReceiver.h"
 
 #import "PEPhotoFrameController.h"
 
@@ -20,7 +20,7 @@
 
 NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
-@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PEPhotoFrameControllerDelegate, MessageReceiverStateChangeDelegate>
+@interface SelectPhotoFrameViewController () <UICollectionViewDelegateFlowLayout, PEPhotoFrameControllerDelegate, PEMessageReceiverStateChangeDelegate>
 
 @property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
@@ -71,7 +71,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 #pragma mark - Check Session State
 
 - (BOOL)checkConnectionState {
-    if ([SessionManager sharedInstance].session.sessionState == SessionStateConnected) {
+    if ([PESessionManager sharedInstance].session.sessionState == SessionStateConnected) {
         return YES;
     }
     
@@ -89,14 +89,14 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (void)prepareMessagerReceiver {
-    [SessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
+    [PESessionManager sharedInstance].messageReceiver.stateChangeDelegate = self;
 }
 
 
 #pragma mark - Start Synchronize Message Methods
 
 - (void)startSynchronizeMessage {
-    [[SessionManager sharedInstance].messageReceiver startSynchronizeMessage];
+    [[PESessionManager sharedInstance].messageReceiver startSynchronizeMessage];
 }
 
 
@@ -107,7 +107,7 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 }
 
 - (void)presentMainViewController {
-    [[SessionManager sharedInstance] disconnectSession];
+    [[PESessionManager sharedInstance] disconnectSession];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -281,14 +281,14 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                           return;
                                       }
                                       
-                                      [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
+                                      [[PESessionManager sharedInstance] setMessageBufferEnabled:YES];
                                       [self presentEditPhotoViewController];
                                   }];
 }
 
 - (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck {
     if (confirmAck) {
-        [[SessionManager sharedInstance] setMessageBufferEnabled:YES];
+        [[PESessionManager sharedInstance] setMessageBufferEnabled:YES];
         
         __weak typeof(self) weakSelf = self;
         [ProgressHelper dismissProgress:self.progressView

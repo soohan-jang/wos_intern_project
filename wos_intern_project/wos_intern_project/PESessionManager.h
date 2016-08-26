@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 
 #import "PESession.h"
-#import "MessageSender.h"
-#import "MessageReceiver.h"
+#import "PEMessageSender.h"
+#import "PEMessageReceiver.h"
 
-@interface SessionManager : NSObject
+@interface PESessionManager : NSObject
 
 @property (nonatomic, strong) PESession *session;
-@property (nonatomic, strong) MessageSender *messageSender;
-@property (nonatomic, strong) MessageReceiver *messageReceiver;
+@property (nonatomic, strong) PEMessageSender *messageSender;
+@property (nonatomic, strong) PEMessageReceiver *messageReceiver;
 
 + (instancetype)sharedInstance;
 
