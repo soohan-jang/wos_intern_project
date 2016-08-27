@@ -82,12 +82,16 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 }
 
 - (void)dealloc {
+    self.photoDisplayCollectionView.delegate = nil;
+    self.photoDisplayCollectionView.dataSource = nil;
+    
+    self.decorateDisplayView.delegate = nil;
+    self.decorateDisplayView.dataSource = nil;
+
     self.photoMenu = nil;
     self.photoController = nil;
     self.decorateController = nil;
     self.messageReceiver = nil;
-    
-    [ImageUtility removeAllTemporaryImages];
 }
 
 //CropView의 호출은 PhotoDataDisplayView에서 일어난다.
