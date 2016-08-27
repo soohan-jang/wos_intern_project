@@ -176,7 +176,7 @@ CGFloat const CaptureScale = 4.0f;
     return captureImage;
 }
 
-+ (UIImage *)mergeImage:(UIImage *)imageA imageB:(UIImage *)imageB {
++ (UIImage *)mergeImage:(UIImage *)imageA otherImage:(UIImage *)imageB {
     CGRect bounds = CGRectMake(0, 0, imageA.size.width, imageA.size.height);
     
     UIGraphicsBeginImageContext(imageA.size);

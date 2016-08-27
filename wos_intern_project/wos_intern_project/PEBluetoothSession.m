@@ -70,7 +70,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
                      error:(&error)];
     
     if (error) {
-        NSLog(@"%@", [error localizedDescription]);
+        NSLog(@"Error : %@", [error localizedDescription]);
         return NO;
     }
     
@@ -96,7 +96,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
                                        withName:name toPeer:peerID
                           withCompletionHandler:^(NSError * _Nullable error) {
                               if (error) {
-                                  NSLog(@"%@", [error localizedDescription]);
+                                  NSLog(@"Error : %@", [error localizedDescription]);
                                   resultHandler(NO);
                               }
                               
@@ -117,7 +117,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
                                withName:name toPeer:peerID
                   withCompletionHandler:^(NSError * _Nullable error) {
                       if (error) {
-                          NSLog(@"%@", [error localizedDescription]);
+                          NSLog(@"Error : %@", [error localizedDescription]);
                           resultHandler(NO);
                       }
                       
@@ -254,7 +254,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     if ([dataTypeOfPhotoData isEqualToString:PhotoTypeCropped]) {
         if (error) {
             //Error.
-            NSLog(@"%@", [error localizedDescription]);
+            NSLog(@"Error : %@", [error localizedDescription]);
             PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataType = dataTypeOfPhotoData;
@@ -299,7 +299,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     if ([dataTypeOfPhotoData isEqualToString:PhotoTypeOriginal]) {
         if (error) {
             //Error.
-            NSLog(@"%@", [error localizedDescription]);
+            NSLog(@"Error : %@", [error localizedDescription]);
             PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];

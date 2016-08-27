@@ -57,6 +57,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 @property (strong, nonatomic) UIImage *takePhotoImage;
 
 @property (assign, nonatomic) BOOL isEnteredOtherPeer;
+@property (assign, nonatomic) BOOL isStandAloneMode;
 
 @end
 
@@ -72,6 +73,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
     [self setupMainMenu];
     
     self.isEnteredOtherPeer = NO;
+    self.isStandAloneMode = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -207,7 +209,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
     PESessionManager *sessionManager = [PESessionManager sharedInstance];
     NSString *alertTitleKey, *alertContentKey;
     
-    if (sessionManager.session.sessionState == SessionStateDisconnected) {
+    if (!sessionManager.session || sessionManager.session.sessionState == SessionStateDisconnected) {
         alertTitleKey = @"alert_title_edit_finish";
         alertContentKey = @"alert_content_edit_finish";
     } else if (sessionManager.session.sessionState == SessionStateConnected) {
@@ -241,7 +243,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
     WMProgressHUD *progress = [ProgressHelper showProgressAddedTo:self.navigationController.view titleKey:@"progress_title_saving"];
     
     UIImage *mergedCaptureImage = [ImageUtility mergeImage:[self viewCapture]
-                                                    imageB:[self.decorateDisplayView viewCapture]];
+                                                otherImage:[self.decorateDisplayView viewCapture]];
     
     [ImageUtility saveImageAtPhotoAlbum:mergedCaptureImage];
     [ProgressHelper dismissProgress:progress dismissTitleKey:@"progress_title_saved" dismissType:DismissWithDone];
@@ -393,8 +395,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     }
     
     if (isSendEditCancelMsg) {
-        if (![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+        if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
             return;
+        }
+        
+        if (self.isStandAloneMode) {
+            [self.photoController setCellDataAtSelectedIndexPath:CellStateNone];
         }
         
         self.photoController.selectedIndexPath = nil;
@@ -440,8 +446,9 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (BOOL)photoMenuPhotoDelete {
-    if (![self.photoController.dataSender sendDeletePhotoDataMessage:self.photoController.selectedIndexPath]) {
+    if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeletePhotoDataMessage:self.photoController.selectedIndexPath]) {
         //삭제 실패 시, Alert를 띄우는 방식으로 처리하고 - 메뉴는 닫는다.
+        //Alert은 여기서 띄운다.
         return YES;
     }
     
@@ -471,6 +478,11 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
         
         if (!self.pickedImageURL && !self.takePhotoImage) {
             //Error Alert.
+            if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+                [self.photoMenu presentMenu];
+                return;
+            }
+            
             [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
             self.photoController.selectedIndexPath = nil;
         } else {
@@ -481,8 +493,13 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+        [self.photoMenu presentMenu];
+        return;
+    }
+    
     [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
-    [self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath];
     self.photoController.selectedIndexPath = nil;
 }
 
@@ -492,9 +509,14 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)cropViewControllerDidFinished:(UIImage *)originalImage croppedImage:(UIImage *)croppedImage filterType:(NSInteger)filterType {
     if (!originalImage || !croppedImage) {
         //Alert. 사진 가져오지 못함.
+        if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+            [self.photoMenu presentMenu];
+            return;
+        }
+        
         [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
-        [self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath];
         self.photoController.selectedIndexPath = nil;
+        
         return;
     }
     
@@ -511,16 +533,26 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     //임시로 전달받은 두개의 파일을 저장한다.
     NSString *filename = [ImageUtility saveImageAtTemporaryDirectoryWithOriginalImage:originalImage croppedImage:croppedImage];
     
+    //Alert. 사진 저장 실패.
     if (!filename) {
-        //Alert. 사진 저장 실패.
+        if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+            [self.photoMenu presentMenu];
+            return;
+        }
+        
         [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
-        [self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath];
         self.photoController.selectedIndexPath = nil;
         return;
     }
     
     NSURL *fullscreenImageURL = [ImageUtility fullscreenImageURLWithFilename:filename];
     NSURL *croppedImageURL = [ImageUtility croppedImageURLWithFilename:filename];
+    
+    if (self.isStandAloneMode) {
+        photoData.state = CellStateNone;
+        [self.photoController setCellDataAtSelectedIndexPath:photoData];
+        return;
+    }
     
     [self.photoController setCellDataAtSelectedIndexPath:photoData];
     [self.photoController.dataSender sendInsertPhotoDataMessage:self.photoController.selectedIndexPath
@@ -533,8 +565,12 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     self.pickedImageURL = nil;
     self.takePhotoImage = nil;
     
+    if (!self.isStandAloneMode && ![self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath]) {
+        [self.photoMenu presentMenu];
+        return;
+    }
+    
     [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
-    [self.photoController.dataSender sendDeselectPhotoDataMessage:self.photoController.selectedIndexPath];
     self.photoController.selectedIndexPath = nil;
 }
 
@@ -561,7 +597,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
     }
     
     //사진 선택 메시지 송신에 실패하면 메뉴를 띄우지 않는다.
-    if (![self.photoController.dataSender sendSelectPhotoDataMessage:indexPath]) {
+    if (!self.isStandAloneMode && ![self.photoController.dataSender sendSelectPhotoDataMessage:indexPath]) {
         return;
     }
     
@@ -613,12 +649,16 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)didFinishReceivePhotoData:(NSIndexPath *)indexPath {
     //Ack 전송 실패시 어떻게 할 것인가...?
-    [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:YES];
+    if (!self.isStandAloneMode && [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:YES]) {
+        
+    }
 }
 
 - (void)didErrorReceivePhotoData:(NSIndexPath *)indexPath {
     //Ack 전송 실패시 어떻게 할 것인가...?
-    [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:NO];
+    if (!self.isStandAloneMode && [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:NO]) {
+        
+    }
 }
 
 - (void)didInterruptPhotoDataSelection:(NSIndexPath *)indexPath {
@@ -648,11 +688,11 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 
 - (void)didSelectDecorateViewOfUUID:(NSUUID *)uuid selected:(BOOL)selected {
     if (selected) {
-        if (![self.decorateController.dataSender sendSelectDecorateDataMessage:uuid]) {
+        if (!self.isStandAloneMode && ![self.decorateController.dataSender sendSelectDecorateDataMessage:uuid]) {
             return;
         }
     } else {
-        if (![self.decorateController.dataSender sendDeselectDecorateDataMessage:uuid]) {
+        if (!self.isStandAloneMode && ![self.decorateController.dataSender sendDeselectDecorateDataMessage:uuid]) {
             return;
         }
     }
@@ -661,7 +701,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (void)didUpdateDecorateViewOfUUID:(NSUUID *)uuid frame:(CGRect)frame {
-    if (![self.decorateController.dataSender sendUpdateDecorateDataMessage:uuid updateFrame:frame]) {
+    if (!self.isStandAloneMode && ![self.decorateController.dataSender sendUpdateDecorateDataMessage:uuid updateFrame:frame]) {
         return;
     }
     
@@ -670,7 +710,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 }
 
 - (void)didDeleteDecorateViewOfUUID:(NSUUID *)uuid {
-    if (![self.decorateController.dataSender sendDeleteDecorateDataMessage:uuid]) {
+    if (!self.isStandAloneMode && ![self.decorateController.dataSender sendDeleteDecorateDataMessage:uuid]) {
         return;
     }
     
@@ -683,7 +723,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)decoratePenMenuViewDidFinished:(PEDecorate *)decorateData {
     [self setMenuVisiblity:MenuVisblityPen visiblity:NO];
     
-    if (![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+    if (!self.isStandAloneMode && ![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
         return;
     }
     
@@ -700,7 +740,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)decorateTextMenuViewDidFinished:(PEDecorate *)decorateData {
     [self setMenuVisiblity:MenuVisiblityText visiblity:NO];
     
-    if (![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+    if (!self.isStandAloneMode && ![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
         return;
     }
     
@@ -715,7 +755,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 #pragma mark - PhotoStickerViewController Delegate Methods
 
 - (void)decorateStickerMenuViewDidSelectItem:(PEDecorate *)decorateData {
-    if (![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
+    if (!self.isStandAloneMode && ![self.decorateController.dataSender sendInsertDecorateDataMessage:decorateData]) {
         return;
     }
     
@@ -744,6 +784,7 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
                                                       button:@"alert_button_text_no"
                                                buttonHandler:^(UIAlertAction * _Nonnull action) {
                                                    [[PESessionManager sharedInstance] disconnectSession];
+                                                   self.isStandAloneMode = YES;
                                                }
                                                  otherButton:@"alert_button_text_yes"
                                           otherButtonHandler:^(UIAlertAction * _Nonnull action) {

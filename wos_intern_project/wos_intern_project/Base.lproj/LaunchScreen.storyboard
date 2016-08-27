@@ -30,17 +30,25 @@
                                     <constraint firstAttribute="height" constant="180" id="OtL-Pc-DrU"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Application Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qXF-C4-qhS">
-                                <rect key="frame" x="233" y="399" width="135" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Works Photo Editor" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qXF-C4-qhS">
+                                <rect key="frame" x="215" y="396" width="171" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="via Bluetooth 4.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VhX-aS-v9X">
+                                <rect key="frame" x="249" y="420" width="103" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="VhX-aS-v9X" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="IjX-RG-g65"/>
                             <constraint firstItem="qXF-C4-qhS" firstAttribute="bottom" secondItem="nhO-6A-Tfo" secondAttribute="bottom" constant="30" id="gmg-eE-75s"/>
                             <constraint firstItem="FRT-59-80E" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="hI8-VX-ofH"/>
+                            <constraint firstItem="VhX-aS-v9X" firstAttribute="top" secondItem="qXF-C4-qhS" secondAttribute="bottom" id="i05-6m-deb"/>
                             <constraint firstItem="qXF-C4-qhS" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="qUZ-ru-RvQ"/>
                             <constraint firstItem="nhO-6A-Tfo" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="stw-hy-GY2"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="FRT-59-80E" secondAttribute="bottom" constant="10" id="u4b-ne-ceX"/>

@@ -170,7 +170,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
 
 - (void)didReceiveInvitationWithPeerName:(NSString *)peerName invitationHandler:(void (^)(BOOL, MCSession *))invitationHandler {
     NSString *message = [NSString stringWithFormat:@"\"%@\" %@", peerName,
-                                                                 NSLocalizedString(@"alert_content_invitation_received", nil)];
+                         NSLocalizedString(@"alert_content_invitation_received", nil)];
     
     __weak typeof(self) weakSelf = self;
     [AlertHelper showAlertControllerOnViewController:self

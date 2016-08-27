@@ -245,6 +245,11 @@ NSInteger const SubMenuHeight          = 30;
 #pragma mark - Capture View
 
 - (UIImage *)viewCapture {
+    DecorateView *selectedView = [self getSelectedDecorateView];
+    if (selectedView) {
+        [self.delegate didSelectDecorateViewOfUUID:selectedView.uuid selected:NO];
+    }
+    
     UIImage *captureImage = [ImageUtility viewCaptureImage:self];
     
     return captureImage;
