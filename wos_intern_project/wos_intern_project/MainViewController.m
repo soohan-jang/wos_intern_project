@@ -125,7 +125,7 @@ NSString *const SegueMoveToFrameSelect = @"moveToPhotoFrameSelect";
  */
 - (void)presentSelectPhotoFrameViewController {
     PESessionManager *sessionManager = [PESessionManager sharedInstance];
-    [sessionManager setMessageBufferEnabled:YES];
+    [sessionManager.messageReceiver setMessageBufferEnabled:YES];
     
     PEBluetoothSession *session = (PEBluetoothSession *)sessionManager.session;
     [session clearBluetoothBrowser];

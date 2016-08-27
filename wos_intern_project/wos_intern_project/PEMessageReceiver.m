@@ -16,6 +16,7 @@
 @interface PEMessageReceiver () <SessionConnectDelegate, SessionDataReceiveDelegate>
 
 @property (nonatomic, strong) PESession *session;
+@property (nonatomic, strong) PEMessageBuffer *messageBuffer;
 
 @end
 

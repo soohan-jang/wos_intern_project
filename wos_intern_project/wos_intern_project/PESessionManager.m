@@ -40,10 +40,6 @@
     }
 }
 
-- (void)setMessageBufferEnabled:(BOOL)enabled {
-    _messageReceiver.messageBuffer.enabled = enabled;
-}
-
 - (void)disconnectSession {
     [_session disconnectSession];
     

@@ -30,9 +30,8 @@
 @property (nonatomic, weak) id<PEMessageReceiverPhotoDataDelegate>       photoDataDelegate;
 @property (nonatomic, weak) id<PEMessageReceiverDecorateDataDelegate>    decorateDataDelegate;
 
-@property (nonatomic, strong) PEMessageBuffer *messageBuffer;
-
 - (instancetype)initWithSession:(PESession *)session;
+- (void)setMessageBufferEnabled:(BOOL)enabled;
 - (void)startSynchronizeMessage;
 
 @end

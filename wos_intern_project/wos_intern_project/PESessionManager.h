@@ -21,7 +21,6 @@
 + (instancetype)sharedInstance;
 
 - (void)initializeWithSessionType:(NSInteger)sessionType;
-- (void)setMessageBufferEnabled:(BOOL)enabled;
 - (void)disconnectSession;
 
 - (BOOL)isSessionNil;

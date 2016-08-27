@@ -275,14 +275,14 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
                                           return;
                                       }
                                       
-                                      [[PESessionManager sharedInstance] setMessageBufferEnabled:YES];
+                                      [[PESessionManager sharedInstance].messageReceiver setMessageBufferEnabled:YES];
                                       [self presentEditPhotoViewController];
                                   }];
 }
 
 - (void)didReceiveRequestPhotoFrameConfirmAck:(BOOL)confirmAck {
     if (confirmAck) {
-        [[PESessionManager sharedInstance] setMessageBufferEnabled:YES];
+        [[PESessionManager sharedInstance].messageReceiver setMessageBufferEnabled:YES];
         
         __weak typeof(self) weakSelf = self;
         [ProgressHelper dismissProgress:self.progressView
