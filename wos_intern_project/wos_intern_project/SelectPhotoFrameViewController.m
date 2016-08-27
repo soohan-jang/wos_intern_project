@@ -185,24 +185,17 @@ NSString *const SegueMoveToEditor = @"moveToPhotoEditor";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (self.photoFrameController.ownSelectedIndexPath.item != indexPath.item) {
-        NSIndexPath *prevSelectedIndexPath = self.photoFrameController.ownSelectedIndexPath;
-        [self.photoFrameController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
-        
-        //에러 발생 시, 이전 값으로 복원한다.
         if (![self.photoFrameController.dataSender sendSelectPhotoFrameMessage:indexPath]) {
-            if (!prevSelectedIndexPath) {
-                [self.photoFrameController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
-            } else {
-                [self.photoFrameController setSelectedCellAtIndexPath:prevSelectedIndexPath isOwnSelection:YES];
-            }
+            return;
         }
-    } else {
-        [self.photoFrameController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
         
-        //에러 발생 시, 이전 값으로 복원한다.
+        [self.photoFrameController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+    } else {
         if (![self.photoFrameController.dataSender sendDeselectPhotoFrameMessage:indexPath]) {
-            [self.photoFrameController setSelectedCellAtIndexPath:indexPath isOwnSelection:YES];
+            return;
         }
+        
+        [self.photoFrameController setDeselectedCellAtIndexPath:indexPath isOwnSelection:YES];
     }
 }
 

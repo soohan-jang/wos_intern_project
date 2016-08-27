@@ -650,22 +650,20 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 - (void)didFinishReceivePhotoData:(NSIndexPath *)indexPath {
     //Ack 전송 실패시 어떻게 할 것인가...?
     if (!self.isStandAloneMode && [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:YES]) {
-        
+        //Error.
     }
 }
 
 - (void)didErrorReceivePhotoData:(NSIndexPath *)indexPath {
-    //Ack 전송 실패시 어떻게 할 것인가...?
-    if (!self.isStandAloneMode && [self.photoController.dataSender sendPhotoDataAckMessage:indexPath ack:NO]) {
-        
-    }
+    //에러 수신 시, indexPath에 해당하는 셀의 모든 데이터를 삭제한다.
+    [self.photoController clearCellDataAtIndexPath:indexPath];
 }
 
 - (void)didInterruptPhotoDataSelection:(NSIndexPath *)indexPath {
     [self.photoController updateCellStateAtSelectedIndexPath:CellStateNone];
     self.photoController.selectedIndexPath = nil;
-    [self.photoMenu setHidden:YES];
     [self.photoMenu dismissMenu];
+    [self.photoMenu setHidden:YES];
 }
 
 
@@ -778,6 +776,11 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
             //추후에 세션 연결 끊겼다가 다시 복구되는 경우에나 사용할 것 같다.
             break;
         case SessionStateDisconnected:
+            if (!self.photoMenu.hidden) {
+                [self.photoMenu dismissMenu];
+                [self.photoMenu setHidden:YES];
+            }
+            
             [AlertHelper showAlertControllerOnViewController:self
                                                     titleKey:@"alert_title_session_disconnected"
                                                   messageKey:@"alert_content_photo_edit_continue"
@@ -785,6 +788,10 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
                                                buttonHandler:^(UIAlertAction * _Nonnull action) {
                                                    [[PESessionManager sharedInstance] disconnectSession];
                                                    self.isStandAloneMode = YES;
+                                                   
+                                                   //상대방이 선택한 사진 액자 혹은 데코레이드 요소를 선택 해제한다.
+                                                   [self.photoController setEnabledAllPhotoData];
+                                                   [self.decorateController setEnabledAllDecorateData];
                                                }
                                                  otherButton:@"alert_button_text_yes"
                                           otherButtonHandler:^(UIAlertAction * _Nonnull action) {

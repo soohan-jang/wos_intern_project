@@ -75,6 +75,8 @@ typedef NS_ENUM(NSInteger, CellState) {
 - (void)clearCellDataAtIndexPath:(NSIndexPath *)indexPath;
 - (void)clearCellDataAtSelectedIndexPath;
 
+- (void)setEnabledAllPhotoData;
+
 @end
 
 @protocol PEPhotoControllerDelegate <NSObject>

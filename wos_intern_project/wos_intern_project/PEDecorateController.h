@@ -34,6 +34,8 @@
 - (void)updateDecorateData:(NSUUID *)uuid frame:(CGRect)frame;
 - (void)deleteDecorateData:(NSUUID *)uuid;
 
+- (void)setEnabledAllDecorateData;
+
 @end
 
 @protocol PEDecorateControllerDelegate <NSObject>

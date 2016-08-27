@@ -45,7 +45,7 @@ typedef NS_ENUM(NSInteger, SessionStateType) {
 - (NSString *)displayNameOfSession;
 
 - (BOOL)sendMessage:(PEMessage *)message;
-- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler;
+- (void)sendResource:(PEMessage *)message;
 
 - (void)disconnectSession;
 

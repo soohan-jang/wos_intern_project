@@ -22,7 +22,7 @@
     return NO;
 }
 
-- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler {
+- (void)sendResource:(PEMessage *)message {
     return;
 }
 

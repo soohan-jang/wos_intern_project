@@ -70,9 +70,9 @@
 - (void)didReceiveSelectPhotoData:(NSIndexPath *)indexPath;
 - (void)didReceiveDeselectPhotoData:(NSIndexPath *)indexPath;
 
-- (void)didReceiveStartReceivePhotoData:(NSIndexPath *)indexPath;
-- (void)didReceiveFinishReceivePhotoData:(NSIndexPath *)indexPath;
-- (void)didReceiveErrorReceivePhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType;
+- (void)didReceiveStartInsertPhotoData:(NSIndexPath *)indexPath;
+- (void)didReceiveFinishInsertPhotoData:(NSIndexPath *)indexPath;
+- (void)didReceiveErrorInsertPhotoData:(NSIndexPath *)indexPath;
 
 - (void)didReceiveInsertPhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType insertDataURL:(NSURL *)insertDataURL filterType:(NSInteger)filterType;
 - (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType;

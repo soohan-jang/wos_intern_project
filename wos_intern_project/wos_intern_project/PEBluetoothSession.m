@@ -77,7 +77,7 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     return YES;
 }
 
-- (void)sendResource:(PEMessage *)message resultBlock:(void (^)(BOOL success))resultHandler {
+- (void)sendResource:(PEMessage *)message {
     if (message.messageType != MessageTypePhotoDataInsert && message.messageType != MessageTypePhotoDataUpdate) {
         return;
     }
@@ -97,10 +97,12 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
                           withCompletionHandler:^(NSError * _Nullable error) {
                               if (error) {
                                   NSLog(@"Error : %@", [error localizedDescription]);
-                                  resultHandler(NO);
+                                  PEMessage *data = [[PEMessage alloc] init];
+                                  data.messageType = MessageTypePhotoDataReceiveError;
+                                  data.photoDataIndexPath = message.photoDataIndexPath;
+                                  
+                                  [self.dataReceiveDelegate didReceiveData:data];
                               }
-                              
-                              resultHandler(YES);
                           }
                  ];
             }
@@ -118,11 +120,14 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
                   withCompletionHandler:^(NSError * _Nullable error) {
                       if (error) {
                           NSLog(@"Error : %@", [error localizedDescription]);
-                          resultHandler(NO);
+                          PEMessage *data = [[PEMessage alloc] init];
+                          data.messageType = MessageTypePhotoDataReceiveError;
+                          data.photoDataIndexPath = message.photoDataIndexPath;
+                          
+                          [self.dataReceiveDelegate didReceiveData:data];
                       }
                       
                       if (!sendOriginalImageBlock) {
-                          resultHandler(YES);
                           return;
                       }
                       
@@ -257,7 +262,6 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
             NSLog(@"Error : %@", [error localizedDescription]);
             PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
-            data.photoDataType = dataTypeOfPhotoData;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
             
             [self.dataReceiveDelegate didReceiveData:data];
@@ -303,7 +307,6 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
             PEMessage *data = [[PEMessage alloc] init];
             data.messageType = MessageTypePhotoDataReceiveError;
             data.photoDataIndexPath = [NSIndexPath indexPathForItem:indexOfPhotoData inSection:0];
-            data.photoDataType = dataTypeOfPhotoData;
             
             [self.dataReceiveDelegate didReceiveData:data];
             return;

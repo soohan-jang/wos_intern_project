@@ -119,16 +119,16 @@
                 return;
             case MessageTypePhotoDataReceiveStart:
                 NSLog(@"Receive MessageTypePhotoDataReceiveStart");
-                [self.photoDataDelegate didReceiveStartReceivePhotoData:message.photoDataIndexPath];
+                [self.photoDataDelegate didReceiveStartInsertPhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataReceiveFinish:
                 NSLog(@"Receive MessageTypePhotoDataReceiveFinish");
                 [messageInterrupter clearInterrupter];
-                [self.photoDataDelegate didReceiveFinishReceivePhotoData:message.photoDataIndexPath];
+                [self.photoDataDelegate didReceiveFinishInsertPhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataReceiveError:
                 NSLog(@"Receive MessageTypePhotoDataReceiveError");
-                [self.photoDataDelegate didReceiveErrorReceivePhotoData:message.photoDataIndexPath dataType:message.photoDataType];
+                [self.photoDataDelegate didReceiveErrorInsertPhotoData:message.photoDataIndexPath];
                 return;
             case MessageTypePhotoDataInsert:
                 NSLog(@"Receive MessageTypePhotoDataInsert");

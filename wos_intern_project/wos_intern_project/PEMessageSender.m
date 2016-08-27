@@ -141,11 +141,7 @@
     data.photoDataCroppedImageURL = croppedImageURL;
     data.photoDataFilterType = filterType;
     
-    [self.session sendResource:data resultBlock:^(BOOL success) {
-        if (!success) {
-            //error
-        }
-    }];
+    [self.session sendResource:data];
 }
 
 - (void)sendUpdatePhotoDataMessage:(NSIndexPath *)indexPath croppedImageURL:(NSURL *)croppedImageURL filterType:(NSInteger)filterType {
@@ -155,11 +151,7 @@
     data.photoDataCroppedImageURL = croppedImageURL;
     data.photoDataFilterType = filterType;
     
-    [self.session sendResource:data resultBlock:^(BOOL success) {
-        if (!success) {
-            //error
-        }
-    }];
+    [self.session sendResource:data];
 }
 
 - (BOOL)sendDeletePhotoDataMessage:(NSIndexPath *)indexPath {

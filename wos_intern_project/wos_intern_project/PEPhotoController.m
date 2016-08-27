@@ -76,7 +76,7 @@ NSInteger const DefaultMargin   = 5;
  몇 번째 사진 액자를 골랐는지에 대한 프로퍼티이다. 사진 액자는 1번부터 12번까지 있다.
  */
 @property (nonatomic, assign) NSInteger photoFrameNumber;
-@property (atomic, strong) NSArray<PEPhoto *> *cellDatas;
+@property (atomic, strong) NSArray<PEPhoto *> *photoDataArray;
 
 @end
 
@@ -98,7 +98,7 @@ NSInteger const DefaultMargin   = 5;
         }
         
         if (cellInitArray != nil || cellInitArray.count > 0) {
-            self.cellDatas = [NSArray arrayWithArray:cellInitArray];
+            self.photoDataArray = [NSArray arrayWithArray:cellInitArray];
         }
         
         [cellInitArray removeAllObjects];
@@ -227,9 +227,9 @@ NSInteger const DefaultMargin   = 5;
     }
     
     [self updateCellStateAtIndexPath:indexPath state:photoData.state];
-    self.cellDatas[indexPath.item].originalImage = photoData.originalImage;
-    self.cellDatas[indexPath.item].croppedImage = photoData.croppedImage;
-    self.cellDatas[indexPath.item].filterType = photoData.filterType;
+    self.photoDataArray[indexPath.item].originalImage = photoData.originalImage;
+    self.photoDataArray[indexPath.item].croppedImage = photoData.croppedImage;
+    self.photoDataArray[indexPath.item].filterType = photoData.filterType;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
@@ -245,7 +245,7 @@ NSInteger const DefaultMargin   = 5;
         return;
     }
     
-    self.cellDatas[indexPath.item].state = state;
+    self.photoDataArray[indexPath.item].state = state;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
@@ -261,7 +261,7 @@ NSInteger const DefaultMargin   = 5;
         return nil;
     }
     
-    return self.cellDatas[indexPath.item];
+    return self.photoDataArray[indexPath.item];
 }
 
 - (BOOL)hasImageAtSelectedIndexPath {
@@ -273,7 +273,7 @@ NSInteger const DefaultMargin   = 5;
         return NO;
     }
     
-    if (self.cellDatas[indexPath.item].croppedImage) {
+    if (self.photoDataArray[indexPath.item].croppedImage) {
         return YES;
     }
     
@@ -292,9 +292,10 @@ NSInteger const DefaultMargin   = 5;
         return;
     }
     
-    self.cellDatas[indexPath.item].state = CellStateNone;
-    self.cellDatas[indexPath.item].originalImage = nil;
-    self.cellDatas[indexPath.item].croppedImage = nil;
+    self.photoDataArray[indexPath.item].state = CellStateNone;
+    self.photoDataArray[indexPath.item].originalImage = nil;
+    self.photoDataArray[indexPath.item].croppedImage = nil;
+    self.photoDataArray[indexPath.item].filterType = 0;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
@@ -302,10 +303,29 @@ NSInteger const DefaultMargin   = 5;
 }
 
 
+#pragma mark - Deselect All
+
+- (void)setEnabledAllPhotoData {
+    for (int i = 0; i < self.photoDataArray.count; i++) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:i inSection:0];
+        
+        switch (self.photoDataArray[i].state) {
+            case CellStateEditing:
+                [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
+                break;
+            case CellStateUploading:
+            case CellStateDownloading:
+                [self clearCellDataAtIndexPath:indexPath];
+                break;
+        }
+    }
+}
+
+
 #pragma mark - check method
 
 - (BOOL)isNilOrEmpty {
-    if (self.cellDatas == nil || self.cellDatas.count == 0) {
+    if (self.photoDataArray == nil || self.photoDataArray.count == 0) {
         return YES;
     }
     
@@ -324,7 +344,7 @@ NSInteger const DefaultMargin   = 5;
         return YES;
     }
     
-    if (self.cellDatas.count <= indexPath.item) {
+    if (self.photoDataArray.count <= indexPath.item) {
         return YES;
     }
     
@@ -345,8 +365,8 @@ NSInteger const DefaultMargin   = 5;
     [cell initializeCell];
     
     [cell drawStrokeBorder];
-    [cell setImage:self.cellDatas[indexPath.item].croppedImage];
-    [cell setLoadingImage:self.cellDatas[indexPath.item].state];
+    [cell setImage:self.photoDataArray[indexPath.item].croppedImage];
+    [cell setLoadingImage:self.photoDataArray[indexPath.item].state];
     
     return cell;
 }
@@ -366,11 +386,11 @@ NSInteger const DefaultMargin   = 5;
     [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
 }
 
-- (void)didReceiveStartReceivePhotoData:(NSIndexPath *)indexPath {
+- (void)didReceiveStartInsertPhotoData:(NSIndexPath *)indexPath {
     [self updateCellStateAtIndexPath:indexPath state:CellStateDownloading];
 }
 
-- (void)didReceiveFinishReceivePhotoData:(NSIndexPath *)indexPath {
+- (void)didReceiveFinishInsertPhotoData:(NSIndexPath *)indexPath {
     [self updateCellStateAtIndexPath:indexPath state:CellStateNone];
     
     if (self.delegate) {
@@ -378,7 +398,7 @@ NSInteger const DefaultMargin   = 5;
     }
 }
 
-- (void)didReceiveErrorReceivePhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType {
+- (void)didReceiveErrorInsertPhotoData:(NSIndexPath *)indexPath {
     //Do Something, about error fixing.
     
     if (self.delegate) {
@@ -388,12 +408,12 @@ NSInteger const DefaultMargin   = 5;
 
 - (void)didReceiveInsertPhotoData:(NSIndexPath *)indexPath dataType:(NSString *)dataType insertDataURL:(NSURL *)insertDataURL filterType:(NSInteger)filterType {
     if ([dataType isEqualToString:PhotoTypeCropped]) {
-        self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
+        self.photoDataArray[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     } else if ([dataType isEqualToString:PhotoTypeOriginal]) {
-        self.cellDatas[indexPath.item].originalImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
+        self.photoDataArray[indexPath.item].originalImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:insertDataURL]];
     }
     
-    self.cellDatas[indexPath.item].filterType = filterType;
+    self.photoDataArray[indexPath.item].filterType = filterType;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];
@@ -401,8 +421,8 @@ NSInteger const DefaultMargin   = 5;
 }
 
 - (void)didReceiveUpdatePhotoData:(NSIndexPath *)indexPath updateDataURL:(NSURL *)updateDataURL filterType:(NSInteger)filterType {
-    self.cellDatas[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:updateDataURL]];
-    self.cellDatas[indexPath.item].filterType = filterType;
+    self.photoDataArray[indexPath.item].croppedImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:updateDataURL]];
+    self.photoDataArray[indexPath.item].filterType = filterType;
     
     if (self.delegate) {
         [self.delegate didUpdatePhotoData:indexPath];

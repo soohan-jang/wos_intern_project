@@ -150,6 +150,18 @@
     }
 }
 
+- (void)setEnabledAllDecorateData {
+    for (int i = 0; i < self.decorateDataArray.count; i++) {
+        if (!self.decorateDataArray[i].enabled) {
+            self.decorateDataArray[i].enabled = YES;
+            
+            if (self.delegate) {
+                [self.delegate didUpdateDecorateData:self.decorateDataArray[i].uuid];
+            }
+        }
+    }
+}
+
 
 #pragma mark - Utility Methods
 
