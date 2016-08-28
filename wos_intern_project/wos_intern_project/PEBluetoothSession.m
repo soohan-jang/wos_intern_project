@@ -335,6 +335,12 @@ NSString *const SessionServiceType = @"Co-PhotoEditor";
     
 }
 
+- (void)session:(MCSession *)session didReceiveCertificate:(NSArray *)certificate fromPeer:(MCPeerID *)peerID certificateHandler:(void (^)(BOOL))certificateHandler {
+    if (certificateHandler != nil) {
+        certificateHandler(YES);
+    }
+}
+
 
 #pragma mark - MCSession & CoreBluetooth Central Manager Changed State Delegate Methods
 
