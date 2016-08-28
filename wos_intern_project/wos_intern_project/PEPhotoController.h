@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, CellState) {
 /**
  Framenumber를 토대로 CellManager를 초기화한 뒤 반환한다.
  */
-- (instancetype)initWithFrameNumber:(NSInteger)frameNumber;
+- (instancetype)initWithPhotoFrameNumber:(NSInteger)photoframeNumber;
 
 /**
  인덱스에 위치한 사진 액자의 크기를 반환한다.

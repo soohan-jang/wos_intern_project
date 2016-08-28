@@ -131,7 +131,7 @@ NSString *const SeguePopupSticker   = @"popupPhotoSticker";
 }
 
 - (void)prepareDataControllers:(NSInteger)selectPhotoFrame {
-    self.photoController = [[PEPhotoController alloc] initWithFrameNumber:selectPhotoFrame];
+    self.photoController = [[PEPhotoController alloc] initWithPhotoFrameNumber:selectPhotoFrame];
     self.photoController.delegate = self;
     
     self.decorateController = [[PEDecorateController alloc] init];
@@ -689,6 +689,8 @@ typedef NS_ENUM(NSInteger, PhotoMenu) {
 #pragma mark - PhotoDecorateDataDisplayView Delegate Methods
 
 - (void)didSelectDecorateViewOfUUID:(NSUUID *)uuid selected:(BOOL)selected {
+    //같아 보이지만, 사실 다른 코드
+    //위는 선택 메시지를, 아래는 선택 해제 메시지를 송신한다.
     if (selected) {
         if (!self.isStandAloneMode && ![self.decorateController.dataSender sendSelectDecorateDataMessage:uuid]) {
             return;

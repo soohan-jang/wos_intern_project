@@ -85,11 +85,11 @@ NSInteger const DefaultMargin   = 5;
 
 #pragma mark - Initialize Method
 
-- (instancetype)initWithFrameNumber:(NSInteger)frameNumber {
+- (instancetype)initWithPhotoFrameNumber:(NSInteger)photoframeNumber {
     self = [super init];
     
     if (self) {
-        self.photoFrameNumber = frameNumber;
+        self.photoFrameNumber = photoframeNumber;
         
         NSMutableArray<PEPhoto *> *cellInitArray = [[NSMutableArray alloc] init];
         
