@@ -55,7 +55,6 @@ NSInteger const NumberOfFilterViewCell = 9;
     
     if (self.filterImageArray && self.filterImageArray.count > 0) {
         [self.cropView setImage:self.filterImageArray[self.selectedFilterType]];
-        self.cropView.imageCropRect = CGRectMake(0, 0, self.cropAreaSize.width, self.cropAreaSize.height);
         return;
     }
 }

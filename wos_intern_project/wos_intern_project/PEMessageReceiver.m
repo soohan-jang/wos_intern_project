@@ -205,7 +205,18 @@
 #pragma mark - Session Connect Delegate Methods
 
 - (void)didChangeSessionState:(NSInteger)state {
-    NSLog(@"Change Session State : %ld", (long)state);
+    switch (state) {
+        case SessionStateConnected:
+            NSLog(@"Change Session State : Session Connected");
+            break;
+        case SessionStateConnecting:
+            NSLog(@"Change Session State : Session Connecting");
+            break;
+        case SessionStateDisconnected:
+            NSLog(@"Change Session State : Session Disconnected");
+            break;
+    }
+    
     if (self.stateChangeDelegate) {
         [self.stateChangeDelegate didReceiveChangeSessionState:state];
     }

@@ -47,11 +47,11 @@
 }
 
 - (void)removeFromSuperview {
-    [super removeFromSuperview];
-    
     for (UIGestureRecognizer *recognizer in self.gestureRecognizers) {
         [self removeGestureRecognizer:recognizer];
     }
+    
+    [super removeFromSuperview];
 }
 
 
